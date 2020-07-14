@@ -1,0 +1,61 @@
+import 'package:flutter/material.dart';
+import 'package:mikan_flutter/core/http.dart';
+import 'package:mikan_flutter/core/repo.dart';
+import 'package:mikan_flutter/model/user.dart';
+import 'package:mikan_flutter/providers/models/base_model.dart';
+
+class LoginModel extends BaseModel {
+  final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  TextEditingController get accountController => _accountController;
+
+  TextEditingController get passwordController => _passwordController;
+
+  User _user;
+
+  User get user => _user;
+
+  bool _rememberMe = true;
+
+  bool get rememberMe => _rememberMe;
+
+  bool _loading = false;
+
+  bool get loading => _loading;
+
+  set rememberMe(bool value) {
+    _rememberMe = value;
+    notifyListeners();
+  }
+
+  set user(User value) {
+    _user = value;
+    notifyListeners();
+  }
+
+  submit(VoidCallback loginSuccess) async {
+    final Map<String, dynamic> loginPrams = {
+      "UserName": _accountController.text,
+      "Password": _passwordController.text,
+      "RememberMe": _rememberMe,
+      "__RequestVerificationToken": _user.token
+    };
+    this._loading = true;
+    notifyListeners();
+    final Resp resp = await Repo.submit(loginPrams);
+    if (this.disposed) return;
+    this._loading = false;
+    notifyListeners();
+    if (resp.success) {
+      loginSuccess.call();
+    }
+  }
+
+  @override
+  void dispose() {
+    _accountController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+}
