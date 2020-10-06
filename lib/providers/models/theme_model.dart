@@ -69,7 +69,7 @@ class ThemeModel extends BaseModel {
       accentColorBrightness: Brightness.dark,
       primarySwatch: _primaryColorSwatch,
       accentColor: _accentColorSwatch,
-      fontFamily: 'zcoolxw',
+      // fontFamily: 'zcoolxw',
 //      fontFamily: 'MaShanZheng',
     );
 

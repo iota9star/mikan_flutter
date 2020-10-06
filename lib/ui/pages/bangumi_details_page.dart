@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 @FFRoute(
   name: "mikan://bangumi-details",
   routeName: "bangumi-details",
-  argumentNames: ["title", "url", "name", "cover"],
+  exts: {"title": "", "url": '', "name": "", "cover": ""},
 )
 @immutable
 class BangumiDetailsPage extends StatelessWidget {

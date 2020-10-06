@@ -24,9 +24,12 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
 android {
     compileSdkVersion 30
-    buildToolsVersion '30.0.0'
+    buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId "io.nichijou.flutter.mikan"
         minSdkVersion 21
@@ -62,4 +65,5 @@ flutter {
 }
 
 dependencies {
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
 }

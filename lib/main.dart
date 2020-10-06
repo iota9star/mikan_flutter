@@ -1,5 +1,8 @@
+import 'dart:isolate';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +11,7 @@ import 'package:mikan_flutter/ext/logger.dart';
 import 'package:mikan_flutter/mikan_flutter_route_helper.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/providers/models/firebase_model.dart';
+import 'package:mikan_flutter/providers/models/home_model.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/providers/models/list_model.dart';
 import 'package:mikan_flutter/providers/models/theme_model.dart';
@@ -17,8 +21,27 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Crashlytics.instance.enableInDevMode = kDebugMode;
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
+  await Firebase.initializeApp();
+
+  if (kDebugMode) {
+    // Force disable Crashlytics collection while doing every day development.
+    // Temporarily toggle this to true if you want to test crash reporting in your app.
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+  } else {
+    // Handle Crashlytics enabled status when not in Debug,
+    // e.g. allow your users to opt-in to crash reporting.
+  }
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+  Isolate.current.addErrorListener(RawReceivePort((pair) async {
+    final List<dynamic> errorAndStacktrace = pair;
+    await FirebaseCrashlytics.instance.recordError(
+      errorAndStacktrace.first,
+      errorAndStacktrace.last,
+    );
+  }).sendPort);
+
   await Store.init();
   await SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -60,6 +83,9 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<ListModel>(
             create: (context) => ListModel(),
             lazy: false,
+          ),
+          ChangeNotifierProvider<HomeModel>(
+            create: (context) => HomeModel(),
           ),
         ],
         child: Consumer<ThemeModel>(

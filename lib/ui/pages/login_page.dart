@@ -172,10 +172,12 @@ class LoginPage extends StatelessWidget {
                             return Ink(
                               decoration: ShapeDecoration(
                                 shape: CircleBorder(),
-                                gradient: LinearGradient(colors: [
-                                  accentColor,
-                                  accentColor.withOpacity(0.8),
-                                ]),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    accentColor,
+                                    accentColor.withOpacity(0.8),
+                                  ],
+                                ),
                                 shadows: [
                                   BoxShadow(
                                     blurRadius: 8,
