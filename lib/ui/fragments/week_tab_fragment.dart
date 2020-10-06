@@ -4,9 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/ext/screen.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
+import 'package:mikan_flutter/providers/models/index_model.dart';
+import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 typedef OnTabChange = void Function(int index);
+
+typedef HandleItemTapStart = void Function(
+  Bangumi bangumi,
+);
 
 class WeekTabFragment extends StatefulWidget {
   final List<BangumiRow> bangumiRows;
@@ -74,7 +81,7 @@ class WeekTabFragmentState extends State<WeekTabFragment>
                 controller: _tabController,
                 labelStyle: TextStyle(
                   fontSize: 18,
-                  fontFamily: 'zcoolxw',
+                  // fontFamily: 'zcoolxw',
                 ),
                 indicatorSize: TabBarIndicatorSize.label,
                 labelColor: accentColor,
@@ -88,8 +95,12 @@ class WeekTabFragmentState extends State<WeekTabFragment>
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  children: widget.bangumiRows.map((e) {
-                    return buildBangumiList(e, bangumiWidth, accentColor);
+                  children: widget.bangumiRows.map((bangumiRow) {
+                    return _buildBangumiList(
+                      bangumiRow,
+                      bangumiWidth,
+                      accentColor,
+                    );
                   }).toList(),
                 ),
               )
@@ -97,10 +108,10 @@ class WeekTabFragmentState extends State<WeekTabFragment>
     );
   }
 
-  Widget buildBangumiList(
-    BangumiRow e,
-    int bangumiWidth,
-    Color accentColor,
+  Widget _buildBangumiList(
+    final BangumiRow row,
+    final int bangumiWidth,
+    final Color accentColor,
   ) {
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (overscroll) {
@@ -108,33 +119,39 @@ class WeekTabFragmentState extends State<WeekTabFragment>
         return false;
       },
       child: WaterfallFlow.builder(
-        key: PageStorageKey(e.name),
+        key: PageStorageKey(row.name),
         padding:
             EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
-        itemCount: e.bangumis.length,
+        itemCount: row.bangumis.length,
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
           crossAxisSpacing: 12,
           mainAxisSpacing: 20,
-          crossAxisCount: 3,
+          crossAxisCount: 2,
           collectGarbage: (List<int> garbages) {
             garbages.forEach((it) {
-              CachedNetworkImageProvider(e.bangumis[it].cover).evict();
+              CachedNetworkImageProvider(row.bangumis[it].cover).evict();
             });
           },
         ),
         itemBuilder: (BuildContext context, int index) {
-          final Bangumi bangumi = e.bangumis[index];
-          return buildBangumiItem(bangumi, bangumiWidth, accentColor);
+          return _buildBangumiItem(
+            row,
+            index,
+            bangumiWidth,
+            accentColor,
+          );
         },
       ),
     );
   }
 
-  Container buildBangumiItem(
-    Bangumi bangumi,
+  Widget _buildBangumiItem(
+    BangumiRow row,
+    int index,
     int bangumiWidth,
     Color accentColor,
   ) {
+    final Bangumi bangumi = row.bangumis[index];
     final TextStyle tagStyle = TextStyle(
       fontSize: 10,
       color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
@@ -179,7 +196,23 @@ class WeekTabFragmentState extends State<WeekTabFragment>
         ),
       ),
     ];
-    return Container(
+    Matrix4 transform;
+    if (context.read<IndexModel>().tapScaleIndex == index) {
+      transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
+    } else {
+      transform = Matrix4.identity();
+    }
+    return Selector<IndexModel, int>(
+      builder: (context, tapScaleIndex, child) {
+        return AnimatedTapContainer(
+          transform: transform,
+          onTapStart: () => context.read<IndexModel>().tapScaleIndex = index,
+          onTapEnd: () => context.read<IndexModel>().tapScaleIndex = -1,
+          child: child,
+        );
+      },
+      selector: (_, model) => model.tapScaleIndex,
+      shouldRebuild: (pre, next) => pre != next,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[

@@ -19,8 +19,21 @@ class IndexModel extends CancelableBaseModel {
   List<Carousel> _carousels = [];
   Season _selectedSeason;
   User _user;
-  int scaleIndex = -1;
-  int selectedTabIndex = 0;
+  int _tapScaleIndex = -1;
+
+  int _selectedTabIndex = 0;
+
+  set selectedTabIndex(int value) {
+    _selectedTabIndex = value;
+  }
+
+  int get tapScaleIndex => _tapScaleIndex;
+
+  set tapScaleIndex(int value) {
+    _tapScaleIndex = value;
+    notifyListeners();
+  }
+
   bool _seasonLoading = false;
 
   bool get seasonLoading => _seasonLoading;
@@ -29,7 +42,7 @@ class IndexModel extends CancelableBaseModel {
 
   List<Season> get seasons => _seasons;
 
-  get selectTabName => _bangumiRows[selectedTabIndex].name;
+  get selectTabName => _bangumiRows[_selectedTabIndex].name;
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: true);

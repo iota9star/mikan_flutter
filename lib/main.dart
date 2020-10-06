@@ -86,6 +86,7 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider<HomeModel>(
             create: (context) => HomeModel(),
+            lazy: false,
           ),
         ],
         child: Consumer<ThemeModel>(
