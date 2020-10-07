@@ -8,7 +8,14 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class ListModel extends CancelableBaseModel {
   int _page = 0;
   List<RecordItem> _records = [];
-  int scaleIndex = -1;
+  int _scaleIndex = -1;
+
+  set scaleIndex(int value) {
+    _scaleIndex = value;
+    notifyListeners();
+  }
+
+  int get scaleIndex => _scaleIndex;
 
   int get recordsLength => _records.length;
 

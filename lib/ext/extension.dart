@@ -17,9 +17,9 @@ extension MapExt<K, V> on Map<K, V> {
 }
 
 extension StringExt on String {
-  bool get isBlank => this == null || this.isEmpty;
+  bool get isNullOrBlank => this == null || this.isEmpty;
 
-  bool get isNotBlank => !this.isBlank;
+  bool get isNotBlank => !this.isNullOrBlank;
 
   toast() async {
     if (this.isNotBlank) {

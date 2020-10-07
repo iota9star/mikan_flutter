@@ -2,7 +2,7 @@ const Map keywords = {
   "720p": "720P",
   "1080p": "1080P",
   "480p": "480P",
-  "big5": "BIG5",
+  "big5": "繁",
   "mp4": "MP4",
   "mkv": "MKV",
   "hevc": "HEVC",

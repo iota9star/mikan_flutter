@@ -219,13 +219,10 @@ class Resolver {
       record.groups = subgroups;
       tempElements = elements[2].children;
       tempElement = tempElements[0];
-      temp = tempElement.text
-          .replaceAll("】", " ")
-          .replaceAll("【", " ")
-          .replaceAll("[", " ")
-          .replaceAll("]", " ")
-          .replaceAll("   ", "  ")
-          .trim();
+      temp = ("/" +
+          tempElement.text.replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
+          "/")
+          .replaceAll(RegExp("/\\s*/+"), "/");
       tags = LinkedHashSet();
       tempLowerCase = temp.toLowerCase();
       keywords.forEach((key, value) {
@@ -387,7 +384,7 @@ class Resolver {
             .querySelector(".subscribed-badge")
             ?.attributes
             ?.getOrNull("style")
-            ?.isBlank ??
+            ?.isNullOrBlank ??
         false;
     final more = document
             .querySelectorAll(
@@ -415,8 +412,10 @@ class Resolver {
         element = subs.elementAt(i);
         temp = element.children[0].attributes["href"];
         subgroupBangumi.subgroupId = temp.substring(temp.lastIndexOf("/") + 1);
-        subgroupBangumi.name = element.nodes.elementAt(0).text.trim() ??
-            element.children.elementAt(0).text.trim();
+        temp = element.nodes.getOrNull(0)?.text?.trim();
+        subgroupBangumi.name = temp.isNullOrBlank
+            ? element.children.getOrNull(0)?.text?.trim()
+            : temp;
         subgroupBangumi.subscribed =
             element?.querySelector(".subscribed")?.text?.trim() == "已订阅";
         records = [];
@@ -429,8 +428,7 @@ class Resolver {
               element.children[1].attributes['data-clipboard-text'];
           element = element.children[0];
           recordItem.title = element.text.trim();
-          recordItem.url =
-              MikanUrl.BASE_URL + element.children[0].attributes["href"];
+          recordItem.url = MikanUrl.BASE_URL + element.attributes["href"];
           recordItem.size = ele.children[1].text.trim();
           recordItem.publishAt = ele.children[2].text.trim();
           recordItem.torrent = MikanUrl.BASE_URL +
@@ -474,13 +472,10 @@ class Resolver {
         ?.trim();
     final Set<String> tags = LinkedHashSet();
     if (title.isNotBlank) {
-      title = title
-          .replaceAll("】", " ")
-          .replaceAll("【", " ")
-          .replaceAll("[", " ")
-          .replaceAll("]", " ")
-          .replaceAll("   ", "  ")
-          .trim();
+      title = ("/" +
+              title.replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
+              "/")
+          .replaceAll(RegExp("/\\s*/+"), "/");
       bangumiDetails.title = title;
       final String lowerCaseTitle = title.toLowerCase();
       keywords.forEach((key, value) {
@@ -494,7 +489,7 @@ class Resolver {
             .querySelector(".subscribed-badge")
             ?.attributes
             ?.getOrNull("style")
-            ?.isBlank ??
+            ?.isNullOrBlank ??
         false;
     final more = document
             .querySelectorAll(

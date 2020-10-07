@@ -5,6 +5,8 @@
 
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/widgets.dart';
+
+import 'model/bangumi.dart';
 import 'ui/pages/bangumi_details_page.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
@@ -13,23 +15,14 @@ import 'ui/pages/splash_page.dart';
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   arguments = arguments ?? const <String, dynamic>{};
   switch (name) {
-    case 'mikan://bangumi-details':
+    case 'mikan://bangumi-home':
       return RouteResult(
         name: name,
-        widget: BangumiDetailsPage(
+        widget: BangumiHomePage(
           key: arguments['key'] as Key,
-          url: arguments['url'] as String,
-          title: arguments['title'] as String,
-          cover: arguments['cover'] as String,
-          name: arguments['name'] as String,
+          bangumi: arguments['bangumi'] as Bangumi,
         ),
-        routeName: 'bangumi-details',
-        exts: <String, dynamic>{
-          'title': '',
-          'url': '',
-          'name': '',
-          'cover': ''
-        },
+        routeName: 'bangumi-home',
       );
     case 'mikan://home':
       return RouteResult(

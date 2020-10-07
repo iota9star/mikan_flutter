@@ -97,7 +97,12 @@ class _Http extends DioForNative {
         deviceModel: deviceModel,
         appVersion: appVersion,
       ))
-      ..add(LogInterceptor(logPrint: (obj) => logd(obj)))
+      ..add(
+        LogInterceptor(
+            requestHeader: false,
+            responseHeader: false,
+            logPrint: (obj) => logd(obj)),
+      )
       ..add(CookieManager(PersistCookieJar(dir: cacheDir + "/.cookies")));
 
     this.transformer = MikanTransformer();

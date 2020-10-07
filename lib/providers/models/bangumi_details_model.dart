@@ -1,27 +1,27 @@
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
-import 'package:mikan_flutter/model/bangumi_details.dart';
+import 'package:mikan_flutter/model/bangumi_home.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 
-class BangumiDetailsModel extends BaseModel {
-  final String url;
+class BangumiHomeModel extends BaseModel {
+  final String id;
 
   bool _loading = false;
 
   bool get loading => _loading;
-  BangumiDetails _bangumiDetails;
+  BangumiHome _bangumiHome;
 
-  BangumiDetails get bangumiDetails => _bangumiDetails;
+  BangumiHome get bangumiHome => _bangumiHome;
 
-  BangumiDetailsModel(this.url) {
+  BangumiHomeModel(this.id) {
     this.load();
   }
 
   void load() {
     this._loading = true;
-    Repo.details(this.url).then((resp) {
+    Repo.bangumi(this.id).then((resp) {
       if (resp.success) {
-        _bangumiDetails = resp.data;
+        _bangumiHome = resp.data;
       } else {
         resp.msg.toast();
       }

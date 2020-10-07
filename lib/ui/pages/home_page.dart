@@ -19,7 +19,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  final PageController _pageController = PageController(initialPage: 0);
   AnimationController _animationController;
   Animation<double> animation;
   CurvedAnimation curve;
@@ -56,41 +55,40 @@ class _HomePageState extends State<HomePage>
     return Selector<HomeModel, int>(
       builder: (BuildContext context, int selectIndex, Widget child) {
         return Scaffold(
-          body: PageView(
-            controller: _pageController,
-            children: <Widget>[
+          body: IndexedStack(
+            children: [
               IndexFragment(),
               ListFragment(),
             ],
+            index: selectIndex,
           ),
-          floatingActionButton: ScaleTransition(
-            scale: animation,
-            child: FloatingActionButton(
-              elevation: 8,
-              child: Icon(
-                Icons.brightness_3,
-              ),
-              onPressed: () {
-                _animationController.reset();
-                _animationController.forward();
-              },
-            ),
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: AnimatedBottomNavigationBar(
-            icons: [AntIcons.home, AntIcons.ordered_list],
-            activeIndex: selectIndex,
-            gapLocation: GapLocation.center,
-            notchSmoothness: NotchSmoothness.defaultEdge,
-            notchAndCornersAnimation: animation,
-            splashSpeedInMilliseconds: 300,
-            leftCornerRadius: 32,
-            rightCornerRadius: 32,
-            onTap: (index) =>
-                Provider.of<HomeModel>(context).selectedIndex = index,
-            //other params
-          ),
+          // floatingActionButton: ScaleTransition(
+          //   scale: animation,
+          //   child: FloatingActionButton(
+          //     elevation: 8,
+          //     child: Icon(
+          //       Icons.brightness_3,
+          //     ),
+          //     onPressed: () {
+          //       _animationController.reset();
+          //       _animationController.forward();
+          //     },
+          //   ),
+          // ),
+          // floatingActionButtonLocation:
+          //     FloatingActionButtonLocation.centerDocked,
+          // bottomNavigationBar: AnimatedBottomNavigationBar(
+          //   icons: [AntIcons.home, AntIcons.ordered_list],
+          //   activeIndex: selectIndex,
+          //   gapLocation: GapLocation.center,
+          //   notchSmoothness: NotchSmoothness.defaultEdge,
+          //   notchAndCornersAnimation: animation,
+          //   splashSpeedInMilliseconds: 300,
+          //   leftCornerRadius: 32,
+          //   rightCornerRadius: 32,
+          //   onTap: (index) => context.read<HomeModel>().selectedIndex = index,
+          //   //other params
+          // ),
         );
       },
       selector: (_, model) => model.selectedIndex,

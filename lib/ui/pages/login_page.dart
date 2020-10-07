@@ -164,7 +164,7 @@ class LoginPage extends StatelessWidget {
                         return Selector<LoginModel, User>(
                           builder: (_, user, __) {
                             final bool isNotOk =
-                                user == null || user?.token?.isBlank == true;
+                                user == null || user?.token?.isNullOrBlank == true;
                             final Color iconColor =
                                 accentColor.computeLuminance() < 0.5
                                     ? Colors.white
