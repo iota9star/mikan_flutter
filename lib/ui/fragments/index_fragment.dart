@@ -67,8 +67,8 @@ class IndexFragment extends StatelessWidget {
                                 height: 18,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
                                     colors: [
                                       accentColor,
                                       accentColorWithOpacity, // 灰蓝也还行
@@ -103,7 +103,11 @@ class IndexFragment extends StatelessWidget {
                               200,
                               accentColor,
                             ),
-                            margin: EdgeInsets.only(left: 24.0, top: 12.0),
+                            margin: EdgeInsets.only(
+                              left: 24.0,
+                              top: 8.0,
+                              bottom: 8.0,
+                            ),
                           )
                         ],
                       );
@@ -211,153 +215,154 @@ class IndexFragment extends StatelessWidget {
         } else {
           transform = Matrix4.identity();
         }
-        return AnimatedTapContainer(
-          transform: transform,
-          onTapStart: () =>
-              context.read<IndexModel>().tapBangumiFlag = currFlag,
-          onTapEnd: () => context.read<IndexModel>().tapBangumiFlag = null,
-          onTap: () {
-            if (bangumi.grey) {
-              "此番组下暂无作品".toast();
-            } else {
-              Navigator.pushNamed(
-                context,
-                Routes.mikanBangumiHome,
-                arguments: {
-                  "bangumi": bangumi,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            AnimatedTapContainer(
+              transform: transform,
+              onTapStart: () =>
+                  context.read<IndexModel>().tapBangumiFlag = currFlag,
+              onTapEnd: () => context.read<IndexModel>().tapBangumiFlag = null,
+              onTap: () {
+                if (bangumi.grey) {
+                  "此番组下暂无作品".toast();
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.mikanBangumiHome,
+                    arguments: {
+                      "bangumi": bangumi,
+                    },
+                  );
+                }
+              },
+              child: ExtendedImage(
+                image: CachedNetworkImageProvider(
+                  "${bangumi.cover}?width=$bangumiWidth&format=jpg",
+                ),
+                shape: BoxShape.rectangle,
+                clearMemoryCacheWhenDispose: true,
+                loadStateChanged: (ExtendedImageState value) {
+                  if (value.extendedImageLoadState == LoadState.loading) {
+                    return AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Container(
+                        padding: EdgeInsets.all(28.0),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 8.0,
+                              color: Colors.black.withAlpha(24),
+                            )
+                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: SpinKitPumpingHeart(
+                          duration: Duration(milliseconds: 960),
+                          itemBuilder: (_, __) => Image.asset(
+                            "assets/mikan.png",
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  if (value.extendedImageLoadState == LoadState.failed) {
+                    return AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Container(
+                        padding: EdgeInsets.all(28.0),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 8.0,
+                              color: Colors.black.withAlpha(24),
+                            )
+                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          image: DecorationImage(
+                            image:
+                                ExtendedAssetImageProvider("assets/mikan.png"),
+                            fit: BoxFit.cover,
+                            colorFilter:
+                                ColorFilter.mode(Colors.grey, BlendMode.color),
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (value.extendedImageLoadState ==
+                      LoadState.completed) {
+                    bangumi.coverSize = Size(
+                        value.extendedImageInfo.image.width.toDouble(),
+                        value.extendedImageInfo.image.height.toDouble());
+                    return AspectRatio(
+                      aspectRatio:
+                          bangumi.coverSize.width / bangumi.coverSize.height,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 8.0,
+                              color: Colors.black.withAlpha(24),
+                            )
+                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          image: DecorationImage(
+                            image: value.imageProvider,
+                            fit: BoxFit.cover,
+                            colorFilter: bangumi.grey
+                                ? ColorFilter.mode(Colors.grey, BlendMode.color)
+                                : null,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return null;
                 },
-              );
-            }
-          },
-          child: child,
+              ),
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Wrap(
+              children: tags,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 4,
+                  height: 10,
+                  margin: EdgeInsets.only(top: 4.0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        bangumi.grey ? Colors.grey : accentColor,
+                        accentColor.withOpacity(0.16), // 灰蓝也还行
+                      ],
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(2)),
+                  ),
+                ),
+                SizedBox(width: 4.0),
+                Expanded(
+                  child: Text(
+                    bangumi.name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.25,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         );
       },
       selector: (_, model) => model.tapBangumiFlag,
       shouldRebuild: (pre, next) => pre != next,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          ExtendedImage(
-            image: CachedNetworkImageProvider(
-              "${bangumi.cover}?width=$bangumiWidth&format=jpg",
-            ),
-            shape: BoxShape.rectangle,
-            clearMemoryCacheWhenDispose: true,
-            loadStateChanged: (ExtendedImageState value) {
-              if (value.extendedImageLoadState == LoadState.loading) {
-                return AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Container(
-                    padding: EdgeInsets.all(28.0),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 8.0,
-                          color: Colors.black.withAlpha(24),
-                        )
-                      ],
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
-                    child: SpinKitPumpingHeart(
-                      duration: Duration(milliseconds: 960),
-                      itemBuilder: (_, __) => Image.asset(
-                        "assets/mikan.png",
-                      ),
-                    ),
-                  ),
-                );
-              }
-              if (value.extendedImageLoadState == LoadState.failed) {
-                return AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Container(
-                    padding: EdgeInsets.all(28.0),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 8.0,
-                          color: Colors.black.withAlpha(24),
-                        )
-                      ],
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      image: DecorationImage(
-                        image: ExtendedAssetImageProvider("assets/mikan.png"),
-                        fit: BoxFit.cover,
-                        colorFilter:
-                            ColorFilter.mode(Colors.grey, BlendMode.color),
-                      ),
-                    ),
-                  ),
-                );
-              } else if (value.extendedImageLoadState == LoadState.completed) {
-                bangumi.coverSize = Size(
-                    value.extendedImageInfo.image.width.toDouble(),
-                    value.extendedImageInfo.image.height.toDouble());
-                return AspectRatio(
-                  aspectRatio:
-                      bangumi.coverSize.width / bangumi.coverSize.height,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 8.0,
-                          color: Colors.black.withAlpha(24),
-                        )
-                      ],
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      image: DecorationImage(
-                        image: value.imageProvider,
-                        fit: BoxFit.cover,
-                        colorFilter: bangumi.grey
-                            ? ColorFilter.mode(Colors.grey, BlendMode.color)
-                            : null,
-                      ),
-                    ),
-                  ),
-                );
-              }
-              return null;
-            },
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Wrap(
-            children: tags,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                width: 4,
-                height: 10,
-                margin: EdgeInsets.only(top: 4.0),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      bangumi.grey ? Colors.grey : accentColor,
-                      accentColor.withOpacity(0.16), // 灰蓝也还行
-                    ],
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(2)),
-                ),
-              ),
-              SizedBox(width: 4.0),
-              Expanded(
-                child: Text(
-                  bangumi.name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
