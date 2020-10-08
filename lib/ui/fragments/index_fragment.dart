@@ -2,6 +2,7 @@ import 'dart:math' as Math;
 
 import 'package:ant_icons/ant_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -36,10 +37,11 @@ class IndexFragment extends StatelessWidget {
                 children: <Widget>[
                   _buildSearchUI(context),
                   _buildCarouselsUI(),
-                  _buildWeekSectionControlUI(context),
-                  SizedBox(height: 16.0,)
                 ],
               ),
+            ),
+            SliverPinnedToBoxAdapter(
+              child: _buildWeekSectionControlUI(context),
             ),
             Selector<IndexModel, bool>(
               selector: (_, model) => model.seasonLoading,
@@ -56,7 +58,9 @@ class IndexFragment extends StatelessWidget {
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              SizedBox(width: 16,),
+                              SizedBox(
+                                width: 16,
+                              ),
                               Container(
                                 width: 6,
                                 height: 18,
@@ -78,9 +82,8 @@ class IndexFragment extends StatelessWidget {
                                 child: Text(
                                   bangumiRows[index].name,
                                   style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold
-                                  ),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],
@@ -375,8 +378,10 @@ class IndexFragment extends StatelessWidget {
 
   Widget _buildWeekSectionControlUI(final BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.only(
         top: 12.0,
+        bottom: 12.0,
         left: 16.0,
         right: 16.0,
       ),
@@ -409,7 +414,7 @@ class IndexFragment extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.1),
+              color:Theme.of(context).accentColor.withOpacity(0.05),
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: Row(
@@ -417,6 +422,7 @@ class IndexFragment extends StatelessWidget {
               children: <Widget>[
                 IconButton(
                   icon: Icon(AntIcons.double_left),
+                  tooltip: "上一季度",
                   onPressed: () {
                     context.read<IndexModel>().prevSeason();
                   },
@@ -430,6 +436,7 @@ class IndexFragment extends StatelessWidget {
                     angle: Math.pi,
                     child: Icon(AntIcons.double_left),
                   ),
+                  tooltip: "下一季度",
                   onPressed: () {
                     context.read<IndexModel>().nextSeason();
                   },

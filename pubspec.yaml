@@ -44,6 +44,7 @@ dependencies:
   flutter_widget_from_html_core: ^0.5.1
   kenburns: ^1.0.4
   animated_bottom_navigation_bar: ^0.1.2+2
+  extended_sliver: ^1.0.1
 
 dev_dependencies:
   build_runner: ^1.10.3
