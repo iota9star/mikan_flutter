@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
                 debugShowCheckedModeBanner: false,
                 theme: themeModel.themeData(),
                 darkTheme: themeModel.themeData(platformDarkMode: true),
-                initialRoute: Routes.mikanHome,
+                initialRoute: Routes.mikanSplash,
                 onGenerateRoute: (RouteSettings settings) =>
                     onGenerateRouteHelper(settings),
                 navigatorObservers: [

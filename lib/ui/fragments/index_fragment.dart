@@ -103,7 +103,7 @@ class IndexFragment extends StatelessWidget {
                               200,
                               accentColor,
                             ),
-                            margin: EdgeInsets.only(left: 24.0),
+                            margin: EdgeInsets.only(left: 24.0, top: 12.0),
                           )
                         ],
                       );
