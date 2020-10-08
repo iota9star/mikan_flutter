@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class Bangumi {
   // 番剧的id
   String id;
@@ -18,6 +20,14 @@ class Bangumi {
   bool subscribed;
 
   bool grey;
+
+  Size _coverSize;
+
+  Size get coverSize => _coverSize;
+
+  set coverSize(Size value) {
+    _coverSize = value;
+  }
 
   Bangumi({
     this.id,

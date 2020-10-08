@@ -17,7 +17,7 @@ class Log {
 
   static void _log(String msg, dynamic tag) {
     if (msg.length < _limit) {
-      debugPrint("${DateTime.now()}\t$tag\t$msg");
+      debugPrint("$msg");
     } else {
       _slog(msg, tag);
     }
@@ -30,12 +30,12 @@ class Log {
     for (var index = 0; index < length; index++) {
       sb.write(msg[index]);
       if (index % _limit == 0 && index != 0) {
-        debugPrint("${DateTime.now()}\t$tag\t$sb");
+        debugPrint("$sb");
         sb.clear();
         lastIndex = index + 1;
         if (length - lastIndex < _limit) {
           debugPrint(
-              "${DateTime.now()}\t$tag\t${msg.substring(lastIndex, length)}");
+              "${msg.substring(lastIndex, length)}");
           break;
         }
       }

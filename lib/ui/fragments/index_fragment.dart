@@ -2,6 +2,7 @@ import 'dart:math' as Math;
 
 import 'package:ant_icons/ant_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -223,41 +224,86 @@ class IndexFragment extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          AspectRatio(
-            aspectRatio: 325 / 528,
-            child: CachedNetworkImage(
-              imageUrl: "${bangumi.cover}?width=$bangumiWidth&format=jpg",
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 8.0,
-                      color: Colors.black.withAlpha(24),
-                    )
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                    colorFilter: bangumi.grey
-                        ? ColorFilter.mode(Colors.grey, BlendMode.color)
-                        : null,
-                  ),
-                ),
-              ),
-              progressIndicatorBuilder: (context, url, downloadProgress) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: downloadProgress.progress,
-                  ),
-                );
-              },
-              errorWidget: (_, __, ___) {
-                return Center(
-                  child: Image.asset("assets/mikan.png"),
-                );
-              },
+          ExtendedImage(
+            image: CachedNetworkImageProvider(
+              "${bangumi.cover}?width=$bangumiWidth&format=jpg",
             ),
+            shape: BoxShape.rectangle,
+            clearMemoryCacheWhenDispose: true,
+            loadStateChanged: (ExtendedImageState value) {
+              if (value.extendedImageLoadState == LoadState.loading) {
+                return AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Container(
+                    padding: EdgeInsets.all(28.0),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8.0,
+                          color: Colors.black.withAlpha(24),
+                        )
+                      ],
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                    child: SpinKitPumpingHeart(
+                      duration: Duration(milliseconds: 960),
+                      itemBuilder: (_, __) => Image.asset(
+                        "assets/mikan.png",
+                      ),
+                    ),
+                  ),
+                );
+              }
+              if (value.extendedImageLoadState == LoadState.failed) {
+                return AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Container(
+                    padding: EdgeInsets.all(28.0),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8.0,
+                          color: Colors.black.withAlpha(24),
+                        )
+                      ],
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      image: DecorationImage(
+                        image: ExtendedAssetImageProvider("assets/mikan.png"),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+                      ),
+                    ),
+                  ),
+                );
+              } else if (value.extendedImageLoadState == LoadState.completed) {
+                bangumi.coverSize = Size(
+                    value.extendedImageInfo.image.width.toDouble(),
+                    value.extendedImageInfo.image.height.toDouble());
+                return AspectRatio(
+                  aspectRatio:
+                      bangumi.coverSize.width / bangumi.coverSize.height,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8.0,
+                          color: Colors.black.withAlpha(24),
+                        )
+                      ],
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      image: DecorationImage(
+                        image: value.imageProvider,
+                        fit: BoxFit.cover,
+                        colorFilter: bangumi.grey
+                            ? ColorFilter.mode(Colors.grey, BlendMode.color)
+                            : null,
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return null;
+            },
           ),
           SizedBox(
             height: 8.0,
@@ -414,7 +460,7 @@ class IndexFragment extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color:Theme.of(context).accentColor.withOpacity(0.05),
+              color: Theme.of(context).accentColor.withOpacity(0.05),
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: Row(
