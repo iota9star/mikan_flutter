@@ -32,8 +32,8 @@ class ThemeModel extends BaseModel {
     final List<ColorSwatch> primaries = Colors.primaries;
     final List<ColorSwatch> accents = Colors.accents;
     final int primary =
-        Store.sp.getInt(KEY_PRIMARY_COLOR) ?? primaries[6].value;
-    final int accent = Store.sp.getInt(KEY_ACCENT_COLOR) ?? accents[5].value;
+        Store.sp.getInt(KEY_PRIMARY_COLOR) ?? Colors.amber.value;
+    final int accent = Store.sp.getInt(KEY_ACCENT_COLOR) ?? Colors.amber.value;
     final int background = Store.sp.getInt(KEY_BACKGROUND_COLOR) ?? 0xFFDDE4F0;
     final int foreground =
         Store.sp.getInt(KEY_FOREGROUND_COLOR) ?? Colors.white.value;

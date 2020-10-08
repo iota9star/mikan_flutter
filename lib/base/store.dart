@@ -19,6 +19,6 @@ class Store {
     docDir = await getApplicationDocumentsDirectory();
     filesDir = await getApplicationSupportDirectory();
     sp = await SharedPreferences.getInstance();
-    Hive.init(filesDir.path + "/db");
+    Hive.init(filesDir.path + "/hivedb");
   }
 }

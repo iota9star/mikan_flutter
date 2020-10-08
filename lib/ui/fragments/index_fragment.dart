@@ -33,91 +33,98 @@ class IndexFragment extends StatelessWidget {
       resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Column(
-                children: <Widget>[
-                  _buildSearchUI(context),
-                  _buildCarouselsUI(),
-                ],
+        child: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowGlow();
+            return false;
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  children: <Widget>[
+                    _buildSearchUI(context),
+                    _buildCarouselsUI(),
+                  ],
+                ),
               ),
-            ),
-            SliverPinnedToBoxAdapter(
-              child: _buildWeekSectionControlUI(context),
-            ),
-            Selector<IndexModel, bool>(
-              selector: (_, model) => model.seasonLoading,
-              shouldRebuild: (pre, next) => pre != next,
-              builder: (_, loading, ___) {
-                final List<BangumiRow> bangumiRows =
-                    context.read<IndexModel>().bangumiRows;
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return Column(
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(left: 16.0, right: 6.0),
-                                width: 18,
-                                height: 18,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                    colors: [
-                                      accentColor,
-                                      accentColorWithOpacity, // 灰蓝也还行
-                                    ],
-                                  ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(9)),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  bangumiRows[index].name,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+              SliverPinnedToBoxAdapter(
+                child: _buildWeekSectionControlUI(context),
+              ),
+              Selector<IndexModel, bool>(
+                selector: (_, model) => model.seasonLoading,
+                shouldRebuild: (pre, next) => pre != next,
+                builder: (_, loading, ___) {
+                  final List<BangumiRow> bangumiRows =
+                      context.read<IndexModel>().bangumiRows;
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return Column(
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  margin:
+                                      EdgeInsets.only(left: 16.0, right: 6.0),
+                                  width: 18,
+                                  height: 18,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        accentColor,
+                                        accentColorWithOpacity, // 灰蓝也还行
+                                      ],
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(9)),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                left: BorderSide(
-                                  width: 3,
-                                  color: accentColorWithOpacity,
+                                Expanded(
+                                  child: Text(
+                                    bangumiRows[index].name,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  left: BorderSide(
+                                    width: 3,
+                                    color: accentColorWithOpacity,
+                                  ),
                                 ),
                               ),
-                            ),
-                            child: _buildBangumiList(
-                              bangumiRows[index],
-                              200,
-                              accentColor,
-                            ),
-                            margin: EdgeInsets.only(
-                              left: 24.0,
-                              top: 8.0,
-                              bottom: 8.0,
-                            ),
-                          )
-                        ],
-                      );
-                    },
-                    childCount: bangumiRows.length,
-                  ),
-                );
-              },
-            ),
-          ],
+                              child: _buildBangumiList(
+                                bangumiRows[index],
+                                200,
+                                accentColor,
+                              ),
+                              margin: EdgeInsets.only(
+                                left: 24.0,
+                                top: 8.0,
+                                bottom: 8.0,
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                      childCount: bangumiRows.length,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
