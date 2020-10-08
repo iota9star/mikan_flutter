@@ -171,6 +171,7 @@ class IndexFragment extends StatelessWidget {
     final Bangumi bangumi = row.bangumis[index];
     final TextStyle tagStyle = TextStyle(
       fontSize: 10,
+      height: 1.25,
       color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
     final List<Widget> tags = [
@@ -424,7 +425,7 @@ class IndexFragment extends StatelessWidget {
                   margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    color: Theme.of(context).backgroundColor,
                     boxShadow: [
                       BoxShadow(
                         blurRadius: 8,
@@ -450,7 +451,9 @@ class IndexFragment extends StatelessWidget {
 
   Widget _buildWeekSectionControlUI(final BuildContext context) {
     return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Theme
+          .of(context)
+          .backgroundColor,
       padding: EdgeInsets.only(
         top: 12.0,
         bottom: 12.0,

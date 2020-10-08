@@ -117,8 +117,8 @@ class MyApp extends StatelessWidget {
               enableBallisticLoad: true,
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                theme: themeModel.themeData(),
-                darkTheme: themeModel.themeData(platformDarkMode: true),
+                theme: themeModel.theme(),
+                darkTheme: themeModel.theme(darkTheme: true),
                 initialRoute: Routes.mikanSplash,
                 onGenerateRoute: (RouteSettings settings) =>
                     onGenerateRouteHelper(settings),

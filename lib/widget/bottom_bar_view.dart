@@ -68,17 +68,17 @@ class _BottomBarViewState extends State<BottomBarView>
           return Transform(
             transform: Matrix4.translationValues(0.0, 0.0, 0.0),
             child: PhysicalShape(
-              color: Colors.white,
+              color: Theme.of(context).backgroundColor,
               elevation: 16.0,
               clipper: TabClipper(
                 radius: Tween<double>(begin: 0.0, end: 1.0)
-                    .animate(
-                  CurvedAnimation(
-                    parent: animationController,
-                    curve: Curves.fastOutSlowIn,
-                  ),
-                )
-                    .value *
+                        .animate(
+                          CurvedAnimation(
+                            parent: animationController,
+                            curve: Curves.fastOutSlowIn,
+                          ),
+                        )
+                        .value *
                     widget.height,
               ),
               child: Center(
@@ -145,13 +145,14 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     widget.barItem._animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
-    )..addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.completed) {
-        if (!mounted) return;
-        widget.removeAllSelect();
-        widget.barItem._animationController.reverse();
-      }
-    });
+    )
+      ..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.completed) {
+          if (!mounted) return;
+          widget.removeAllSelect();
+          widget.barItem._animationController.reverse();
+        }
+      });
     super.initState();
   }
 
@@ -170,7 +171,9 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
           : Icon(
         barItem.selectedIcon,
         size: barItem._size + 4,
-        color: Theme.of(context).accentColor,
+        color: Theme
+            .of(context)
+            .accentColor,
       );
     }
     return barItem.icon == null
