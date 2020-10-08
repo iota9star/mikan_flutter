@@ -191,18 +191,20 @@ class IndexFragment extends StatelessWidget {
         ),
       ),
     ];
-    return Selector<IndexModel, int>(
+    return Selector<IndexModel, String>(
       builder: (context, tapScaleIndex, child) {
         Matrix4 transform;
-        if (tapScaleIndex == index) {
+        final String currFlag = "${row.name}:$index";
+        if (tapScaleIndex == currFlag) {
           transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
         } else {
           transform = Matrix4.identity();
         }
         return AnimatedTapContainer(
           transform: transform,
-          onTapStart: () => context.read<IndexModel>().tapScaleIndex = index,
-          onTapEnd: () => context.read<IndexModel>().tapScaleIndex = -1,
+          onTapStart: () =>
+              context.read<IndexModel>().tapBangumiFlag = "${row.name}:$index",
+          onTapEnd: () => context.read<IndexModel>().tapBangumiFlag = null,
           onTap: () {
             if (bangumi.grey) {
               "此番组下暂无作品".toast();
@@ -219,7 +221,7 @@ class IndexFragment extends StatelessWidget {
           child: child,
         );
       },
-      selector: (_, model) => model.tapScaleIndex,
+      selector: (_, model) => model.tapBangumiFlag,
       shouldRebuild: (pre, next) => pre != next,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -270,7 +272,8 @@ class IndexFragment extends StatelessWidget {
                       image: DecorationImage(
                         image: ExtendedAssetImageProvider("assets/mikan.png"),
                         fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+                        colorFilter:
+                            ColorFilter.mode(Colors.grey, BlendMode.color),
                       ),
                     ),
                   ),
