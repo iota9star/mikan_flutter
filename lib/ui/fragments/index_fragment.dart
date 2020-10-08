@@ -4,6 +4,7 @@ import 'package:ant_icons/ant_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -25,7 +26,8 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 class IndexFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final accentColor = Theme.of(context).accentColor;
+    final Color accentColor = Theme.of(context).accentColor;
+    final Color accentColorWithOpacity = accentColor.withOpacity(0.48);
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -59,11 +61,9 @@ class IndexFragment extends StatelessWidget {
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              SizedBox(
-                                width: 16,
-                              ),
                               Container(
-                                width: 6,
+                                margin: EdgeInsets.only(left: 16.0, right: 6.0),
+                                width: 18,
                                 height: 18,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -71,28 +71,39 @@ class IndexFragment extends StatelessWidget {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       accentColor,
-                                      accentColor.withOpacity(0.6), // 灰蓝也还行
+                                      accentColorWithOpacity, // 灰蓝也还行
                                     ],
                                   ),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(2)),
+                                      BorderRadius.all(Radius.circular(9)),
                                 ),
                               ),
-                              SizedBox(width: 6.0),
                               Expanded(
                                 child: Text(
                                   bangumiRows[index].name,
                                   style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          _buildBangumiList(
-                            bangumiRows[index],
-                            200,
-                            accentColor,
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                left: BorderSide(
+                                  width: 3,
+                                  color: accentColorWithOpacity,
+                                ),
+                              ),
+                            ),
+                            child: _buildBangumiList(
+                              bangumiRows[index],
+                              200,
+                              accentColor,
+                            ),
+                            margin: EdgeInsets.only(left: 24.0),
                           )
                         ],
                       );
@@ -203,7 +214,7 @@ class IndexFragment extends StatelessWidget {
         return AnimatedTapContainer(
           transform: transform,
           onTapStart: () =>
-              context.read<IndexModel>().tapBangumiFlag = "${row.name}:$index",
+              context.read<IndexModel>().tapBangumiFlag = currFlag,
           onTapEnd: () => context.read<IndexModel>().tapBangumiFlag = null,
           onTap: () {
             if (bangumi.grey) {
