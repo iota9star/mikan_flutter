@@ -205,7 +205,7 @@ class IndexFragment extends StatelessWidget {
         margin: EdgeInsets.only(right: 4.0, bottom: 4.0),
         padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
         decoration: BoxDecoration(
-          color: accentColor.withOpacity(0.87),
+          color: bangumi.grey ? Colors.grey : accentColor.withOpacity(0.87),
           borderRadius: BorderRadius.circular(2.0),
         ),
         child: Text(
@@ -253,7 +253,9 @@ class IndexFragment extends StatelessWidget {
                 loadStateChanged: (ExtendedImageState value) {
                   if (value.extendedImageLoadState == LoadState.loading) {
                     return AspectRatio(
-                      aspectRatio: 1.0,
+                      aspectRatio: bangumi.coverSize == null
+                          ? 1.0
+                          : bangumi.coverSize.width / bangumi.coverSize.height,
                       child: Container(
                         padding: EdgeInsets.all(28.0),
                         decoration: BoxDecoration(
@@ -265,10 +267,12 @@ class IndexFragment extends StatelessWidget {
                           ],
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         ),
-                        child: SpinKitPumpingHeart(
-                          duration: Duration(milliseconds: 960),
-                          itemBuilder: (_, __) => Image.asset(
-                            "assets/mikan.png",
+                        child: Center(
+                          child: SpinKitPumpingHeart(
+                            duration: Duration(milliseconds: 960),
+                            itemBuilder: (_, __) => Image.asset(
+                              "assets/mikan.png",
+                            ),
                           ),
                         ),
                       ),
@@ -276,9 +280,10 @@ class IndexFragment extends StatelessWidget {
                   }
                   if (value.extendedImageLoadState == LoadState.failed) {
                     return AspectRatio(
-                      aspectRatio: 1.0,
+                      aspectRatio: bangumi.coverSize == null
+                          ? 1.0
+                          : bangumi.coverSize.width / bangumi.coverSize.height,
                       child: Container(
-                        padding: EdgeInsets.all(28.0),
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
