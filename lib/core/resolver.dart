@@ -220,8 +220,9 @@ class Resolver {
       tempElements = elements[2].children;
       tempElement = tempElements[0];
       temp = ("/" +
-          tempElement.text.replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
-          "/")
+              tempElement.text
+                  .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
+              "/")
           .replaceAll(RegExp("/\\s*/+"), "/");
       tags = LinkedHashSet();
       tempLowerCase = temp.toLowerCase();
@@ -373,23 +374,27 @@ class Resolver {
         '';
     bangumiHome.name = document
         .querySelector(
-            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
+        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
         ?.text
         ?.trim();
-    bangumiHome.intro = document
+    String _intro = document
         .querySelector("#sk-container > div.central-container > p")
         ?.text
         ?.trim();
+    if (_intro.isNotBlank) {
+      _intro = "\u3000\u3000" + _intro.replaceAll("\n", "\n\u3000\u3000");
+    }
+    bangumiHome.intro = _intro;
     bangumiHome.subscribed = document
-            .querySelector(".subscribed-badge")
-            ?.attributes
-            ?.getOrNull("style")
-            ?.isNullOrBlank ??
+        .querySelector(".subscribed-badge")
+        ?.attributes
+        ?.getOrNull("style")
+        ?.isNullOrBlank ??
         false;
     final more = document
-            .querySelectorAll(
-                "#sk-container > div.pull-left.leftbar-container > p.bangumi-info")
-            ?.map((e) => e.text.split("：")) ??
+        .querySelectorAll(
+        "#sk-container > div.pull-left.leftbar-container > p.bangumi-info")
+        ?.map((e) => e.text.split("：")) ??
         [];
     final Map<String, String> map = {};
     more.forEach((element) {

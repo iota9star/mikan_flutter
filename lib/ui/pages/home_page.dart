@@ -42,7 +42,6 @@ class HomePage extends StatelessWidget {
           ),
         ],
         onItemClick: (index) {
-          print('$index');
           context.read<HomeModel>().selectedIndex = index;
         },
       ),

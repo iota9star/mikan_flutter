@@ -245,60 +245,48 @@ class IndexFragment extends StatelessWidget {
                 }
               },
               child: ExtendedImage(
-                image: CachedNetworkImageProvider(
-                  "${bangumi.cover}?width=$bangumiWidth&format=jpg",
-                ),
+                image: CachedNetworkImageProvider(bangumi.cover),
                 shape: BoxShape.rectangle,
                 clearMemoryCacheWhenDispose: true,
                 loadStateChanged: (ExtendedImageState value) {
+                  Widget child;
                   if (value.extendedImageLoadState == LoadState.loading) {
-                    return AspectRatio(
-                      aspectRatio: bangumi.coverSize == null
-                          ? 1.0
-                          : bangumi.coverSize.width / bangumi.coverSize.height,
-                      child: Container(
-                        padding: EdgeInsets.all(28.0),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 8.0,
-                              color: Colors.black.withAlpha(24),
-                            )
-                          ],
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        ),
-                        child: Center(
-                          child: SpinKitPumpingHeart(
-                            duration: Duration(milliseconds: 960),
-                            itemBuilder: (_, __) => Image.asset(
-                              "assets/mikan.png",
-                            ),
+                    child = Container(
+                      padding: EdgeInsets.all(28.0),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 8.0,
+                            color: Colors.black.withAlpha(24),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      child: Center(
+                        child: SpinKitPumpingHeart(
+                          duration: Duration(milliseconds: 960),
+                          itemBuilder: (_, __) => Image.asset(
+                            "assets/mikan.png",
                           ),
                         ),
                       ),
                     );
                   }
                   if (value.extendedImageLoadState == LoadState.failed) {
-                    return AspectRatio(
-                      aspectRatio: bangumi.coverSize == null
-                          ? 1.0
-                          : bangumi.coverSize.width / bangumi.coverSize.height,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 8.0,
-                              color: Colors.black.withAlpha(24),
-                            )
-                          ],
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          image: DecorationImage(
-                            image:
-                                ExtendedAssetImageProvider("assets/mikan.png"),
-                            fit: BoxFit.cover,
-                            colorFilter:
-                                ColorFilter.mode(Colors.grey, BlendMode.color),
-                          ),
+                    child = Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 8.0,
+                            color: Colors.black.withAlpha(24),
+                          )
+                        ],
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        image: DecorationImage(
+                          image: ExtendedAssetImageProvider("assets/mikan.png"),
+                          fit: BoxFit.cover,
+                          colorFilter:
+                          ColorFilter.mode(Colors.grey, BlendMode.color),
                         ),
                       ),
                     );
@@ -307,30 +295,34 @@ class IndexFragment extends StatelessWidget {
                     bangumi.coverSize = Size(
                         value.extendedImageInfo.image.width.toDouble(),
                         value.extendedImageInfo.image.height.toDouble());
-                    return AspectRatio(
-                      aspectRatio:
-                          bangumi.coverSize.width / bangumi.coverSize.height,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 8.0,
-                              color: Colors.black.withAlpha(24),
-                            )
-                          ],
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          image: DecorationImage(
-                            image: value.imageProvider,
-                            fit: BoxFit.cover,
-                            colorFilter: bangumi.grey
-                                ? ColorFilter.mode(Colors.grey, BlendMode.color)
-                                : null,
-                          ),
+                    child = Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 8.0,
+                            color: Colors.black.withAlpha(24),
+                          )
+                        ],
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        image: DecorationImage(
+                          image: value.imageProvider,
+                          fit: BoxFit.cover,
+                          colorFilter: bangumi.grey
+                              ? ColorFilter.mode(Colors.grey, BlendMode.color)
+                              : null,
                         ),
                       ),
                     );
                   }
-                  return null;
+                  return AspectRatio(
+                    aspectRatio: bangumi.coverSize == null
+                        ? 1
+                        : bangumi.coverSize.width / bangumi.coverSize.height,
+                    child: Hero(
+                      tag: "${bangumi.id}:${bangumi.cover}",
+                      child: child,
+                    ),
+                  );
                 },
               ),
             ),
