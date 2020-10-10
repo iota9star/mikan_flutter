@@ -374,7 +374,7 @@ class Resolver {
         '';
     bangumiHome.name = document
         .querySelector(
-        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
+            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
         ?.text
         ?.trim();
     String _intro = document
@@ -416,13 +416,23 @@ class Resolver {
         subgroupBangumi = SubgroupBangumi();
         element = subs.elementAt(i);
         temp = element.children[0].attributes["href"];
-        subgroupBangumi.subgroupId = temp.substring(temp.lastIndexOf("/") + 1);
-        temp = element.nodes.getOrNull(0)?.text?.trim();
-        subgroupBangumi.name = temp.isNullOrBlank
-            ? element.children.getOrNull(0)?.text?.trim()
-            : temp;
+        subgroupBangumi.subgroupId = element.attributes?.getOrNull("id");
+        temp = element.nodes
+            .getOrNull(0)
+            ?.text
+            ?.trim();
+        if (temp.isNullOrBlank) {
+          final Element child =
+              element.querySelector(".dropdown span") ?? element.children[0];
+          subgroupBangumi.name = child?.text?.trim();
+        } else {
+          subgroupBangumi.name = temp;
+        }
         subgroupBangumi.subscribed =
-            element?.querySelector(".subscribed")?.text?.trim() == "已订阅";
+            element
+                ?.querySelector(".subscribed")
+                ?.text
+                ?.trim() == "已订阅";
         records = [];
         element = tables.elementAt(i);
         elements = element.querySelectorAll("tbody > tr");
@@ -430,7 +440,7 @@ class Resolver {
           recordItem = RecordItem();
           element = ele.children[0];
           recordItem.magnet =
-              element.children[1].attributes['data-clipboard-text'];
+          element.children[1].attributes['data-clipboard-text'];
           element = element.children[0];
           recordItem.title = element.text.trim();
           recordItem.url = MikanUrl.BASE_URL + element.attributes["href"];
