@@ -30,6 +30,13 @@ class BangumiHomeModel extends BaseModel {
   double _cropping = 1.0;
 
   double get cropping => _cropping;
+  String _selectTabFlag;
+
+  String get selectTabFlag => _selectTabFlag;
+
+  set selectTabFlag(String value) {
+    _selectTabFlag = value;
+  }
 
   set cropping(double value) {
     _cropping = value;
@@ -46,18 +53,18 @@ class BangumiHomeModel extends BaseModel {
       if (resp.success) {
         _bangumiHome = resp.data;
         _tabController = TabController(
-          length: _bangumiHome.subgroupBangumis.length ?? 0,
+          length: _bangumiHome?.subgroupBangumis?.length ?? 0,
           vsync: vsync,
         );
         _refreshControllers = List.generate(
-            _bangumiHome.subgroupBangumis.length,
-            (index) => RefreshController());
-        notifyListeners();
+            _bangumiHome?.subgroupBangumis?.length ?? 0,
+                (index) => RefreshController());
       } else {
         resp.msg.toast();
       }
     }).whenComplete(() {
       this._loading = false;
+      notifyListeners();
     });
   }
 }
