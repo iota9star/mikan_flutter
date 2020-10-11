@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/model/bangumi_home.dart';
+import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -18,47 +18,44 @@ class BangumiHomeModel extends BaseModel {
   BangumiHome get bangumiHome => _bangumiHome;
 
   final PanelController _panelController = PanelController();
-  TabController _tabController;
-  List<RefreshController> _refreshControllers;
 
-  TabController get tabController => _tabController;
+  RefreshController _refreshController = RefreshController();
 
   PanelController get panelController => _panelController;
 
-  List<RefreshController> get refreshControllers => _refreshControllers;
+  RefreshController get refreshController => _refreshController;
 
-  double _cropping = 1.0;
-
-  double get cropping => _cropping;
-  String _selectTabFlag;
-
-  String get selectTabFlag => _selectTabFlag;
-
-  set selectTabFlag(String value) {
-    _selectTabFlag = value;
+  BangumiHomeModel(this.id) {
+    this._loadBangumiDetails();
   }
 
-  set cropping(double value) {
-    _cropping = value;
+  SubgroupBangumi _subgroupBangumi;
+
+  SubgroupBangumi get subgroupBangumi => _subgroupBangumi;
+
+  set selectedSubgroupId(String value) {
+    _subgroupBangumi = _bangumiHome.subgroupBangumis.firstWhere(
+        (element) => element.subgroupId == value,
+        orElse: () => null);
+    if (_refreshController.isLoading) {
+      _refreshController.loadComplete();
+    }
     notifyListeners();
+    _panelController.animatePanelToPosition(
+      1.0,
+      duration: Duration(
+        milliseconds: 240,
+      ),
+    );
   }
 
-  BangumiHomeModel(this.id, vsync) {
-    this._load(vsync);
-  }
+  loadSubgroupList() {}
 
-  _load(final TickerProvider vsync) {
+  _loadBangumiDetails() {
     this._loading = true;
     Repo.bangumi(this.id).then((resp) {
       if (resp.success) {
         _bangumiHome = resp.data;
-        _tabController = TabController(
-          length: _bangumiHome?.subgroupBangumis?.length ?? 0,
-          vsync: vsync,
-        );
-        _refreshControllers = List.generate(
-            _bangumiHome?.subgroupBangumis?.length ?? 0,
-                (index) => RefreshController());
       } else {
         resp.msg.toast();
       }
@@ -66,5 +63,11 @@ class BangumiHomeModel extends BaseModel {
       this._loading = false;
       notifyListeners();
     });
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }
