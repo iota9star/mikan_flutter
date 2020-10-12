@@ -1,7 +1,6 @@
 import 'package:mikan_flutter/core/http.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/index.dart';
@@ -139,10 +138,19 @@ class IndexModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  subscribeBangumi(final Bangumi bangumi) {
-    Repo.subscribeBangumi(bangumi.subscribed, bangumi.id).then((resp) {
-      print('resp: $resp');
-      if (!resp.success) {
+  subscribeBangumi(final BangumiRow row, final int index) {
+    final bangumi = row.bangumis[index];
+    Repo.subscribeBangumi(bangumi.subscribed, bangumi.id).then((resp) async {
+      if (resp.success) {
+        this.tapBangumiFlag = "${row.name}:$index";
+        Future.delayed(
+          Duration(milliseconds: 360),
+          () {
+            row.bangumis[index].subscribed = !bangumi.subscribed;
+            this.tapBangumiFlag = null;
+          },
+        );
+      } else {
         if (resp.msg.isNotBlank) {
           resp.msg.toast();
         } else {

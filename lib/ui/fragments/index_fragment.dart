@@ -348,7 +348,7 @@ class IndexFragment extends StatelessWidget {
                               onPressed: () {
                                 context
                                     .read<IndexModel>()
-                                    .subscribeBangumi(bangumi);
+                                    .subscribeBangumi(row, index);
                               },
                             ),
                           )
@@ -370,7 +370,7 @@ class IndexFragment extends StatelessWidget {
                               onPressed: () {
                                 context
                                     .read<IndexModel>()
-                                    .subscribeBangumi(bangumi);
+                                    .subscribeBangumi(row, index);
                               },
                             ),
                           ),
