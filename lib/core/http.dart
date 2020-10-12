@@ -22,8 +22,6 @@ class _HeaderInterceptor extends InterceptorsWrapper {
     final int timeout = Duration(minutes: 1).inMilliseconds;
     options.connectTimeout = timeout;
     options.receiveTimeout = timeout;
-    options.contentType = ContentType.html.toString();
-    options.responseType = ResponseType.plain;
     options.headers["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/83.0.4103.61 "
@@ -76,6 +74,9 @@ class MikanTransformer extends DefaultTransformer {
         case MikanFunc.BANGUMI:
           return await Resolver.parseBangumi(document);
           break;
+        case MikanFunc.BANGUMI_MORE:
+          return await Resolver.parseBangumiMore(document);
+          break;
         case MikanFunc.DETAILS:
           return await Resolver.parseDetails(document);
           break;
@@ -99,11 +100,14 @@ class _Http extends DioForNative {
       ))
       ..add(
         LogInterceptor(
-            requestHeader: false,
-            responseHeader: false,
+            requestHeader: true,
+            responseHeader: true,
+            requestBody: true,
+            responseBody: true,
+            error: true,
             logPrint: (obj) => logd(obj)),
       )
-      ..add(CookieManager(PersistCookieJar(dir: cacheDir + "/.cookies")));
+      ..add(CookieManager(PersistCookieJar(dir: cacheDir + "/cookies")));
 
     this.transformer = MikanTransformer();
   }

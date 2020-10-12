@@ -386,10 +386,10 @@ class Resolver {
     }
     bangumiHome.intro = _intro;
     bangumiHome.subscribed = document
-        .querySelector(".subscribed-badge")
-        ?.attributes
-        ?.getOrNull("style")
-        ?.isNullOrBlank ??
+            .querySelector(".subscribed-badge")
+            ?.attributes
+            ?.getOrNull("style")
+            ?.isNullOrBlank ??
         false;
     final more = document
         .querySelectorAll(
@@ -536,5 +536,26 @@ class Resolver {
     });
     bangumiDetails.intro = element.innerHtml.trim();
     return bangumiDetails;
+  }
+
+  static Future<List<RecordItem>> parseBangumiMore(Document document) async {
+    final elements = document.querySelectorAll("tbody > tr");
+    RecordItem recordItem;
+    Element element;
+    List<RecordItem> records = [];
+    for (final Element ele in elements) {
+      recordItem = RecordItem();
+      element = ele.children[0];
+      recordItem.magnet = element.children[1].attributes['data-clipboard-text'];
+      element = element.children[0];
+      recordItem.title = element.text.trim();
+      recordItem.url = MikanUrl.BASE_URL + element.attributes["href"];
+      recordItem.size = ele.children[1].text.trim();
+      recordItem.publishAt = ele.children[2].text.trim();
+      recordItem.torrent =
+          MikanUrl.BASE_URL + ele.children[3].children[0].attributes["href"];
+      records.add(recordItem);
+    }
+    return records;
   }
 }

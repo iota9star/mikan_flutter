@@ -9,7 +9,10 @@ class MikanFunc {
   static const String INDEX = "INDEX";
   static const String SUBGROUP = "SUBGROUP";
   static const String BANGUMI = "BANGUMI";
+  static const String BANGUMI_MORE = "BANGUMI_MORE";
   static const String DETAILS = "DETAILS";
+  static const String SUBSCRIBE_BANGUMI = "SUBSCRIBE_BANGUMI";
+  static const String UNSUBSCRIBE_BANGUMI = "UNSUBSCRIBE_BANGUMI";
 }
 
 class MikanUrl {
@@ -35,6 +38,15 @@ class MikanUrl {
   /// https://mikanani.me/Home/Bangumi/2229
   static const String BANGUMI = "$BASE_URL/Home/Bangumi";
 
+  /// https://mikanani.me/Home/ExpandEpisodeTable?bangumiId=227&subtitleGroupId=161&take=65
+  static const String BANGUMI_MORE = "$BASE_URL/Home/ExpandEpisodeTable";
+
   /// https://mikanani.me/Account/Login?ReturnUrl=%2F
   static const String LOGIN = "$BASE_URL/Account/Login?ReturnUrl=%2F";
+
+  /// https://mikanani.me/Home/SubscribeBangumi
+  static const String SUBSCRIBE_BANGUMI = "$BASE_URL/Home/SubscribeBangumi";
+
+  /// https://mikanani.me/Home/UnsubscribeBangumi
+  static const String UNSUBSCRIBE_BANGUMI = "$BASE_URL/Home/UnsubscribeBangumi";
 }

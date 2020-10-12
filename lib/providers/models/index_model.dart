@@ -1,6 +1,7 @@
 import 'package:mikan_flutter/core/http.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/index.dart';
@@ -136,6 +137,19 @@ class IndexModel extends CancelableBaseModel {
       }
     }
     notifyListeners();
+  }
+
+  subscribeBangumi(final Bangumi bangumi) {
+    Repo.subscribeBangumi(bangumi.subscribed, bangumi.id).then((resp) {
+      print('resp: $resp');
+      if (!resp.success) {
+        if (resp.msg.isNotBlank) {
+          resp.msg.toast();
+        } else {
+          "操作失败...".toast();
+        }
+      }
+    });
   }
 }
 

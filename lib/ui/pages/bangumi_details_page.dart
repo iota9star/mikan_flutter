@@ -320,16 +320,57 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                           softWrap: true,
                                           style: TextStyle(
                                             height: 1.6,
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Theme
-                                                .of(context)
-                                                .textTheme
-                                                .subtitle1
-                                                .color,
-                                          ),
-                                        ))
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle1
+                                                    .color,
+                                              ),
+                                            ))
                                         .toList(),
+                                    SizedBox(height: 24.0),
+                                    Text(
+                                      "字幕组",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0,
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.0),
+                                    Wrap(
+                                      spacing: 14.0,
+                                      runSpacing: 14.0,
+                                      children: List.generate(
+                                        subgroups.length,
+                                        (subgroupIndex) {
+                                          final String groupName =
+                                              subgroups[subgroupIndex].name;
+                                          return ActionChip(
+                                            materialTapTargetSize:
+                                                MaterialTapTargetSize
+                                                    .shrinkWrap,
+                                            tooltip: groupName,
+                                            label: Text(
+                                              groupName,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: accentColor,
+                                              ),
+                                            ),
+                                            backgroundColor: Color(0xfff2f2f3),
+                                            onPressed: () {
+                                              print(
+                                                  '${subgroups[subgroupIndex].subgroupId}');
+                                              model.selectedSubgroupId =
+                                                  subgroups[subgroupIndex]
+                                                      .subgroupId;
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
                                     if (model.bangumiHome.intro.isNotBlank) ...[
                                       SizedBox(height: 24.0),
                                       Text(
@@ -351,49 +392,6 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                         ),
                                       ),
                                     ],
-                                    SizedBox(height: 24.0),
-                                    Text(
-                                      "字幕组",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20.0,
-                                      ),
-                                    ),
-                                    SizedBox(height: 12.0),
-                                    Wrap(
-                                      spacing: 14.0,
-                                      runSpacing: 14.0,
-                                      children: List.generate(
-                                        subgroups.length,
-                                            (subgroupIndex) {
-                                          final String groupName =
-                                              subgroups[subgroupIndex].name;
-                                          return ActionChip(
-                                            materialTapTargetSize:
-                                            MaterialTapTargetSize
-                                                .shrinkWrap,
-                                            tooltip: groupName,
-                                            label: Text(
-                                              groupName,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                color: accentColor,
-                                              ),
-                                            ),
-                                            backgroundColor: Color(0xfff2f2f3),
-                                            onPressed: () {
-                                              print(
-                                                  '${subgroups[subgroupIndex]
-                                                      .subgroupId}');
-                                              model.selectedSubgroupId =
-                                                  subgroups[subgroupIndex]
-                                                      .subgroupId;
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ),

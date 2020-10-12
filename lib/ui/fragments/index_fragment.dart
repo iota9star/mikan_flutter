@@ -1,6 +1,7 @@
 import 'dart:math' as Math;
 
 import 'package:ant_icons/ant_icons.dart';
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
@@ -169,51 +170,13 @@ class IndexFragment extends StatelessWidget {
     Color accentColor,
   ) {
     final Bangumi bangumi = row.bangumis[index];
+    final fitAccentTextColor =
+        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
     final TextStyle tagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
-      color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+      color: fitAccentTextColor,
     );
-    final List<Widget> tags = [
-      if (bangumi.subscribed)
-        Container(
-          margin: EdgeInsets.only(right: 4.0, bottom: 4.0),
-          padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-          decoration: BoxDecoration(
-            color: Colors.greenAccent,
-            borderRadius: BorderRadius.circular(2.0),
-          ),
-          child: Text(
-            "已订阅",
-            style: tagStyle,
-          ),
-        ),
-      if (bangumi.num > 0)
-        Container(
-          margin: EdgeInsets.only(right: 4.0, bottom: 4.0),
-          padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-          decoration: BoxDecoration(
-            color: Colors.redAccent,
-            borderRadius: BorderRadius.circular(2.0),
-          ),
-          child: Text(
-            bangumi.num.toString(),
-            style: tagStyle,
-          ),
-        ),
-      Container(
-        margin: EdgeInsets.only(right: 4.0, bottom: 4.0),
-        padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-        decoration: BoxDecoration(
-          color: bangumi.grey ? Colors.grey : accentColor.withOpacity(0.87),
-          borderRadius: BorderRadius.circular(2.0),
-        ),
-        child: Text(
-          bangumi.updateAt,
-          style: tagStyle,
-        ),
-      ),
-    ];
     return Selector<IndexModel, String>(
       builder: (context, tapScaleIndex, child) {
         Matrix4 transform;
@@ -222,6 +185,109 @@ class IndexFragment extends StatelessWidget {
           transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
         } else {
           transform = Matrix4.identity();
+        }
+        Widget cover = ExtendedImage(
+          image: CachedNetworkImageProvider(bangumi.cover),
+          shape: BoxShape.rectangle,
+          clearMemoryCacheWhenDispose: true,
+          loadStateChanged: (ExtendedImageState value) {
+            Widget child;
+            if (value.extendedImageLoadState == LoadState.loading) {
+              child = Container(
+                padding: EdgeInsets.all(28.0),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 8.0,
+                      color: Colors.black.withAlpha(24),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                child: Center(
+                  child: SpinKitPumpingHeart(
+                    duration: Duration(milliseconds: 960),
+                    itemBuilder: (_, __) => Image.asset(
+                      "assets/mikan.png",
+                    ),
+                  ),
+                ),
+              );
+            }
+            if (value.extendedImageLoadState == LoadState.failed) {
+              child = Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 8.0,
+                      color: Colors.black.withAlpha(24),
+                    )
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  image: DecorationImage(
+                    image: ExtendedAssetImageProvider("assets/mikan.png"),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+                  ),
+                ),
+              );
+            } else if (value.extendedImageLoadState == LoadState.completed) {
+              bangumi.coverSize = Size(
+                  value.extendedImageInfo.image.width.toDouble(),
+                  value.extendedImageInfo.image.height.toDouble());
+              child = Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 8.0,
+                      color: Colors.black.withAlpha(24),
+                    )
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  image: DecorationImage(
+                    image: value.imageProvider,
+                    fit: BoxFit.cover,
+                    colorFilter: bangumi.grey
+                        ? ColorFilter.mode(Colors.grey, BlendMode.color)
+                        : null,
+                  ),
+                ),
+              );
+            }
+            return AspectRatio(
+              aspectRatio: bangumi.coverSize == null
+                  ? 1
+                  : bangumi.coverSize.width / bangumi.coverSize.height,
+              child: Hero(
+                tag: "${bangumi.id}:${bangumi.cover}",
+                child: child,
+              ),
+            );
+          },
+        );
+        if (bangumi.num > 0) {
+          String badge;
+          if (bangumi.num < 10) {
+            badge = "+${bangumi.num}";
+          } else if (bangumi.num > 99) {
+            badge = "99+";
+          } else {
+            badge = "+" + bangumi.num.toString();
+          }
+          cover = Badge(
+            badgeColor: Colors.redAccent,
+            toAnimate: false,
+            padding: EdgeInsets.all(4.0),
+            badgeContent: Text(
+              badge,
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Colors.white,
+                height: 1.25,
+              ),
+            ),
+            child: cover,
+          );
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -244,108 +310,91 @@ class IndexFragment extends StatelessWidget {
                   );
                 }
               },
-              child: ExtendedImage(
-                image: CachedNetworkImageProvider(bangumi.cover),
-                shape: BoxShape.rectangle,
-                clearMemoryCacheWhenDispose: true,
-                loadStateChanged: (ExtendedImageState value) {
-                  Widget child;
-                  if (value.extendedImageLoadState == LoadState.loading) {
-                    child = Container(
-                      padding: EdgeInsets.all(28.0),
+              child: Stack(
+                children: [
+                  cover,
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
                       decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 8.0,
-                            color: Colors.black.withAlpha(24),
-                          ),
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        color: bangumi.grey
+                            ? Colors.grey
+                            : accentColor.withOpacity(0.87),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: Center(
-                        child: SpinKitPumpingHeart(
-                          duration: Duration(milliseconds: 960),
-                          itemBuilder: (_, __) => Image.asset(
-                            "assets/mikan.png",
-                          ),
-                        ),
+                      child: Text(
+                        bangumi.updateAt,
+                        textAlign: TextAlign.center,
+                        style: tagStyle,
                       ),
-                    );
-                  }
-                  if (value.extendedImageLoadState == LoadState.failed) {
-                    child = Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 8.0,
-                            color: Colors.black.withAlpha(24),
-                          )
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        image: DecorationImage(
-                          image: ExtendedAssetImageProvider("assets/mikan.png"),
-                          fit: BoxFit.cover,
-                          colorFilter:
-                          ColorFilter.mode(Colors.grey, BlendMode.color),
-                        ),
-                      ),
-                    );
-                  } else if (value.extendedImageLoadState ==
-                      LoadState.completed) {
-                    bangumi.coverSize = Size(
-                        value.extendedImageInfo.image.width.toDouble(),
-                        value.extendedImageInfo.image.height.toDouble());
-                    child = Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 8.0,
-                            color: Colors.black.withAlpha(24),
-                          )
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        image: DecorationImage(
-                          image: value.imageProvider,
-                          fit: BoxFit.cover,
-                          colorFilter: bangumi.grey
-                              ? ColorFilter.mode(Colors.grey, BlendMode.color)
-                              : null,
-                        ),
-                      ),
-                    );
-                  }
-                  return AspectRatio(
-                    aspectRatio: bangumi.coverSize == null
-                        ? 1
-                        : bangumi.coverSize.width / bangumi.coverSize.height,
-                    child: Hero(
-                      tag: "${bangumi.id}:${bangumi.cover}",
-                      child: child,
                     ),
-                  );
-                },
+                  ),
+                  Positioned(
+                    child: bangumi.subscribed
+                        ? SizedBox(
+                            width: 32.0,
+                            height: 32.0,
+                            child: IconButton(
+                              tooltip: "取消订阅",
+                              padding: EdgeInsets.all(4.0),
+                              icon: Icon(
+                                AntIcons.heart,
+                                color: Colors.redAccent,
+                              ),
+                              onPressed: () {
+                                context
+                                    .read<IndexModel>()
+                                    .subscribeBangumi(bangumi);
+                              },
+                            ),
+                          )
+                        : Container(
+                            width: 26.0,
+                            height: 26.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: Colors.black38,
+                            ),
+                            child: IconButton(
+                              tooltip: "订阅",
+                              padding: EdgeInsets.all(4.0),
+                              iconSize: 18.0,
+                              icon: Icon(
+                                AntIcons.heart_outline,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                context
+                                    .read<IndexModel>()
+                                    .subscribeBangumi(bangumi);
+                              },
+                            ),
+                          ),
+                  ),
+                ],
               ),
             ),
             SizedBox(
-              height: 8.0,
-            ),
-            Wrap(
-              children: tags,
+              height: 6.0,
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
                   width: 4,
-                  height: 10,
-                  margin: EdgeInsets.only(top: 4.0),
+                  height: 12,
+                  margin: EdgeInsets.only(top: 2.0),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
                         bangumi.grey ? Colors.grey : accentColor,
-                        accentColor.withOpacity(0.16), // 灰蓝也还行
+                        accentColor.withOpacity(0.1),
                       ],
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(2)),
@@ -356,8 +405,9 @@ class IndexFragment extends StatelessWidget {
                   child: Text(
                     bangumi.name,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.0,
                       height: 1.25,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -561,15 +611,15 @@ class IndexFragment extends StatelessWidget {
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (_, user, __) {
                   return user?.avatar?.isNotBlank == true
-                      ? CircleAvatar(
-                          child: CachedNetworkImage(
-                            imageUrl: user?.avatar,
-                            placeholder: (_, __) =>
-                                Image.asset("assets/mikan.png"),
-                            errorWidget: (_, __, ___) =>
-                                Image.asset("assets/mikan.png"),
-                          ),
-                        )
+                      ? ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: user?.avatar,
+                      placeholder: (_, __) =>
+                          Image.asset("assets/mikan.png"),
+                      errorWidget: (_, __, ___) =>
+                          Image.asset("assets/mikan.png"),
+                    ),
+                  )
                       : Image.asset("assets/mikan.png");
                 },
               ),

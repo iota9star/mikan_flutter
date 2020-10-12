@@ -69,13 +69,53 @@ class Repo {
     return await Http.get("${MikanUrl.BANGUMI}/$id", options: options);
   }
 
+  static Future<Resp> bangumiMore(
+    final String bangumiId,
+    final String subgroupId,
+    final int take,
+  ) async {
+    final extra = {"$MikanFunc": MikanFunc.BANGUMI_MORE};
+    final Options options = Options(extra: extra);
+    return await Http.get(
+      "${MikanUrl.BANGUMI_MORE}",
+      queryParameters: {
+        "bangumiId": bangumiId,
+        "subtitleGroupId": subgroupId,
+        "take": take,
+      },
+      options: options,
+    );
+  }
+
   static Future<Resp> details(final String url) async {
     final extra = {"$MikanFunc": MikanFunc.DETAILS};
     final Options options = Options(extra: extra);
     return await Http.get(url, options: options);
   }
 
-  static submit(final Map<String, dynamic> loginParams) async {
+  static Future<Resp> subscribeBangumi(
+    final bool subscribe,
+    final String bangumiId, {
+    final String subgroupId,
+  }) async {
+    final Options options = Options(
+        headers: {
+          "origin": "https://mikanani.me",
+          "referer": "https://mikanani.me/",
+        },
+        contentType: "application/json; charset=UTF-8",
+        responseType: ResponseType.json);
+    return await Http.post(
+      subscribe ? MikanUrl.UNSUBSCRIBE_BANGUMI : MikanUrl.SUBSCRIBE_BANGUMI,
+      data: <String, dynamic>{
+        "BangumiID": bangumiId,
+        "SubtitleGroupID": subgroupId,
+      },
+      options: options,
+    );
+  }
+
+  static Future<Resp> submit(final Map<String, dynamic> loginParams) async {
     final Options options = Options(
       headers: {
         "origin": "https://mikanani.me",

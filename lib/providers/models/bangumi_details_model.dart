@@ -19,7 +19,7 @@ class BangumiHomeModel extends BaseModel {
 
   final PanelController _panelController = PanelController();
 
-  RefreshController _refreshController = RefreshController();
+  final RefreshController _refreshController = RefreshController();
 
   PanelController get panelController => _panelController;
 
@@ -37,9 +37,10 @@ class BangumiHomeModel extends BaseModel {
     _subgroupBangumi = _bangumiHome.subgroupBangumis.firstWhere(
         (element) => element.subgroupId == value,
         orElse: () => null);
-    if (_refreshController.isLoading) {
+    if (_refreshController.headerStatus != RefreshStatus.completed) {
       _refreshController.loadComplete();
     }
+    _refreshController.resetNoData();
     notifyListeners();
     _panelController.animatePanelToPosition(
       1.0,
@@ -49,7 +50,31 @@ class BangumiHomeModel extends BaseModel {
     );
   }
 
-  loadSubgroupList() {}
+  loadSubgroupList() {
+    if (this._subgroupBangumi.records.length < 10) {
+      return _refreshController.loadNoData();
+    }
+    Repo.bangumiMore(
+      this.id,
+      this._subgroupBangumi.subgroupId,
+      this._subgroupBangumi.records.length + 20,
+    ).then((resp) {
+      if (resp.success) {
+        if (this._subgroupBangumi.records.length == resp.data.length) {
+          _refreshController.loadNoData();
+        }
+        this._subgroupBangumi.records = resp.data;
+      } else {
+        _refreshController.loadFailed();
+        resp.msg.toast();
+      }
+    }).whenComplete(() {
+      if (_refreshController.headerStatus != RefreshStatus.completed) {
+        _refreshController.loadComplete();
+      }
+      this.notifyListeners();
+    });
+  }
 
   _loadBangumiDetails() {
     this._loading = true;
