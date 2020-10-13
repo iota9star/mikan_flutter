@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/ext/screen.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/providers/models/bangumi_details_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_details_page_selected_subgroup_list.dart';
 import 'package:provider/provider.dart';
@@ -20,9 +19,11 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
   routeName: "bangumi-home",
 )
 class BangumiHomePage extends StatefulWidget {
-  final Bangumi bangumi;
+  final String bangumiId;
+  final String cover;
 
-  const BangumiHomePage({Key key, this.bangumi}) : super(key: key);
+  const BangumiHomePage({Key key, this.bangumiId, this.cover})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _BangumiHomePageState();
@@ -32,15 +33,16 @@ class _BangumiHomePageState extends State<BangumiHomePage>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    final String heroTag = "${widget.bangumi.id}:${widget.bangumi.cover}";
+    final String heroTag = "${widget.bangumiId}:${widget.cover}";
     final Color accentColor = Theme.of(context).accentColor;
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
       body: ChangeNotifierProvider<BangumiHomeModel>(
-        create: (context) => BangumiHomeModel(widget.bangumi.id),
+        create: (context) => BangumiHomeModel(widget.bangumiId),
         child: Consumer<BangumiHomeModel>(builder: (context, model, child) {
+          final cover = widget.cover;
           if (model.loading) {
             return Stack(
               fit: StackFit.expand,
@@ -52,8 +54,7 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image:
-                          CachedNetworkImageProvider(widget.bangumi.cover),
+                          image: CachedNetworkImageProvider(cover),
                         ),
                       ),
                       child: BackdropFilter(
@@ -86,7 +87,7 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(widget.bangumi.cover),
+                        image: CachedNetworkImageProvider(cover),
                       ),
                     ),
                     child: BackdropFilter(
@@ -146,8 +147,8 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                         ),
                                         child: ExtendedImage(
                                           width: 136.0,
-                                          image: CachedNetworkImageProvider(
-                                              widget.bangumi.cover),
+                                          image:
+                                          CachedNetworkImageProvider(cover),
                                           shape: BoxShape.rectangle,
                                           clearMemoryCacheWhenDispose: true,
                                           loadStateChanged:
@@ -212,13 +213,14 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                             } else if (value
                                                 .extendedImageLoadState ==
                                                 LoadState.completed) {
-                                              widget.bangumi.coverSize = Size(
-                                                  value.extendedImageInfo.image
-                                                      .width
-                                                      .toDouble(),
-                                                  value.extendedImageInfo.image
-                                                      .height
-                                                      .toDouble());
+                                              model.bangumiHome.coverSize =
+                                                  Size(
+                                                      value.extendedImageInfo
+                                                          .image.width
+                                                          .toDouble(),
+                                                      value.extendedImageInfo
+                                                          .image.height
+                                                          .toDouble());
                                               child = Container(
                                                 decoration: BoxDecoration(
                                                   boxShadow: [
@@ -235,24 +237,18 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                                   image: DecorationImage(
                                                     image: value.imageProvider,
                                                     fit: BoxFit.cover,
-                                                    colorFilter:
-                                                    widget.bangumi.grey
-                                                        ? ColorFilter.mode(
-                                                        Colors.grey,
-                                                        BlendMode.color)
-                                                        : null,
                                                   ),
                                                 ),
                                               );
                                             }
                                             return AspectRatio(
                                               aspectRatio:
-                                              widget.bangumi.coverSize ==
+                                              model.bangumiHome.coverSize ==
                                                   null
                                                   ? 1
-                                                  : widget.bangumi.coverSize
-                                                  .width /
-                                                  widget.bangumi
+                                                  : model.bangumiHome
+                                                  .coverSize.width /
+                                                  model.bangumiHome
                                                       .coverSize.height,
                                               child: Hero(
                                                 tag: heroTag,
@@ -305,7 +301,7 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      widget.bangumi.name,
+                                      model.bangumiHome.name,
                                       style: TextStyle(
                                         color: accentColor,
                                         fontWeight: FontWeight.bold,
@@ -320,14 +316,15 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                           softWrap: true,
                                           style: TextStyle(
                                             height: 1.6,
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle1
-                                                    .color,
-                                              ),
-                                            ))
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .subtitle1
+                                                .color,
+                                          ),
+                                        ))
                                         .toList(),
                                     SizedBox(height: 24.0),
                                     Text(
@@ -343,13 +340,13 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                       runSpacing: 14.0,
                                       children: List.generate(
                                         subgroups.length,
-                                        (subgroupIndex) {
+                                            (subgroupIndex) {
                                           final String groupName =
                                               subgroups[subgroupIndex].name;
                                           return ActionChip(
                                             materialTapTargetSize:
-                                                MaterialTapTargetSize
-                                                    .shrinkWrap,
+                                            MaterialTapTargetSize
+                                                .shrinkWrap,
                                             tooltip: groupName,
                                             label: Text(
                                               groupName,
@@ -361,8 +358,6 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                             ),
                                             backgroundColor: Color(0xfff2f2f3),
                                             onPressed: () {
-                                              print(
-                                                  '${subgroups[subgroupIndex].subgroupId}');
                                               model.selectedSubgroupId =
                                                   subgroups[subgroupIndex]
                                                       .subgroupId;
@@ -431,8 +426,7 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                             top: 18.0 + Sz.statusBarHeight,
                             left: 24.0,
                             right: 24.0,
-                            bottom: 16.0
-                        ),
+                            bottom: 16.0),
                         decoration: BoxDecoration(
                             color: scaffoldBackgroundColor,
                             boxShadow: [
@@ -456,7 +450,9 @@ class _BangumiHomePageState extends State<BangumiHomePage>
                                 BorderRadius.all(Radius.circular(5)),
                               ),
                             ),
-                            SizedBox(height: 16.0,),
+                            SizedBox(
+                              height: 16.0,
+                            ),
                             Text(
                               model?.subgroupBangumi?.name ?? "",
                               style: TextStyle(

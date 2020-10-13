@@ -6,7 +6,6 @@
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/widgets.dart';
 
-import 'model/bangumi.dart';
 import 'ui/pages/bangumi_details_page.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
@@ -20,7 +19,8 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         name: name,
         widget: BangumiHomePage(
           key: arguments['key'] as Key,
-          bangumi: arguments['bangumi'] as Bangumi,
+          bangumiId: arguments['bangumiId'] as String,
+          cover: arguments['cover'] as String,
         ),
         routeName: 'bangumi-home',
       );

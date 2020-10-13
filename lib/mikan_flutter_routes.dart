@@ -20,7 +20,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// BangumiHomePage : [Key key, Bangumi bangumi]
+  /// BangumiHomePage : [Key key, String bangumiId, String cover]
   static const String mikanBangumiHome = 'mikan://bangumi-home';
 
   /// 'mikan-home'

@@ -7,6 +7,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
+import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:mikan_flutter/ext/extension.dart';
@@ -16,6 +17,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
+import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
@@ -46,6 +48,7 @@ class IndexFragment extends StatelessWidget {
                   children: <Widget>[
                     _buildSearchUI(context),
                     _buildCarouselsUI(),
+                    _buildRssList(),
                   ],
                 ),
               ),
@@ -305,7 +308,8 @@ class IndexFragment extends StatelessWidget {
                     context,
                     Routes.mikanBangumiHome,
                     arguments: {
-                      "bangumi": bangumi,
+                      "bangumiId": bangumi.id,
+                      "cover": bangumi.cover,
                     },
                   );
                 }
@@ -456,7 +460,7 @@ class IndexFragment extends StatelessWidget {
     return Selector<IndexModel, List<Carousel>>(
       selector: (_, model) => model.carousels,
       shouldRebuild: (pre, next) => pre.length != next.length,
-      builder: (_, carousels, __) {
+      builder: (context, carousels, __) {
         if (carousels.isNotEmpty)
           return SizedBox(
             width: double.infinity,
@@ -467,6 +471,16 @@ class IndexFragment extends StatelessWidget {
               autoplayDelay: 4800,
               itemWidth: Sz.screenWidth - 32,
               layout: SwiperLayout.STACK,
+              onTap: (index) {
+                Navigator.pushNamed(
+                  context,
+                  Routes.mikanBangumiHome,
+                  arguments: {
+                    "bangumiId": carousels[index].id,
+                    "cover": carousels[index].cover,
+                  },
+                );
+              },
               itemBuilder: (context, index) {
                 return Container(
                   margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
@@ -476,7 +490,7 @@ class IndexFragment extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         blurRadius: 8,
-                        color: Colors.black.withAlpha(24),
+                        color: Colors.black.withOpacity(0.12),
                       )
                     ],
                     image: DecorationImage(
@@ -490,6 +504,139 @@ class IndexFragment extends StatelessWidget {
               },
               itemCount: carousels.length,
             ),
+          );
+        return Container(
+          height: (Sz.screenWidth - 32) / (375 / 196),
+          margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            color: Theme
+                .of(context)
+                .backgroundColor,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 8,
+                color: Colors.black.withOpacity(0.12),
+              )
+            ],
+          ),
+          child: Center(
+            child: SpinKitPumpingHeart(
+              duration: Duration(milliseconds: 960),
+              itemBuilder: (_, __) =>
+                  Image.asset(
+                    "assets/mikan.png",
+                    width: 64.0,
+                  ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRssList() {
+    return Selector<IndexModel, List<RecordItem>>(
+      selector: (_, model) => model.rss,
+      shouldRebuild: (pre, next) => pre.length != next.length,
+      builder: (context, rss, __) {
+        if (rss.isNotEmpty)
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(child: Text("我的订阅 ❤ 昨日至今")),
+                    Text("查看更多"),
+                  ],
+                ),
+              ),
+              Container(
+                height: 84.0,
+                child: Swiper(
+                  autoplay: true,
+                  duration: 480,
+                  autoplayDelay: 15000,
+                  itemWidth: Sz.screenWidth - 32.0,
+                  scrollDirection: Axis.vertical,
+                  layout: SwiperLayout.DEFAULT,
+                  onTap: (index) {},
+                  itemBuilder: (context, index) {
+                    final rs = rss[index];
+                    return CupertinoContextMenu(
+                      actions: [
+                        CupertinoContextMenuAction(
+                          child: const Text('Action two'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        CupertinoContextMenuAction(
+                          child: const Text('Action two'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 16.0),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: CachedNetworkImage(
+                              width: 64.0,
+                              height: 64.0,
+                              imageUrl: rs.cover,
+                              fit: BoxFit.cover,
+                              placeholder: (_, __) =>
+                                  Image.asset("assets/mikan.png"),
+                              errorWidget: (_, __, ___) =>
+                                  Image.asset("assets/mikan.png"),
+                            ),
+                          ),
+                          SizedBox(width: 10.0),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  rs.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.fade,
+                                  style: TextStyle(
+                                      fontSize: 14.0,
+                                      height: 1.25,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: 4.0),
+                                Text(
+                                  rs.title,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    height: 1.25,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 16.0),
+                        ],
+                      ),
+                    );
+                  },
+                  itemCount: rss.length,
+                ),
+              ),
+            ],
           );
         return Container();
       },

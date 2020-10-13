@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 
 class BangumiHome {
@@ -7,5 +9,6 @@ class BangumiHome {
   bool subscribed;
   Map<String, String> more;
   String intro;
+  Size coverSize;
   List<SubgroupBangumi> subgroupBangumis;
 }

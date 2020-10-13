@@ -22,7 +22,8 @@ class BangumiDetailsPageSelectedSubgroupList extends StatelessWidget {
       height: 1.25,
       color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
-    final bangumiHomeModel = Provider.of<BangumiHomeModel>(context);
+    final bangumiHomeModel =
+        Provider.of<BangumiHomeModel>(context, listen: false);
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (overscroll) {
         overscroll.disallowGlow();
@@ -32,7 +33,6 @@ class BangumiDetailsPageSelectedSubgroupList extends StatelessWidget {
         selector: (_, model) => model.subgroupBangumi,
         shouldRebuild: (pre, next) => pre != next,
         builder: (context, subgroupBangumi, child) {
-          print("subgroupBangumi: $subgroupBangumi");
           if (subgroupBangumi == null) return Container();
           return SmartRefresher(
             controller: bangumiHomeModel.refreshController,

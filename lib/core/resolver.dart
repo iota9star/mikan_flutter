@@ -63,9 +63,16 @@ class Resolver {
     RecordItem recordItem;
     final List<RecordItem> list = [];
     Element element;
+    List<Element> tempEles;
     String temp;
     for (final ele in elements) {
       recordItem = RecordItem();
+      element = ele.querySelector("div.sk-col.rss-thumb");
+      if (element != null) {
+        temp = element.attributes['style'];
+        recordItem.cover =
+            MikanUrl.BASE_URL + RegExp(r"\((.*)\)").firstMatch(temp).group(1);
+      }
       element = ele.querySelector("div.sk-col.rss-name > div > a");
       if (element != null) {
         recordItem.name = element.text.trim();
@@ -74,27 +81,31 @@ class Resolver {
           recordItem.id = temp.substring(14).split("#")[0];
         }
       }
-      element = ele.querySelector("div.sk-col.rss-name > a:nth-child(2)");
-      if (element != null) {
-        temp = element.attributes['href'];
-        if (temp.isNotBlank) {
-          recordItem.torrent = MikanUrl.BASE_URL + temp;
+      tempEles = ele.querySelectorAll("div.sk-col.rss-name > a");
+      if (tempEles.isNotEmpty) {
+        element = tempEles.getOrNull(0);
+        if (element != null) {
+          temp = element.attributes['href'];
+          if (temp.isNotBlank) {
+            recordItem.torrent = MikanUrl.BASE_URL + temp;
+          }
+          recordItem.title = ("/" +
+                  element.text
+                      .trim()
+                      .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
+                  "/")
+              .replaceAll(RegExp("/\\s*/+"), "/");
+          temp = element.querySelector("span")?.text;
+          if (temp.isNotBlank) {
+            recordItem.size = temp.replaceAll("\[|\]", "");
+          }
         }
-        recordItem.title =
-            element.text.trim().replaceAll("【", "[").replaceAll("】", "]");
-        temp = element.querySelector("span")?.text;
-        if (temp.isNotBlank) {
-          recordItem.size = temp.replaceAll("\[|\]", "");
-        }
+        element = tempEles.getOrNull(1);
+        recordItem.magnet =
+            element?.attributes?.getOrNull('data-clipboard-text');
+        element = tempEles.getOrNull(2);
+        recordItem.url = element?.attributes?.getOrNull("href");
       }
-      recordItem.magnet = ele
-          .querySelector("div.sk-col.rss-name > a.rss-episode-name")
-          ?.attributes
-          ?.getOrNull('data-clipboard-text');
-      recordItem.url = ele
-          .querySelector("div.sk-col.rss-name > a:nth-child(4)")
-          ?.attributes
-          ?.getOrNull("href");
       recordItem.publishAt =
           ele.querySelector("div.sk-col.pull-right.publish-date")?.text?.trim();
       list.add(recordItem);
@@ -220,7 +231,8 @@ class Resolver {
       tempElements = elements[2].children;
       tempElement = tempElements[0];
       temp = ("/" +
-              tempElement.text
+          tempElement.text
+              .trim()
                   .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
               "/")
           .replaceAll(RegExp("/\\s*/+"), "/");

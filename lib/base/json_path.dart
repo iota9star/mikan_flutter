@@ -1,3 +1,5 @@
+import 'package:mikan_flutter/ext/logger.dart';
+
 class JsonPath {
   static T parse<T>(Map<String, dynamic> json, String path, T defaultValue) {
     try {
@@ -17,7 +19,7 @@ class JsonPath {
       }
       return (current as T) ?? defaultValue;
     } catch (e) {
-      print("parse path[$path] error: $e, use default value: $defaultValue");
+      logd("parse path[$path] error: $e, use default value: $defaultValue");
       return defaultValue;
     }
   }

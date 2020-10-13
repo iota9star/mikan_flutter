@@ -114,7 +114,7 @@ class IndexModel extends CancelableBaseModel {
     if (nextIndex < 0) {
       return "已经到最新季度了...".toast();
     } else if (nextIndex == this._seasons.length) {
-      return "已经到最老季度了...".toast();
+      return "没有更悠久的季度了...".toast();
     }
     this._selectedSeason = this._seasons[nextIndex];
     notifyListeners();
