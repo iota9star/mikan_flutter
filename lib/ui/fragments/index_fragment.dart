@@ -510,9 +510,7 @@ class IndexFragment extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(16.0)),
-            color: Theme
-                .of(context)
-                .backgroundColor,
+            color: Theme.of(context).backgroundColor,
             boxShadow: [
               BoxShadow(
                 blurRadius: 8,
@@ -567,69 +565,58 @@ class IndexFragment extends StatelessWidget {
                   onTap: (index) {},
                   itemBuilder: (context, index) {
                     final rs = rss[index];
-                    return CupertinoContextMenu(
-                      actions: [
-                        CupertinoContextMenuAction(
-                          child: const Text('Action two'),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        CupertinoContextMenuAction(
-                          child: const Text('Action two'),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(width: 16.0),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: CachedNetworkImage(
-                              width: 64.0,
-                              height: 64.0,
-                              imageUrl: rs.cover,
-                              fit: BoxFit.cover,
-                              placeholder: (_, __) =>
-                                  Image.asset("assets/mikan.png"),
-                              errorWidget: (_, __, ___) =>
-                                  Image.asset("assets/mikan.png"),
+                    return Material(
+                      child: InkWell(
+                        onTap: () {},
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(width: 16.0),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: CachedNetworkImage(
+                                width: 64.0,
+                                height: 64.0,
+                                imageUrl: rs.cover,
+                                fit: BoxFit.cover,
+                                placeholder: (_, __) =>
+                                    Image.asset("assets/mikan.png"),
+                                errorWidget: (_, __, ___) =>
+                                    Image.asset("assets/mikan.png"),
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 10.0),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(
-                                  rs.name,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.fade,
-                                  style: TextStyle(
-                                      fontSize: 14.0,
-                                      height: 1.25,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(width: 4.0),
-                                Text(
-                                  rs.title,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: true,
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                    height: 1.25,
+                            SizedBox(width: 10.0),
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    rs.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.fade,
+                                    style: TextStyle(
+                                        fontSize: 14.0,
+                                        height: 1.25,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(width: 4.0),
+                                  Text(
+                                    rs.title,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      height: 1.25,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 16.0),
-                        ],
+                            SizedBox(width: 16.0),
+                          ],
+                        ),
                       ),
                     );
                   },
