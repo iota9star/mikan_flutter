@@ -100,10 +100,8 @@ class _Http extends DioForNative {
       ))
       ..add(
         LogInterceptor(
-            requestHeader: true,
-            responseHeader: true,
-            requestBody: true,
-            responseBody: true,
+            requestHeader: false,
+            responseHeader: false,
             error: true,
             logPrint: (obj) => logd(obj)),
       )

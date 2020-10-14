@@ -1,13 +1,18 @@
+import 'dart:ui';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/model/bangumi_home.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class BangumiHomeModel extends BaseModel {
   final String id;
+  final String cover;
 
   bool _loading = false;
 
@@ -25,8 +30,9 @@ class BangumiHomeModel extends BaseModel {
 
   RefreshController get refreshController => _refreshController;
 
-  BangumiHomeModel(this.id) {
+  BangumiHomeModel(this.id, this.cover) {
     this._loadBangumiDetails();
+    this._loadCoverMainColor(cover);
   }
 
   SubgroupBangumi _subgroupBangumi;
@@ -35,7 +41,7 @@ class BangumiHomeModel extends BaseModel {
 
   set selectedSubgroupId(String value) {
     _subgroupBangumi = _bangumiHome.subgroupBangumis.firstWhere(
-        (element) => element.subgroupId == value,
+            (element) => element.subgroupId == value,
         orElse: () => null);
     if (_refreshController.headerStatus != RefreshStatus.completed) {
       _refreshController.loadComplete();
@@ -48,6 +54,21 @@ class BangumiHomeModel extends BaseModel {
         milliseconds: 240,
       ),
     );
+  }
+
+  Color _coverMainColor;
+
+  Color get coverMainColor => _coverMainColor;
+
+  _loadCoverMainColor(cover) {
+    PaletteGenerator.fromImageProvider(CachedNetworkImageProvider(cover),
+            maximumColorCount: 1)
+        .then((value) {
+      if (value.colors.isNotEmpty) {
+        _coverMainColor = value.colors.first;
+        notifyListeners();
+      }
+    });
   }
 
   loadSubgroupList() {

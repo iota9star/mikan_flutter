@@ -558,7 +558,7 @@ class IndexFragment extends StatelessWidget {
                 child: Swiper(
                   autoplay: true,
                   duration: 480,
-                  autoplayDelay: 15000,
+                  autoplayDelay: 3600,
                   itemWidth: Sz.screenWidth - 32.0,
                   scrollDirection: Axis.vertical,
                   layout: SwiperLayout.DEFAULT,

@@ -68,7 +68,7 @@ class _BottomBarViewState extends State<BottomBarView>
           return Transform(
             transform: Matrix4.translationValues(0.0, 0.0, 0.0),
             child: PhysicalShape(
-              color: Theme.of(context).backgroundColor,
+              color: Colors.white,
               elevation: 16.0,
               clipper: TabClipper(
                 radius: Tween<double>(begin: 0.0, end: 1.0)
