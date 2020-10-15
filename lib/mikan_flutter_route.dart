@@ -14,15 +14,15 @@ import 'ui/pages/splash_page.dart';
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   arguments = arguments ?? const <String, dynamic>{};
   switch (name) {
-    case 'mikan://bangumi-home':
+    case 'mikan://bangumi-details':
       return RouteResult(
         name: name,
-        widget: BangumiHomePage(
+        widget: BangumiDetailsPage(
           key: arguments['key'] as Key,
           bangumiId: arguments['bangumiId'] as String,
           cover: arguments['cover'] as String,
         ),
-        routeName: 'bangumi-home',
+        routeName: 'bangumi-details',
       );
     case 'mikan://home':
       return RouteResult(

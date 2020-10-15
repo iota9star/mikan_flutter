@@ -22,23 +22,23 @@ class BangumiDetailsPageSelectedSubgroupList extends StatelessWidget {
       height: 1.25,
       color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
-    final bangumiHomeModel =
-        Provider.of<BangumiHomeModel>(context, listen: false);
+    final bangumiDetailsModel =
+        Provider.of<BangumiDetailsModel>(context, listen: false);
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (overscroll) {
         overscroll.disallowGlow();
         return false;
       },
-      child: Selector<BangumiHomeModel, SubgroupBangumi>(
+      child: Selector<BangumiDetailsModel, SubgroupBangumi>(
         selector: (_, model) => model.subgroupBangumi,
         shouldRebuild: (pre, next) => pre != next,
         builder: (context, subgroupBangumi, child) {
           if (subgroupBangumi == null) return Container();
           return SmartRefresher(
-            controller: bangumiHomeModel.refreshController,
+            controller: bangumiDetailsModel.refreshController,
             enablePullDown: false,
             enablePullUp: true,
-            onLoading: bangumiHomeModel.loadSubgroupList,
+            onLoading: bangumiDetailsModel.loadSubgroupList,
             footer: Indicator.footer(context, accentColor, bottom: 16.0),
             child: ListView.builder(
               controller: scrollController,

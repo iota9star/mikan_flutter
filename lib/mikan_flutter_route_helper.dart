@@ -5,11 +5,11 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'mikan_flutter_route.dart';
 
@@ -56,7 +56,7 @@ class FFTransparentPageRoute<T> extends PageRouteBuilder<T> {
     RouteSettings settings,
     @required RoutePageBuilder pageBuilder,
     RouteTransitionsBuilder transitionsBuilder = _defaultTransitionsBuilder,
-    Duration transitionDuration = const Duration(milliseconds: 150),
+    Duration transitionDuration = const Duration(milliseconds: 300),
     bool barrierDismissible = false,
     Color barrierColor,
     String barrierLabel,

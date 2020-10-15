@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
-import 'package:mikan_flutter/model/bangumi_home.dart';
+import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class BangumiHomeModel extends BaseModel {
+class BangumiDetailsModel extends BaseModel {
   final String id;
   final String cover;
 
@@ -18,9 +18,17 @@ class BangumiHomeModel extends BaseModel {
 
   bool get loading => _loading;
 
-  BangumiHome _bangumiHome;
+  BangumiDetails _bangumiDetails;
 
-  BangumiHome get bangumiHome => _bangumiHome;
+  BangumiDetails get bangumiDetails => _bangumiDetails;
+
+  Size _coverSize;
+
+  Size get coverSize => _coverSize;
+
+  set coverSize(Size value) {
+    _coverSize = value;
+  }
 
   final PanelController _panelController = PanelController();
 
@@ -30,7 +38,7 @@ class BangumiHomeModel extends BaseModel {
 
   RefreshController get refreshController => _refreshController;
 
-  BangumiHomeModel(this.id, this.cover) {
+  BangumiDetailsModel(this.id, this.cover) {
     this._loadBangumiDetails();
     this._loadCoverMainColor(cover);
   }
@@ -40,7 +48,7 @@ class BangumiHomeModel extends BaseModel {
   SubgroupBangumi get subgroupBangumi => _subgroupBangumi;
 
   set selectedSubgroupId(String value) {
-    _subgroupBangumi = _bangumiHome.subgroupBangumis.firstWhere(
+    _subgroupBangumi = _bangumiDetails.subgroupBangumis.firstWhere(
             (element) => element.subgroupId == value,
         orElse: () => null);
     if (_refreshController.headerStatus != RefreshStatus.completed) {
@@ -101,7 +109,7 @@ class BangumiHomeModel extends BaseModel {
     this._loading = true;
     Repo.bangumi(this.id).then((resp) {
       if (resp.success) {
-        _bangumiHome = resp.data;
+        _bangumiDetails = resp.data;
       } else {
         resp.msg.toast();
       }

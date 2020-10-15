@@ -306,7 +306,7 @@ class IndexFragment extends StatelessWidget {
                 } else {
                   Navigator.pushNamed(
                     context,
-                    Routes.mikanBangumiHome,
+                    Routes.mikanBangumiDetails,
                     arguments: {
                       "bangumiId": bangumi.id,
                       "cover": bangumi.cover,
@@ -474,7 +474,7 @@ class IndexFragment extends StatelessWidget {
               onTap: (index) {
                 Navigator.pushNamed(
                   context,
-                  Routes.mikanBangumiHome,
+                  Routes.mikanBangumiDetails,
                   arguments: {
                     "bangumiId": carousels[index].id,
                     "cover": carousels[index].cover,

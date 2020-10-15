@@ -16,22 +16,30 @@ import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 @FFRoute(
-  name: "mikan://bangumi-home",
-  routeName: "bangumi-home",
+  name: "mikan://bangumi-details",
+  routeName: "bangumi-details",
 )
-class BangumiHomePage extends StatefulWidget {
+class BangumiDetailsPage extends StatefulWidget {
   final String bangumiId;
   final String cover;
 
-  const BangumiHomePage({Key key, this.bangumiId, this.cover})
+  const BangumiDetailsPage({Key key, this.bangumiId, this.cover})
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _BangumiHomePageState();
+  State<StatefulWidget> createState() => _BangumiDetailsPageState();
 }
 
-class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
+class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage>
     with SingleTickerProviderStateMixin {
+  BangumiDetailsModel _bangumiDetailsModel;
+
+  @override
+  void initState() {
+    _bangumiDetailsModel = BangumiDetailsModel(widget.bangumiId, widget.cover);
+    super.initState();
+  }
+
   @override
   Widget buildCacheWidget(BuildContext context) {
     final String heroTag = "${widget.bangumiId}:${widget.cover}";
@@ -39,9 +47,9 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
-      body: ChangeNotifierProvider<BangumiHomeModel>(
-        create: (context) => BangumiHomeModel(widget.bangumiId, widget.cover),
-        child: Selector<BangumiHomeModel, bool>(
+      body: ChangeNotifierProvider<BangumiDetailsModel>(
+        create: (context) => _bangumiDetailsModel,
+        child: Selector<BangumiDetailsModel, bool>(
           builder: (context, loading, child) {
             final cover = widget.cover;
             if (loading) {
@@ -51,6 +59,39 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                   Positioned.fill(
                     child: Hero(
                       tag: heroTag,
+                      flightShuttleBuilder: (
+                        BuildContext flightContext,
+                        Animation<double> animation,
+                        HeroFlightDirection flightDirection,
+                        BuildContext fromHeroContext,
+                        BuildContext toHeroContext,
+                      ) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(cover),
+                            ),
+                          ),
+                          child: AnimatedBuilder(
+                            animation: animation,
+                            builder: (_, child) {
+                              return BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaY: animation.value,
+                                  sigmaX: animation.value,
+                                ),
+                                child: child,
+                              );
+                            },
+                            child: Container(
+                              child: Center(
+                                child: CupertinoActivityIndicator(radius: 24.0),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
@@ -58,13 +99,13 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                             image: CachedNetworkImageProvider(cover),
                           ),
                         ),
-                        child: Selector<BangumiHomeModel, Color>(
+                        child: Selector<BangumiDetailsModel, Color>(
                           builder: (_, color, __) {
                             return BackdropFilter(
                               filter:
-                                  ImageFilter.blur(sigmaY: 16.0, sigmaX: 16.0),
+                                  ImageFilter.blur(sigmaY: 24.0, sigmaX: 24.0),
                               child: Container(
-                                color: color?.withOpacity(0.38),
+                                color: color?.withOpacity(0.48),
                                 child: Center(
                                   child: CupertinoActivityIndicator(
                                     radius: 24.0,
@@ -82,8 +123,8 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                 ],
               );
             }
-            final model = Provider.of<BangumiHomeModel>(context, listen: false);
-            final subgroups = model.bangumiHome.subgroupBangumis;
+            final subgroups =
+                _bangumiDetailsModel.bangumiDetails.subgroupBangumis;
             return SlidingUpPanel(
               body: Stack(
                 fit: StackFit.expand,
@@ -100,13 +141,13 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                           image: CachedNetworkImageProvider(cover),
                         ),
                       ),
-                      child: Selector<BangumiHomeModel, Color>(
+                      child: Selector<BangumiDetailsModel, Color>(
                         builder: (_, color, __) {
                           return BackdropFilter(
                             filter:
-                                ImageFilter.blur(sigmaY: 16.0, sigmaX: 16.0),
+                                ImageFilter.blur(sigmaY: 24.0, sigmaX: 24.0),
                             child: Container(
-                              color: color?.withOpacity(0.38) ??
+                              color: color?.withOpacity(0.48) ??
                                   Colors.transparent,
                             ),
                           );
@@ -158,7 +199,7 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                               BoxShadow(
                                                 blurRadius: 8.0,
                                                 color:
-                                                    Colors.black.withAlpha(24),
+                                                Colors.black.withAlpha(24),
                                               )
                                             ],
                                             borderRadius: BorderRadius.all(
@@ -174,7 +215,7 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                                 (ExtendedImageState value) {
                                               Widget child;
                                               if (value
-                                                      .extendedImageLoadState ==
+                                                  .extendedImageLoadState ==
                                                   LoadState.loading) {
                                                 child = Container(
                                                   padding: EdgeInsets.all(28.0),
@@ -187,7 +228,7 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                                       ),
                                                     ],
                                                     borderRadius:
-                                                        BorderRadius.all(
+                                                    BorderRadius.all(
                                                       Radius.circular(10.0),
                                                     ),
                                                   ),
@@ -197,14 +238,14 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                                           milliseconds: 960),
                                                       itemBuilder: (_, __) =>
                                                           Image.asset(
-                                                        "assets/mikan.png",
-                                                      ),
+                                                            "assets/mikan.png",
+                                                          ),
                                                     ),
                                                   ),
                                                 );
                                               }
                                               if (value
-                                                      .extendedImageLoadState ==
+                                                  .extendedImageLoadState ==
                                                   LoadState.failed) {
                                                 child = Container(
                                                   decoration: BoxDecoration(
@@ -216,25 +257,25 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                                       )
                                                     ],
                                                     borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10.0)),
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            10.0)),
                                                     image: DecorationImage(
                                                       image:
-                                                          ExtendedAssetImageProvider(
-                                                              "assets/mikan.png"),
+                                                      ExtendedAssetImageProvider(
+                                                          "assets/mikan.png"),
                                                       fit: BoxFit.cover,
                                                       colorFilter:
-                                                          ColorFilter.mode(
-                                                              Colors.grey,
-                                                              BlendMode.color),
+                                                      ColorFilter.mode(
+                                                          Colors.grey,
+                                                          BlendMode.color),
                                                     ),
                                                   ),
                                                 );
                                               } else if (value
-                                                      .extendedImageLoadState ==
+                                                  .extendedImageLoadState ==
                                                   LoadState.completed) {
-                                                model.bangumiHome.coverSize =
+                                                _bangumiDetailsModel.coverSize =
                                                     Size(
                                                         value.extendedImageInfo
                                                             .image.width
@@ -252,26 +293,29 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                                       )
                                                     ],
                                                     borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10.0)),
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            10.0)),
                                                     image: DecorationImage(
                                                       image:
-                                                          value.imageProvider,
+                                                      value.imageProvider,
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),
                                                 );
                                               }
                                               return AspectRatio(
-                                                aspectRatio: model.bangumiHome
-                                                            .coverSize ==
-                                                        null
+                                                aspectRatio:
+                                                _bangumiDetailsModel
+                                                    .coverSize ==
+                                                    null
                                                     ? 1
-                                                    : model.bangumiHome
-                                                            .coverSize.width /
-                                                        model.bangumiHome
-                                                            .coverSize.height,
+                                                    : _bangumiDetailsModel
+                                                    .coverSize
+                                                    .width /
+                                                    _bangumiDetailsModel
+                                                        .coverSize
+                                                        .height,
                                                 child: Hero(
                                                   tag: heroTag,
                                                   child: child,
@@ -321,10 +365,11 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                   color: scaffoldBackgroundColor,
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        model.bangumiHome.name,
+                                        _bangumiDetailsModel
+                                            .bangumiDetails.name,
                                         style: TextStyle(
                                           color: accentColor,
                                           fontWeight: FontWeight.bold,
@@ -332,20 +377,23 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                         ),
                                       ),
                                       SizedBox(height: 8.0),
-                                      ...model.bangumiHome.more.entries
-                                          .map((e) => Text(
-                                                "${e.key}: ${e.value}",
-                                                softWrap: true,
-                                                style: TextStyle(
-                                                  height: 1.6,
-                                                  fontSize: 14.0,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1
-                                                      .color,
-                                                ),
-                                              ))
+                                      ..._bangumiDetailsModel
+                                          .bangumiDetails.more.entries
+                                          .map((e) =>
+                                          Text(
+                                            "${e.key}: ${e.value}",
+                                            softWrap: true,
+                                            style: TextStyle(
+                                              height: 1.6,
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme
+                                                  .of(context)
+                                                  .textTheme
+                                                  .subtitle1
+                                                  .color,
+                                            ),
+                                          ))
                                           .toList(),
                                       SizedBox(height: 24.0),
                                       Text(
@@ -361,13 +409,13 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                         runSpacing: 14.0,
                                         children: List.generate(
                                           subgroups.length,
-                                          (subgroupIndex) {
+                                              (subgroupIndex) {
                                             final String groupName =
                                                 subgroups[subgroupIndex].name;
                                             return ActionChip(
                                               materialTapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
+                                              MaterialTapTargetSize
+                                                  .shrinkWrap,
                                               tooltip: groupName,
                                               label: Text(
                                                 groupName,
@@ -378,9 +426,10 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                                 ),
                                               ),
                                               backgroundColor:
-                                                  Color(0xfff2f2f3),
+                                              Color(0xfff2f2f3),
                                               onPressed: () {
-                                                model.selectedSubgroupId =
+                                                _bangumiDetailsModel
+                                                    .selectedSubgroupId =
                                                     subgroups[subgroupIndex]
                                                         .subgroupId;
                                               },
@@ -388,8 +437,8 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                           },
                                         ),
                                       ),
-                                      if (model
-                                          .bangumiHome.intro.isNotBlank) ...[
+                                      if (_bangumiDetailsModel
+                                          .bangumiDetails.intro.isNotBlank) ...[
                                         SizedBox(height: 24.0),
                                         Text(
                                           "概况简介",
@@ -400,7 +449,8 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                         ),
                                         SizedBox(height: 8.0),
                                         Text(
-                                          model.bangumiHome.intro,
+                                          _bangumiDetailsModel
+                                              .bangumiDetails.intro,
                                           textAlign: TextAlign.justify,
                                           softWrap: true,
                                           style: TextStyle(
@@ -422,7 +472,7 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                   ),
                 ],
               ),
-              controller: model.panelController,
+              controller: _bangumiDetailsModel.panelController,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -470,14 +520,15 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                                 decoration: BoxDecoration(
                                   color: Colors.grey[300],
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
+                                  BorderRadius.all(Radius.circular(5)),
                                 ),
                               ),
                               SizedBox(
                                 height: 16.0,
                               ),
                               Text(
-                                model?.subgroupBangumi?.name ?? "",
+                                _bangumiDetailsModel?.subgroupBangumi?.name ??
+                                    "",
                                 style: TextStyle(
                                   fontSize: 24.0,
                                   fontWeight: FontWeight.bold,
@@ -496,9 +547,10 @@ class _BangumiHomePageState extends CacheWidgetState<BangumiHomePage>
                     ),
                   ),
                   onWillPop: () async {
-                    if (model.panelController.isPanelShown &&
-                        !model.panelController.isPanelClosed) {
-                      model.panelController.animatePanelToPosition(
+                    if (_bangumiDetailsModel.panelController.isPanelShown &&
+                        !_bangumiDetailsModel.panelController.isPanelClosed) {
+                      _bangumiDetailsModel.panelController
+                          .animatePanelToPosition(
                         0,
                         duration: Duration(
                           milliseconds: 240,

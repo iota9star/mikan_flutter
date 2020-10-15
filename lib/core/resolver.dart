@@ -6,10 +6,10 @@ import 'package:mikan_flutter/core/consts.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
-import 'package:mikan_flutter/model/bangumi_home.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/index.dart';
+import 'package:mikan_flutter/model/record_details.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/search.dart';
 import 'package:mikan_flutter/model/season.dart';
@@ -231,8 +231,8 @@ class Resolver {
       tempElements = elements[2].children;
       tempElement = tempElements[0];
       temp = ("/" +
-          tempElement.text
-              .trim()
+              tempElement.text
+                  .trim()
                   .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
               "/")
           .replaceAll(RegExp("/\\s*/+"), "/");
@@ -364,29 +364,29 @@ class Resolver {
     return list;
   }
 
-  static Future<BangumiHome> parseBangumi(final Document document) async {
-    final BangumiHome bangumiHome = BangumiHome();
-    bangumiHome.id = document
+  static Future<BangumiDetails> parseBangumi(final Document document) async {
+    final BangumiDetails bangumiDetails = BangumiDetails();
+    bangumiDetails.id = document
         .querySelector(
-            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title > a")
+        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title > a")
         ?.attributes
         ?.getOrNull("href")
         ?.split("=")
         ?.getOrNull(1);
-    bangumiHome.cover = MikanUrl.BASE_URL +
-            document
-                .querySelector(
-                    "#sk-container > div.pull-left.leftbar-container > div.bangumi-poster")
-                ?.attributes
-                ?.getOrNull("style")
-                ?.split("'")
-                ?.elementAt(1)
-                ?.split("?")
-                ?.elementAt(0) ??
+    bangumiDetails.cover = MikanUrl.BASE_URL +
+        document
+            .querySelector(
+            "#sk-container > div.pull-left.leftbar-container > div.bangumi-poster")
+            ?.attributes
+            ?.getOrNull("style")
+            ?.split("'")
+            ?.elementAt(1)
+            ?.split("?")
+            ?.elementAt(0) ??
         '';
-    bangumiHome.name = document
+    bangumiDetails.name = document
         .querySelector(
-            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
+        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
         ?.text
         ?.trim();
     String _intro = document
@@ -396,12 +396,12 @@ class Resolver {
     if (_intro.isNotBlank) {
       _intro = "\u3000\u3000" + _intro.replaceAll("\n", "\n\u3000\u3000");
     }
-    bangumiHome.intro = _intro;
-    bangumiHome.subscribed = document
-            .querySelector(".subscribed-badge")
-            ?.attributes
-            ?.getOrNull("style")
-            ?.isNullOrBlank ??
+    bangumiDetails.intro = _intro;
+    bangumiDetails.subscribed = document
+        .querySelector(".subscribed-badge")
+        ?.attributes
+        ?.getOrNull("style")
+        ?.isNullOrBlank ??
         false;
     final more = document
         .querySelectorAll(
@@ -412,11 +412,11 @@ class Resolver {
     more.forEach((element) {
       map[element[0].trim()] = element[1].trim();
     });
-    bangumiHome.more = map;
+    bangumiDetails.more = map;
     final List<Element> tables = document
         .querySelectorAll("#sk-container > div.central-container > table");
     final List<Element> subs = document.querySelectorAll(".subgroup-text");
-    bangumiHome.subgroupBangumis = [];
+    bangumiDetails.subgroupBangumis = [];
     SubgroupBangumi subgroupBangumi;
     Element element;
     List<Element> elements;
@@ -463,33 +463,33 @@ class Resolver {
           records.add(recordItem);
         }
         subgroupBangumi.records = records;
-        bangumiHome.subgroupBangumis.add(subgroupBangumi);
+        bangumiDetails.subgroupBangumis.add(subgroupBangumi);
       }
     }
-    return bangumiHome;
+    return bangumiDetails;
   }
 
-  static Future<BangumiDetails> parseDetails(final Document document) async {
-    final BangumiDetails bangumiDetails = BangumiDetails();
-    bangumiDetails.id = document
+  static Future<RecordDetails> parseDetails(final Document document) async {
+    final RecordDetails recordDetails = RecordDetails();
+    recordDetails.id = document
         .querySelector(
-            "#sk-container > div.pull-left.leftbar-container > div.leftbar-nav > button")
+        "#sk-container > div.pull-left.leftbar-container > div.leftbar-nav > button")
         ?.attributes
         ?.getOrNull("data-bangumiid");
-    bangumiDetails.cover = MikanUrl.BASE_URL +
-            document
-                .querySelector(
-                    "#sk-container > div.pull-left.leftbar-container > div.bangumi-poster")
-                ?.attributes
-                ?.getOrNull("style")
-                ?.split("'")
-                ?.elementAt(1)
-                ?.split("?")
-                ?.elementAt(0) ??
+    recordDetails.cover = MikanUrl.BASE_URL +
+        document
+            .querySelector(
+            "#sk-container > div.pull-left.leftbar-container > div.bangumi-poster")
+            ?.attributes
+            ?.getOrNull("style")
+            ?.split("'")
+            ?.elementAt(1)
+            ?.split("?")
+            ?.elementAt(0) ??
         '';
-    bangumiDetails.name = document
+    recordDetails.name = document
         .querySelector(
-            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
+        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
         ?.text
         ?.trim();
     String title = document
@@ -500,43 +500,44 @@ class Resolver {
     final Set<String> tags = LinkedHashSet();
     if (title.isNotBlank) {
       title = ("/" +
-              title.replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
-              "/")
+          title.replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
+          "/")
           .replaceAll(RegExp("/\\s*/+"), "/");
-      bangumiDetails.title = title;
+      recordDetails.title = title;
       final String lowerCaseTitle = title.toLowerCase();
       keywords.forEach((key, value) {
         if (lowerCaseTitle.contains(key)) {
           tags.add(value);
         }
       });
-      bangumiDetails.tags = tags.toList()..sort((a, b) => a.compareTo(b));
+      recordDetails.tags = tags.toList()
+        ..sort((a, b) => a.compareTo(b));
     }
-    bangumiDetails.subscribed = document
-            .querySelector(".subscribed-badge")
-            ?.attributes
-            ?.getOrNull("style")
-            ?.isNullOrBlank ??
+    recordDetails.subscribed = document
+        .querySelector(".subscribed-badge")
+        ?.attributes
+        ?.getOrNull("style")
+        ?.isNullOrBlank ??
         false;
     final more = document
-            .querySelectorAll(
-                "#sk-container > div.pull-left.leftbar-container > p.bangumi-info")
-            ?.map((e) => e.text.split("：")) ??
+        .querySelectorAll(
+        "#sk-container > div.pull-left.leftbar-container > p.bangumi-info")
+        ?.map((e) => e.text.split("：")) ??
         [];
     final Map<String, String> map = {};
     more.forEach((element) {
       map[element[0].trim()] = element[1].trim();
     });
-    bangumiDetails.more = map;
+    recordDetails.more = map;
     String temp;
     List<Element> elements = document.querySelectorAll(
         "#sk-container > div.pull-left.leftbar-container > div.leftbar-nav > a");
     elements.forEach((element) {
       temp = element.text;
       if (temp == "下载种子") {
-        bangumiDetails.torrent = MikanUrl.BASE_URL + element.attributes["href"];
+        recordDetails.torrent = MikanUrl.BASE_URL + element.attributes["href"];
       } else if (temp == "磁力链接") {
-        bangumiDetails.magnet = element.attributes['href'];
+        recordDetails.magnet = element.attributes['href'];
       }
     });
     final Element element = document.querySelector(
@@ -546,8 +547,8 @@ class Resolver {
         ele.remove();
       }
     });
-    bangumiDetails.intro = element.innerHtml.trim();
-    return bangumiDetails;
+    recordDetails.intro = element.innerHtml.trim();
+    return recordDetails;
   }
 
   static Future<List<RecordItem>> parseBangumiMore(Document document) async {
