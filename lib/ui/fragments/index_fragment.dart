@@ -64,62 +64,11 @@ class IndexFragment extends StatelessWidget {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        return Column(
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  margin:
-                                      EdgeInsets.only(left: 16.0, right: 6.0),
-                                  width: 18,
-                                  height: 18,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                      colors: [
-                                        accentColor,
-                                        accentColorWithOpacity, // 灰蓝也还行
-                                      ],
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(9)),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    bangumiRows[index].name,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  left: BorderSide(
-                                    width: 3,
-                                    color: accentColorWithOpacity,
-                                  ),
-                                ),
-                              ),
-                              child: _buildBangumiList(
-                                bangumiRows[index],
-                                200,
-                                accentColor,
-                              ),
-                              margin: EdgeInsets.only(
-                                left: 24.0,
-                                top: 8.0,
-                                bottom: 8.0,
-                              ),
-                            )
-                          ],
+                        return _buildBangumiSubgroupItemWrapper(
+                          accentColor,
+                          accentColorWithOpacity,
+                          bangumiRows,
+                          index,
                         );
                       },
                       childCount: bangumiRows.length,
@@ -131,6 +80,60 @@ class IndexFragment extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Column _buildBangumiSubgroupItemWrapper(
+    Color accentColor,
+    Color accentColorWithOpacity,
+    List<BangumiRow> bangumiRows,
+    int index,
+  ) {
+    return Column(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 16.0, right: 6.0),
+              width: 18,
+              height: 18,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    accentColor,
+                    accentColorWithOpacity, // 灰蓝也还行
+                  ],
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(9)),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                bangumiRows[index].name,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Container(
+          child: _buildBangumiList(
+            bangumiRows[index],
+            200,
+            accentColor,
+          ),
+          margin: EdgeInsets.only(
+            top: 8.0,
+            bottom: 8.0,
+          ),
+        )
+      ],
     );
   }
 
@@ -205,7 +208,7 @@ class IndexFragment extends StatelessWidget {
                 } else {
                   Navigator.pushNamed(
                     context,
-                    Routes.mikanBangumiDetails,
+                    Routes.bangumiDetails,
                     arguments: {
                       "heroTag": currFlag,
                       "bangumiId": bangumi.id,
@@ -576,7 +579,7 @@ class IndexFragment extends StatelessWidget {
           onTap: () {
             Navigator.pushNamed(
               context,
-              Routes.mikanBangumiDetails,
+              Routes.bangumiDetails,
               arguments: {
                 "heroTag": currFlag,
                 "bangumiId": bangumiId,
@@ -674,7 +677,7 @@ class IndexFragment extends StatelessWidget {
                 final String bangumiCover = carousels[index].cover;
                 Navigator.pushNamed(
                   context,
-                  Routes.mikanBangumiDetails,
+                  Routes.bangumiDetails,
                   arguments: {
                     "heroTag": "carousels:$bangumiId:$bangumiCover",
                     "bangumiId": bangumiId,
@@ -862,7 +865,7 @@ class IndexFragment extends StatelessWidget {
                 },
               ),
               onPressed: () {
-                Navigator.pushNamed(context, Routes.mikanLogin);
+                Navigator.pushNamed(context, Routes.login);
               },
             ),
           )

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import "package:collection/collection.dart";
 import 'package:html/dom.dart';
 import 'package:mikan_flutter/core/caches.dart';
 import 'package:mikan_flutter/core/consts.dart';
@@ -261,10 +262,11 @@ class Resolver {
     final List<Carousel> carousels = await parseCarousel(document);
     final List<YearSeason> years = await parseYearSeason(document);
     final User user = await parseUser(document);
+    final Map<String, List<RecordItem>> _rss = groupBy(rss, (it) => it.id);
     return Index(
       years: years,
       bangumiRows: bangumiRows,
-      rss: rss,
+      rss: _rss,
       carousels: carousels,
       user: user,
     );
@@ -368,7 +370,7 @@ class Resolver {
     final BangumiDetails bangumiDetails = BangumiDetails();
     bangumiDetails.id = document
         .querySelector(
-        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title > a")
+            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title > a")
         ?.attributes
         ?.getOrNull("href")
         ?.split("=")

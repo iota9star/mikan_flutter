@@ -1,4 +1,3 @@
-import "package:collection/collection.dart";
 import 'package:mikan_flutter/core/http.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
@@ -81,7 +80,7 @@ class IndexModel extends CancelableBaseModel {
         this._selectedSeason = this._seasons[0];
       }
       this._bangumiRows = index.bangumiRows;
-      this._rss = groupBy(index.rss, (it) => it.id);
+      this._rss = index.rss;
       this._carousels = index.carousels;
       this._user = index.user;
       "加载完成...".toast();

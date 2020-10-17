@@ -10,7 +10,7 @@ import 'package:mikan_flutter/widget/bottom_bar_view.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "mikan://home",
+  name: "/home",
   routeName: "mikan-home",
 )
 @immutable

@@ -56,7 +56,7 @@ class FFTransparentPageRoute<T> extends PageRouteBuilder<T> {
     RouteSettings settings,
     @required RoutePageBuilder pageBuilder,
     RouteTransitionsBuilder transitionsBuilder = _defaultTransitionsBuilder,
-    Duration transitionDuration = const Duration(milliseconds: 300),
+    Duration transitionDuration = const Duration(milliseconds: 150),
     bool barrierDismissible = false,
     Color barrierColor,
     String barrierLabel,
@@ -175,7 +175,6 @@ class FFRouteSettings extends RouteSettings {
     this.showStatusBar,
     String name,
     Object arguments,
-    bool isInitialRoute = false,
   }) : super(
           name: name,
           arguments: arguments,

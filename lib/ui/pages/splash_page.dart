@@ -10,7 +10,7 @@ import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "mikan://splash",
+  name: "/splash",
   routeName: "mikan-splash",
 )
 @immutable
@@ -41,7 +41,7 @@ class SplashPage extends StatelessWidget {
                       width: 108,
                     ),
                     onTap: () {
-                      Navigator.pushReplacementNamed(context, Routes.mikanHome);
+                      Navigator.pushReplacementNamed(context, Routes.home);
                     },
                   ),
                   SizedBox(

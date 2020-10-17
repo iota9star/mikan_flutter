@@ -14,30 +14,30 @@ import 'ui/pages/splash_page.dart';
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   arguments = arguments ?? const <String, dynamic>{};
   switch (name) {
-    case 'mikan://bangumi-details':
+    case '/bangumi/details':
       return RouteResult(
         name: name,
         widget: BangumiDetailsPage(
           key: arguments['key'] as Key,
-          heroTag: arguments['heroTag'] as String,
           bangumiId: arguments['bangumiId'] as String,
           cover: arguments['cover'] as String,
+          heroTag: arguments['heroTag'] as String,
         ),
         routeName: 'bangumi-details',
       );
-    case 'mikan://home':
+    case '/home':
       return RouteResult(
         name: name,
         widget: HomePage(),
         routeName: 'mikan-home',
       );
-    case 'mikan://login':
+    case '/login':
       return RouteResult(
         name: name,
         widget: LoginPage(),
         routeName: 'mikan-login',
       );
-    case 'mikan://splash':
+    case '/splash':
       return RouteResult(
         name: name,
         widget: SplashPage(),

@@ -11,7 +11,7 @@ import 'package:mikan_flutter/providers/models/login_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "mikan://login",
+  name: "/login",
   routeName: "mikan-login",
 )
 @immutable
@@ -203,7 +203,7 @@ class LoginPage extends StatelessWidget {
                                       context.read<IndexModel>().loadIndex();
                                       Navigator.pushNamedAndRemoveUntil(
                                         context,
-                                        Routes.mikanHome,
+                                        Routes.home,
                                         (route) => route == null,
                                       );
                                     });

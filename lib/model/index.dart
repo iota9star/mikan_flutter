@@ -7,7 +7,7 @@ import 'package:mikan_flutter/model/year_season.dart';
 class Index {
   List<YearSeason> years;
   List<BangumiRow> bangumiRows;
-  List<RecordItem> rss;
+  Map<String, List<RecordItem>> rss;
   List<Carousel> carousels;
   User user;
 
