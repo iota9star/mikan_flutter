@@ -19,6 +19,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         name: name,
         widget: BangumiDetailsPage(
           key: arguments['key'] as Key,
+          heroTag: arguments['heroTag'] as String,
           bangumiId: arguments['bangumiId'] as String,
           cover: arguments['cover'] as String,
         ),

@@ -1,4 +1,5 @@
 import 'dart:math' as Math;
+import 'dart:ui';
 
 import 'package:ant_icons/ant_icons.dart';
 import 'package:badges/badges.dart';
@@ -11,7 +12,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:mikan_flutter/ext/extension.dart';
-import 'package:mikan_flutter/ext/face.dart';
 import 'package:mikan_flutter/ext/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
@@ -47,8 +47,8 @@ class IndexFragment extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     _buildSearchUI(context),
-                    _buildCarouselsUI(),
                     _buildRssList(),
+                    _buildCarouselsUI(),
                   ],
                 ),
               ),
@@ -180,126 +180,25 @@ class IndexFragment extends StatelessWidget {
       height: 1.25,
       color: fitAccentTextColor,
     );
+    final String currFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
     return Selector<IndexModel, String>(
       builder: (context, tapScaleIndex, child) {
         Matrix4 transform;
-        final String currFlag = "${row.name}:$index";
         if (tapScaleIndex == currFlag) {
           transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
         } else {
           transform = Matrix4.identity();
         }
-        Widget cover = ExtendedImage(
-          image: CachedNetworkImageProvider(bangumi.cover),
-          shape: BoxShape.rectangle,
-          clearMemoryCacheWhenDispose: true,
-          loadStateChanged: (ExtendedImageState value) {
-            Widget child;
-            if (value.extendedImageLoadState == LoadState.loading) {
-              child = Container(
-                padding: EdgeInsets.all(28.0),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 8.0,
-                      color: Colors.black.withAlpha(24),
-                    ),
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                child: Center(
-                  child: SpinKitPumpingHeart(
-                    duration: Duration(milliseconds: 960),
-                    itemBuilder: (_, __) => Image.asset(
-                      "assets/mikan.png",
-                    ),
-                  ),
-                ),
-              );
-            }
-            if (value.extendedImageLoadState == LoadState.failed) {
-              child = Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 8.0,
-                      color: Colors.black.withAlpha(24),
-                    )
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  image: DecorationImage(
-                    image: ExtendedAssetImageProvider("assets/mikan.png"),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
-                  ),
-                ),
-              );
-            } else if (value.extendedImageLoadState == LoadState.completed) {
-              bangumi.coverSize = Size(
-                  value.extendedImageInfo.image.width.toDouble(),
-                  value.extendedImageInfo.image.height.toDouble());
-              child = Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 8.0,
-                      color: Colors.black.withAlpha(24),
-                    )
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  image: DecorationImage(
-                    image: value.imageProvider,
-                    fit: BoxFit.cover,
-                    colorFilter: bangumi.grey
-                        ? ColorFilter.mode(Colors.grey, BlendMode.color)
-                        : null,
-                  ),
-                ),
-              );
-            }
-            return AspectRatio(
-              aspectRatio: bangumi.coverSize == null
-                  ? 1
-                  : bangumi.coverSize.width / bangumi.coverSize.height,
-              child: Hero(
-                tag: "${bangumi.id}:${bangumi.cover}",
-                child: child,
-              ),
-            );
-          },
-        );
-        if (bangumi.num > 0) {
-          String badge;
-          if (bangumi.num < 10) {
-            badge = "+${bangumi.num}";
-          } else if (bangumi.num > 99) {
-            badge = "99+";
-          } else {
-            badge = "+" + bangumi.num.toString();
-          }
-          cover = Badge(
-            badgeColor: Colors.redAccent,
-            toAnimate: false,
-            padding: EdgeInsets.all(4.0),
-            badgeContent: Text(
-              badge,
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Colors.white,
-                height: 1.25,
-              ),
-            ),
-            child: cover,
-          );
-        }
+        Widget cover = _buildBangumiListItemCover(currFlag, bangumi);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             AnimatedTapContainer(
               transform: transform,
               onTapStart: () =>
-                  context.read<IndexModel>().tapBangumiFlag = currFlag,
-              onTapEnd: () => context.read<IndexModel>().tapBangumiFlag = null,
+                  context.read<IndexModel>().tapBangumiListItemFlag = currFlag,
+              onTapEnd: () =>
+                  context.read<IndexModel>().tapBangumiListItemFlag = null,
               onTap: () {
                 if (bangumi.grey) {
                   "此番组下暂无作品".toast();
@@ -308,6 +207,7 @@ class IndexFragment extends StatelessWidget {
                     context,
                     Routes.mikanBangumiDetails,
                     arguments: {
+                      "heroTag": currFlag,
                       "bangumiId": bangumi.id,
                       "cover": bangumi.cover,
                     },
@@ -420,35 +320,330 @@ class IndexFragment extends StatelessWidget {
           ],
         );
       },
-      selector: (_, model) => model.tapBangumiFlag,
+      selector: (_, model) => model.tapBangumiListItemFlag,
       shouldRebuild: (pre, next) => pre != next,
     );
   }
 
-  Widget buildLoader() {
-    return Container(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SpinKitPumpingHeart(
-              duration: Duration(milliseconds: 960),
-              itemBuilder: (_, __) => Image.asset(
-                "assets/mikan.png",
-                width: 108.0,
+  Widget _buildBangumiListItemCover(final String currFlag,
+      final Bangumi bangumi) {
+    Widget widget = ExtendedImage(
+      image: CachedNetworkImageProvider(bangumi.cover),
+      shape: BoxShape.rectangle,
+      clearMemoryCacheWhenDispose: true,
+      loadStateChanged: (ExtendedImageState value) {
+        Widget child;
+        if (value.extendedImageLoadState == LoadState.loading) {
+          child = Container(
+            padding: EdgeInsets.all(28.0),
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 8.0,
+                  color: Colors.black.withAlpha(24),
+                ),
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: Center(
+              child: SpinKitPumpingHeart(
+                duration: Duration(milliseconds: 960),
+                itemBuilder: (_, __) =>
+                    Image.asset(
+                      "assets/mikan.png",
+                    ),
               ),
             ),
-            SizedBox(height: 24.0),
-            Text(
-              randomFace(),
-              style: TextStyle(fontSize: 16.0),
+          );
+        }
+        if (value.extendedImageLoadState == LoadState.failed) {
+          child = Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 8.0,
+                  color: Colors.black.withAlpha(24),
+                )
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              image: DecorationImage(
+                image: ExtendedAssetImageProvider("assets/mikan.png"),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+              ),
             ),
-            SizedBox(
-              height: 8.0,
+          );
+        } else if (value.extendedImageLoadState == LoadState.completed) {
+          bangumi.coverSize = Size(
+              value.extendedImageInfo.image.width.toDouble(),
+              value.extendedImageInfo.image.height.toDouble());
+          child = Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 8.0,
+                  color: Colors.black.withAlpha(24),
+                )
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              image: DecorationImage(
+                image: value.imageProvider,
+                fit: BoxFit.cover,
+                colorFilter: bangumi.grey
+                    ? ColorFilter.mode(Colors.grey, BlendMode.color)
+                    : null,
+              ),
             ),
-            Text(
-              "请不要走开，精彩马上就来",
-              style: TextStyle(fontSize: 16.0),
+          );
+        }
+        return AspectRatio(
+          aspectRatio: bangumi.coverSize == null
+              ? 1
+              : bangumi.coverSize.width / bangumi.coverSize.height,
+          child: Hero(
+            tag: currFlag,
+            child: child,
+          ),
+        );
+      },
+    );
+    if (bangumi.num > 0) {
+      String badge;
+      if (bangumi.num > 99) {
+        badge = "99+";
+      } else {
+        badge = "+${bangumi.num}";
+      }
+      widget = Badge(
+        badgeColor: Colors.redAccent,
+        toAnimate: false,
+        padding: EdgeInsets.all(4.0),
+        badgeContent: Text(
+          badge,
+          style: TextStyle(
+            fontSize: 12.0,
+            color: Colors.white,
+            height: 1.25,
+          ),
+        ),
+        child: widget,
+      );
+    }
+    return widget;
+  }
+
+  Widget _buildRssList() {
+    return Selector<IndexModel, Map<String, List<RecordItem>>>(
+      selector: (_, model) => model.rss,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (context, rss, __) {
+        if (rss.isNotEmpty)
+          return SizedBox(
+            height: 64.0 + 16.0,
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              itemBuilder: (_, index) {
+                if (index == 0) {
+                  return _buildMoreRssItemBtn(context, rss);
+                }
+                final entry = rss.entries.elementAt(index - 1);
+                return _buildRssListItemCover(entry);
+              },
+              itemCount: rss.length + 1,
+              scrollDirection: Axis.horizontal,
+              physics: BouncingScrollPhysics(),
+            ),
+          );
+        return Container();
+      },
+    );
+  }
+
+  Selector<IndexModel, String> _buildMoreRssItemBtn(BuildContext context,
+      Map<String, List<RecordItem>> rss) {
+    return Selector<IndexModel, String>(
+      selector: (_, model) => model.tapBangumiRssItemFlag,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, tapScaleIndex, child) {
+        Matrix4 transform;
+        final String currFlag = "rss:more-rss";
+        if (tapScaleIndex == currFlag) {
+          transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
+        } else {
+          transform = Matrix4.identity();
+        }
+        return AnimatedTapContainer(
+          transform: transform,
+          onTapStart: () =>
+          context
+              .read<IndexModel>()
+              .tapBangumiRssItemFlag = currFlag,
+          onTapEnd: () =>
+          context
+              .read<IndexModel>()
+              .tapBangumiRssItemFlag = null,
+          width: 64.0,
+          margin: EdgeInsets.symmetric(
+            horizontal: 6.0,
+            vertical: 8.0,
+          ),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: CachedNetworkImageProvider(
+                  rss.entries
+                      .elementAt(0)
+                      .value[0].cover),
+            ),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 8.0,
+                color: Colors.black.withAlpha(24),
+              ),
+            ],
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          ),
+          child: child,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+          child: Center(
+            child: Text(
+              "更多\n订阅",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme
+                    .of(context)
+                    .accentColor,
+                height: 1.25,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRssListItemCover(
+      final MapEntry<String, List<RecordItem>> entry,) {
+    final List<RecordItem> records = entry.value;
+    final int recordsLength = records.length;
+    final String bangumiCover = records[0].cover;
+    final String bangumiId = entry.key;
+    String badge;
+    if (recordsLength > 99) {
+      badge = "99+";
+    } else {
+      badge = "+$recordsLength";
+    }
+    final String currFlag = "rss:$bangumiId:$bangumiCover";
+    return Selector<IndexModel, String>(
+      shouldRebuild: (pre, next) => pre != next,
+      selector: (_, model) => model.tapBangumiRssItemFlag,
+      builder: (context, tapScaleIndex, child) {
+        Matrix4 transform;
+        if (tapScaleIndex == currFlag) {
+          transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
+        } else {
+          transform = Matrix4.identity();
+        }
+        return AnimatedTapContainer(
+          transform: transform,
+          onTapStart: () =>
+          context
+              .read<IndexModel>()
+              .tapBangumiRssItemFlag = currFlag,
+          onTapEnd: () =>
+          context
+              .read<IndexModel>()
+              .tapBangumiRssItemFlag = null,
+          width: 64.0,
+          margin: EdgeInsets.symmetric(
+            horizontal: 6.0,
+            vertical: 8.0,
+          ),
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 8.0,
+                color: Colors.black.withAlpha(24),
+              ),
+            ],
+          ),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              Routes.mikanBangumiDetails,
+              arguments: {
+                "heroTag": currFlag,
+                "bangumiId": bangumiId,
+                "cover": bangumiCover,
+              },
+            );
+          },
+          child: child,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        child: Stack(
+          fit: StackFit.loose,
+          overflow: Overflow.clip,
+          children: [
+            Positioned.fill(
+              child: Hero(
+                tag: currFlag,
+                child: CachedNetworkImage(
+                  imageUrl: bangumiCover,
+                  fit: BoxFit.cover,
+                  placeholder: (_, __) =>
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: SpinKitPumpingHeart(
+                            duration: Duration(milliseconds: 960),
+                            itemBuilder: (_, __) =>
+                                Image.asset(
+                                  "assets/mikan.png",
+                                ),
+                          ),
+                        ),
+                      ),
+                  errorWidget: (_, __, ___) =>
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Image.asset(
+                            "assets/mikan.png",
+                          ),
+                        ),
+                      ),
+                ),
+              ),
+            ),
+            Positioned(
+              right: -20.0,
+              top: -8,
+              child: Transform.rotate(
+                angle: Math.pi / 4.0,
+                child: Container(
+                  width: 48.0,
+                  padding: EdgeInsets.only(top: 10.0),
+                  color: Colors.redAccent,
+                  child: Text(
+                    badge,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 10.0,
+                      color: Colors.white,
+                      height: 1.25,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -457,27 +652,33 @@ class IndexFragment extends StatelessWidget {
   }
 
   Widget _buildCarouselsUI() {
+    final itemWidth = Sz.screenWidth - 32;
+    final itemHeight = itemWidth * 0.8 / (16 / 9);
     return Selector<IndexModel, List<Carousel>>(
       selector: (_, model) => model.carousels,
       shouldRebuild: (pre, next) => pre.length != next.length,
       builder: (context, carousels, __) {
         if (carousels.isNotEmpty)
           return SizedBox(
-            width: double.infinity,
-            height: (Sz.screenWidth - 32) / (375 / 196) + 32,
+            height: itemHeight,
             child: Swiper(
+              itemHeight: itemHeight,
               autoplay: true,
               duration: 480,
               autoplayDelay: 4800,
-              itemWidth: Sz.screenWidth - 32,
-              layout: SwiperLayout.STACK,
+              itemWidth: itemWidth,
+              viewportFraction: 0.72,
+              scale: 0.8,
               onTap: (index) {
+                final String bangumiId = carousels[index].id;
+                final String bangumiCover = carousels[index].cover;
                 Navigator.pushNamed(
                   context,
                   Routes.mikanBangumiDetails,
                   arguments: {
-                    "bangumiId": carousels[index].id,
-                    "cover": carousels[index].cover,
+                    "heroTag": "carousels:$bangumiId:$bangumiCover",
+                    "bangumiId": bangumiId,
+                    "cover": bangumiCover,
                   },
                 );
               },
@@ -490,7 +691,7 @@ class IndexFragment extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         blurRadius: 8,
-                        color: Colors.black.withOpacity(0.12),
+                        color: Colors.black.withOpacity(0.08),
                       )
                     ],
                     image: DecorationImage(
@@ -529,103 +730,6 @@ class IndexFragment extends StatelessWidget {
             ),
           ),
         );
-      },
-    );
-  }
-
-  Widget _buildRssList() {
-    return Selector<IndexModel, List<RecordItem>>(
-      selector: (_, model) => model.rss,
-      shouldRebuild: (pre, next) => pre.length != next.length,
-      builder: (context, rss, __) {
-        if (rss.isNotEmpty)
-          return Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(child: Text("我的订阅 ❤ 昨日至今")),
-                    Text("查看更多"),
-                  ],
-                ),
-              ),
-              Container(
-                height: 84.0,
-                child: Swiper(
-                  autoplay: true,
-                  duration: 480,
-                  autoplayDelay: 3600,
-                  itemWidth: Sz.screenWidth - 32.0,
-                  scrollDirection: Axis.vertical,
-                  layout: SwiperLayout.DEFAULT,
-                  onTap: (index) {},
-                  itemBuilder: (context, index) {
-                    final rs = rss[index];
-                    return Material(
-                      child: InkWell(
-                        onTap: () {},
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(width: 16.0),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: CachedNetworkImage(
-                                width: 64.0,
-                                height: 64.0,
-                                imageUrl: rs.cover,
-                                fit: BoxFit.cover,
-                                placeholder: (_, __) =>
-                                    Image.asset("assets/mikan.png"),
-                                errorWidget: (_, __, ___) =>
-                                    Image.asset("assets/mikan.png"),
-                              ),
-                            ),
-                            SizedBox(width: 10.0),
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text(
-                                    rs.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.fade,
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        height: 1.25,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(width: 4.0),
-                                  Text(
-                                    rs.title,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      height: 1.25,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 16.0),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: rss.length,
-                ),
-              ),
-            ],
-          );
-        return Container();
       },
     );
   }

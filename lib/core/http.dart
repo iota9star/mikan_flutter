@@ -112,7 +112,7 @@ class _Http extends DioForNative {
 }
 
 final Future<LoadBalancer> loadBalancer =
-    LoadBalancer.create(2, IsolateRunner.spawn);
+    LoadBalancer.create(4, IsolateRunner.spawn);
 
 class _Fetcher {
   _Http _http;

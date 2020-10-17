@@ -23,7 +23,7 @@ class HomePage extends CacheStatelessWidget {
           BarItem(
             icon: AntIcons.home_outline,
             selectedIconPath: "assets/mikan.png",
-          ),
+            isSelected: true),
           BarItem(
             icon: AntIcons.block_outline,
             selectedIcon: AntIcons.build,

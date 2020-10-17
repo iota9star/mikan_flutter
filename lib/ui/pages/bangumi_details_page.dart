@@ -20,10 +20,11 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
   routeName: "bangumi-details",
 )
 class BangumiDetailsPage extends StatefulWidget {
+  final String heroTag;
   final String bangumiId;
   final String cover;
 
-  const BangumiDetailsPage({Key key, this.bangumiId, this.cover})
+  const BangumiDetailsPage({Key key, this.bangumiId, this.cover, this.heroTag})
       : super(key: key);
 
   @override
@@ -42,7 +43,6 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage>
 
   @override
   Widget buildCacheWidget(BuildContext context) {
-    final String heroTag = "${widget.bangumiId}:${widget.cover}";
     final Color accentColor = Theme.of(context).accentColor;
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
@@ -58,7 +58,7 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage>
                 children: [
                   Positioned.fill(
                     child: Hero(
-                      tag: heroTag,
+                      tag: widget.heroTag,
                       flightShuttleBuilder: (
                         BuildContext flightContext,
                         Animation<double> animation,
@@ -74,7 +74,8 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage>
                             ),
                           ),
                           child: AnimatedBuilder(
-                            animation: animation,
+                            animation: animation
+                                .drive(Tween<double>(begin: 0.0, end: 24.0)),
                             builder: (_, child) {
                               return BackdropFilter(
                                 filter: ImageFilter.blur(
@@ -317,7 +318,7 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage>
                                                         .coverSize
                                                         .height,
                                                 child: Hero(
-                                                  tag: heroTag,
+                                                  tag: widget.heroTag,
                                                   child: child,
                                                 ),
                                               );

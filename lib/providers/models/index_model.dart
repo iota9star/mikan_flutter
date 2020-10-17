@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import 'package:mikan_flutter/core/http.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
@@ -15,16 +16,24 @@ class IndexModel extends CancelableBaseModel {
   List<YearSeason> _years = [];
   List<Season> _seasons = [];
   List<BangumiRow> _bangumiRows = [];
-  List<RecordItem> _rss = [];
+  Map<String, List<RecordItem>> _rss = {};
   List<Carousel> _carousels = [];
   Season _selectedSeason;
   User _user;
-  String _tapBangumiFlag;
+  String _tapBangumiListItemFlag;
+  String _tapBangumiRssItemFlag;
 
-  String get tapBangumiFlag => _tapBangumiFlag;
+  String get tapBangumiRssItemFlag => _tapBangumiRssItemFlag;
 
-  set tapBangumiFlag(String value) {
-    _tapBangumiFlag = value;
+  set tapBangumiRssItemFlag(String value) {
+    _tapBangumiRssItemFlag = value;
+    notifyListeners();
+  }
+
+  String get tapBangumiListItemFlag => _tapBangumiListItemFlag;
+
+  set tapBangumiListItemFlag(String value) {
+    _tapBangumiListItemFlag = value;
     notifyListeners();
   }
 
@@ -37,7 +46,7 @@ class IndexModel extends CancelableBaseModel {
   List<Season> get seasons => _seasons;
 
   final RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+  RefreshController(initialRefresh: true);
 
   RefreshController get refreshController => _refreshController;
 
@@ -72,7 +81,7 @@ class IndexModel extends CancelableBaseModel {
         this._selectedSeason = this._seasons[0];
       }
       this._bangumiRows = index.bangumiRows;
-      this._rss = index.rss;
+      this._rss = groupBy(index.rss, (it) => it.id);
       this._carousels = index.carousels;
       this._user = index.user;
       "加载完成...".toast();
@@ -88,7 +97,7 @@ class IndexModel extends CancelableBaseModel {
 
   List<BangumiRow> get bangumiRows => _bangumiRows;
 
-  List<RecordItem> get rss => _rss;
+  Map<String, List<RecordItem>> get rss => _rss;
 
   List<Carousel> get carousels => _carousels;
 
@@ -142,12 +151,12 @@ class IndexModel extends CancelableBaseModel {
     final bangumi = row.bangumis[index];
     Repo.subscribeBangumi(bangumi.subscribed, bangumi.id).then((resp) async {
       if (resp.success) {
-        this.tapBangumiFlag = "${row.name}:$index";
+        this.tapBangumiListItemFlag = "${row.name}:$index";
         Future.delayed(
           Duration(milliseconds: 360),
           () {
             row.bangumis[index].subscribed = !bangumi.subscribed;
-            this.tapBangumiFlag = null;
+            this.tapBangumiListItemFlag = null;
           },
         );
       } else {
