@@ -25,6 +25,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: 'bangumi-details',
       );
+    case "/":
     case '/home':
       return RouteResult(
         name: name,

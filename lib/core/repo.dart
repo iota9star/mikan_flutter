@@ -120,11 +120,26 @@ class Repo {
       headers: {
         "origin": "https://mikanani.me",
         "referer": "https://mikanani.me/",
+        "cache-control": "no-cache",
+        "dnt": "1",
+        "pragma": "no-cache",
+        "sec-ch-ua":
+            '"Chromium";v="86", "\"Not\\A;Brand";v="99", "Google Chrome";v="86"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-user": "?1",
+        "accept":
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "accept-encoding": "gzip, deflate, br",
+        "accept-language": "zh-CN,zh;q=0.9,ja;q=0.8"
       },
       contentType: "application/x-www-form-urlencoded",
     );
     return await Http.post(
       MikanUrl.LOGIN,
+      queryParameters: {"ReturnUrl": "/"},
       data: loginParams,
       options: options,
     );

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
@@ -10,7 +11,7 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class BangumiDetailsModel extends BaseModel {
+class BangumiDetailsModel extends CancelableBaseModel {
   final String id;
   final String cover;
 
@@ -22,13 +23,7 @@ class BangumiDetailsModel extends BaseModel {
 
   BangumiDetails get bangumiDetails => _bangumiDetails;
 
-  Size _coverSize;
-
-  Size get coverSize => _coverSize;
-
-  set coverSize(Size value) {
-    _coverSize = value;
-  }
+  Size coverSize;
 
   final PanelController _panelController = PanelController();
 
@@ -40,7 +35,10 @@ class BangumiDetailsModel extends BaseModel {
 
   BangumiDetailsModel(this.id, this.cover) {
     this._loadBangumiDetails();
-    this._loadCoverMainColor(cover);
+    Future.delayed(
+      Duration(milliseconds: 300),
+      () => this._loadCoverMainColor(),
+    );
   }
 
   SubgroupBangumi _subgroupBangumi;
@@ -68,12 +66,19 @@ class BangumiDetailsModel extends BaseModel {
 
   Color get coverMainColor => _coverMainColor;
 
-  _loadCoverMainColor(cover) {
-    PaletteGenerator.fromImageProvider(CachedNetworkImageProvider(cover),
-            maximumColorCount: 1)
-        .then((value) {
-      if (value.colors.isNotEmpty) {
-        _coverMainColor = value.colors.first;
+  _loadCoverMainColor() {
+    PaletteGenerator.fromImageProvider(
+      CachedNetworkImageProvider(this.cover, scale: 0.25),
+      maximumColorCount: 3,
+      targets: [
+        PaletteTarget.lightVibrant,
+        PaletteTarget.vibrant,
+      ],
+    ).then((value) {
+      _coverMainColor = value.lightVibrantColor?.color ??
+          value.vibrantColor?.color ??
+          value.colors.getOrNull(0);
+      if (_coverMainColor != null) {
         notifyListeners();
       }
     });
@@ -111,7 +116,7 @@ class BangumiDetailsModel extends BaseModel {
       if (resp.success) {
         _bangumiDetails = resp.data;
       } else {
-        resp.msg.toast();
+        resp.msg?.toast();
       }
     }).whenComplete(() {
       this._loading = false;

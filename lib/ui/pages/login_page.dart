@@ -1,6 +1,7 @@
 import 'package:ant_icons/ant_icons.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/ext/screen.dart';
@@ -163,8 +164,8 @@ class LoginPage extends StatelessWidget {
                       builder: (_, loading, __) {
                         return Selector<LoginModel, User>(
                           builder: (_, user, __) {
-                            final bool isNotOk =
-                                user == null || user?.token?.isNullOrBlank == true;
+                            final bool isNotOk = user == null ||
+                                user?.token?.isNullOrBlank == true;
                             final Color iconColor =
                                 accentColor.computeLuminance() < 0.5
                                     ? Colors.white
@@ -201,11 +202,14 @@ class LoginPage extends StatelessWidget {
                                     if (isNotOk || loading) return;
                                     context.read<LoginModel>().submit(() {
                                       context.read<IndexModel>().loadIndex();
-                                      Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        Routes.home,
-                                        (route) => route == null,
-                                      );
+                                      SchedulerBinding.instance
+                                          .addPostFrameCallback((timeStamp) {
+                                        Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          Routes.home,
+                                              (route) => route == null,
+                                        );
+                                      });
                                     });
                                   },
                                 );

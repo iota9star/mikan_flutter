@@ -127,11 +127,12 @@ class _AnimatedTapContainerState
   }
 
   Future _callTapEnd() async {
+    if (widget.onTapEnd == null) return;
     Duration diff = DateTime.now().difference(_clickTime);
     if (diff < widget.duration) {
       await Future.delayed(widget.duration - diff);
     }
     _clickTime = null;
-    widget.onTapEnd?.call();
+    widget.onTapEnd.call();
   }
 }

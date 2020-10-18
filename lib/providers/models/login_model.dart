@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/core/http.dart';
 import 'package:mikan_flutter/core/repo.dart';
+import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 
@@ -48,7 +49,10 @@ class LoginModel extends BaseModel {
     this._loading = false;
     notifyListeners();
     if (resp.success) {
+      "登录成功".toast();
       loginSuccess.call();
+    } else {
+      "登录失败，请稍候重试：${resp.msg}".toast();
     }
   }
 

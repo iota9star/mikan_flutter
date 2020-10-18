@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart' hide Theme;
 import 'package:hive/hive.dart';
+import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/model/theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,12 +33,12 @@ class Store {
           id: 1,
           canDelete: false,
           autoMode: true,
-          primaryColor: Colors.orange.value,
-          accentColor: Colors.orange.value,
+          primaryColor: HexColor.fromHex("#fe9b36").value,
+          accentColor: HexColor.fromHex("#fe9b36").value,
           lightBackgroundColor: Colors.white.value,
-          darkBackgroundColor: Colors.black.value,
-          lightScaffoldBackgroundColor: Colors.white.value,
-          darkScaffoldBackgroundColor: Colors.black.value,
+          darkBackgroundColor: HexColor.fromHex("#293444").value,
+          lightScaffoldBackgroundColor: HexColor.fromHex("#eef0f6").value,
+          darkScaffoldBackgroundColor: HexColor.fromHex("#1c262f").value,
         ),
       ]);
     }

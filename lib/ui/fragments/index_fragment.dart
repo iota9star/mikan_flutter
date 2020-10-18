@@ -4,13 +4,13 @@ import 'dart:ui';
 import 'package:ant_icons/ant_icons.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' hide NestedScrollView;
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/ext/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -43,17 +43,16 @@ class IndexFragment extends StatelessWidget {
           },
           child: CustomScrollView(
             slivers: [
+              SliverPinnedToBoxAdapter(
+                child: _buildHeader(context),
+              ),
               SliverToBoxAdapter(
                 child: Column(
                   children: <Widget>[
-                    _buildSearchUI(context),
-                    _buildRssList(),
                     _buildCarouselsUI(),
+                    _buildRssList(),
                   ],
                 ),
-              ),
-              SliverPinnedToBoxAdapter(
-                child: _buildWeekSectionControlUI(context),
               ),
               Selector<IndexModel, bool>(
                 selector: (_, model) => model.seasonLoading,
@@ -328,8 +327,8 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiListItemCover(final String currFlag,
-      final Bangumi bangumi) {
+  Widget _buildBangumiListItemCover(
+      final String currFlag, final Bangumi bangumi) {
     Widget widget = ExtendedImage(
       image: CachedNetworkImageProvider(bangumi.cover),
       shape: BoxShape.rectangle,
@@ -494,9 +493,10 @@ class IndexFragment extends StatelessWidget {
             image: DecorationImage(
               fit: BoxFit.cover,
               image: CachedNetworkImageProvider(
-                  rss.entries
-                      .elementAt(0)
-                      .value[0].cover),
+                rss.entries
+                    .elementAt(0)
+                    .value[0].cover,
+              ),
             ),
             boxShadow: [
               BoxShadow(
@@ -655,58 +655,42 @@ class IndexFragment extends StatelessWidget {
   }
 
   Widget _buildCarouselsUI() {
-    final itemWidth = Sz.screenWidth - 32;
-    final itemHeight = itemWidth * 0.8 / (16 / 9);
     return Selector<IndexModel, List<Carousel>>(
       selector: (_, model) => model.carousels,
       shouldRebuild: (pre, next) => pre.length != next.length,
       builder: (context, carousels, __) {
         if (carousels.isNotEmpty)
-          return SizedBox(
-            height: itemHeight,
-            child: Swiper(
-              itemHeight: itemHeight,
-              autoplay: true,
-              duration: 480,
-              autoplayDelay: 4800,
-              itemWidth: itemWidth,
-              viewportFraction: 0.72,
-              scale: 0.8,
-              onTap: (index) {
-                final String bangumiId = carousels[index].id;
-                final String bangumiCover = carousels[index].cover;
-                Navigator.pushNamed(
-                  context,
-                  Routes.bangumiDetails,
-                  arguments: {
-                    "heroTag": "carousels:$bangumiId:$bangumiCover",
-                    "bangumiId": bangumiId,
-                    "cover": bangumiCover,
-                  },
-                );
-              },
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                    color: Theme.of(context).backgroundColor,
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 8,
-                        color: Colors.black.withOpacity(0.08),
-                      )
-                    ],
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(
-                        carousels[index].cover,
-                      ),
+          return CarouselSlider.builder(
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                  color: Theme
+                      .of(context)
+                      .backgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 8,
+                      color: Colors.black.withOpacity(0.08),
+                    )
+                  ],
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(
+                      carousels[index].cover,
                     ),
                   ),
-                );
-              },
-              itemCount: carousels.length,
+                ),
+              );
+            },
+            itemCount: carousels.length,
+            options: CarouselOptions(
+              height: 180,
+              aspectRatio: 16 / 9,
+              viewportFraction: 0.8,
+              autoPlay: true,
+              enlargeCenterPage: true,
             ),
           );
         return Container(
@@ -737,138 +721,94 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildWeekSectionControlUI(final BuildContext context) {
+  Widget _buildHeader(final BuildContext context) {
     return Container(
-      color: Theme
-          .of(context)
-          .backgroundColor,
       padding: EdgeInsets.only(
-        top: 12.0,
-        bottom: 12.0,
         left: 16.0,
         right: 16.0,
+        top: 36.0,
+        bottom: 16.0,
+      ),
+      decoration: BoxDecoration(
+        color: Theme
+            .of(context)
+            .scaffoldBackgroundColor,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  "Welcome to Mikan",
+                Selector<IndexModel, User>(
+                  builder: (_, user, __) {
+                    if (user == null || user.name.isNullOrBlank) {
+                      return Text(
+                        "Welcome to Mikan",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    } else {
+                      return Text(
+                        "Hi, ${user.name}",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }
+                  },
+                  selector: (_, model) => model.user,
+                  shouldRebuild: (pre, next) => pre != next,
                 ),
                 Selector<IndexModel, Season>(
                   selector: (_, model) => model.selectedSeason,
                   shouldRebuild: (pre, next) => pre != next,
                   builder: (_, season, __) {
-                    return season == null
-                        ? Container()
-                        : Text(
-                            season.title,
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          );
+                    return season == null ? Container() : Text(season.title);
                   },
                 )
               ],
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).accentColor.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(16.0),
+          MaterialButton(
+            onPressed: () {},
+            child: Icon(
+              AntIcons.search_outline,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(AntIcons.double_left),
-                  tooltip: "上一季度",
-                  onPressed: () {
-                    context.read<IndexModel>().prevSeason();
-                  },
-                ),
-                IconButton(
-                  icon: Icon(AntIcons.calendar_outline),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: Transform.rotate(
-                    angle: Math.pi,
-                    child: Icon(AntIcons.double_left),
-                  ),
-                  tooltip: "下一季度",
-                  onPressed: () {
-                    context.read<IndexModel>().nextSeason();
-                  },
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchUI(final BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 24.0, left: 16.0, right: 16.0, bottom: 12.0),
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
-        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: TextField(
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                prefixIcon: Icon(AntIcons.search_outline),
-                labelText: 'Search for anime',
-                border: InputBorder.none,
-                labelStyle: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  letterSpacing: 0.2,
-                ),
-              ),
-              onEditingComplete: () {},
-            ),
+            minWidth: 0,
+            padding: EdgeInsets.all(10.0),
+            shape: CircleBorder(),
           ),
-          Ink(
-            decoration: ShapeDecoration(
-              shape: CircleBorder(),
-            ),
-            child: IconButton(
-              iconSize: 36.0,
-              icon: Selector<IndexModel, User>(
-                selector: (_, model) => model.user,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (_, user, __) {
-                  return user?.avatar?.isNotBlank == true
-                      ? ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: user?.avatar,
-                      placeholder: (_, __) =>
-                          Image.asset("assets/mikan.png"),
-                      errorWidget: (_, __, ___) =>
-                          Image.asset("assets/mikan.png"),
-                    ),
-                  )
-                      : Image.asset("assets/mikan.png");
-                },
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, Routes.login);
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Selector<IndexModel, User>(
+              selector: (_, model) => model.user,
+              shouldRebuild: (pre, next) => pre != next,
+              builder: (_, user, __) {
+                return user?.avatar?.isNotBlank == true
+                    ? ClipOval(
+                  child: CachedNetworkImage(
+                    width: 36.0,
+                    height: 36.0,
+                    imageUrl: user?.avatar,
+                    placeholder: (_, __) =>
+                        Image.asset("assets/mikan.png"),
+                    errorWidget: (_, __, ___) =>
+                        Image.asset("assets/mikan.png"),
+                  ),
+                )
+                    : Image.asset("assets/mikan.png");
               },
             ),
-          )
+            minWidth: 0,
+            padding: EdgeInsets.all(10.0),
+            shape: CircleBorder(),
+          ),
         ],
       ),
     );

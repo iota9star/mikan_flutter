@@ -16,29 +16,30 @@ import 'package:mikan_flutter/core/resolver.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/ext/logger.dart';
 
-class _HeaderInterceptor extends InterceptorsWrapper {
+class _BaseInterceptor extends InterceptorsWrapper {
   @override
   Future onRequest(RequestOptions options) async {
     final int timeout = Duration(minutes: 1).inMilliseconds;
+    options.baseUrl = MikanUrl.BASE_URL;
     options.connectTimeout = timeout;
     options.receiveTimeout = timeout;
     options.headers["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/83.0.4103.61 "
-        "Safari/537.36 "
+        "Chrome/86.0.4240.75 Safari/537.36 "
         "MikanFlutter/$appVersion";
+    options.headers['upgrade-insecure-requests'] = 1;
     options.headers['device'] = deviceModel;
     options.headers['client'] = "mikan_flutter";
     options.headers['client-version'] = appVersion;
-    options.headers['platform'] = Platform.operatingSystem;
-    options.headers['platform-version'] = Platform.operatingSystemVersion;
+    options.headers['os'] = Platform.operatingSystem;
+    options.headers['os-version'] = Platform.operatingSystemVersion;
     return options;
   }
 
   final String deviceModel;
   final String appVersion;
 
-  _HeaderInterceptor({this.deviceModel, this.appVersion});
+  _BaseInterceptor({this.deviceModel, this.appVersion});
 }
 
 class MikanTransformer extends DefaultTransformer {
@@ -93,15 +94,16 @@ class _Http extends DioForNative {
     String appVersion,
     BaseOptions options,
   }) : super(options) {
+    // this.httpClientAdapter = Http2Adapter(ConnectionManager());
     this.interceptors
-      ..add(_HeaderInterceptor(
+      ..add(_BaseInterceptor(
         deviceModel: deviceModel,
         appVersion: appVersion,
       ))
       ..add(
         LogInterceptor(
-            requestHeader: false,
-            responseHeader: false,
+            requestHeader: true,
+            responseHeader: true,
             error: true,
             logPrint: (obj) => logd(obj)),
       )
