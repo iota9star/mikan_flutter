@@ -52,6 +52,14 @@ class Resolver {
             int.tryParse(ele.querySelector(".num-node")?.text ?? "0") ?? 0;
         bangumis.add(bangumi);
       }
+      bangumiRow.num = bangumis.length;
+      bangumiRow.updatedNum =
+          bangumis.where((element) => element.num > 0).length;
+      bangumiRow.subscribedNum =
+          bangumis.where((element) => element.subscribed).length;
+      bangumiRow.subscribedUpdatedNum = bangumis
+          .where((element) => element.subscribed && element.num > 0)
+          .length;
       bangumiRow.bangumis = bangumis;
       list.add(bangumiRow);
     }

@@ -17,6 +17,7 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ## Screenshot 
-| Home | Bangumi List | Bangumi Details |
+|  |  |  |
 | -----| ---- | :---- |
-| ![](screenshot/Screenshot_01.jpg) | ![](screenshot/Screenshot_02.jpg) | ![](screenshot/Screenshot_03.jpg) |
+| ![](screenshot/Screenshot_20201018-233234.jpg) | ![](screenshot/Screenshot_20201018-233303.jpg) | ![](screenshot/Screenshot_20201018-233315.jpg) |
+| ![](screenshot/Screenshot_20201018-233330.jpg) | ![](screenshot/Screenshot_20201018-233654.jpg) | ![](screenshot/Screenshot_20201018-233338.jpg) |

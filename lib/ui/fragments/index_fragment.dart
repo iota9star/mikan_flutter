@@ -49,7 +49,7 @@ class IndexFragment extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Column(
                   children: <Widget>[
-                    _buildCarouselsUI(),
+                    _buildCarousels(),
                     _buildRssList(),
                   ],
                 ),
@@ -64,6 +64,7 @@ class IndexFragment extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         return _buildBangumiSubgroupItemWrapper(
+                          context,
                           accentColor,
                           accentColorWithOpacity,
                           bangumiRows,
@@ -83,47 +84,66 @@ class IndexFragment extends StatelessWidget {
   }
 
   Column _buildBangumiSubgroupItemWrapper(
-    Color accentColor,
-    Color accentColorWithOpacity,
-    List<BangumiRow> bangumiRows,
-    int index,
+    final BuildContext context,
+    final Color accentColor,
+    final Color accentColorWithOpacity,
+    final List<BangumiRow> bangumiRows,
+    final int index,
   ) {
+    final bangumiRow = bangumiRows[index];
+    final simple = [
+      if (bangumiRow.updatedNum > 0) "🚀 ${bangumiRow.updatedNum}部",
+      if (bangumiRow.subscribedUpdatedNum > 0)
+        "💖 ${bangumiRow.subscribedUpdatedNum}部",
+      if (bangumiRow.subscribedNum > 0) "❤ ${bangumiRow.subscribedNum}部",
+      "🎬 ${bangumiRow.num}部"
+    ].join("，");
+    final full = [
+      if (bangumiRow.updatedNum > 0) "更新${bangumiRow.updatedNum}部",
+      if (bangumiRow.subscribedUpdatedNum > 0)
+        "订阅更新${bangumiRow.subscribedUpdatedNum}部",
+      if (bangumiRow.subscribedNum > 0) "订阅${bangumiRow.subscribedNum}部",
+      "共${bangumiRow.num}部"
+    ].join("，");
     return Column(
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 16.0, right: 6.0),
-              width: 18,
-              height: 18,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    accentColor,
-                    accentColorWithOpacity, // 灰蓝也还行
-                  ],
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(9)),
-              ),
-            ),
-            Expanded(
-              child: Text(
-                bangumiRows[index].name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+        Container(
+          margin: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 24.0,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  bangumiRow.name,
+                  style: TextStyle(
+                    fontSize: 20,
+                    height: 1.25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          ],
+              Tooltip(
+                message: full,
+                child: Text(
+                  simple,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                    fontSize: 12.0,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         Container(
           child: _buildBangumiList(
-            bangumiRows[index],
+            bangumiRow,
             200,
             accentColor,
           ),
@@ -184,9 +204,9 @@ class IndexFragment extends StatelessWidget {
     );
     final String currFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
     return Selector<IndexModel, String>(
-      builder: (context, tapScaleIndex, child) {
+      builder: (context, tapScaleFlag, child) {
         Matrix4 transform;
-        if (tapScaleIndex == currFlag) {
+        if (tapScaleFlag == currFlag) {
           transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
         } else {
           transform = Matrix4.identity();
@@ -440,21 +460,42 @@ class IndexFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, rss, __) {
         if (rss.isNotEmpty)
-          return SizedBox(
-            height: 64.0 + 16.0,
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              itemBuilder: (_, index) {
-                if (index == 0) {
-                  return _buildMoreRssItemBtn(context, rss);
-                }
-                final entry = rss.entries.elementAt(index - 1);
-                return _buildRssListItemCover(entry);
-              },
-              itemCount: rss.length + 1,
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-            ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 16.0,
+                  bottom: 8.0,
+                ),
+                child: Text(
+                  "我的订阅 ❤ 昨日至今",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 64.0 + 16.0,
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  itemBuilder: (_, index) {
+                    if (index == 0) {
+                      return _buildMoreRssItemBtn(context, rss);
+                    }
+                    final entry = rss.entries.elementAt(index - 1);
+                    return _buildRssListItemCover(entry);
+                  },
+                  itemCount: rss.length + 1,
+                  scrollDirection: Axis.horizontal,
+                  physics: BouncingScrollPhysics(),
+                ),
+              ),
+            ],
           );
         return Container();
       },
@@ -466,10 +507,10 @@ class IndexFragment extends StatelessWidget {
     return Selector<IndexModel, String>(
       selector: (_, model) => model.tapBangumiRssItemFlag,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (_, tapScaleIndex, child) {
+      builder: (_, tapScaleFlag, child) {
         Matrix4 transform;
         final String currFlag = "rss:more-rss";
-        if (tapScaleIndex == currFlag) {
+        if (tapScaleFlag == currFlag) {
           transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
         } else {
           transform = Matrix4.identity();
@@ -546,9 +587,9 @@ class IndexFragment extends StatelessWidget {
     return Selector<IndexModel, String>(
       shouldRebuild: (pre, next) => pre != next,
       selector: (_, model) => model.tapBangumiRssItemFlag,
-      builder: (context, tapScaleIndex, child) {
+      builder: (context, tapScaleFlag, child) {
         Matrix4 transform;
-        if (tapScaleIndex == currFlag) {
+        if (tapScaleFlag == currFlag) {
           transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
         } else {
           transform = Matrix4.identity();
@@ -654,7 +695,7 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildCarouselsUI() {
+  Widget _buildCarousels() {
     return Selector<IndexModel, List<Carousel>>(
       selector: (_, model) => model.carousels,
       shouldRebuild: (pre, next) => pre.length != next.length,
@@ -662,26 +703,64 @@ class IndexFragment extends StatelessWidget {
         if (carousels.isNotEmpty)
           return CarouselSlider.builder(
             itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                  color: Theme
-                      .of(context)
-                      .backgroundColor,
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 8,
-                      color: Colors.black.withOpacity(0.08),
-                    )
-                  ],
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(
-                      carousels[index].cover,
+              final carousel = carousels[index];
+              final String currFlag =
+                  "carousel:${carousel.id}:${carousel.cover}";
+              return Selector<IndexModel, String>(
+                selector: (_, model) => model.tapBangumiCarouselItemFlag,
+                shouldRebuild: (pre, next) => pre != next,
+                builder: (context, tapScaleFlag, child) {
+                  Matrix4 transform;
+                  if (tapScaleFlag == currFlag) {
+                    transform = Matrix4.diagonal3Values(0.8, 0.8, 1.0);
+                  } else {
+                    transform = Matrix4.identity();
+                  }
+                  return Hero(
+                    tag: currFlag,
+                    child: AnimatedTapContainer(
+                      transform: transform,
+                      onTapStart: () =>
+                      context
+                          .read<IndexModel>()
+                          .tapBangumiCarouselItemFlag = currFlag,
+                      onTapEnd: () =>
+                      context
+                          .read<IndexModel>()
+                          .tapBangumiCarouselItemFlag = null,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          Routes.bangumiDetails,
+                          arguments: {
+                            "heroTag": currFlag,
+                            "bangumiId": carousel.id,
+                            "cover": carousel.cover,
+                          },
+                        );
+                      },
+                      margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                        color: Theme
+                            .of(context)
+                            .backgroundColor,
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 8,
+                            color: Colors.black.withOpacity(0.08),
+                          )
+                        ],
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                            carousel.cover,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               );
             },
             itemCount: carousels.length,
@@ -742,23 +821,14 @@ class IndexFragment extends StatelessWidget {
               children: <Widget>[
                 Selector<IndexModel, User>(
                   builder: (_, user, __) {
-                    if (user == null || user.name.isNullOrBlank) {
-                      return Text(
-                        "Welcome to Mikan",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    } else {
-                      return Text(
-                        "Hi, ${user.name}",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    }
+                    final withoutName = user == null || user.name.isNullOrBlank;
+                    return Text(
+                      withoutName ? "Welcome to Mikan" : "Hi, ${user.name}",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
                   },
                   selector: (_, model) => model.user,
                   shouldRebuild: (pre, next) => pre != next,
@@ -767,7 +837,15 @@ class IndexFragment extends StatelessWidget {
                   selector: (_, model) => model.selectedSeason,
                   shouldRebuild: (pre, next) => pre != next,
                   builder: (_, season, __) {
-                    return season == null ? Container() : Text(season.title);
+                    return season == null
+                        ? Container()
+                        : Text(
+                      season.title,
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
                   },
                 )
               ],
@@ -784,7 +862,7 @@ class IndexFragment extends StatelessWidget {
           ),
           MaterialButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pushNamed(Routes.login);
             },
             child: Selector<IndexModel, User>(
               selector: (_, model) => model.user,
@@ -797,12 +875,24 @@ class IndexFragment extends StatelessWidget {
                     height: 36.0,
                     imageUrl: user?.avatar,
                     placeholder: (_, __) =>
-                        Image.asset("assets/mikan.png"),
+                        Image.asset(
+                          "assets/mikan.png",
+                          width: 36.0,
+                          height: 36.0,
+                        ),
                     errorWidget: (_, __, ___) =>
-                        Image.asset("assets/mikan.png"),
+                        Image.asset(
+                          "assets/mikan.png",
+                          width: 36.0,
+                          height: 36.0,
+                        ),
                   ),
                 )
-                    : Image.asset("assets/mikan.png");
+                    : Image.asset(
+                  "assets/mikan.png",
+                  width: 36.0,
+                  height: 36.0,
+                );
               },
             ),
             minWidth: 0,

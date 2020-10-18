@@ -21,6 +21,14 @@ class IndexModel extends CancelableBaseModel {
   User _user;
   String _tapBangumiListItemFlag;
   String _tapBangumiRssItemFlag;
+  String _tapBangumiCarouselItemFlag;
+
+  String get tapBangumiCarouselItemFlag => _tapBangumiCarouselItemFlag;
+
+  set tapBangumiCarouselItemFlag(String value) {
+    _tapBangumiCarouselItemFlag = value;
+    notifyListeners();
+  }
 
   String get tapBangumiRssItemFlag => _tapBangumiRssItemFlag;
 
