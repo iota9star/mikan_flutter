@@ -53,7 +53,7 @@ class IndexModel extends CancelableBaseModel {
   List<Season> get seasons => _seasons;
 
   final RefreshController _refreshController =
-  RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: true);
 
   RefreshController get refreshController => _refreshController;
 
@@ -112,27 +112,9 @@ class IndexModel extends CancelableBaseModel {
 
   User get user => _user;
 
-  prevSeason() async {
-    await (this + this._loadSeason((currIndex) => currIndex - 1));
-  }
-
-  nextSeason() async {
-    await (this + this._loadSeason((currIndex) => currIndex + 1));
-  }
-
-  _loadSeason(final LoadSeasonIndex loadSeasonIndex) async {
+  loadSeason(final Season season) async {
     if (this._seasonLoading) return "加载中，请稍候...".toast();
-    final int index = this
-        ._seasons
-        .indexWhere((element) => element.title == this._selectedSeason.title);
-    assert(index >= 0);
-    final int nextIndex = loadSeasonIndex.call(index);
-    if (nextIndex < 0) {
-      return "已经到最新季度了...".toast();
-    } else if (nextIndex == this._seasons.length) {
-      return "没有更悠久的季度了...".toast();
-    }
-    this._selectedSeason = this._seasons[nextIndex];
+    this._selectedSeason = season;
     notifyListeners();
     this._seasonLoading = true;
     final Resp resp = await Repo.season(

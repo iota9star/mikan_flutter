@@ -20,8 +20,10 @@ import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
+import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -31,7 +33,6 @@ class IndexFragment extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
     final Color accentColorWithOpacity = accentColor.withOpacity(0.48);
-
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
@@ -370,10 +371,9 @@ class IndexFragment extends StatelessWidget {
             child: Center(
               child: SpinKitPumpingHeart(
                 duration: Duration(milliseconds: 960),
-                itemBuilder: (_, __) =>
-                    Image.asset(
-                      "assets/mikan.png",
-                    ),
+                itemBuilder: (_, __) => Image.asset(
+                  "assets/mikan.png",
+                ),
               ),
             ),
           );
@@ -772,30 +772,7 @@ class IndexFragment extends StatelessWidget {
               enlargeCenterPage: true,
             ),
           );
-        return Container(
-          height: (Sz.screenWidth - 32) / (375 / 196),
-          margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(16.0)),
-            color: Theme.of(context).backgroundColor,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 8,
-                color: Colors.black.withOpacity(0.12),
-              )
-            ],
-          ),
-          child: Center(
-            child: SpinKitPumpingHeart(
-              duration: Duration(milliseconds: 960),
-              itemBuilder: (_, __) =>
-                  Image.asset(
-                    "assets/mikan.png",
-                    width: 64.0,
-                  ),
-            ),
-          ),
-        );
+        return Container();
       },
     );
   }
@@ -833,20 +810,39 @@ class IndexFragment extends StatelessWidget {
                   selector: (_, model) => model.user,
                   shouldRebuild: (pre, next) => pre != next,
                 ),
-                Selector<IndexModel, Season>(
-                  selector: (_, model) => model.selectedSeason,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (_, season, __) {
-                    return season == null
-                        ? Container()
-                        : Text(
-                      season.title,
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
+                Row(
+                  children: [
+                    Selector<IndexModel, Season>(
+                      selector: (_, model) => model.selectedSeason,
+                      shouldRebuild: (pre, next) => pre != next,
+                      builder: (_, season, __) {
+                        return season == null
+                            ? Container()
+                            : Text(
+                          season.title,
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        _showYearSeasonBottomSheet(context);
+                      },
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        size: 16.0,
                       ),
-                    );
-                  },
+                      minWidth: 0,
+                      color: Theme
+                          .of(context)
+                          .backgroundColor,
+                      padding: EdgeInsets.all(6.0),
+                      shape: CircleBorder(),
+                    ),
+                  ],
                 )
               ],
             ),
@@ -903,4 +899,245 @@ class IndexFragment extends StatelessWidget {
       ),
     );
   }
+
+  Future _showYearSeasonBottomSheet(BuildContext context) {
+    return showCupertinoModalBottomSheet(
+      context: context,
+      expand: false,
+      builder: (context, controller) {
+        return Material(
+          color: Theme
+              .of(context)
+              .backgroundColor,
+          child: SingleChildScrollView(
+            controller: controller,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                top: 16.0,
+                bottom: 16.0 + Sz.navBarHeight,
+              ),
+              child: Selector<IndexModel, List<YearSeason>>(
+                selector: (_, model) => model.years,
+                shouldRebuild: (pre, next) => pre != next,
+                builder: (_, years, __) {
+                  if (years.isNullOrEmpty) return Container();
+                  final widgets = List.generate(
+                    years.length,
+                        (index) {
+                      final year = years[index];
+                      return Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text(
+                            year.year,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              height: 1.25,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(width: 16.0),
+                          ...List.generate(
+                            4,
+                                (index) {
+                              if (year.seasons.length > index) {
+                                return _buildSeasonItem(year.seasons[index]);
+                              } else {
+                                return Flexible(
+                                  child: FractionallySizedBox(widthFactor: 1),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "番组列表",
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          height: 1.25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 12.0),
+                      ...widgets
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Flexible _buildSeasonItem(final Season season) {
+    return Flexible(
+      child: FractionallySizedBox(
+        widthFactor: 1,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Selector<IndexModel, Season>(
+            selector: (_, model) => model.selectedSeason,
+            shouldRebuild: (pre, next) => pre != next,
+            builder: (context, selectedSeason, _) {
+              return MaterialButton(
+                minWidth: 0,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: EdgeInsets.all(0.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.0),
+                  ),
+                ),
+                child: Text(
+                  season.season,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    height: 1.25,
+                    fontWeight: FontWeight.w500,
+                    color: Theme
+                        .of(context)
+                        .accentColor,
+                  ),
+                ),
+                color: season.title == selectedSeason.title
+                    ? Theme
+                    .of(context)
+                    .accentColor
+                    .withOpacity(0.36)
+                    : Theme
+                    .of(context)
+                    .accentColor
+                    .withOpacity(0.08),
+                elevation: 0,
+                onPressed: () {
+                  context.read<IndexModel>().loadSeason(season);
+                },
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+// Future _showYearSeasonBottomSheet(BuildContext context) {
+//   return showCupertinoModalBottomSheet(
+//     context: context,
+//     expand: false,
+//     builder: (context, controller) {
+//       return Material(
+//         color: Theme.of(context).backgroundColor,
+//         child: Padding(
+//           padding: EdgeInsets.only(
+//             left: 16.0,
+//             right: 16.0,
+//             top: 16.0,
+//             bottom: 16.0 + Sz.navBarHeight,
+//           ),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Text(
+//                 "番组列表",
+//                 style: TextStyle(
+//                   fontSize: 24.0,
+//                   height: 1.25,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//               SizedBox(height: 12.0),
+//               Expanded(
+//                 child: Selector<IndexModel, List<YearSeason>>(
+//                   selector: (_, model) => model.years,
+//                   shouldRebuild: (pre, next) => pre != next,
+//                   builder: (_, years, __) {
+//                     return ListView.builder(
+//                       itemCount: years.length,
+//                       controller: controller,
+//                       itemBuilder: (context, index) {
+//                         final year = years[index];
+//                         return Row(
+//                           mainAxisSize: MainAxisSize.max,
+//                           children: [
+//                             Text(
+//                               year.year,
+//                               style: TextStyle(
+//                                 fontSize: 20.0,
+//                                 height: 1.25,
+//                                 fontWeight: FontWeight.w500,
+//                               ),
+//                             ),
+//                             SizedBox(width: 16.0),
+//                             ...List.generate(
+//                               4,
+//                               (index) {
+//                                 if (year.seasons.length > index) {
+//                                   final String season =
+//                                       year.seasons[index].season;
+//                                   return Flexible(
+//                                     child: FractionallySizedBox(
+//                                       widthFactor: 1,
+//                                       child: Padding(
+//                                         padding: const EdgeInsets.all(8.0),
+//                                         child: MaterialButton(
+//                                           minWidth: 0,
+//                                           materialTapTargetSize:
+//                                               MaterialTapTargetSize
+//                                                   .shrinkWrap,
+//                                           padding: EdgeInsets.all(0.0),
+//                                           shape: RoundedRectangleBorder(
+//                                             borderRadius: BorderRadius.all(
+//                                               Radius.circular(10.0),
+//                                             ),
+//                                           ),
+//                                           child: Text(
+//                                             season,
+//                                             style: TextStyle(
+//                                               fontSize: 18.0,
+//                                               height: 1.25,
+//                                               fontWeight: FontWeight.w500,
+//                                               color: Theme.of(context)
+//                                                   .accentColor,
+//                                             ),
+//                                           ),
+//                                           color: Theme.of(context)
+//                                               .accentColor
+//                                               .withOpacity(0.3),
+//                                           elevation: 0,
+//                                           onPressed: () {},
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   );
+//                                 } else {
+//                                   return Flexible(
+//                                     child:
+//                                         FractionallySizedBox(widthFactor: 1),
+//                                   );
+//                                 }
+//                               },
+//                             ),
+//                           ],
+//                         );
+//                       },
+//                     );
+//                   },
+//                 ),
+//               )
+//             ],
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
 }
