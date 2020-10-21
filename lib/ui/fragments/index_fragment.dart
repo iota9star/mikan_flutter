@@ -22,6 +22,7 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
+import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -34,51 +35,47 @@ class IndexFragment extends StatelessWidget {
     final Color accentColor = Theme.of(context).accentColor;
     final Color accentColorWithOpacity = accentColor.withOpacity(0.48);
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: NotificationListener<OverscrollIndicatorNotification>(
-          onNotification: (overscroll) {
-            overscroll.disallowGlow();
-            return false;
-          },
-          child: CustomScrollView(
-            slivers: [
-              SliverPinnedToBoxAdapter(
-                child: _buildHeader(context),
+      body: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowGlow();
+          return false;
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverPinnedToBoxAdapter(
+              child: _buildHeader(context),
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                children: <Widget>[
+                  _buildCarousels(),
+                  _buildRssList(),
+                ],
               ),
-              SliverToBoxAdapter(
-                child: Column(
-                  children: <Widget>[
-                    _buildCarousels(),
-                    _buildRssList(),
-                  ],
-                ),
-              ),
-              Selector<IndexModel, bool>(
-                selector: (_, model) => model.seasonLoading,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (_, loading, ___) {
-                  final List<BangumiRow> bangumiRows =
-                      context.read<IndexModel>().bangumiRows;
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return _buildBangumiSubgroupItemWrapper(
-                          context,
-                          accentColor,
-                          accentColorWithOpacity,
-                          bangumiRows,
-                          index,
-                        );
-                      },
-                      childCount: bangumiRows.length,
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
+            ),
+            Selector<IndexModel, bool>(
+              selector: (_, model) => model.seasonLoading,
+              shouldRebuild: (pre, next) => pre != next,
+              builder: (_, loading, ___) {
+                final List<BangumiRow> bangumiRows =
+                    context.read<IndexModel>().bangumiRows;
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return _buildBangumiSubgroupItemWrapper(
+                        context,
+                        accentColor,
+                        accentColorWithOpacity,
+                        bangumiRows,
+                        index,
+                      );
+                    },
+                    childCount: bangumiRows.length,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -782,7 +779,7 @@ class IndexFragment extends StatelessWidget {
       padding: EdgeInsets.only(
         left: 16.0,
         right: 16.0,
-        top: 36.0,
+        top: 36.0 + Sz.statusBarHeight,
         bottom: 16.0,
       ),
       decoration: BoxDecoration(
@@ -848,7 +845,9 @@ class IndexFragment extends StatelessWidget {
             ),
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              _showSearchPanel(context);
+            },
             child: Icon(
               AntIcons.search_outline,
             ),
@@ -900,10 +899,9 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Future _showYearSeasonBottomSheet(BuildContext context) {
+  Future _showYearSeasonBottomSheet(final BuildContext context) {
     return showCupertinoModalBottomSheet(
       context: context,
-      expand: false,
       builder: (context, controller) {
         return Material(
           color: Theme
@@ -915,7 +913,7 @@ class IndexFragment extends StatelessWidget {
               padding: EdgeInsets.only(
                 left: 16.0,
                 right: 16.0,
-                top: 16.0,
+                top: 24.0,
                 bottom: 16.0 + Sz.navBarHeight,
               ),
               child: Selector<IndexModel, List<YearSeason>>(
@@ -935,10 +933,10 @@ class IndexFragment extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 20.0,
                               height: 1.25,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(width: 16.0),
+                          SizedBox(width: 12.0),
                           ...List.generate(
                             4,
                                 (index) {
@@ -989,44 +987,57 @@ class IndexFragment extends StatelessWidget {
             selector: (_, model) => model.selectedSeason,
             shouldRebuild: (pre, next) => pre != next,
             builder: (context, selectedSeason, _) {
-              return MaterialButton(
-                minWidth: 0,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                padding: EdgeInsets.all(0.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10.0),
+              final Color color = season.title == selectedSeason.title
+                  ? Theme
+                  .of(context)
+                  .primaryColor
+                  : Theme
+                  .of(context)
+                  .accentColor;
+              return Tooltip(
+                message: season.title,
+                child: MaterialButton(
+                  minWidth: 0,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.all(0.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
+                    ),
                   ),
-                ),
-                child: Text(
-                  season.season,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    height: 1.25,
-                    fontWeight: FontWeight.w500,
-                    color: Theme
-                        .of(context)
-                        .accentColor,
+                  child: Text(
+                    season.season,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      height: 1.25,
+                      fontWeight: FontWeight.w500,
+                      color: color,
+                    ),
                   ),
+                  color: color.withOpacity(0.12),
+                  elevation: 0,
+                  onPressed: () {
+                    context.read<IndexModel>().loadSeason(season);
+                  },
                 ),
-                color: season.title == selectedSeason.title
-                    ? Theme
-                    .of(context)
-                    .accentColor
-                    .withOpacity(0.36)
-                    : Theme
-                    .of(context)
-                    .accentColor
-                    .withOpacity(0.08),
-                elevation: 0,
-                onPressed: () {
-                  context.read<IndexModel>().loadSeason(season);
-                },
               );
             },
           ),
         ),
       ),
+    );
+  }
+
+  _showSearchPanel(final BuildContext context) {
+    showCupertinoModalBottomSheet(
+      context: context,
+      expand: true,
+      topRadius: Radius.circular(24.0),
+      builder: (context, scrollController) {
+        return SearchFragment(
+          scrollController: scrollController,
+        );
+      },
     );
   }
 // Future _showYearSeasonBottomSheet(BuildContext context) {

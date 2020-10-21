@@ -33,7 +33,7 @@ class Store {
           id: 1,
           canDelete: false,
           autoMode: true,
-          primaryColor: HexColor.fromHex("#fe9b36").value,
+          primaryColor: HexColor.fromHex("#3bc0c3").value,
           accentColor: HexColor.fromHex("#fe9b36").value,
           lightBackgroundColor: Colors.white.value,
           darkBackgroundColor: HexColor.fromHex("#293444").value,
