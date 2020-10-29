@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:mikan_flutter/core/http.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/index.dart';
@@ -22,6 +24,8 @@ class IndexModel extends CancelableBaseModel {
   String _tapBangumiListItemFlag;
   String _tapBangumiRssItemFlag;
   String _tapBangumiCarouselItemFlag;
+
+  GlobalKey bangumiListGlobalKey;
 
   String get tapBangumiCarouselItemFlag => _tapBangumiCarouselItemFlag;
 
@@ -53,7 +57,7 @@ class IndexModel extends CancelableBaseModel {
   List<Season> get seasons => _seasons;
 
   final RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+  RefreshController(initialRefresh: true);
 
   RefreshController get refreshController => _refreshController;
 
@@ -136,16 +140,17 @@ class IndexModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  subscribeBangumi(final BangumiRow row, final int index) {
-    final bangumi = row.bangumis[index];
+  subscribeBangumi(final Bangumi bangumi) {
     Repo.subscribeBangumi(bangumi.subscribed, bangumi.id).then((resp) async {
       if (resp.success) {
-        this.tapBangumiListItemFlag = "${row.name}:$index";
+        this.tapBangumiListItemFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
+        notifyListeners();
         Future.delayed(
           Duration(milliseconds: 360),
           () {
-            row.bangumis[index].subscribed = !bangumi.subscribed;
+            bangumi.subscribed = !bangumi.subscribed;
             this.tapBangumiListItemFlag = null;
+            notifyListeners();
           },
         );
       } else {

@@ -5,12 +5,10 @@ import 'package:hive/hive.dart';
 import 'package:mikan_flutter/ext/extension.dart';
 import 'package:mikan_flutter/model/theme.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Store {
   Store._();
 
-  static SharedPreferences sp;
   static Directory cacheDir;
   static Directory docDir;
   static Directory filesDir;
@@ -23,7 +21,6 @@ class Store {
     cacheDir = await getTemporaryDirectory();
     docDir = await getApplicationDocumentsDirectory();
     filesDir = await getApplicationSupportDirectory();
-    sp = await SharedPreferences.getInstance();
     Hive.registerAdapter(ThemeAdapter());
     Hive.init(filesDir.path + "/hivedb");
     themeBox = await Hive.openBox<Theme>("themes");

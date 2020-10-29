@@ -10,48 +10,43 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^0.5.0+1
-  firebase_analytics: ^6.0.2
-  firebase_crashlytics: ^0.2.1+1
-  path_provider: ^1.6.21
+  firebase_core: ^0.5.1
+  firebase_analytics: ^6.1.0
+  firebase_crashlytics: ^0.2.2
+  path_provider: ^1.6.22
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
-  dio_http2_adapter: ^1.0.1
   html: ^0.14.0+4
-  shared_preferences: ^0.5.12+2
   provider: ^4.3.2+2
   permission_handler: ^5.0.1+1
   device_info: ^0.4.2+9
   package_info: ^0.4.3
   isolate: ^2.0.3
   extended_list: ^2.0.2
-  waterfall_flow: ^2.0.3
-  json_annotation: ^3.1.0
+  waterfall_flow: ^2.0.4
   oktoast: ^2.3.2
   pull_to_refresh: ^1.6.2
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
   palette_generator: ^0.2.3
   flutter_spinkit: ^4.1.2+1
-  extended_nested_scroll_view: ^1.0.1
   async: ^2.4.2
   ant_icons: ^1.0.0
   sliding_up_panel: ^1.0.2
   flutter_clipboard_manager: ^0.0.2
-  url_launcher: ^5.7.5
+  url_launcher: ^5.7.8
   cached_network_image: ^2.3.3
   carousel_slider: ^2.3.1
   jiffy: ^3.0.1
   flutter_widget_from_html_core: ^0.5.1+3
-  kenburns: ^1.0.4
+  kenburns: ^1.0.5
   extended_sliver: ^1.0.1
   extended_image: ^1.3.0
-  md2_tab_indicator: ^1.0.2
-  badges: ^1.1.3
   modal_bottom_sheet: ^0.2.2
+  rect_getter: ^0.1.0
 
 dev_dependencies:
-  build_runner: ^1.10.3
+  build_runner: ^1.10.4
   json_serializable: ^3.5.0
   hive_generator: ^0.8.1
   ff_annotation_route: ^4.0.2
