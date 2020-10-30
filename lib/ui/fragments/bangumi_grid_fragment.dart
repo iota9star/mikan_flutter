@@ -6,7 +6,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/ext/extension.dart';
-import 'package:mikan_flutter/ext/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
@@ -125,7 +124,10 @@ class BangumiGridFragment extends StatelessWidget {
   }
 
   Widget _buildBangumiItem(
-      final BuildContext context, final Bangumi bangumi, final int index) {
+    final BuildContext context,
+    final Bangumi bangumi,
+    final int index,
+  ) {
     final String currFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
     return Selector<IndexModel, String>(
       builder: (context, tapScaleFlag, child) {
@@ -353,12 +355,8 @@ class BangumiGridFragment extends StatelessWidget {
             ),
           );
         } else if (value.extendedImageLoadState == LoadState.completed) {
-          final double rowHeight = Sz.screenWidth / 2.8;
-          final double scrollWrapperHeight = Sz.screenHeight * 4 / 5;
-          final double scrollingScreenHeight =
-              scrollWrapperHeight - rowHeight / 2;
-          child = _buildScrollableBackgroundCover(index, scrollWrapperHeight,
-              scrollingScreenHeight, value, bangumi);
+          final double align = 0;
+          child = _buildScrollableBackgroundCover(align, value, bangumi);
         }
         return AspectRatio(
           aspectRatio: 1.0,
@@ -371,20 +369,12 @@ class BangumiGridFragment extends StatelessWidget {
     );
   }
 
-  ValueListenableBuilder<double> _buildScrollableBackgroundCover(
-      int index,
-      double scrollWrapperHeight,
-      double scrollingScreenHeight,
-      ExtendedImageState value,
-      Bangumi bangumi) {
+  ValueListenableBuilder<double> _buildScrollableBackgroundCover(double align,
+      ExtendedImageState state,
+      Bangumi bangumi,) {
     return ValueListenableBuilder(
       valueListenable: scrollNotifier,
       builder: (BuildContext context, double scrolledOffset, Widget child) {
-        final double scrolledRowHeight =
-            index / 3 * ((Sz.screenWidth - 16 * 2 - 24) / 3);
-        var e = scrolledOffset + scrollWrapperHeight - scrolledRowHeight;
-        var d = e / scrollingScreenHeight;
-        final double align = d.clamp(0.0, 1.0) * 2 - 1;
         return Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -395,7 +385,7 @@ class BangumiGridFragment extends StatelessWidget {
             ],
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             image: DecorationImage(
-              image: value.imageProvider,
+              image: state.imageProvider,
               fit: BoxFit.cover,
               alignment: Alignment(align, align),
               colorFilter: bangumi.grey

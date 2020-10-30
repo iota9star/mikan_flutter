@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
+
 class Bangumi {
   // 番剧的id
   String id;
@@ -21,13 +23,9 @@ class Bangumi {
 
   bool grey;
 
-  Size _coverSize;
+  Location location;
 
-  Size get coverSize => _coverSize;
-
-  set coverSize(Size value) {
-    _coverSize = value;
-  }
+  Size coverSize;
 
   Bangumi({
     this.id,
@@ -37,5 +35,13 @@ class Bangumi {
     this.cover,
     this.subscribed,
     this.grey,
+    this.location,
   });
+}
+
+class Location {
+  final int srow;
+  final int row;
+
+  const Location(this.srow, this.row);
 }

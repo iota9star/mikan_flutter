@@ -30,6 +30,7 @@ class Resolver {
     List<Bangumi> bangumis;
     List<Element> bangumiElements;
     Map<dynamic, String> attributes;
+    int i = 1, row = 0;
     for (final Element rowEle in rowElements) {
       bangumiRow = BangumiRow();
       bangumiRow.name = rowEle.children[0].text.trim();
@@ -42,26 +43,38 @@ class Resolver {
         bangumi.cover =
             MikanUrl.BASE_URL + attributes["data-src"].split("?")[0];
         bangumi.grey = ele.querySelector("span.greyout") != null;
-        bangumi.updateAt = ele.querySelector(".date-text").text.trim();
+        bangumi.updateAt = ele
+            .querySelector(".date-text")
+            .text
+            .trim();
         attributes = (ele.querySelector(".an-text") ??
-                ele.querySelector(".date-text[title]"))
+            ele.querySelector(".date-text[title]"))
             .attributes;
         bangumi.name = attributes['title'];
         bangumi.subscribed = ele.querySelector(".active") != null;
         bangumi.num =
-            int.tryParse(ele.querySelector(".num-node")?.text ?? "0") ?? 0;
+            int.tryParse(ele
+                .querySelector(".num-node")
+                ?.text ?? "0") ?? 0;
         bangumis.add(bangumi);
+        bangumi.location = Location(i, row + (bangumis.length / 3).ceil());
       }
       bangumiRow.num = bangumis.length;
       bangumiRow.updatedNum =
-          bangumis.where((element) => element.num > 0).length;
+          bangumis
+              .where((element) => element.num > 0)
+              .length;
       bangumiRow.subscribedNum =
-          bangumis.where((element) => element.subscribed).length;
+          bangumis
+              .where((element) => element.subscribed)
+              .length;
       bangumiRow.subscribedUpdatedNum = bangumis
           .where((element) => element.subscribed && element.num > 0)
           .length;
       bangumiRow.bangumis = bangumis;
+      row += (bangumis.length / 3).ceil();
       list.add(bangumiRow);
+      i++;
     }
     return list;
   }
