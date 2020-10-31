@@ -1,4 +1,5 @@
 import 'dart:math' as Math;
+import 'dart:ui';
 
 import 'package:ant_icons/ant_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,120 +7,45 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/ext/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
-import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class BangumiGridFragment extends StatelessWidget {
-  final List<BangumiRow> bangumiRows;
+  final List<Bangumi> bangumis;
   final ValueNotifier<double> scrollNotifier;
 
-  const BangumiGridFragment({Key key, this.bangumiRows, this.scrollNotifier})
+  BangumiGridFragment({Key key, this.bangumis, this.scrollNotifier})
       : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          return _buildBangumiSubgroupItemWrapper(
-            context,
-            bangumiRows,
-            index,
-          );
-        },
-        childCount: bangumiRows.length,
-      ),
-    );
-  }
+  final double wrapperHeight = Sz.screenHeight / 2;
+  final double sectionHeight = 57;
+  final double itemHeight = (Sz.screenWidth - 32 - 32) / 3 + 40 + 16;
 
-  Widget _buildBangumiSubgroupItemWrapper(
-    final BuildContext context,
-    final List<BangumiRow> bangumiRows,
-    final int index,
-  ) {
-    final bangumiRow = bangumiRows[index];
-    final simple = [
-      if (bangumiRow.updatedNum > 0) "🚀 ${bangumiRow.updatedNum}部",
-      if (bangumiRow.subscribedUpdatedNum > 0)
-        "💖 ${bangumiRow.subscribedUpdatedNum}部",
-      if (bangumiRow.subscribedNum > 0) "❤ ${bangumiRow.subscribedNum}部",
-      "🎬 ${bangumiRow.num}部"
-    ].join("，");
-    final full = [
-      if (bangumiRow.updatedNum > 0) "更新${bangumiRow.updatedNum}部",
-      if (bangumiRow.subscribedUpdatedNum > 0)
-        "订阅更新${bangumiRow.subscribedUpdatedNum}部",
-      if (bangumiRow.subscribedNum > 0) "订阅${bangumiRow.subscribedNum}部",
-      "共${bangumiRow.num}部"
-    ].join("，");
-    return Column(
-      children: [
-        Container(
-          margin: EdgeInsets.only(
-            left: 24.0,
-            right: 24.0,
-            top: 24.0,
-            bottom: 8.0,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  bangumiRow.name,
-                  style: TextStyle(
-                    fontSize: 20,
-                    height: 1.25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Tooltip(
-                message: full,
-                child: Text(
-                  simple,
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.bodyText1.color,
-                    fontSize: 12.0,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-            ],
-          ),
+  Widget _buildBangumiList(final List<Bangumi> bangumis) {
+    return SliverPadding(
+      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
+      sliver: SliverWaterfallFlow(
+        gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          crossAxisCount: 3,
+          collectGarbage: (List<int> garbages) {
+            garbages.forEach(
+                (index) => CachedNetworkImageProvider(bangumis[index].cover));
+          },
         ),
-        Container(
-          child: _buildBangumiList(bangumiRow),
-          margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
-        )
-      ],
-    );
-  }
-
-  Widget _buildBangumiList(final BangumiRow row) {
-    return WaterfallFlow.builder(
-      padding: EdgeInsets.only(left: 24.0, right: 24.0, top: 8.0, bottom: 16.0),
-      itemCount: row.bangumis.length,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        crossAxisCount: 3,
-        collectGarbage: (List<int> garbages) {
-          garbages.forEach(
-              (index) => CachedNetworkImageProvider(row.bangumis[index].cover));
-        },
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return _buildBangumiItem(context, bangumis[index], index);
+          },
+          childCount: bangumis.length,
+        ),
       ),
-      itemBuilder: (context, index) {
-        return _buildBangumiItem(context, row.bangumis[index], index);
-      },
     );
   }
 
@@ -138,16 +64,22 @@ class BangumiGridFragment extends StatelessWidget {
           transform = Matrix4.identity();
         }
         final Widget cover =
-            _buildBangumiListItemCover(currFlag, bangumi, index);
+        _buildBangumiListItemCover(currFlag, bangumi, index);
+        // final Color tagBgColor = Theme.of(context).primaryColor.withOpacity(0.87);
+        // final Color tagColor = tagBgColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             AnimatedTapContainer(
               transform: transform,
               onTapStart: () =>
-                  context.read<IndexModel>().tapBangumiListItemFlag = currFlag,
+              context
+                  .read<IndexModel>()
+                  .tapBangumiListItemFlag = currFlag,
               onTapEnd: () =>
-                  context.read<IndexModel>().tapBangumiListItemFlag = null,
+              context
+                  .read<IndexModel>()
+                  .tapBangumiListItemFlag = null,
               onTap: () {
                 if (bangumi.grey) {
                   "此番组下暂无作品".toast();
@@ -238,8 +170,35 @@ class BangumiGridFragment extends StatelessWidget {
                                       .subscribeBangumi(bangumi);
                                 },
                               ),
-                            ),
+                      ),
                     ),
+                    // Positioned(
+                    //   child: Container(
+                    //     width: 24,
+                    //     height: 24,
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(12.0),
+                    //       color: tagBgColor,
+                    //       border: Border.all(
+                    //         color: Theme.of(context).scaffoldBackgroundColor,
+                    //         width: 2.0,
+                    //       ),
+                    //     ),
+                    //     child: Center(
+                    //       child: Text(
+                    //         bangumi.week,
+                    //         style: TextStyle(
+                    //           color: tagColor,
+                    //           height: 1.25,
+                    //           fontWeight: FontWeight.bold,
+                    //           fontSize: 12.0,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   bottom: -2,
+                    //   right: -2,
+                    // ),
                   ],
                 ),
               ),
@@ -355,8 +314,7 @@ class BangumiGridFragment extends StatelessWidget {
             ),
           );
         } else if (value.extendedImageLoadState == LoadState.completed) {
-          final double align = 0;
-          child = _buildScrollableBackgroundCover(align, value, bangumi);
+          child = _buildScrollableBackgroundCover(value, bangumi);
         }
         return AspectRatio(
           aspectRatio: 1.0,
@@ -369,12 +327,19 @@ class BangumiGridFragment extends StatelessWidget {
     );
   }
 
-  ValueListenableBuilder<double> _buildScrollableBackgroundCover(double align,
+  ValueListenableBuilder<double> _buildScrollableBackgroundCover(
       ExtendedImageState state,
       Bangumi bangumi,) {
     return ValueListenableBuilder(
       valueListenable: scrollNotifier,
       builder: (BuildContext context, double scrolledOffset, Widget child) {
+        final double itemPosition = itemHeight * bangumi.location.row +
+            sectionHeight * bangumi.location.srow;
+        final double align = ((scrolledOffset + wrapperHeight - itemPosition) /
+            (wrapperHeight - itemHeight / 2))
+            .clamp(0.0, 1.0) *
+            2 -
+            1;
         return Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -396,5 +361,10 @@ class BangumiGridFragment extends StatelessWidget {
         );
       },
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildBangumiList(bangumis);
   }
 }

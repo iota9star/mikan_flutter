@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:mikan_flutter/core/http.dart';
 import 'package:mikan_flutter/core/repo.dart';
 import 'package:mikan_flutter/ext/extension.dart';
@@ -24,8 +23,14 @@ class IndexModel extends CancelableBaseModel {
   String _tapBangumiListItemFlag;
   String _tapBangumiRssItemFlag;
   String _tapBangumiCarouselItemFlag;
+  BangumiRow _selectedBangumiRow;
 
-  GlobalKey bangumiListGlobalKey;
+  BangumiRow get selectedBangumiRow => _selectedBangumiRow;
+
+  set selectedBangumiRow(BangumiRow value) {
+    _selectedBangumiRow = value;
+    notifyListeners();
+  }
 
   String get tapBangumiCarouselItemFlag => _tapBangumiCarouselItemFlag;
 
@@ -57,7 +62,7 @@ class IndexModel extends CancelableBaseModel {
   List<Season> get seasons => _seasons;
 
   final RefreshController _refreshController =
-  RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: true);
 
   RefreshController get refreshController => _refreshController;
 
@@ -92,6 +97,7 @@ class IndexModel extends CancelableBaseModel {
         this._selectedSeason = this._seasons[0];
       }
       this._bangumiRows = index.bangumiRows;
+      this._selectedBangumiRow = this._bangumiRows[0];
       this._rss = index.rss;
       this._carousels = index.carousels;
       this._user = index.user;

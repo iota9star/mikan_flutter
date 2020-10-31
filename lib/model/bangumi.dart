@@ -27,6 +27,8 @@ class Bangumi {
 
   Size coverSize;
 
+  String week;
+
   Bangumi({
     this.id,
     this.updateAt,
@@ -35,6 +37,7 @@ class Bangumi {
     this.cover,
     this.subscribed,
     this.grey,
+    this.week,
     this.location,
   });
 }

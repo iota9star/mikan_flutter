@@ -22,8 +22,6 @@ class BangumiRow {
   // 这天的番剧
   List<Bangumi> bangumis;
 
-  Location location;
-
   BangumiRow({
     this.name,
     this.sname,
@@ -32,6 +30,5 @@ class BangumiRow {
     this.subscribedNum,
     this.subscribedUpdatedNum,
     this.bangumis,
-    this.location,
   });
 }

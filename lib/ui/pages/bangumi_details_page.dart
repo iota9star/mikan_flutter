@@ -93,8 +93,8 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage> {
                       child: Container(
                         padding: EdgeInsets.only(
                           top: Sz.statusBarHeight + 12.0,
-                          left: 24.0,
-                          right: 24.0,
+                          left: 16.0,
+                          right: 16.0,
                         ),
                         // decoration: BoxDecoration(color: backgroundColor),
                         child: Row(
@@ -247,8 +247,10 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage> {
     );
   }
 
-  Widget _buildBangumiIntro(Color backgroundColor,
-      Color accentColor,) {
+  Widget _buildBangumiIntro(
+    Color backgroundColor,
+    Color accentColor,
+  ) {
     return Selector<BangumiDetailsModel, BangumiDetails>(
       selector: (_, model) => model.bangumiDetails,
       shouldRebuild: (pre, next) => pre != next,
@@ -259,8 +261,8 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage> {
         return Container(
           width: double.infinity,
           margin: EdgeInsets.only(
-            left: 24.0,
-            right: 24.0,
+            left: 16.0,
+            right: 16.0,
             bottom: 8.0,
           ),
           padding: EdgeInsets.all(24.0),
@@ -316,7 +318,7 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage> {
         }
         return Container(
           width: double.infinity,
-          margin: EdgeInsets.only(left: 24.0, right: 24.0, bottom: 8.0),
+          margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
           padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -383,8 +385,8 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage> {
           fit: StackFit.loose,
           children: [
             Positioned.fill(
-              left: 24.0,
-              right: 24.0,
+              left: 16.0,
+              right: 16.0,
               child: FractionallySizedBox(
                 widthFactor: 1,
                 heightFactor: 0.5,
@@ -409,7 +411,7 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage> {
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 48.0, vertical: 24.0),
+              margin: EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
               child: Row(
                 children: [
                   Container(
@@ -467,8 +469,8 @@ class _BangumiDetailsPageState extends CacheWidgetState<BangumiDetailsPage> {
         return Container(
           width: double.infinity,
           margin: EdgeInsets.only(
-            left: 24.0,
-            right: 24.0,
+            left: 16.0,
+            right: 16.0,
             bottom: 8.0,
             top: 8.0,
           ),

@@ -21,6 +21,18 @@ import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 
 class Resolver {
+  static final weekMap = {
+    "星期一": "月",
+    "星期二": "火",
+    "星期三": "水",
+    "星期四": "木",
+    "星期五": "金",
+    "星期六": "土",
+    "星期日": "日",
+    "剧场版": "剧",
+    "OVA": "O",
+  };
+
   static Future<List<BangumiRow>> parseSeason(final Document document) async {
     final List<Element> rowElements =
         document.querySelectorAll("div.sk-bangumi") ?? [];
@@ -30,10 +42,14 @@ class Resolver {
     List<Bangumi> bangumis;
     List<Element> bangumiElements;
     Map<dynamic, String> attributes;
-    int i = 1, row = 0;
+    String temp;
+    int i = 1;
     for (final Element rowEle in rowElements) {
       bangumiRow = BangumiRow();
-      bangumiRow.name = rowEle.children[0].text.trim();
+      temp = rowEle.children[0].text.trim();
+      bangumiRow.name = temp;
+      temp = weekMap[temp] ?? temp;
+      bangumiRow.sname = temp;
       bangumiElements = rowEle.querySelectorAll("li") ?? [];
       bangumis = [];
       for (final Element ele in bangumiElements) {
@@ -43,38 +59,38 @@ class Resolver {
         bangumi.cover =
             MikanUrl.BASE_URL + attributes["data-src"].split("?")[0];
         bangumi.grey = ele.querySelector("span.greyout") != null;
-        bangumi.updateAt = ele
-            .querySelector(".date-text")
-            .text
-            .trim();
+        bangumi.updateAt = ele.querySelector(".date-text").text.trim();
         attributes = (ele.querySelector(".an-text") ??
-            ele.querySelector(".date-text[title]"))
+                ele.querySelector(".date-text[title]"))
             .attributes;
         bangumi.name = attributes['title'];
         bangumi.subscribed = ele.querySelector(".active") != null;
         bangumi.num =
-            int.tryParse(ele
-                .querySelector(".num-node")
-                ?.text ?? "0") ?? 0;
+            int.tryParse(ele.querySelector(".num-node")?.text ?? "0") ?? 0;
         bangumis.add(bangumi);
-        bangumi.location = Location(i, row + (bangumis.length / 3).ceil());
+        bangumi.week = temp;
+        bangumi.location = Location(i, (i / 3).ceil());
+        i++;
       }
       bangumiRow.num = bangumis.length;
       bangumiRow.updatedNum =
-          bangumis
-              .where((element) => element.num > 0)
-              .length;
+          bangumis.where((element) => element.num > 0).length;
       bangumiRow.subscribedNum =
-          bangumis
-              .where((element) => element.subscribed)
-              .length;
+          bangumis.where((element) => element.subscribed).length;
       bangumiRow.subscribedUpdatedNum = bangumis
           .where((element) => element.subscribed && element.num > 0)
           .length;
+      bangumis.sort((a, b) {
+        if (a.subscribed && b.subscribed) {
+          return 0;
+        } else if (a.subscribed) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
       bangumiRow.bangumis = bangumis;
-      row += (bangumis.length / 3).ceil();
       list.add(bangumiRow);
-      i++;
     }
     return list;
   }
@@ -112,10 +128,10 @@ class Resolver {
             recordItem.torrent = MikanUrl.BASE_URL + temp;
           }
           recordItem.title = ("/" +
-                  element.text
-                      .trim()
-                      .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
-                  "/")
+              element.text
+                  .trim()
+                  .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
+              "/")
               .replaceAll(RegExp("/\\s*/+"), "/");
           temp = element.querySelector("span")?.text;
           if (temp.isNotBlank) {
@@ -137,7 +153,7 @@ class Resolver {
 
   static Future<User> parseUser(final Document document) async {
     final String name =
-        document.querySelector("#user-name .text-right")?.text?.trim();
+    document.querySelector("#user-name .text-right")?.text?.trim();
     final String avatar = document
         ?.querySelector("#user-welcome #head-pic")
         ?.attributes
@@ -155,7 +171,7 @@ class Resolver {
 
   static Future<Search> parseSearch(final Document document) async {
     List<Element> eles = document.querySelectorAll(
-            "div.leftbar-container .leftbar-item .subgroup-longname") ??
+        "div.leftbar-container .leftbar-item .subgroup-longname") ??
         [];
     final List<Subgroup> subgroups = [];
     String temp;
@@ -199,7 +215,7 @@ class Resolver {
       recordItem.size = elements[1].text.trim();
       recordItem.publishAt = elements[2].text.trim();
       recordItem.magnet =
-          elements[0].children[1].attributes["data-clipboard-text"];
+      elements[0].children[1].attributes["data-clipboard-text"];
       recordItem.torrent =
           MikanUrl.BASE_URL + elements[3].children[0].attributes["href"];
       searchs.add(recordItem);
@@ -253,10 +269,10 @@ class Resolver {
       tempElements = elements[2].children;
       tempElement = tempElements[0];
       temp = ("/" +
-              tempElement.text
-                  .trim()
-                  .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
-              "/")
+          tempElement.text
+              .trim()
+              .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
+          "/")
           .replaceAll(RegExp("/\\s*/+"), "/");
       tags = LinkedHashSet();
       tempLowerCase = temp.toLowerCase();
@@ -295,7 +311,7 @@ class Resolver {
 
   static Future<List<Carousel>> parseCarousel(final Document document) async {
     final List<Element> eles = document.querySelectorAll(
-            "#myCarousel > div.carousel-inner > div.item.carousel-bg") ??
+        "#myCarousel > div.carousel-inner > div.item.carousel-bg") ??
         [];
     final List<Carousel> carousels = [];
     Carousel carousel;
@@ -312,10 +328,9 @@ class Resolver {
     return carousels;
   }
 
-  static Future<List<YearSeason>> parseYearSeason(
-      final Document document) async {
+  static Future<List<YearSeason>> parseYearSeason(final Document document) async {
     final List<Element> eles = document.querySelectorAll(
-            "#sk-data-nav > div > ul.navbar-nav.date-select > li > ul > li") ??
+        "#sk-data-nav > div > ul.navbar-nav.date-select > li > ul > li") ??
         [];
     final String selected = document
         .querySelector("#sk-data-nav  .date-select  div.date-text")
@@ -347,8 +362,7 @@ class Resolver {
     return yearSeasons;
   }
 
-  static Future<List<SubgroupGallery>> parseSubgroup(
-      final Document document) async {
+  static Future<List<SubgroupGallery>> parseSubgroup(final Document document) async {
     final List<Element> eles = document.querySelectorAll(
         "#js-sort-wrapper > div.pubgroup-timeline-item[data-index]");
     List<SubgroupGallery> list = [];
@@ -391,7 +405,7 @@ class Resolver {
     final BangumiDetails bangumiDetails = BangumiDetails();
     bangumiDetails.id = document
         .querySelector(
-            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title > a")
+        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title > a")
         ?.attributes
         ?.getOrNull("href")
         ?.split("=")
@@ -517,7 +531,7 @@ class Resolver {
         ?.trim();
     String title = document
         .querySelector(
-            "#sk-container > div.central-container > div.episode-header > p")
+        "#sk-container > div.central-container > div.episode-header > p")
         ?.text
         ?.trim();
     final Set<String> tags = LinkedHashSet();

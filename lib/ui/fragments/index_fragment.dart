@@ -28,6 +28,7 @@ import 'package:provider/provider.dart';
 @immutable
 class IndexFragment extends StatelessWidget {
   final ValueNotifier<double> _scrollNotifier = ValueNotifier<double>(0.0);
+  final double itemHeight = (Sz.screenWidth - 32 - 32) / 3 + 40 + 16;
 
   @override
   Widget build(BuildContext context) {
@@ -37,41 +38,125 @@ class IndexFragment extends StatelessWidget {
           if (notification is OverscrollIndicatorNotification) {
             notification.disallowGlow();
           } else if (notification is ScrollUpdateNotification) {
-            // print('depth: ${notification}');
             if (notification.depth == 0) {
-              _scrollNotifier.value = notification.metrics.pixels;
+              var offset = notification.metrics.pixels;
+              print('offset: ${notification.metrics.viewportDimension}');
+              _scrollNotifier.value = offset;
             }
-          } else if (notification is ScrollStartNotification) {
-            print('start: $notification');
           }
           return false;
         },
-        child: CustomScrollView(
-          slivers: [
-            SliverPinnedToBoxAdapter(
-              child: _buildHeader(context),
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: <Widget>[
-                  _buildCarousels(),
-                  _buildRssList(),
-                ],
-              ),
-            ),
-            Selector<IndexModel, bool>(
-              selector: (_, model) => model.seasonLoading,
-              shouldRebuild: (pre, next) => pre != next,
-              builder: (_, loading, ___) {
-                final List<BangumiRow> bangumiRows =
-                    context.read<IndexModel>().bangumiRows;
-                return BangumiGridFragment(
-                  bangumiRows: bangumiRows,
-                  scrollNotifier: _scrollNotifier,
-                );
-              },
-            ),
-          ],
+        child: Selector<IndexModel, List<BangumiRow>>(
+          selector: (_, model) => model.bangumiRows,
+          shouldRebuild: (pre, next) => pre != next,
+          builder: (_, bangumiRows, __) {
+            return CustomScrollView(
+              slivers: [
+                SliverPinnedToBoxAdapter(
+                  child: _buildHeader(context),
+                ),
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: <Widget>[
+                      _buildCarousels(),
+                      _buildRssList(),
+                    ],
+                  ),
+                ),
+                ...List.generate(bangumiRows.length, (index) {
+                  final BangumiRow bangumiRow = bangumiRows[index];
+                  if (bangumiRow == null) return Container();
+                  final simple = [
+                    if (bangumiRow.updatedNum > 0)
+                      "🚀 ${bangumiRow.updatedNum}部",
+                    if (bangumiRow.subscribedUpdatedNum > 0)
+                      "💖 ${bangumiRow.subscribedUpdatedNum}部",
+                    if (bangumiRow.subscribedNum > 0)
+                      "❤ ${bangumiRow.subscribedNum}部",
+                    "🎬 ${bangumiRow.num}部"
+                  ].join("，");
+                  final full = [
+                    if (bangumiRow.updatedNum > 0)
+                      "更新${bangumiRow.updatedNum}部",
+                    if (bangumiRow.subscribedUpdatedNum > 0)
+                      "订阅更新${bangumiRow.subscribedUpdatedNum}部",
+                    if (bangumiRow.subscribedNum > 0)
+                      "订阅${bangumiRow.subscribedNum}部",
+                    "共${bangumiRow.num}部"
+                  ].join("，");
+                  return [
+                    SliverToBoxAdapter(
+                      child: Container(
+                        padding: EdgeInsets.only(
+                          top: 16.0,
+                          left: 16.0,
+                          right: 16.0,
+                          bottom: 8.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     offset: Offset(0, 4.0),
+                          //     blurRadius: 12.0,
+                          //     spreadRadius: -12.0,
+                          //     color: Colors.black26,
+                          //   )
+                          // ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                bangumiRow.name,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  height: 1.25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Tooltip(
+                              message: full,
+                              child: Text(
+                                simple,
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color,
+                                  fontSize: 12.0,
+                                  height: 1.25,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    BangumiGridFragment(
+                      bangumis: bangumiRow.bangumis,
+                      scrollNotifier: _scrollNotifier,
+                    ),
+                  ];
+                }).expand((element) => element),
+                // Selector<IndexModel, bool>(
+                //   selector: (_, model) => model.seasonLoading,
+                //   shouldRebuild: (pre, next) => pre != next,
+                //   builder: (_, loading, ___) {
+                //     final List<BangumiRow> bangumiRows =
+                //         context.read<IndexModel>().bangumiRows;
+                //     return BangumiGridFragment(
+                //       bangumiRows: bangumiRows,
+                //       scrollNotifier: _scrollNotifier,
+                //     );
+                //   },
+                // ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -88,10 +173,9 @@ class IndexFragment extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 24.0,
-                  right: 24.0,
+                  left: 16.0,
+                  right: 16.0,
                   top: 16.0,
-                  bottom: 16.0,
                 ),
                 child: Text(
                   "我的订阅 ❤ 昨日至今",
@@ -102,10 +186,11 @@ class IndexFragment extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 8.0),
               SizedBox(
-                height: 64.0 + 16.0,
+                height: 64.0 + 24.0,
                 child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 18.0),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
                   itemBuilder: (_, index) {
                     if (index == 0) {
                       return _buildMoreRssItemBtn(context, rss);
@@ -151,7 +236,7 @@ class IndexFragment extends StatelessWidget {
           width: 64.0,
           margin: EdgeInsets.symmetric(
             horizontal: 6.0,
-            vertical: 8.0,
+            vertical: 12.0,
           ),
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -165,7 +250,7 @@ class IndexFragment extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 blurRadius: 8.0,
-                color: Colors.black.withAlpha(24),
+                color: Colors.black.withOpacity(0.1),
               ),
             ],
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -225,13 +310,13 @@ class IndexFragment extends StatelessWidget {
           width: 64.0,
           margin: EdgeInsets.symmetric(
             horizontal: 6.0,
-            vertical: 8.0,
+            vertical: 12.0,
           ),
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
                 blurRadius: 8.0,
-                color: Colors.black.withAlpha(24),
+                color: Colors.black.withOpacity(0.08),
               ),
             ],
           ),
@@ -398,8 +483,8 @@ class IndexFragment extends StatelessWidget {
   Widget _buildHeader(final BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        left: 24.0,
-        right: 24.0,
+        left: 16.0,
+        right: 16.0,
         top: 36.0 + Sz.statusBarHeight,
         bottom: 8.0,
       ),
@@ -653,6 +738,8 @@ class IndexFragment extends StatelessWidget {
     showCupertinoModalBottomSheet(
       context: context,
       expand: true,
+      bounce: true,
+      enableDrag: false,
       topRadius: Radius.circular(24.0),
       builder: (context, scrollController) {
         return SearchFragment(
