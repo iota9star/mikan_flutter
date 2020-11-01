@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:ant_icons/ant_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -28,8 +29,7 @@ class BangumiGridFragment extends StatelessWidget {
 
   Widget _buildBangumiList(final List<Bangumi> bangumis) {
     return SliverPadding(
-      padding:
-          EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 16.0),
+      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
       sliver: SliverWaterfallFlow(
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
           crossAxisSpacing: 16,
@@ -97,13 +97,14 @@ class BangumiGridFragment extends StatelessWidget {
                 }
               },
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10.0)),
                 child: Stack(
                   overflow: Overflow.clip,
                   children: [
                     Tooltip(
                       padding:
-                          EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                      EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
                       showDuration: Duration(seconds: 3),
                       message: bangumi.name + "\n" + bangumi.updateAt,
                       child: cover,

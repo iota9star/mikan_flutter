@@ -34,17 +34,42 @@ class SearchModel extends CancelableBaseModel {
 
   bool get loading => _loading;
 
+  int _tapRecordItemIndex = -1;
+
+  int get tapRecordItemIndex => this._tapRecordItemIndex;
+
+  set tapRecordItemIndex(int value) {
+    this._tapRecordItemIndex = value;
+    notifyListeners();
+  }
+
+  bool _hasScrolled = false;
+
+  bool get hasScrolled => _hasScrolled;
+
+  set hasScrolled(bool value) {
+    if (this._hasScrolled != value) {
+      this._hasScrolled = value;
+      notifyListeners();
+    }
+  }
+
   set subgroupId(final String value) {
     this._subgroupId = this._subgroupId == value ? null : value;
     this._searchResult?.bangumis = null;
     this._searchResult?.searchs = null;
-    notifyListeners();
-    this.search(keywords, subgroupId: this._subgroupId);
+    this._searching(keywords, subgroupId: this._subgroupId);
   }
 
-  search(final String keywords, {final String subgroupId}) async {
+  search(final String keywords) {
+    this._searchResult = null;
+    this._searching(keywords);
+  }
+
+  _searching(final String keywords, {final String subgroupId}) async {
     this._keywords = keywords;
     this._loading = true;
+    notifyListeners();
     final resp = await (this + Repo.search(keywords, subgroupId: subgroupId));
     if (resp.success) {
       this._searchResult = resp.data;

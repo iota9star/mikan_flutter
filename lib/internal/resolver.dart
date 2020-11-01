@@ -128,10 +128,10 @@ class Resolver {
             recordItem.torrent = MikanUrl.BASE_URL + temp;
           }
           recordItem.title = ("/" +
-              element.text
-                  .trim()
-                  .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
-              "/")
+                  element.text
+                      .trim()
+                      .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
+                  "/")
               .replaceAll(RegExp("/\\s*/+"), "/");
           temp = element.querySelector("span")?.text;
           if (temp.isNotBlank) {
@@ -153,7 +153,10 @@ class Resolver {
 
   static Future<User> parseUser(final Document document) async {
     final String name =
-    document.querySelector("#user-name .text-right")?.text?.trim();
+    document
+        .querySelector("#user-name .text-right")
+        ?.text
+        ?.trim();
     final String avatar = document
         ?.querySelector("#user-welcome #head-pic")
         ?.attributes
@@ -190,35 +193,52 @@ class Resolver {
     Bangumi bangumi;
     for (final Element ele in eles) {
       bangumi = Bangumi();
-      temp = ele.querySelector("a").attributes['href'];
+      temp = ele
+          .querySelector("a")
+          .attributes['href'];
       bangumi.id = temp.replaceAll("/Home/Bangumi/", "");
       bangumi.cover = MikanUrl.BASE_URL +
-          ele.querySelector("span").attributes["data-src"].split("?")[0];
-      bangumi.name = ele.querySelector(".an-text").attributes['title'].trim();
+          ele
+              .querySelector("span")
+              .attributes["data-src"].split("?")[0];
+      bangumi.name = ele
+          .querySelector(".an-text")
+          .attributes['title'].trim();
       bangumis.add(bangumi);
     }
     eles = document.querySelectorAll("tr.js-search-results-row") ?? [];
-    RecordItem recordItem;
+    RecordItem record;
     List<RecordItem> searchs = [];
     List<Element> elements;
+    String tempLowerCase;
+    Set<String> tags;
     for (final Element ele in eles) {
-      recordItem = RecordItem();
+      record = RecordItem();
       elements = ele.querySelectorAll("td");
-      recordItem.url =
+      record.url =
           MikanUrl.BASE_URL + elements[0].children[0].attributes['href'];
-      recordItem.title = elements[0]
+      temp = elements[0]
           .children[0]
           .text
           .trim()
-          .replaceAll("【", "[")
-          .replaceAll("】", "]");
-      recordItem.size = elements[1].text.trim();
-      recordItem.publishAt = elements[2].text.trim();
-      recordItem.magnet =
-      elements[0].children[1].attributes["data-clipboard-text"];
-      recordItem.torrent =
+          .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
+          .replaceAll(RegExp("/\\s*/+"), "/");
+      tags = LinkedHashSet();
+      tempLowerCase = temp.toLowerCase();
+      keywords.forEach((key, value) {
+        if (tempLowerCase.contains(key)) {
+          tags.add(value);
+        }
+      });
+      record.tags = tags.toList()
+        ..sort((a, b) => a.compareTo(b));
+      record.title = temp;
+      record.size = elements[1].text.trim();
+      record.publishAt = elements[2].text.trim();
+      record.magnet = elements[0].children[1].attributes["data-clipboard-text"];
+      record.torrent =
           MikanUrl.BASE_URL + elements[3].children[0].attributes["href"];
-      searchs.add(recordItem);
+      searchs.add(record);
     }
     return SearchResult(
         bangumis: bangumis, subgroups: subgroups, searchs: searchs);
@@ -269,12 +289,11 @@ class Resolver {
       record.groups = subgroups;
       tempElements = elements[2].children;
       tempElement = tempElements[0];
-      temp = ("/" +
+      temp =
           tempElement.text
               .trim()
-              .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
-          "/")
-          .replaceAll(RegExp("/\\s*/+"), "/");
+              .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
+              .replaceAll(RegExp("/\\s*/+"), "/");
       tags = LinkedHashSet();
       tempLowerCase = temp.toLowerCase();
       keywords.forEach((key, value) {
@@ -282,7 +301,8 @@ class Resolver {
           tags.add(value);
         }
       });
-      record.tags = tags.toList()..sort((a, b) => a.compareTo(b));
+      record.tags = tags.toList()
+        ..sort((a, b) => a.compareTo(b));
       record.title = temp;
       record.url = MikanUrl.BASE_URL + tempElement.attributes['href'];
       record.magnet = tempElements[1].attributes['data-clipboard-text'];
@@ -329,7 +349,8 @@ class Resolver {
     return carousels;
   }
 
-  static Future<List<YearSeason>> parseYearSeason(final Document document) async {
+  static Future<List<YearSeason>> parseYearSeason(
+      final Document document) async {
     final List<Element> eles = document.querySelectorAll(
         "#sk-data-nav > div > ul.navbar-nav.date-select > li > ul > li") ??
         [];
@@ -363,7 +384,8 @@ class Resolver {
     return yearSeasons;
   }
 
-  static Future<List<SubgroupGallery>> parseSubgroup(final Document document) async {
+  static Future<List<SubgroupGallery>> parseSubgroup(
+      final Document document) async {
     final List<Element> eles = document.querySelectorAll(
         "#js-sort-wrapper > div.pubgroup-timeline-item[data-index]");
     List<SubgroupGallery> list = [];
@@ -537,9 +559,7 @@ class Resolver {
         ?.trim();
     final Set<String> tags = LinkedHashSet();
     if (title.isNotBlank) {
-      title = ("/" +
-          title.replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
-          "/")
+      title = title.replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
           .replaceAll(RegExp("/\\s*/+"), "/");
       recordDetails.title = title;
       final String lowerCaseTitle = title.toLowerCase();

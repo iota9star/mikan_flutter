@@ -498,11 +498,11 @@ class IndexFragment extends StatelessWidget {
               boxShadow: hasScrolled
                   ? [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  offset: Offset(0, 1),
-                  blurRadius: 2.0,
-                  spreadRadius: 2.0,
-                ),
+                  color: Colors.black.withOpacity(0.024),
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        spreadRadius: 3.0,
+                      ),
               ]
                   : null),
           duration: Duration(milliseconds: 240),
@@ -624,6 +624,7 @@ class IndexFragment extends StatelessWidget {
   Future _showYearSeasonBottomSheet(final BuildContext context) {
     return showCupertinoModalBottomSheet(
       context: context,
+      topRadius: Radius.circular(24.0),
       builder: (context, controller) {
         return Material(
           color: Theme
