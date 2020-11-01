@@ -1,4 +1,4 @@
-import 'package:mikan_flutter/ext/logger.dart';
+import 'package:mikan_flutter/internal/logger.dart';
 
 class JsonPath {
   static T parse<T>(Map<String, dynamic> json, String path, T defaultValue) {

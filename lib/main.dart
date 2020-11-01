@@ -5,9 +5,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
-import 'package:flutter/services.dart';
 import 'package:mikan_flutter/base/store.dart';
-import 'package:mikan_flutter/ext/logger.dart';
+import 'package:mikan_flutter/internal/logger.dart';
 import 'package:mikan_flutter/mikan_flutter_route_helper.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/providers/models/firebase_model.dart';
@@ -43,15 +42,6 @@ main() async {
   }).sendPort);
 
   await Store.init();
-  await SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarDividerColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.light,
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    statusBarBrightness: Brightness.light,
-  ));
   runApp(MyApp());
 }
 
@@ -131,20 +121,22 @@ class MyApp extends StatelessWidget {
                     final RouteSettings newSettings = newRoute?.settings;
                     logd(
                         "route change: ${oldSettings?.name} => ${newSettings?.name}");
-                    if (newSettings is FFRouteSettings &&
-                        oldSettings is FFRouteSettings) {
-                      if (newSettings?.showStatusBar !=
-                          oldSettings?.showStatusBar) {
-                        if (newSettings?.showStatusBar == true) {
-                          SystemChrome.setEnabledSystemUIOverlays(
-                              SystemUiOverlay.values);
-                          SystemChrome.setSystemUIOverlayStyle(
-                              SystemUiOverlayStyle.dark);
-                        } else {
-                          SystemChrome.setEnabledSystemUIOverlays([]);
-                        }
-                      }
-                    }
+                    // if (newSettings is FFRouteSettings &&
+                    //     oldSettings is FFRouteSettings) {
+                    //   if (newSettings?.showStatusBar !=
+                    //       oldSettings?.showStatusBar) {
+                    //     if (newSettings?.showStatusBar == true) {
+                    //       SystemChrome.setEnabledSystemUIOverlays(
+                    //         SystemUiOverlay.values,
+                    //       );
+                    //       SystemChrome.setSystemUIOverlayStyle(
+                    //         SystemUiOverlayStyle.dark,
+                    //       );
+                    //     } else {
+                    //       SystemChrome.setEnabledSystemUIOverlays([]);
+                    //     }
+                    //   }
+                    // }
                   }),
                 ],
               ),

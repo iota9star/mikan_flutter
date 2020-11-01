@@ -2,9 +2,9 @@ import 'dart:collection';
 
 import "package:collection/collection.dart";
 import 'package:html/dom.dart';
-import 'package:mikan_flutter/core/caches.dart';
-import 'package:mikan_flutter/core/consts.dart';
-import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/internal/caches.dart';
+import 'package:mikan_flutter/internal/consts.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
@@ -169,9 +169,9 @@ class Resolver {
     );
   }
 
-  static Future<Search> parseSearch(final Document document) async {
+  static Future<SearchResult> parseSearch(final Document document) async {
     List<Element> eles = document.querySelectorAll(
-        "div.leftbar-container .leftbar-item .subgroup-longname") ??
+            "div.leftbar-container .leftbar-item .subgroup-longname") ??
         [];
     final List<Subgroup> subgroups = [];
     String temp;
@@ -220,7 +220,8 @@ class Resolver {
           MikanUrl.BASE_URL + elements[3].children[0].attributes["href"];
       searchs.add(recordItem);
     }
-    return Search(bangumis: bangumis, subgroups: subgroups, searchs: searchs);
+    return SearchResult(
+        bangumis: bangumis, subgroups: subgroups, searchs: searchs);
   }
 
   static Future<List<RecordItem>> parseList(final Document document) async {

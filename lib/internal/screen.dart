@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:mikan_flutter/ext/logger.dart';
+import 'package:mikan_flutter/internal/logger.dart';
 
 class Sz {
   static MediaQueryData _mediaQueryData = MediaQueryData.fromWindow(window);

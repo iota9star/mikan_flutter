@@ -1,6 +1,6 @@
-import 'package:mikan_flutter/core/http.dart';
-import 'package:mikan_flutter/core/repo.dart';
-import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/http.dart';
+import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

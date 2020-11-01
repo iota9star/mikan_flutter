@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:mikan_flutter/core/consts.dart';
-import 'package:mikan_flutter/core/http.dart';
+import 'package:mikan_flutter/internal/consts.dart';
+import 'package:mikan_flutter/internal/http.dart';
 
 class Repo {
   const Repo._();

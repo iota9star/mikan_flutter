@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart' hide Theme;
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/theme.dart';
 import 'package:path_provider/path_provider.dart';
 

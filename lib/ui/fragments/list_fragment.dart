@@ -1,7 +1,7 @@
 import 'package:ant_icons/ant_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/ext/screen.dart';
+import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/models/list_model.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';

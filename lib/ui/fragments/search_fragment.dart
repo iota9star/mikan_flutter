@@ -5,7 +5,7 @@ import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
@@ -21,6 +21,7 @@ class SearchFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color cationColor = Theme.of(context).textTheme.caption.color;
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: ChangeNotifierProvider(
@@ -29,13 +30,17 @@ class SearchFragment extends StatelessWidget {
           physics: BouncingScrollPhysics(),
           slivers: [
             SliverPinnedToBoxAdapter(
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(left: 16.0, right: 8.0, top: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 16.0,
+                      left: 16.0,
+                      right: 8.0,
+                      bottom: 4.0,
+                    ),
+                    child: Row(
                       children: [
                         Expanded(
                           child: Text(
@@ -47,6 +52,18 @@ class SearchFragment extends StatelessWidget {
                             ),
                           ),
                         ),
+                        Selector<SearchModel, bool>(
+                          selector: (_, model) => model.loading,
+                          shouldRebuild: (pre, next) => pre != next,
+                          builder: (_, loading, __) {
+                            if (loading) {
+                              return CupertinoActivityIndicator(
+                                radius: 12.0,
+                              );
+                            }
+                            return Container();
+                          },
+                        ),
                         IconButton(
                           icon: Icon(AntIcons.close),
                           onPressed: () {
@@ -54,26 +71,111 @@ class SearchFragment extends StatelessWidget {
                           },
                         ),
                       ],
-                    )
-                  ],
+                    ),
+                  ),
+                  Builder(
+                    builder: (context) {
+                      return Container(
+                        margin: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                          bottom: 16.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            labelText: '请输入搜索关键字',
+                            prefixIcon: Icon(
+                              AntIcons.search_outline,
+                              color: Theme.of(context).accentColor,
+                            ),
+                            contentPadding: EdgeInsets.only(top: -2),
+                            alignLabelWithHint: true,
+                          ),
+                          cursorColor: Theme.of(context).accentColor,
+                          textAlign: TextAlign.left,
+                          autofocus: true,
+                          maxLines: 1,
+                          style: TextStyle(
+                            height: 1.25,
+                          ),
+                          textInputAction: TextInputAction.search,
+                          controller:
+                              Provider.of<SearchModel>(context, listen: false)
+                                  .keywordsController,
+                          keyboardType: TextInputType.text,
+                          onSubmitted: (keywords) {
+                            if (keywords.isNullOrBlank) return;
+                            context.read<SearchModel>().search(keywords);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Selector<SearchModel, List<Subgroup>>(
+              selector: (_, model) => model.searchResult?.subgroups,
+              shouldRebuild: (pre, next) => pre != next,
+              builder: (_, subgroups, child) {
+                if (subgroups.isNullOrEmpty) {
+                  return SliverToBoxAdapter();
+                }
+                return SliverToBoxAdapter(
+                  child: child,
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 8.0,
+                ),
+                child: Text(
+                  "字幕组",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    height: 1.25,
+                    color: cationColor,
+                  ),
                 ),
               ),
             ),
             Selector<SearchModel, List<Subgroup>>(
-              selector: (_, model) => model.search?.subgroups,
+              selector: (_, model) => model.searchResult?.subgroups,
               shouldRebuild: (pre, next) => pre != next,
               builder: (_, subgroups, __) {
                 if (subgroups.isNullOrEmpty) {
                   return SliverToBoxAdapter();
                 }
+                final bool less = subgroups.length < 5;
                 return SliverPinnedToBoxAdapter(
                   child: Container(
                     width: double.infinity,
-                    height: 96,
+                    height: less ? 40 : 80,
                     child: WaterfallFlow.builder(
                       physics: BouncingScrollPhysics(),
-                      padding:
-                          EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                      padding: EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                      ),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: subgroups.length,
+                      gridDelegate:
+                          SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: less ? 1 : 2,
+                        crossAxisSpacing: 8.0,
+                        mainAxisSpacing: 8.0,
+                        lastChildLayoutTypeBuilder: (index) =>
+                            LastChildLayoutType.none,
+                      ),
                       itemBuilder: (context, index) {
                         final subgroup = subgroups[index];
                         return Selector<SearchModel, String>(
@@ -102,7 +204,9 @@ class SearchFragment extends StatelessWidget {
                               color: color.withOpacity(0.12),
                               elevation: 0,
                               onPressed: () {
-                                context.read<SearchModel>().subgroupId =
+                                context
+                                    .read<SearchModel>()
+                                    .subgroupId =
                                     subgroup.id;
                               },
                             );
@@ -111,23 +215,35 @@ class SearchFragment extends StatelessWidget {
                           shouldRebuild: (pre, next) => pre != next,
                         );
                       },
-                      scrollDirection: Axis.horizontal,
-                      itemCount: subgroups.length,
-                      gridDelegate:
-                          SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                        lastChildLayoutTypeBuilder: (index) =>
-                            LastChildLayoutType.none,
-                      ),
                     ),
                   ),
                 );
               },
             ),
             Selector<SearchModel, List<Bangumi>>(
-              selector: (_, model) => model.search?.bangumis,
+              selector: (_, model) => model.searchResult?.bangumis,
+              shouldRebuild: (pre, next) => pre != next,
+              builder: (_, bangumis, child) {
+                if (bangumis.isNullOrEmpty) {
+                  return SliverToBoxAdapter();
+                }
+                return SliverToBoxAdapter(child: child);
+              },
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 16.0,
+                ),
+                child: Text(
+                  "相关推荐",
+                  style: TextStyle(
+                    fontSize: 16.0, height: 1.25, color: cationColor,),
+                ),
+              ),
+            ),
+            Selector<SearchModel, List<Bangumi>>(
+              selector: (_, model) => model.searchResult?.bangumis,
               shouldRebuild: (pre, next) => pre != next,
               builder: (_, bangumis, __) {
                 if (bangumis.isNullOrEmpty) {
@@ -139,8 +255,10 @@ class SearchFragment extends StatelessWidget {
                     height: 196,
                     child: WaterfallFlow.builder(
                       physics: BouncingScrollPhysics(),
-                      padding:
-                          EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                      padding: EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                      ),
                       scrollDirection: Axis.horizontal,
                       itemCount: bangumis.length,
                       itemBuilder: (_, index) {
@@ -155,29 +273,45 @@ class SearchFragment extends StatelessWidget {
                             } else {
                               transform = Matrix4.identity();
                             }
-                            Widget cover =
-                                _buildBangumiListItem(currFlag, bangumi);
-                            return AnimatedTapContainer(
-                              height: 200,
-                              transform: transform,
-                              onTapStart: () => context
-                                  .read<SearchModel>()
-                                  .tapBangumiItemFlag = currFlag,
-                              onTapEnd: () => context
-                                  .read<SearchModel>()
-                                  .tapBangumiItemFlag = null,
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  Routes.bangumiDetails,
-                                  arguments: {
-                                    "heroTag": currFlag,
-                                    "bangumiId": bangumi.id,
-                                    "cover": bangumi.cover,
-                                  },
-                                );
-                              },
-                              child: cover,
+                            Widget cover = _buildBangumiListItem(
+                                context, currFlag, bangumi);
+                            return Tooltip(
+                              message: bangumi.name,
+                              child: AnimatedTapContainer(
+                                height: double.infinity,
+                                transform: transform,
+                                margin: EdgeInsets.symmetric(
+                                  vertical: 8.0,
+                                ),
+                                onTapStart: () =>
+                                context
+                                    .read<SearchModel>()
+                                    .tapBangumiItemFlag = currFlag,
+                                onTapEnd: () =>
+                                context
+                                    .read<SearchModel>()
+                                    .tapBangumiItemFlag = null,
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      blurRadius: 8.0,
+                                      color: Colors.black.withAlpha(24),
+                                    )
+                                  ],
+                                ),
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    Routes.bangumiDetails,
+                                    arguments: {
+                                      "heroTag": currFlag,
+                                      "bangumiId": bangumi.id,
+                                      "cover": bangumi.cover,
+                                    },
+                                  );
+                                },
+                                child: cover,
+                              ),
                             );
                           },
                           selector: (_, model) => model.tapBangumiItemFlag,
@@ -185,12 +319,12 @@ class SearchFragment extends StatelessWidget {
                         );
                       },
                       gridDelegate:
-                          SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 1,
-                        crossAxisSpacing: 12.0,
-                        mainAxisSpacing: 12.0,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 16.0,
                         lastChildLayoutTypeBuilder: (index) =>
-                            LastChildLayoutType.none,
+                        LastChildLayoutType.none,
                       ),
                     ),
                   ),
@@ -203,43 +337,75 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiListItem(final String currFlag, final Bangumi bangumi) {
-    Widget widget = ExtendedImage(
+  Widget _buildBangumiListItem(final BuildContext context,
+      final String currFlag,
+      final Bangumi bangumi,) {
+    return ExtendedImage(
       image: CachedNetworkImageProvider(bangumi.cover),
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {
-        Widget child;
+        Widget child = Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Container(
+              width: 4,
+              height: 12,
+              margin: EdgeInsets.only(top: 2.0),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme
+                        .of(context)
+                        .accentColor,
+                    Theme
+                        .of(context)
+                        .accentColor
+                        .withOpacity(0.1),
+                  ],
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(2)),
+              ),
+            ),
+            SizedBox(width: 4.0),
+            Expanded(
+              child: Text(
+                bangumi.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  height: 1.25,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+        Widget cover;
         if (value.extendedImageLoadState == LoadState.loading) {
-          child = Container(
+          cover = Container(
             padding: EdgeInsets.all(28.0),
             decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                ),
-              ],
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             child: Center(
               child: SpinKitPumpingHeart(
                 duration: Duration(milliseconds: 960),
-                itemBuilder: (_, __) => Image.asset(
-                  "assets/mikan.png",
-                ),
+                itemBuilder: (_, __) =>
+                    Image.asset(
+                      "assets/mikan.png",
+                    ),
               ),
             ),
           );
         }
         if (value.extendedImageLoadState == LoadState.failed) {
-          child = Container(
+          cover = Container(
             decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
@@ -253,14 +419,8 @@ class SearchFragment extends StatelessWidget {
             value.extendedImageInfo.image.width.toDouble(),
             value.extendedImageInfo.image.height.toDouble(),
           );
-          child = Container(
+          cover = Container(
             decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
               image: DecorationImage(
                 image: value.imageProvider,
@@ -271,15 +431,32 @@ class SearchFragment extends StatelessWidget {
         }
         return AspectRatio(
           aspectRatio: bangumi.coverSize == null
-              ? 1
+              ? 3 / 4
               : bangumi.coverSize.width / bangumi.coverSize.height,
-          child: Hero(
-            tag: currFlag,
-            child: child,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Hero(
+                  tag: currFlag,
+                  child: cover,
+                ),
+              ),
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.transparent, Colors.black45],
+                      ),
+                      borderRadius: BorderRadius.circular(10.0)),
+                ),
+              ),
+              Positioned(bottom: 8.0, right: 8.0, left: 8.0, child: child)
+            ],
           ),
         );
       },
     );
-    return widget;
   }
 }

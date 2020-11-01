@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mikan_flutter/ext/logger.dart';
+import 'package:mikan_flutter/internal/logger.dart';
 
 class BaseModel extends ChangeNotifier {
   bool _disposed = false;

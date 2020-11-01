@@ -6,8 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mikan_flutter/ext/extension.dart';
-import 'package:mikan_flutter/ext/screen.dart';
+import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
@@ -28,7 +28,8 @@ class BangumiGridFragment extends StatelessWidget {
 
   Widget _buildBangumiList(final List<Bangumi> bangumis) {
     return SliverPadding(
-      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
+      padding:
+          EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 16.0),
       sliver: SliverWaterfallFlow(
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
           crossAxisSpacing: 16,

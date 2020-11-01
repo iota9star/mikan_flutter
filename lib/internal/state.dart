@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:mikan_flutter/ext/logger.dart';
+import 'package:mikan_flutter/internal/logger.dart';
 
 abstract class CacheWidgetState<T extends StatefulWidget> extends State<T> {
   Widget _cacheWidget;

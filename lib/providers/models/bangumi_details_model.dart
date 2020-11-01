@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/core/repo.dart';
-import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';

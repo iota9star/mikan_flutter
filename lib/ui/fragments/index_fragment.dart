@@ -9,8 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mikan_flutter/ext/extension.dart';
-import 'package:mikan_flutter/ext/screen.dart';
+import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
@@ -28,7 +28,6 @@ import 'package:provider/provider.dart';
 @immutable
 class IndexFragment extends StatelessWidget {
   final ValueNotifier<double> _scrollNotifier = ValueNotifier<double>(0.0);
-  final double itemHeight = (Sz.screenWidth - 32 - 32) / 3 + 40 + 16;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +38,8 @@ class IndexFragment extends StatelessWidget {
             notification.disallowGlow();
           } else if (notification is ScrollUpdateNotification) {
             if (notification.depth == 0) {
-              var offset = notification.metrics.pixels;
-              print('offset: ${notification.metrics.viewportDimension}');
+              final double offset = notification.metrics.pixels;
+              context.read<IndexModel>().hasScrolled = offset > 0;
               _scrollNotifier.value = offset;
             }
           }
@@ -442,7 +441,7 @@ class IndexFragment extends StatelessWidget {
                           },
                         );
                       },
-                      margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
+                      margin: EdgeInsets.only(top: 16.0, bottom: 12.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(16.0)),
                         color: Theme
@@ -481,18 +480,35 @@ class IndexFragment extends StatelessWidget {
   }
 
   Widget _buildHeader(final BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        top: 36.0 + Sz.statusBarHeight,
-        bottom: 8.0,
-      ),
-      decoration: BoxDecoration(
-        color: Theme
-            .of(context)
-            .scaffoldBackgroundColor,
-      ),
+    return Selector<IndexModel, bool>(
+      selector: (_, model) => model.hasScrolled,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, hasScrolled, child) {
+        return AnimatedContainer(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 16.0 + Sz.statusBarHeight,
+            bottom: 4.0,
+          ),
+          decoration: BoxDecoration(
+              color: Theme
+                  .of(context)
+                  .scaffoldBackgroundColor,
+              boxShadow: hasScrolled
+                  ? [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  offset: Offset(0, 1),
+                  blurRadius: 2.0,
+                  spreadRadius: 2.0,
+                ),
+              ]
+                  : null),
+          duration: Duration(milliseconds: 240),
+          child: child,
+        );
+      },
       child: Row(
         children: <Widget>[
           Expanded(

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/ext/screen.dart';
+import 'package:mikan_flutter/internal/screen.dart';
 
 class BarItem {
   final IconData icon;

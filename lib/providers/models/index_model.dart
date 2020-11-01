@@ -1,6 +1,6 @@
-import 'package:mikan_flutter/core/http.dart';
-import 'package:mikan_flutter/core/repo.dart';
-import 'package:mikan_flutter/ext/extension.dart';
+import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/http.dart';
+import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
@@ -24,6 +24,17 @@ class IndexModel extends CancelableBaseModel {
   String _tapBangumiRssItemFlag;
   String _tapBangumiCarouselItemFlag;
   BangumiRow _selectedBangumiRow;
+
+  bool _hasScrolled = false;
+
+  bool get hasScrolled => _hasScrolled;
+
+  set hasScrolled(bool value) {
+    if (this._hasScrolled != value) {
+      this._hasScrolled = value;
+      notifyListeners();
+    }
+  }
 
   BangumiRow get selectedBangumiRow => _selectedBangumiRow;
 
