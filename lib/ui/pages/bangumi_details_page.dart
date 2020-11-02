@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:ant_icons/ant_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -105,9 +105,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Icon(
-                                  AntIcons.swap_left,
-                                ),
+                                child: Icon(FluentIcons.caret_left_24_regular),
                                 color: backgroundColor.withOpacity(0.87),
                                 minWidth: 0,
                                 padding: EdgeInsets.all(10.0),
@@ -310,8 +308,10 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
     );
   }
 
-  Widget _buildBangumiSubgroups(Color backgroundColor,
-      Color accentColor,) {
+  Widget _buildBangumiSubgroups(
+    Color backgroundColor,
+    Color accentColor,
+  ) {
     return Selector<BangumiDetailsModel, List<SubgroupBangumi>>(
       selector: (_, model) => model.bangumiDetails?.subgroupBangumis,
       shouldRebuild: (pre, next) => pre != next,
@@ -431,9 +431,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
                   Spacer(flex: 3),
                   MaterialButton(
                     onPressed: () {},
-                    child: Icon(
-                      AntIcons.like,
-                    ),
+                    child: Icon(FluentIcons.thumb_like_24_filled),
                     color: Colors.pinkAccent,
                     padding: EdgeInsets.all(12.0),
                     minWidth: 0,
@@ -442,9 +440,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
                   Spacer(),
                   MaterialButton(
                     onPressed: () {},
-                    child: Icon(
-                      AntIcons.star,
-                    ),
+                    child: Icon(FluentIcons.star_24_filled),
                     color: Colors.blueAccent,
                     minWidth: 0,
                     padding: EdgeInsets.all(16.0),

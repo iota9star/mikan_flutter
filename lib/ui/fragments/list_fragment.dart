@@ -1,6 +1,7 @@
-import 'package:ant_icons/ant_icons.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/models/list_model.dart';
@@ -247,35 +248,48 @@ class ListFragment extends StatelessWidget {
                                             MainAxisAlignment.end,
                                         children: <Widget>[
                                           IconButton(
-                                            icon: Icon(AntIcons.paper_clip),
+                                            icon: Icon(
+                                                FluentIcons.channel_24_regular),
                                             color: accentColor,
                                             tooltip: "打开详情页",
                                             iconSize: 20.0,
                                             onPressed: () {},
                                           ),
                                           IconButton(
-                                            icon: Icon(AntIcons.download),
+                                            icon: Icon(FluentIcons
+                                                .cloud_download_24_regular),
                                             tooltip: "复制并尝试打开种子链接",
                                             color: accentColor,
                                             iconSize: 20.0,
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              record.torrent.launchApp();
+                                              record.torrent.copy();
+                                            },
                                           ),
                                           IconButton(
-                                            icon: Icon(AntIcons.link),
+                                            icon: Icon(FluentIcons
+                                                .clipboard_link_24_regular),
                                             color: accentColor,
                                             tooltip: "复制并尝试打开磁力链接",
                                             iconSize: 20.0,
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              record.magnet.launchApp();
+                                              record.magnet.copy();
+                                            },
                                           ),
                                           IconButton(
-                                            icon: Icon(AntIcons.share_alt),
+                                            icon: Icon(
+                                                FluentIcons.share_24_regular),
                                             color: accentColor,
                                             tooltip: "分享",
                                             iconSize: 20.0,
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              record.magnet.share();
+                                            },
                                           ),
                                           IconButton(
-                                            icon: Icon(AntIcons.star_outline),
+                                            icon: Icon(
+                                                FluentIcons.star_24_regular),
                                             color: accentColor,
                                             tooltip: "收藏",
                                             iconSize: 20.0,

@@ -1,5 +1,5 @@
-import 'package:ant_icons/ant_icons.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -21,6 +21,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
+    final Color primaryColor = Theme.of(context).primaryColor;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ListenableProxyProvider<IndexModel, LoginModel>(
@@ -88,12 +89,14 @@ class LoginPage extends StatelessWidget {
                       builder: (context) {
                         return TextField(
                           controller:
-                              Provider.of<LoginModel>(context, listen: false)
-                                  .accountController,
+                          Provider
+                              .of<LoginModel>(context, listen: false)
+                              .accountController,
                           decoration: InputDecoration(
                               border: InputBorder.none,
                               labelText: '帐号',
-                              prefixIcon: Icon(AntIcons.user)),
+                              prefixIcon: Icon(
+                                  FluentIcons.inprivate_account_24_regular)),
                           keyboardType: TextInputType.text,
                         );
                       },
@@ -113,12 +116,14 @@ class LoginPage extends StatelessWidget {
                         return TextField(
                           obscureText: true,
                           controller:
-                              Provider.of<LoginModel>(context, listen: false)
-                                  .passwordController,
+                          Provider
+                              .of<LoginModel>(context, listen: false)
+                              .passwordController,
                           decoration: InputDecoration(
                               border: InputBorder.none,
                               labelText: '密码',
-                              prefixIcon: Icon(AntIcons.key_outline)),
+                              prefixIcon:
+                              Icon(FluentIcons.password_24_regular)),
                           keyboardType: TextInputType.visiblePassword,
                         );
                       },
@@ -172,16 +177,19 @@ class LoginPage extends StatelessWidget {
                               final bool isNotOk = user == null ||
                                   user?.token?.isNullOrBlank == true;
                               final Color iconColor =
-                                  accentColor.computeLuminance() < 0.5
-                                      ? Colors.white
-                                      : Colors.black;
+                              (loading ? primaryColor : accentColor)
+                                  .computeLuminance() <
+                                  0.5
+                                  ? Colors.white
+                                  : Colors.black;
                               return Ink(
                                 decoration: ShapeDecoration(
                                   shape: CircleBorder(),
                                   gradient: LinearGradient(
                                     colors: [
-                                      accentColor,
-                                      accentColor.withOpacity(0.8),
+                                      loading ? primaryColor : accentColor,
+                                      (loading ? primaryColor : accentColor)
+                                          .withOpacity(0.8),
                                     ],
                                   ),
                                   shadows: [
@@ -197,22 +205,23 @@ class LoginPage extends StatelessWidget {
                                     color: iconColor,
                                     icon: isNotOk || loading
                                         ? SpinKitFoldingCube(
-                                            color: iconColor,
-                                            size: 16.0,
-                                            duration: const Duration(
-                                                milliseconds: 1600),
-                                          )
-                                        : Icon(AntIcons.swap_right),
+                                      color: iconColor,
+                                      size: 16.0,
+                                      duration: const Duration(
+                                          milliseconds: 1600),
+                                    )
+                                        : Icon(
+                                        FluentIcons.caret_right_24_regular),
                                     onPressed: () {
                                       if (isNotOk || loading) return;
                                       context.read<LoginModel>().submit(
-                                        () {
+                                            () {
                                           context
                                               .read<IndexModel>()
                                               .loadIndex();
                                           Navigator.popUntil(
                                             context,
-                                            (route) =>
+                                                (route) =>
                                                 route.settings.name ==
                                                 Routes.home,
                                           );

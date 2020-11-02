@@ -1,10 +1,10 @@
 import 'dart:math' as Math;
 import 'dart:ui';
 
-import 'package:ant_icons/ant_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_sliver/extended_sliver.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -209,8 +209,8 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Selector<IndexModel, String> _buildMoreRssItemBtn(BuildContext context,
-      Map<String, List<RecordItem>> rss) {
+  Selector<IndexModel, String> _buildMoreRssItemBtn(
+      BuildContext context, Map<String, List<RecordItem>> rss) {
     return Selector<IndexModel, String>(
       selector: (_, model) => model.tapBangumiRssItemFlag,
       shouldRebuild: (pre, next) => pre != next,
@@ -499,10 +499,10 @@ class IndexFragment extends StatelessWidget {
                   ? [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
+                  offset: Offset(0, 1),
+                  blurRadius: 3.0,
+                  spreadRadius: 3.0,
+                ),
               ]
                   : null),
           duration: Duration(milliseconds: 240),
@@ -570,9 +570,7 @@ class IndexFragment extends StatelessWidget {
             onPressed: () {
               _showSearchPanel(context);
             },
-            child: Icon(
-              AntIcons.search_outline,
-            ),
+            child: Icon(FluentIcons.search_24_regular),
             minWidth: 0,
             padding: EdgeInsets.all(10.0),
             shape: CircleBorder(),

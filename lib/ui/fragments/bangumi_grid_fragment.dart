@@ -1,9 +1,9 @@
 import 'dart:math' as Math;
 import 'dart:ui';
 
-import 'package:ant_icons/ant_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -141,7 +141,7 @@ class BangumiGridFragment extends StatelessWidget {
                                 tooltip: "取消订阅",
                                 padding: EdgeInsets.all(2.0),
                                 icon: Icon(
-                                  AntIcons.heart,
+                                  FluentIcons.heart_24_filled,
                                   color: Colors.redAccent,
                                 ),
                                 onPressed: () {
@@ -163,7 +163,7 @@ class BangumiGridFragment extends StatelessWidget {
                                 padding: EdgeInsets.all(2.0),
                                 iconSize: 16.0,
                                 icon: Icon(
-                                  AntIcons.heart_outline,
+                                  FluentIcons.heart_24_regular,
                                   color: Colors.white,
                                 ),
                                 onPressed: () {

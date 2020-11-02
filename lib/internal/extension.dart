@@ -1,5 +1,8 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 extension IterableExt<T> on Iterable<T> {
   bool get isNullOrEmpty => this == null || this.isEmpty;
@@ -29,6 +32,25 @@ extension StringExt on String {
     if (this.isNotBlank) {
       showToast(this);
     }
+  }
+
+  launchApp() async {
+    if (this.isNullOrBlank) return "当前地址为空，忽略".toast();
+    if (await canLaunch(this)) {
+      await launch(this);
+    } else {
+      "无法找到可打开应用".toast();
+    }
+  }
+
+  copy() {
+    if (this.isNullOrBlank) return "当前值为空，无内容可以复制".toast();
+    FlutterClipboard.copy(this).then((_) => "复制成功".toast());
+  }
+
+  share() {
+    if (this.isNullOrBlank) return "没有内容供分享".toast();
+    Share.share(this);
   }
 }
 
