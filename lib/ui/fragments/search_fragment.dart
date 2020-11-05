@@ -29,8 +29,10 @@ class SearchFragment extends StatelessWidget {
       height: 1.25,
       color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
+    final Color scaffoldBackgroundColor =
+        Theme.of(context).scaffoldBackgroundColor;
     return Material(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: scaffoldBackgroundColor,
       child: ChangeNotifierProvider(
         create: (_) => SearchModel(),
         child: Builder(
@@ -292,17 +294,20 @@ class SearchFragment extends StatelessWidget {
             selector: (_, model) => model.hasScrolled,
             shouldRebuild: (pre, next) => pre != next,
             builder: (_, hasScrolled, child) {
-              return AnimatedContainer(
-                padding: EdgeInsets.only(
-                  left: 16.0,
-                  right: 16.0,
-                  top: topPadding,
-                  bottom: 8.0,
-                ),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    boxShadow: hasScrolled
-                        ? [
+              return
+                AnimatedContainer(
+                  padding: EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    top: topPadding,
+                    bottom: 8.0,
+                  ),
+                  decoration: BoxDecoration(
+                      color: Theme
+                          .of(context)
+                          .scaffoldBackgroundColor,
+                      boxShadow: hasScrolled
+                          ? [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.024),
                               offset: Offset(0, 1),

@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class BangumiDetailsModel extends CancelableBaseModel {
   final String id;
@@ -25,11 +25,18 @@ class BangumiDetailsModel extends CancelableBaseModel {
 
   Size coverSize;
 
-  final PanelController _panelController = PanelController();
+  bool _hasScrolledSubgroupRecords = false;
+
+  bool get hasScrolledSubgroupRecords => _hasScrolledSubgroupRecords;
+
+  setScrolledSubgroupRecords(bool value) {
+    if (this._hasScrolledSubgroupRecords != value) {
+      _hasScrolledSubgroupRecords = value;
+      notifyListeners();
+    }
+  }
 
   final RefreshController _refreshController = RefreshController();
-
-  PanelController get panelController => _panelController;
 
   RefreshController get refreshController => _refreshController;
 
@@ -46,20 +53,18 @@ class BangumiDetailsModel extends CancelableBaseModel {
   SubgroupBangumi get subgroupBangumi => _subgroupBangumi;
 
   set selectedSubgroupId(String value) {
+    if (value == _subgroupBangumi?.subgroupId) {
+      return;
+    }
     _subgroupBangumi = _bangumiDetails.subgroupBangumis.firstWhere(
-            (element) => element.subgroupId == value,
-        orElse: () => null);
+          (element) => element.subgroupId == value,
+      orElse: () => null,
+    );
+    _hasScrolledSubgroupRecords = false;
     if (_refreshController.headerStatus != RefreshStatus.completed) {
       _refreshController.loadComplete();
     }
-    _refreshController.resetNoData();
     notifyListeners();
-    _panelController.animatePanelToPosition(
-      1.0,
-      duration: Duration(
-        milliseconds: 240,
-      ),
-    );
   }
 
   Color _coverMainColor;
@@ -84,49 +89,46 @@ class BangumiDetailsModel extends CancelableBaseModel {
     });
   }
 
-  loadSubgroupList() {
+  loadSubgroupList() async {
     if (this._subgroupBangumi.records.length < 10) {
       return _refreshController.loadNoData();
     }
-    Repo.bangumiMore(
-      this.id,
-      this._subgroupBangumi.subgroupId,
-      this._subgroupBangumi.records.length + 20,
-    ).then((resp) {
-      if (resp.success) {
-        if (this._subgroupBangumi.records.length == resp.data.length) {
-          _refreshController.loadNoData();
-        }
-        this._subgroupBangumi.records = resp.data;
+    final Resp resp = await (this +
+        Repo.bangumiMore(
+          this.id,
+          this._subgroupBangumi.subgroupId,
+          this._subgroupBangumi.records.length + 20,
+        ));
+    if (resp.success) {
+      if (this._subgroupBangumi.records.length == resp.data.length) {
+        _refreshController.loadNoData();
       } else {
-        _refreshController.loadFailed();
-        resp.msg.toast();
-      }
-    }).whenComplete(() {
-      if (_refreshController.headerStatus != RefreshStatus.completed) {
         _refreshController.loadComplete();
       }
-      this.notifyListeners();
-    });
+      this._subgroupBangumi.records = resp.data;
+      notifyListeners();
+    } else {
+      _refreshController.loadFailed();
+      resp.msg.toast();
+    }
   }
 
-  _loadBangumiDetails() {
+  _loadBangumiDetails() async {
     this._loading = true;
-    Repo.bangumi(this.id).then((resp) {
-      if (resp.success) {
-        _bangumiDetails = resp.data;
-      } else {
-        resp.msg?.toast();
-      }
-    }).whenComplete(() {
-      this._loading = false;
-      notifyListeners();
-    });
+    notifyListeners();
+    final resp = await (this + Repo.bangumi(this.id));
+    this._loading = false;
+    if (resp.success) {
+      _bangumiDetails = resp.data;
+    } else {
+      resp.msg?.toast();
+    }
+    notifyListeners();
   }
 
   @override
   void dispose() {
-    _refreshController.dispose();
+    _refreshController?.dispose();
     super.dispose();
   }
 }

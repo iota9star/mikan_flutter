@@ -29,7 +29,6 @@ dependencies:
   async: ^2.4.2
   isolate: ^2.0.3
   fluentui_system_icons: ^1.1.54
-  sliding_up_panel: ^1.0.2
   clipboard: ^0.1.2+8
   url_launcher: ^5.7.10
   share: ^0.6.5+4

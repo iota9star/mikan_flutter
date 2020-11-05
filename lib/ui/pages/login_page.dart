@@ -55,12 +55,12 @@ class LoginPage extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             "Welcome to Mikan",
-                            style: TextStyle(fontSize: 18.0),
+                            style: TextStyle(fontSize: 16.0),
                           ),
                           Text(
                             "蜜柑计划",
                             style: TextStyle(
-                              fontSize: 48.0,
+                              fontSize: 40.0,
                               height: 1.25,
                               fontWeight: FontWeight.w500,
                             ),
@@ -141,6 +141,7 @@ class LoginPage extends StatelessWidget {
                             return Checkbox(
                               value: checked,
                               visualDensity: VisualDensity(),
+                              activeColor: accentColor,
                               onChanged: (val) {
                                 context.read<LoginModel>().rememberMe = val;
                               },
