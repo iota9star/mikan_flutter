@@ -19,6 +19,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 class BangumiGridFragment extends StatelessWidget {
   final List<Bangumi> bangumis;
   final ValueNotifier<double> scrollNotifier;
+  final ValueNotifier<double> _scrollNotifier = ValueNotifier(0);
 
   BangumiGridFragment({Key key, this.bangumis, this.scrollNotifier})
       : super(key: key);
@@ -58,14 +59,11 @@ class BangumiGridFragment extends StatelessWidget {
     final String currFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
     return Selector<IndexModel, String>(
       builder: (context, tapScaleFlag, child) {
-        Matrix4 transform;
-        if (tapScaleFlag == currFlag) {
-          transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
-        } else {
-          transform = Matrix4.identity();
-        }
+        final Matrix4 transform = tapScaleFlag == currFlag
+            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+            : Matrix4.identity();
         final Widget cover =
-        _buildBangumiListItemCover(currFlag, bangumi, index);
+            _buildBangumiListItemCover(currFlag, bangumi, index);
         // final Color tagBgColor = Theme.of(context).primaryColor.withOpacity(0.87);
         // final Color tagColor = tagBgColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
         return Column(
@@ -74,7 +72,7 @@ class BangumiGridFragment extends StatelessWidget {
             AnimatedTapContainer(
               transform: transform,
               onTapStart: () =>
-              context
+                  context
                   .read<IndexModel>()
                   .tapBangumiListItemFlag = currFlag,
               onTapEnd: () =>
@@ -333,7 +331,7 @@ class BangumiGridFragment extends StatelessWidget {
       ExtendedImageState state,
       Bangumi bangumi,) {
     return ValueListenableBuilder(
-      valueListenable: scrollNotifier,
+      valueListenable: _scrollNotifier,
       builder: (BuildContext context, double scrolledOffset, Widget child) {
         final double itemPosition = itemHeight * bangumi.location.row +
             sectionHeight * bangumi.location.srow;

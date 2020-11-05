@@ -99,12 +99,9 @@ class SearchFragment extends StatelessWidget {
                 selector: (_, model) => model.tapRecordItemIndex,
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (context, tapRecordItemIndex, child) {
-                  Matrix4 transform;
-                  if (tapRecordItemIndex == index) {
-                    transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
-                  } else {
-                    transform = Matrix4.identity();
-                  }
+                  final Matrix4 transform = tapRecordItemIndex == index
+                      ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                      : Matrix4.identity();
                   return AnimatedTapContainer(
                     transform: transform,
                     child: child,
@@ -232,8 +229,8 @@ class SearchFragment extends StatelessWidget {
                                 },
                               ),
                               IconButton(
-                                icon: Icon(
-                                    FluentIcons.clipboard_link_24_regular),
+                                icon:
+                                    Icon(FluentIcons.clipboard_link_24_regular),
                                 color: accentColor,
                                 tooltip: "复制并尝试打开磁力链接",
                                 iconSize: 20.0,
@@ -358,14 +355,11 @@ class SearchFragment extends StatelessWidget {
                     "bangumi:${bangumi.id}:${bangumi.cover}";
                 return Selector<SearchModel, String>(
                   builder: (context, tapScaleFlag, child) {
-                    Matrix4 transform;
-                    if (tapScaleFlag == currFlag) {
-                      transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
-                    } else {
-                      transform = Matrix4.identity();
-                    }
+                    final Matrix4 transform = tapScaleFlag == currFlag
+                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                        : Matrix4.identity();
                     Widget cover =
-                        _buildBangumiListItem(context, currFlag, bangumi);
+                    _buildBangumiListItem(context, currFlag, bangumi);
                     return Tooltip(
                       message: bangumi.name,
                       child: AnimatedTapContainer(
@@ -588,6 +582,8 @@ class SearchFragment extends StatelessWidget {
                   },
                 ),
                 IconButton(
+                  padding: EdgeInsets.zero,
+                  tooltip: "关闭",
                   icon: Icon(FluentIcons.dismiss_24_regular),
                   onPressed: () {
                     Navigator.pop(context);

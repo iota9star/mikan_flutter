@@ -4,6 +4,7 @@ import "package:collection/collection.dart";
 import 'package:html/dom.dart';
 import 'package:mikan_flutter/internal/caches.dart';
 import 'package:mikan_flutter/internal/consts.dart';
+import 'package:mikan_flutter/internal/enums.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
@@ -21,18 +22,6 @@ import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 
 class Resolver {
-  static final weekMap = {
-    "星期一": "月",
-    "星期二": "火",
-    "星期三": "水",
-    "星期四": "木",
-    "星期五": "金",
-    "星期六": "土",
-    "星期日": "日",
-    "剧场版": "剧",
-    "OVA": "O",
-  };
-
   static Future<List<BangumiRow>> parseSeason(final Document document) async {
     final List<Element> rowElements =
         document.querySelectorAll("div.sk-bangumi") ?? [];
@@ -48,7 +37,7 @@ class Resolver {
       bangumiRow = BangumiRow();
       temp = rowEle.children[0].text.trim();
       bangumiRow.name = temp;
-      temp = weekMap[temp] ?? temp;
+      temp = WeekSection.getByName(temp)?.name ?? temp;
       bangumiRow.sname = temp;
       bangumiElements = rowEle.querySelectorAll("li") ?? [];
       bangumis = [];
@@ -289,11 +278,10 @@ class Resolver {
       record.groups = subgroups;
       tempElements = elements[2].children;
       tempElement = tempElements[0];
-      temp =
-          tempElement.text
-              .trim()
-              .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
-              .replaceAll(RegExp("/\\s*/+"), "/");
+      temp = tempElement.text
+          .trim()
+          .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
+          .replaceAll(RegExp("/\\s*/+"), "/");
       tags = LinkedHashSet();
       tempLowerCase = temp.toLowerCase();
       keywords.forEach((key, value) {
@@ -559,7 +547,8 @@ class Resolver {
         ?.trim();
     final Set<String> tags = LinkedHashSet();
     if (title.isNotBlank) {
-      title = title.replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
+      title = title
+          .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
           .replaceAll(RegExp("/\\s*/+"), "/");
       recordDetails.title = title;
       final String lowerCaseTitle = title.toLowerCase();

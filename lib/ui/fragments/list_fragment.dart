@@ -97,13 +97,9 @@ class ListFragment extends StatelessWidget {
                             selector: (_, model) => model.scaleIndex,
                             shouldRebuild: (pre, next) => pre != next,
                             builder: (context, scaleIndex, child) {
-                              Matrix4 transform;
-                              if (scaleIndex == index) {
-                                transform =
-                                    Matrix4.diagonal3Values(0.9, 0.9, 1);
-                              } else {
-                                transform = Matrix4.identity();
-                              }
+                              final Matrix4 transform = scaleIndex == index
+                                  ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                                  : Matrix4.identity();
                               return AnimatedTapContainer(
                                 transform: transform,
                                 child: child,

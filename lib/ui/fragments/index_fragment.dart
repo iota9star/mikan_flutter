@@ -215,23 +215,16 @@ class IndexFragment extends StatelessWidget {
       selector: (_, model) => model.tapBangumiRssItemFlag,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, tapScaleFlag, child) {
-        Matrix4 transform;
         final String currFlag = "rss:more-rss";
-        if (tapScaleFlag == currFlag) {
-          transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
-        } else {
-          transform = Matrix4.identity();
-        }
+        final Matrix4 transform = tapScaleFlag == currFlag
+            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+            : Matrix4.identity();
         return AnimatedTapContainer(
           transform: transform,
           onTapStart: () =>
-          context
-              .read<IndexModel>()
-              .tapBangumiRssItemFlag = currFlag,
+              context.read<IndexModel>().tapBangumiRssItemFlag = currFlag,
           onTapEnd: () =>
-          context
-              .read<IndexModel>()
-              .tapBangumiRssItemFlag = null,
+              context.read<IndexModel>().tapBangumiRssItemFlag = null,
           width: 64.0,
           margin: EdgeInsets.symmetric(
             horizontal: 6.0,
@@ -290,12 +283,9 @@ class IndexFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre != next,
       selector: (_, model) => model.tapBangumiRssItemFlag,
       builder: (context, tapScaleFlag, child) {
-        Matrix4 transform;
-        if (tapScaleFlag == currFlag) {
-          transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
-        } else {
-          transform = Matrix4.identity();
-        }
+        final Matrix4 transform = tapScaleFlag == currFlag
+            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+            : Matrix4.identity();
         return AnimatedTapContainer(
           transform: transform,
           onTapStart: () =>
@@ -412,12 +402,9 @@ class IndexFragment extends StatelessWidget {
                 selector: (_, model) => model.tapBangumiCarouselItemFlag,
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (context, tapScaleFlag, child) {
-                  Matrix4 transform;
-                  if (tapScaleFlag == currFlag) {
-                    transform = Matrix4.diagonal3Values(0.8, 0.8, 1.0);
-                  } else {
-                    transform = Matrix4.identity();
-                  }
+                  final Matrix4 transform = tapScaleFlag == currFlag
+                      ? Matrix4.diagonal3Values(0.8, 0.8, 1)
+                      : Matrix4.identity();
                   return Hero(
                     tag: currFlag,
                     child: AnimatedTapContainer(
