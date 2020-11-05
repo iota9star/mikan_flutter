@@ -14,6 +14,7 @@ class AnimatedTapContainer extends ImplicitlyAnimatedWidget {
     double height,
     BoxConstraints constraints,
     this.margin,
+    this.padding,
     transform,
     this.borderRadius = BorderRadius.zero,
     this.onTap,
@@ -22,7 +23,8 @@ class AnimatedTapContainer extends ImplicitlyAnimatedWidget {
     this.child,
     Curve curve = Curves.easeInOut,
     Duration duration,
-  })  : assert(margin == null || margin.isNonNegative),
+  })  : assert(padding == null || padding.isNonNegative),
+        assert(margin == null || margin.isNonNegative),
         assert(decoration == null || decoration.debugAssertIsValid()),
         assert(constraints == null || constraints.debugAssertIsValid()),
         assert(
@@ -38,8 +40,8 @@ class AnimatedTapContainer extends ImplicitlyAnimatedWidget {
         transform = transform ?? Matrix4.identity(),
         super(
             key: key,
-            curve: curve,
-            duration: duration ?? Duration(milliseconds: 200));
+          curve: curve,
+          duration: duration ?? Duration(milliseconds: 200));
 
   final Widget child;
   final AlignmentGeometry childAlignment;
@@ -48,6 +50,7 @@ class AnimatedTapContainer extends ImplicitlyAnimatedWidget {
   final Decoration foregroundDecoration;
   final BoxConstraints constraints;
   final EdgeInsetsGeometry margin;
+  final EdgeInsetsGeometry padding;
   final Matrix4 transform;
   final BorderRadius borderRadius;
   final VoidCallback onTap;
@@ -66,6 +69,7 @@ class _AnimatedTapContainerState
   DecorationTween _foregroundDecoration;
   BoxConstraintsTween _constraints;
   EdgeInsetsGeometryTween _margin;
+  EdgeInsetsGeometryTween _padding;
   Matrix4Tween _transform;
   BorderRadiusTween _borderRadius;
   DateTime _clickTime;
@@ -73,25 +77,27 @@ class _AnimatedTapContainerState
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
     _childAlignment = visitor(_childAlignment, widget.childAlignment,
-        (dynamic value) => AlignmentGeometryTween(begin: value));
+            (dynamic value) => AlignmentGeometryTween(begin: value));
     _transformAlignment = visitor(
         _transformAlignment,
         widget.transformAlignment,
-        (dynamic value) => AlignmentGeometryTween(begin: value));
+            (dynamic value) => AlignmentGeometryTween(begin: value));
     _decoration = visitor(_decoration, widget.decoration,
-        (dynamic value) => DecorationTween(begin: value));
+            (dynamic value) => DecorationTween(begin: value));
     _foregroundDecoration = visitor(
         _foregroundDecoration,
         widget.foregroundDecoration,
-        (dynamic value) => DecorationTween(begin: value));
+            (dynamic value) => DecorationTween(begin: value));
     _constraints = visitor(_constraints, widget.constraints,
-        (dynamic value) => BoxConstraintsTween(begin: value));
+            (dynamic value) => BoxConstraintsTween(begin: value));
     _margin = visitor(_margin, widget.margin,
-        (dynamic value) => EdgeInsetsGeometryTween(begin: value));
+            (dynamic value) => EdgeInsetsGeometryTween(begin: value));
+    _padding = visitor(_padding, widget.padding,
+            (dynamic value) => EdgeInsetsGeometryTween(begin: value));
     _transform = visitor(_transform, widget.transform,
-        (dynamic value) => Matrix4Tween(begin: value));
+            (dynamic value) => Matrix4Tween(begin: value));
     _borderRadius = visitor(_borderRadius, widget.borderRadius,
-        (dynamic value) => BorderRadiusTween(begin: value));
+            (dynamic value) => BorderRadiusTween(begin: value));
   }
 
   @override
@@ -122,6 +128,7 @@ class _AnimatedTapContainerState
         foregroundDecoration: _foregroundDecoration?.evaluate(animation),
         constraints: _constraints?.evaluate(animation),
         margin: _margin?.evaluate(animation),
+        padding: _padding?.evaluate(animation),
       ),
     );
   }

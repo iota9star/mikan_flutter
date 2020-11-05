@@ -87,25 +87,25 @@ class Resolver {
   static Future<List<RecordItem>> parseDay(final Document document) async {
     final List<Element> elements =
         document.querySelectorAll("#an-list-res .my-rss-item") ?? [];
-    RecordItem recordItem;
+    RecordItem record;
     final List<RecordItem> list = [];
     Element element;
     List<Element> tempEles;
     String temp;
     for (final ele in elements) {
-      recordItem = RecordItem();
+      record = RecordItem();
       element = ele.querySelector("div.sk-col.rss-thumb");
       if (element != null) {
         temp = element.attributes['style'];
-        recordItem.cover =
+        record.cover =
             MikanUrl.BASE_URL + RegExp(r"\((.*)\)").firstMatch(temp).group(1);
       }
       element = ele.querySelector("div.sk-col.rss-name > div > a");
       if (element != null) {
-        recordItem.name = element.text.trim();
+        record.name = element.text.trim();
         temp = element.attributes['href'];
         if (temp.isNotBlank) {
-          recordItem.id = temp.substring(14).split("#")[0];
+          record.id = temp.substring(14).split("#")[0];
         }
       }
       tempEles = ele.querySelectorAll("div.sk-col.rss-name > a");
@@ -114,28 +114,23 @@ class Resolver {
         if (element != null) {
           temp = element.attributes['href'];
           if (temp.isNotBlank) {
-            recordItem.torrent = MikanUrl.BASE_URL + temp;
+            record.torrent = MikanUrl.BASE_URL + temp;
           }
-          recordItem.title = ("/" +
-                  element.text
-                      .trim()
-                      .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/") +
-                  "/")
-              .replaceAll(RegExp("/\\s*/+"), "/");
+          record.title =
+              element.text.trim().replaceAll("【", "[").replaceAll("】", "]");
           temp = element.querySelector("span")?.text;
           if (temp.isNotBlank) {
-            recordItem.size = temp.replaceAll("\[|\]", "");
+            record.size = temp.replaceAll("\[|\]", "");
           }
         }
         element = tempEles.getOrNull(1);
-        recordItem.magnet =
-            element?.attributes?.getOrNull('data-clipboard-text');
+        record.magnet = element?.attributes?.getOrNull('data-clipboard-text');
         element = tempEles.getOrNull(2);
-        recordItem.url = element?.attributes?.getOrNull("href");
+        record.url = element?.attributes?.getOrNull("href");
       }
-      recordItem.publishAt =
+      record.publishAt =
           ele.querySelector("div.sk-col.pull-right.publish-date")?.text?.trim();
-      list.add(recordItem);
+      list.add(record);
     }
     return list;
   }
@@ -206,12 +201,9 @@ class Resolver {
       elements = ele.querySelectorAll("td");
       record.url =
           MikanUrl.BASE_URL + elements[0].children[0].attributes['href'];
-      temp = elements[0]
-          .children[0]
-          .text
-          .trim()
-          .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
-          .replaceAll(RegExp("/\\s*/+"), "/");
+      temp =
+          elements[0].children[0].text.trim().replaceAll("【", "[").replaceAll(
+              "】", "]");
       tags = LinkedHashSet();
       tempLowerCase = temp.toLowerCase();
       keywords.forEach((key, value) {
@@ -278,10 +270,7 @@ class Resolver {
       record.groups = subgroups;
       tempElements = elements[2].children;
       tempElement = tempElements[0];
-      temp = tempElement.text
-          .trim()
-          .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
-          .replaceAll(RegExp("/\\s*/+"), "/");
+      temp = tempElement.text.trim().replaceAll("【", "[").replaceAll("】", "]");
       tags = LinkedHashSet();
       tempLowerCase = temp.toLowerCase();
       keywords.forEach((key, value) {
@@ -470,7 +459,9 @@ class Resolver {
     List<Element> elements;
     String temp;
     List<RecordItem> records;
-    RecordItem recordItem;
+    RecordItem record;
+    String tempLowerCase;
+    Set<String> tags;
     if (tables.length == subs.length) {
       for (int i = 0; i < tables.length; i++) {
         subgroupBangumi = SubgroupBangumi();
@@ -497,18 +488,28 @@ class Resolver {
         element = tables.elementAt(i);
         elements = element.querySelectorAll("tbody > tr");
         for (final Element ele in elements) {
-          recordItem = RecordItem();
+          record = RecordItem();
           element = ele.children[0];
-          recordItem.magnet =
+          record.magnet =
           element.children[1].attributes['data-clipboard-text'];
           element = element.children[0];
-          recordItem.title = element.text.trim();
-          recordItem.url = MikanUrl.BASE_URL + element.attributes["href"];
-          recordItem.size = ele.children[1].text.trim();
-          recordItem.publishAt = ele.children[2].text.trim();
-          recordItem.torrent = MikanUrl.BASE_URL +
+          temp = element.text.trim().replaceAll("【", "[").replaceAll("】", "]");
+          tempLowerCase = temp.toLowerCase();
+          tags = LinkedHashSet();
+          keywords.forEach((key, value) {
+            if (tempLowerCase.contains(key)) {
+              tags.add(value);
+            }
+          });
+          record.title = temp;
+          record.tags = tags.toList()
+            ..sort((a, b) => a.compareTo(b));
+          record.url = MikanUrl.BASE_URL + element.attributes["href"];
+          record.size = ele.children[1].text.trim();
+          record.publishAt = ele.children[2].text.trim();
+          record.torrent = MikanUrl.BASE_URL +
               ele.children[3].children[0].attributes["href"];
-          records.add(recordItem);
+          records.add(record);
         }
         subgroupBangumi.records = records;
         bangumiDetails.subgroupBangumis.add(subgroupBangumi);
@@ -547,9 +548,7 @@ class Resolver {
         ?.trim();
     final Set<String> tags = LinkedHashSet();
     if (title.isNotBlank) {
-      title = title
-          .replaceAll(RegExp("]\\s*\\[|\\[|]|】\\s*【|】|【"), "/")
-          .replaceAll(RegExp("/\\s*/+"), "/");
+      title = title.replaceAll("【", "[").replaceAll("】", "]");
       recordDetails.title = title;
       final String lowerCaseTitle = title.toLowerCase();
       keywords.forEach((key, value) {
@@ -600,21 +599,34 @@ class Resolver {
 
   static Future<List<RecordItem>> parseBangumiMore(Document document) async {
     final elements = document.querySelectorAll("tbody > tr");
-    RecordItem recordItem;
+    RecordItem record;
     Element element;
     List<RecordItem> records = [];
+    String tempLowerCase;
+    Set<String> tags;
+    String temp;
     for (final Element ele in elements) {
-      recordItem = RecordItem();
+      record = RecordItem();
       element = ele.children[0];
-      recordItem.magnet = element.children[1].attributes['data-clipboard-text'];
+      record.magnet = element.children[1].attributes['data-clipboard-text'];
       element = element.children[0];
-      recordItem.title = element.text.trim();
-      recordItem.url = MikanUrl.BASE_URL + element.attributes["href"];
-      recordItem.size = ele.children[1].text.trim();
-      recordItem.publishAt = ele.children[2].text.trim();
-      recordItem.torrent =
+      temp = element.text.trim().replaceAll("【", "[").replaceAll("】", "]");
+      tempLowerCase = temp.toLowerCase();
+      tags = LinkedHashSet();
+      keywords.forEach((key, value) {
+        if (tempLowerCase.contains(key)) {
+          tags.add(value);
+        }
+      });
+      record.title = temp;
+      record.tags = tags.toList()
+        ..sort((a, b) => a.compareTo(b));
+      record.url = MikanUrl.BASE_URL + element.attributes["href"];
+      record.size = ele.children[1].text.trim();
+      record.publishAt = ele.children[2].text.trim();
+      record.torrent =
           MikanUrl.BASE_URL + ele.children[3].children[0].attributes["href"];
-      records.add(recordItem);
+      records.add(record);
     }
     return records;
   }
