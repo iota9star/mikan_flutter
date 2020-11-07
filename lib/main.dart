@@ -122,16 +122,16 @@ class MyApp extends StatelessWidget {
                             "route change: ${oldSettings?.name} => ${newSettings
                                 ?.name}");
                         // if (newSettings is FFRouteSettings &&
-                    //     oldSettings is FFRouteSettings) {
-                    //   if (newSettings?.showStatusBar !=
-                    //       oldSettings?.showStatusBar) {
-                    //     if (newSettings?.showStatusBar == true) {
-                    //       SystemChrome.setEnabledSystemUIOverlays(
-                    //         SystemUiOverlay.values,
-                    //       );
-                    //       SystemChrome.setSystemUIOverlayStyle(
-                    //         SystemUiOverlayStyle.dark,
-                    //       );
+                        //     oldSettings is FFRouteSettings) {
+                        //   if (newSettings?.showStatusBar !=
+                        //       oldSettings?.showStatusBar) {
+                        //     if (newSettings?.showStatusBar == true) {
+                        //       SystemChrome.setEnabledSystemUIOverlays(
+                        //         SystemUiOverlay.values,
+                        //       );
+                        //       SystemChrome.setSystemUIOverlayStyle(
+                        //         SystemUiOverlayStyle.dark,
+                        //       );
                     //     } else {
                     //       SystemChrome.setEnabledSystemUIOverlays([]);
                     //     }

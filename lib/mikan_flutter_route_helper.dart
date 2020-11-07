@@ -59,21 +59,20 @@ class FFTransparentPageRoute<T> extends PageRouteBuilder<T> {
     Color barrierColor,
     String barrierLabel,
     bool maintainState = true,
-  })
-      : assert(pageBuilder != null),
+  })  : assert(pageBuilder != null),
         assert(transitionsBuilder != null),
         assert(barrierDismissible != null),
         assert(maintainState != null),
         super(
-        settings: settings,
-        opaque: false,
-        pageBuilder: pageBuilder,
-        transitionsBuilder: transitionsBuilder,
-        transitionDuration: transitionDuration,
-        barrierDismissible: barrierDismissible,
-        barrierColor: barrierColor,
-        barrierLabel: barrierLabel,
-        maintainState: maintainState,
+          settings: settings,
+          opaque: false,
+          pageBuilder: pageBuilder,
+          transitionsBuilder: transitionsBuilder,
+          transitionDuration: transitionDuration,
+          barrierDismissible: barrierDismissible,
+          barrierColor: barrierColor,
+          barrierLabel: barrierLabel,
+          maintainState: maintainState,
         );
 }
 

@@ -51,13 +51,11 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomScrollView(final BuildContext context,
-      final Color scaffoldBackgroundColor,) {
-    final Color cationColor = Theme
-        .of(context)
-        .textTheme
-        .caption
-        .color;
+  Widget _buildCustomScrollView(
+    final BuildContext context,
+    final Color scaffoldBackgroundColor,
+  ) {
+    final Color cationColor = Theme.of(context).textTheme.caption.color;
     return CustomScrollView(
       physics: BouncingScrollPhysics(),
       slivers: [
@@ -73,12 +71,8 @@ class SearchFragment extends StatelessWidget {
   }
 
   Widget _buildSearchResultList(final BuildContext context) {
-    final Color accentColor = Theme
-        .of(context)
-        .accentColor;
-    final Color primaryColor = Theme
-        .of(context)
-        .primaryColor;
+    final Color accentColor = Theme.of(context).accentColor;
+    final Color primaryColor = Theme.of(context).primaryColor;
     final TextStyle fileTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
@@ -88,11 +82,9 @@ class SearchFragment extends StatelessWidget {
       fontSize: 10,
       height: 1.25,
       color:
-      primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
-    final Color backgroundColor = Theme
-        .of(context)
-        .backgroundColor;
+    final Color backgroundColor = Theme.of(context).backgroundColor;
     return Selector<SearchModel, List<RecordItem>>(
       selector: (_, model) => model.searchResult?.searchs,
       shouldRebuild: (pre, next) => pre != next,
@@ -104,7 +96,7 @@ class SearchFragment extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 8.0),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (_, index) {
+              (_, index) {
                 final RecordItem record = records[index];
                 return Selector<SearchModel, int>(
                   selector: (_, model) => model.tapRecordItemIndex,
@@ -124,14 +116,10 @@ class SearchFragment extends StatelessWidget {
                       transform: transform,
                       onTap: () {},
                       onTapStart: () {
-                        context
-                            .read<SearchModel>()
-                            .tapRecordItemIndex = index;
+                        context.read<SearchModel>().tapRecordItemIndex = index;
                       },
                       onTapEnd: () {
-                        context
-                            .read<SearchModel>()
-                            .tapRecordItemIndex = -1;
+                        context.read<SearchModel>().tapRecordItemIndex = -1;
                       },
                     );
                   },
@@ -217,7 +205,8 @@ class SearchFragment extends StatelessWidget {
                         context
                             .read<SearchModel>()
                             .tapBangumiItemFlag = currFlag,
-                        onTapEnd: () => context
+                        onTapEnd: () =>
+                        context
                             .read<SearchModel>()
                             .tapBangumiItemFlag = null,
                         decoration: BoxDecoration(
