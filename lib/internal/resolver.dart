@@ -137,10 +137,7 @@ class Resolver {
 
   static Future<User> parseUser(final Document document) async {
     final String name =
-    document
-        .querySelector("#user-name .text-right")
-        ?.text
-        ?.trim();
+        document.querySelector("#user-name .text-right")?.text?.trim();
     final String avatar = document
         ?.querySelector("#user-welcome #head-pic")
         ?.attributes
@@ -201,9 +198,12 @@ class Resolver {
       elements = ele.querySelectorAll("td");
       record.url =
           MikanUrl.BASE_URL + elements[0].children[0].attributes['href'];
-      temp =
-          elements[0].children[0].text.trim().replaceAll("【", "[").replaceAll(
-              "】", "]");
+      temp = elements[0]
+          .children[0]
+          .text
+          .trim()
+          .replaceAll("【", "[")
+          .replaceAll("】", "]");
       tags = LinkedHashSet();
       tempLowerCase = temp.toLowerCase();
       keywords.forEach((key, value) {
@@ -222,7 +222,10 @@ class Resolver {
       searchs.add(record);
     }
     return SearchResult(
-        bangumis: bangumis, subgroups: subgroups, searchs: searchs);
+      bangumis: bangumis,
+      subgroups: subgroups,
+      searchs: searchs,
+    );
   }
 
   static Future<List<RecordItem>> parseList(final Document document) async {
@@ -362,7 +365,7 @@ class Resolver {
   }
 
   static Future<List<SubgroupGallery>> parseSubgroup(
-      final Document document) async {
+      final Document document,) async {
     final List<Element> eles = document.querySelectorAll(
         "#js-sort-wrapper > div.pubgroup-timeline-item[data-index]");
     List<SubgroupGallery> list = [];
@@ -371,11 +374,18 @@ class Resolver {
     List<Bangumi> bangumis;
     List<Element> elements;
     Map attributes;
+    int i = 1;
     for (final Element ele in eles) {
       subgroupGallery = SubgroupGallery();
-      subgroupGallery.date = ele.querySelector(".pubgroup-date").text.trim();
+      subgroupGallery.date = ele
+          .querySelector(".pubgroup-date")
+          .text
+          .trim();
       subgroupGallery.season =
-          ele.querySelector(".pubgroup-season").text.trim();
+          ele
+              .querySelector(".pubgroup-season")
+              .text
+              .trim();
       subgroupGallery.isCurrentSeason =
           ele.querySelector(".pubgroup-season.current-season") != null;
       elements = ele.querySelectorAll("li[data-bangumiid]") ?? [];
@@ -383,18 +393,32 @@ class Resolver {
       for (final Element e in elements) {
         bangumi = Bangumi();
         bangumi.id = e.attributes['data-bangumiid'];
-        attributes = e.querySelector("div.an-info-group > a").attributes;
+        attributes = e
+            .querySelector("div.an-info-group > a")
+            .attributes;
         bangumi.name = attributes['title'];
-        bangumi.cover = MikanUrl.BASE_URL + attributes['href'];
         bangumi.subscribed = e.querySelector(".an-info-icon.active") != null;
-        bangumi.cover = e
-            .querySelector("span[data-bangumiid]")
-            ?.attributes
-            ?.getOrNull('data-src')
-            ?.split("?")
-            ?.elementAt(0);
+        bangumi.cover = MikanUrl.BASE_URL +
+            e
+                .querySelector("span[data-bangumiid]")
+                ?.attributes
+                ?.getOrNull('data-src')
+                ?.split("?")
+                ?.elementAt(0) ??
+            "";
+        bangumi.location = Location(i, (i / 3).ceil());
+        i++;
         bangumis.add(bangumi);
       }
+      bangumis.sort((a, b) {
+        if (a.subscribed && b.subscribed) {
+          return 0;
+        } else if (a.subscribed) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
       subgroupGallery.bangumis = bangumis;
       list.add(subgroupGallery);
     }
@@ -462,6 +486,8 @@ class Resolver {
     RecordItem record;
     String tempLowerCase;
     Set<String> tags;
+    List<Subgroup> subgroups;
+    Subgroup subgroup;
     if (tables.length == subs.length) {
       for (int i = 0; i < tables.length; i++) {
         subgroupBangumi = SubgroupBangumi();
@@ -484,14 +510,30 @@ class Resolver {
                 ?.querySelector(".subscribed")
                 ?.text
                 ?.trim() == "已订阅";
+        subgroups = [];
+        elements = element.querySelectorAll("ul > li > a");
+        if (elements.isSafeNotEmpty) {
+          for (final Element ele in elements) {
+            subgroup = Subgroup();
+            subgroup.name = ele.text;
+            subgroup.id = ele.attributes["href"]
+                .split("/")
+                .last;
+            subgroups.add(subgroup);
+          }
+        } else {
+          subgroups.add(Subgroup(
+            id: subgroupBangumi.subgroupId,
+            name: subgroupBangumi.name,
+          ));
+        }
         records = [];
         element = tables.elementAt(i);
         elements = element.querySelectorAll("tbody > tr");
         for (final Element ele in elements) {
           record = RecordItem();
           element = ele.children[0];
-          record.magnet =
-          element.children[1].attributes['data-clipboard-text'];
+          record.magnet = element.children[1].attributes['data-clipboard-text'];
           element = element.children[0];
           temp = element.text.trim().replaceAll("【", "[").replaceAll("】", "]");
           tempLowerCase = temp.toLowerCase();
@@ -511,6 +553,7 @@ class Resolver {
               ele.children[3].children[0].attributes["href"];
           records.add(record);
         }
+        subgroupBangumi.subgroups = subgroups;
         subgroupBangumi.records = records;
         bangumiDetails.subgroupBangumis.add(subgroupBangumi);
       }

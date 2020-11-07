@@ -52,27 +52,28 @@ typedef RouteChange = void Function(
 class FFTransparentPageRoute<T> extends PageRouteBuilder<T> {
   FFTransparentPageRoute({
     RouteSettings settings,
-    @required RoutePageBuilder builder,
+    @required RoutePageBuilder pageBuilder,
     RouteTransitionsBuilder transitionsBuilder = _defaultTransitionsBuilder,
     Duration transitionDuration = const Duration(milliseconds: 150),
     bool barrierDismissible = false,
     Color barrierColor,
     String barrierLabel,
     bool maintainState = true,
-  })  : assert(builder != null),
+  })
+      : assert(pageBuilder != null),
         assert(transitionsBuilder != null),
         assert(barrierDismissible != null),
         assert(maintainState != null),
         super(
-          settings: settings,
-          opaque: false,
-          pageBuilder: builder,
-          transitionsBuilder: transitionsBuilder,
-          transitionDuration: transitionDuration,
-          barrierDismissible: barrierDismissible,
-          barrierColor: barrierColor,
-          barrierLabel: barrierLabel,
-          maintainState: maintainState,
+        settings: settings,
+        opaque: false,
+        pageBuilder: pageBuilder,
+        transitionsBuilder: transitionsBuilder,
+        transitionDuration: transitionDuration,
+        barrierDismissible: barrierDismissible,
+        barrierColor: barrierColor,
+        barrierLabel: barrierLabel,
+        maintainState: maintainState,
         );
 }
 

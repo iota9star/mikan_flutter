@@ -20,7 +20,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "/bangumi/details",
+  name: "bangumi/details",
   routeName: "bangumi-details",
 )
 class BangumiDetailsPage extends StatefulWidget {
@@ -477,7 +477,6 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
       width: 136.0,
       image: CachedNetworkImageProvider(cover),
       shape: BoxShape.rectangle,
-      clearMemoryCacheWhenDispose: true,
       loadStateChanged: (ExtendedImageState value) {
         Widget child;
         if (value.extendedImageLoadState == LoadState.loading) {
@@ -555,12 +554,9 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
   }
 
   _showSubgroupPanel(final BuildContext context) {
-    showCupertinoModalBottomSheet(
+    showBarModalBottomSheet(
       context: context,
       expand: true,
-      bounce: true,
-      enableDrag: false,
-      topRadius: Radius.circular(24.0),
       builder: (context, scrollController) {
         return BangumiDetailsSubgroupFragment(
           scrollController: scrollController,

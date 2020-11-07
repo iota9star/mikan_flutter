@@ -14,6 +14,14 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class BangumiDetailsModel extends CancelableBaseModel {
   final String id;
   final String cover;
+  int _tapRecordItemFlag;
+
+  int get tapRecordItemFlag => _tapRecordItemFlag;
+
+  set tapRecordItemFlag(int value) {
+    _tapRecordItemFlag = value;
+    notifyListeners();
+  }
 
   bool _loading = false;
 

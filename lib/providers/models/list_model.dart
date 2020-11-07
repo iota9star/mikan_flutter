@@ -8,18 +8,29 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class ListModel extends CancelableBaseModel {
   int _page = 0;
   List<RecordItem> _records = [];
-  int _scaleIndex = -1;
+  int _tapRecordItemIndex = -1;
 
-  set scaleIndex(int value) {
-    _scaleIndex = value;
+  set tapRecordItemIndex(int value) {
+    _tapRecordItemIndex = value;
     notifyListeners();
   }
 
-  int get scaleIndex => _scaleIndex;
+  int get tapRecordItemIndex => _tapRecordItemIndex;
 
   int get recordsLength => _records.length;
 
   List<RecordItem> get records => _records;
+
+  bool _hasScrolled = false;
+
+  bool get hasScrolled => _hasScrolled;
+
+  set hasScrolled(bool value) {
+    if (this._hasScrolled != value) {
+      this._hasScrolled = value;
+      notifyListeners();
+    }
+  }
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: true);
@@ -40,7 +51,7 @@ class ListModel extends CancelableBaseModel {
 
   Future _loadList(final int page) async {
     final int willLoadPage = page + 1;
-    final Resp resp = await Repo.list(willLoadPage);
+    final Resp resp = await (this + Repo.list(willLoadPage));
     if (this.disposed) return;
     this._refreshController.refreshCompleted();
     if (resp.success) {
@@ -64,30 +75,6 @@ class ListModel extends CancelableBaseModel {
         notifyListeners();
       }
       this._page = willLoadPage;
-    }
-  }
-
-  final double _maxScrollOffset = 56.0;
-  double _limit = 0;
-
-  double get limit => _limit;
-
-  Future notifyOffsetChange(final double offset) async {
-    if (offset >= _maxScrollOffset) {
-      if (_limit != 1.0) {
-        _limit = 1.0;
-        notifyListeners();
-      }
-    } else if (offset <= _maxScrollOffset && offset >= 0) {
-      if (_limit != offset / _maxScrollOffset) {
-        _limit = offset / _maxScrollOffset;
-        notifyListeners();
-      }
-    } else if (offset <= 0) {
-      if (_limit != 0.0) {
-        _limit = 0.0;
-        notifyListeners();
-      }
     }
   }
 

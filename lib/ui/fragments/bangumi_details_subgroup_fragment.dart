@@ -1,12 +1,14 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/internal/screen.dart';
+import 'package:mikan_flutter/mikan_flutter_routes.dart';
+import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/models/bangumi_details_model.dart';
-import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -24,10 +26,17 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
-    final TextStyle tagStyle = TextStyle(
+    final Color primaryColor = Theme.of(context).primaryColor;
+    final TextStyle fileTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
       color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+    );
+    final TextStyle titleTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color:
+          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
@@ -45,13 +54,12 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                 } else if (notification is ScrollUpdateNotification) {
                   if (notification.depth == 0) {
                     final double offset = notification.metrics.pixels;
-                    print('offset: $offset');
                     context
                         .read<BangumiDetailsModel>()
                         .setScrolledSubgroupRecords(offset > 0);
                   }
                 }
-                return false;
+                return true;
               },
               child: Selector<BangumiDetailsModel, SubgroupBangumi>(
                 selector: (_, model) => model.subgroupBangumi,
@@ -66,20 +74,31 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                         shouldRebuild: (pre, next) => pre != next,
                         builder: (_, hasScrolled, child) {
                           return AnimatedContainer(
-                            padding: EdgeInsets.all(16.0),
+                            padding: EdgeInsets.only(
+                              left: 16.0,
+                              right: 16.0,
+                              top: 16.0,
+                              bottom: 16.0,
+                            ),
                             decoration: BoxDecoration(
-                                color: scaffoldBackgroundColor,
-                                boxShadow: hasScrolled
-                                    ? [
-                                  BoxShadow(
-                                    color:
-                                    Colors.black.withOpacity(0.024),
-                                    offset: Offset(0, 1),
-                                    blurRadius: 3.0,
-                                    spreadRadius: 3.0,
-                                  ),
-                                ]
-                                    : null),
+                              color: hasScrolled
+                                  ? backgroundColor
+                                  : scaffoldBackgroundColor,
+                              boxShadow: hasScrolled
+                                  ? [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.024),
+                                  offset: Offset(0, 1),
+                                  blurRadius: 3.0,
+                                  spreadRadius: 3.0,
+                                ),
+                              ]
+                                  : null,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(16.0),
+                                bottomRight: Radius.circular(16.0),
+                              ),
+                            ),
                             duration: Duration(milliseconds: 240),
                             child: child,
                           );
@@ -90,11 +109,30 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                               child: Text(
                                 subgroupBangumi.name,
                                 style: TextStyle(
-                                  fontSize: 28.0,
+                                  fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                   height: 1.25,
                                 ),
                               ),
+                            ),
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              tooltip: "查看字幕组详情",
+                              icon: Icon(FluentIcons.channel_add_24_regular),
+                              onPressed: () {
+                                final List<Subgroup> subgroups =
+                                    subgroupBangumi.subgroups;
+                                if (subgroups.length == 1) {
+                                  final Subgroup subgroup = subgroups[0];
+                                  _push2SubgroupPage(context, subgroup);
+                                } else {
+                                  _showSubgroupPanel(
+                                    context,
+                                    backgroundColor,
+                                    subgroups,
+                                  );
+                                }
+                              },
                             ),
                             IconButton(
                               padding: EdgeInsets.zero,
@@ -113,19 +151,44 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                           enablePullDown: false,
                           enablePullUp: true,
                           onLoading: bangumiDetailsModel.loadSubgroupList,
-                          footer: Indicator.footer(context, accentColor,
-                              bottom: 16.0),
+                          footer: Indicator.footer(
+                            context,
+                            accentColor,
+                            bottom: 16.0,
+                          ),
                           child: ListView.builder(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
                             controller: scrollController,
                             itemCount: subgroupBangumi.records.length,
                             itemBuilder: (context, ind) {
                               final record = subgroupBangumi.records[ind];
-                              return _buildRecordItem(
-                                ind,
-                                record,
-                                accentColor,
-                                backgroundColor,
-                                tagStyle,
+                              return Selector<BangumiDetailsModel, int>(
+                                selector: (_, model) => model.tapRecordItemFlag,
+                                shouldRebuild: (pre, next) => pre != next,
+                                builder: (_, tapFlag, __) {
+                                  final Matrix4 transform = tapFlag == ind
+                                      ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                                      : Matrix4.identity();
+                                  return SimpleRecordItem(
+                                    index: ind,
+                                    accentColor: accentColor,
+                                    fileTagStyle: fileTagStyle,
+                                    primaryColor: primaryColor,
+                                    backgroundColor: backgroundColor,
+                                    titleTagStyle: titleTagStyle,
+                                    record: record,
+                                    transform: transform,
+                                    onTap: () {},
+                                    onTapStart: () {
+                                      bangumiDetailsModel.tapRecordItemFlag =
+                                          ind;
+                                    },
+                                    onTapEnd: () {
+                                      bangumiDetailsModel.tapRecordItemFlag =
+                                      -1;
+                                    },
+                                  );
+                                },
                               );
                             },
                           ),
@@ -142,155 +205,64 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRecordItem(final int index,
-      final RecordItem record,
-      final Color accentColor,
+  void _push2SubgroupPage(BuildContext context, Subgroup subgroup) {
+    Navigator.pushNamed(
+      context,
+      Routes.subgroup,
+      arguments: {"subgroup": subgroup},
+    );
+  }
+
+  _showSubgroupPanel(final BuildContext context,
       final Color backgroundColor,
-      final TextStyle tagStyle,) {
-    return AnimatedTapContainer(
-      margin: EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 8.0,
-      ),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-            ),
-            child: Text(
-              record.title,
-              style: TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 8.0,
-              left: 16.0,
-              right: 16.0,
-            ),
-            child: Wrap(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 4.0,
-                    bottom: 4.0,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 4.0,
-                    vertical: 2.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.87),
-                    borderRadius: BorderRadius.circular(2.0),
-                  ),
-                  child: Text(
-                    record.publishAt,
-                    style: tagStyle,
+      final List<Subgroup> subgroups,) {
+    showCupertinoModalBottomSheet(
+      context: context,
+      expand: false,
+      topRadius: Radius.circular(16.0),
+      builder: (context, scrollController) {
+        return Material(
+          color: backgroundColor,
+          child: ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.only(bottom: 8.0 + Sz.navBarHeight, top: 8.0),
+            itemBuilder: (context, index) {
+              final Subgroup subgroup = subgroups[index];
+              return InkWell(
+                onTap: () {
+                  _push2SubgroupPage(context, subgroup);
+                },
+                child: Container(
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(
+                        FluentIcons.contact_card_group_24_regular,
+                        size: 28.0,
+                      ),
+                      SizedBox(
+                        width: 12.0,
+                      ),
+                      Expanded(
+                        child: Text(
+                          subgroup.name,
+                          style: TextStyle(
+                            height: 1.25,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 4.0,
-                    bottom: 4.0,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 4.0,
-                    vertical: 2.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.87),
-                    borderRadius: BorderRadius.circular(2.0),
-                  ),
-                  child: Text(
-                    record.size,
-                    style: tagStyle,
-                  ),
-                ),
-                if (!record.tags.isNullOrEmpty)
-                  ...List.generate(record.tags.length, (index) {
-                    return Container(
-                      margin: EdgeInsets.only(
-                        right: 4.0,
-                        bottom: 4.0,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.0,
-                        vertical: 2.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: accentColor.withOpacity(0.87),
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      child: Text(
-                        record.tags[index],
-                        style: tagStyle,
-                      ),
-                    );
-                  }),
-              ],
-            ),
+              );
+            },
+            itemCount: subgroups.length,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(FluentIcons.channel_24_regular),
-                color: accentColor,
-                tooltip: "打开详情页",
-                iconSize: 20.0,
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(FluentIcons.cloud_download_24_regular),
-                tooltip: "复制并尝试打开种子链接",
-                color: accentColor,
-                iconSize: 20.0,
-                onPressed: () {
-                  record.torrent.launchApp();
-                  record.torrent.copy();
-                },
-              ),
-              IconButton(
-                icon: Icon(FluentIcons.clipboard_link_24_regular),
-                color: accentColor,
-                tooltip: "复制并尝试打开磁力链接",
-                iconSize: 20.0,
-                onPressed: () {
-                  record.magnet.launchApp();
-                  record.magnet.copy();
-                },
-              ),
-              IconButton(
-                icon: Icon(FluentIcons.share_24_regular),
-                color: accentColor,
-                tooltip: "分享",
-                iconSize: 20.0,
-                onPressed: () {
-                  record.magnet.share();
-                },
-              ),
-              IconButton(
-                icon: Icon(FluentIcons.star_24_regular),
-                color: accentColor,
-                tooltip: "收藏",
-                iconSize: 20.0,
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

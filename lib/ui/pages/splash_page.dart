@@ -10,8 +10,8 @@ import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "/splash",
-  routeName: "mikan-splash",
+  name: "splash",
+  routeName: "splash",
 )
 @immutable
 class SplashPage extends StatelessWidget {

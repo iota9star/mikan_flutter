@@ -1,8 +1,10 @@
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/model/subgroup.dart';
 
 class SubgroupBangumi {
   String name;
   String subgroupId;
+  List<Subgroup> subgroups;
   bool subscribed;
   List<RecordItem> records;
 

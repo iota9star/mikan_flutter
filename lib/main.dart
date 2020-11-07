@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
         child: Consumer<ThemeModel>(
           builder: (context, themeModel, child) {
             final FirebaseModel firebaseModel =
-                Provider.of<FirebaseModel>(context);
+                Provider.of<FirebaseModel>(context, listen: false);
             return RefreshConfiguration(
               autoLoad: true,
               // 头部触发刷新的越界距离
@@ -110,18 +110,18 @@ class MyApp extends StatelessWidget {
                 theme: themeModel.theme(),
                 darkTheme: themeModel.theme(darkTheme: true),
                 initialRoute: Routes.home,
-                onGenerateRoute: (RouteSettings settings) =>
-                    onGenerateRouteHelper(settings),
+                onGenerateRoute: (settings) => onGenerateRouteHelper(settings),
                 navigatorObservers: [
                   firebaseModel.observer,
                   FFNavigatorObserver(
                       routeChange: (Route newRoute, Route oldRoute) {
-                    //you can track page here
-                    final RouteSettings oldSettings = oldRoute?.settings;
-                    final RouteSettings newSettings = newRoute?.settings;
-                    logd(
-                        "route change: ${oldSettings?.name} => ${newSettings?.name}");
-                    // if (newSettings is FFRouteSettings &&
+                        //you can track page here
+                        final RouteSettings oldSettings = oldRoute?.settings;
+                        final RouteSettings newSettings = newRoute?.settings;
+                        logd(
+                            "route change: ${oldSettings?.name} => ${newSettings
+                                ?.name}");
+                        // if (newSettings is FFRouteSettings &&
                     //     oldSettings is FFRouteSettings) {
                     //   if (newSettings?.showStatusBar !=
                     //       oldSettings?.showStatusBar) {

@@ -43,7 +43,7 @@ class IndexFragment extends StatelessWidget {
               _scrollNotifier.value = offset;
             }
           }
-          return false;
+          return true;
         },
         child: Selector<IndexModel, List<BangumiRow>>(
           selector: (_, model) => model.bangumiRows,
@@ -64,7 +64,6 @@ class IndexFragment extends StatelessWidget {
                 ),
                 ...List.generate(bangumiRows.length, (index) {
                   final BangumiRow bangumiRow = bangumiRows[index];
-                  if (bangumiRow == null) return Container();
                   final simple = [
                     if (bangumiRow.updatedNum > 0)
                       "🚀 ${bangumiRow.updatedNum}部",
@@ -250,19 +249,20 @@ class IndexFragment extends StatelessWidget {
           child: child,
         );
       },
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
-          child: Center(
-            child: Text(
-              "更多\n订阅",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme
-                    .of(context)
-                    .accentColor,
-                height: 1.25,
+      child: Transform.scale(
+        scale: 1.08,
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+            child: Center(
+              child: Text(
+                "更多\n订阅",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).accentColor,
+                  height: 1.25,
+                ),
               ),
             ),
           ),
@@ -609,7 +609,7 @@ class IndexFragment extends StatelessWidget {
   Future _showYearSeasonBottomSheet(final BuildContext context) {
     return showCupertinoModalBottomSheet(
       context: context,
-      topRadius: Radius.circular(24.0),
+      topRadius: Radius.circular(16.0),
       builder: (context, controller) {
         return Material(
           color: Theme
@@ -742,7 +742,7 @@ class IndexFragment extends StatelessWidget {
       expand: true,
       bounce: true,
       enableDrag: false,
-      topRadius: Radius.circular(24.0),
+      topRadius: Radius.circular(16.0),
       builder: (context, scrollController) {
         return SearchFragment(
           scrollController: scrollController,

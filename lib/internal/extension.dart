@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 extension IterableExt<T> on Iterable<T> {
   bool get isNullOrEmpty => this == null || this.isEmpty;
 
-  bool get isNotEmpty => !this.isNullOrEmpty;
+  bool get isSafeNotEmpty => !this.isNullOrEmpty;
 
   T getOrNull(final int index) {
     if (this.isNullOrEmpty) return null;
@@ -18,7 +18,7 @@ extension IterableExt<T> on Iterable<T> {
 extension MapExt<K, V> on Map<K, V> {
   bool get isNullOrEmpty => this == null || this.isEmpty;
 
-  bool get isNotEmpty => !this.isNullOrEmpty;
+  bool get isSafeNotEmpty => !this.isNullOrEmpty;
 
   V getOrNull(K key) => this == null ? null : this[key];
 }

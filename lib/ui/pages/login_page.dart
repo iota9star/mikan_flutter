@@ -13,8 +13,8 @@ import 'package:mikan_flutter/providers/models/login_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "/login",
-  routeName: "mikan-login",
+  name: "login",
+  routeName: "login",
 )
 @immutable
 class LoginPage extends StatelessWidget {

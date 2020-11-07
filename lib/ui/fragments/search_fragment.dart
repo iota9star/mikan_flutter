@@ -11,6 +11,7 @@ import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/models/search_model.dart';
+import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -22,13 +23,6 @@ class SearchFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color cationColor = Theme.of(context).textTheme.caption.color;
-    final Color accentColor = Theme.of(context).accentColor;
-    final TextStyle tagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-    );
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
     return Material(
@@ -47,14 +41,9 @@ class SearchFragment extends StatelessWidget {
                     context.read<SearchModel>().hasScrolled = offset > 0;
                   }
                 }
-                return false;
+                return true;
               },
-              child: _buildCustomScrollView(
-                context,
-                cationColor,
-                accentColor,
-                tagStyle,
-              ),
+              child: _buildCustomScrollView(context, scaffoldBackgroundColor),
             );
           },
         ),
@@ -62,30 +51,48 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomScrollView(
-    BuildContext context,
-    Color cationColor,
-    Color accentColor,
-    TextStyle tagStyle,
-  ) {
+  Widget _buildCustomScrollView(final BuildContext context,
+      final Color scaffoldBackgroundColor,) {
+    final Color cationColor = Theme
+        .of(context)
+        .textTheme
+        .caption
+        .color;
     return CustomScrollView(
       physics: BouncingScrollPhysics(),
       slivers: [
-        _buildHeader(context),
+        _buildHeader(context, scaffoldBackgroundColor),
         _buildSubgroupSection(cationColor),
-        _buildSubgroupList(context),
+        _buildSubgroupList(context, scaffoldBackgroundColor),
         _buildRecommendSection(cationColor),
         _buildRecommendList(),
         _buildSearchResultSection(cationColor),
-        _buildSearchResultList(accentColor, tagStyle),
+        _buildSearchResultList(context),
       ],
     );
   }
 
-  Widget _buildSearchResultList(
-    Color accentColor,
-    TextStyle tagStyle,
-  ) {
+  Widget _buildSearchResultList(final BuildContext context) {
+    final Color accentColor = Theme
+        .of(context)
+        .accentColor;
+    final Color primaryColor = Theme
+        .of(context)
+        .primaryColor;
+    final TextStyle fileTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+    );
+    final TextStyle titleTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color:
+      primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+    );
+    final Color backgroundColor = Theme
+        .of(context)
+        .backgroundColor;
     return Selector<SearchModel, List<RecordItem>>(
       selector: (_, model) => model.searchResult?.searchs,
       shouldRebuild: (pre, next) => pre != next,
@@ -93,187 +100,52 @@ class SearchFragment extends StatelessWidget {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
         }
-        return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (_, index) {
-              final RecordItem record = records[index];
-              return Selector<SearchModel, int>(
-                selector: (_, model) => model.tapRecordItemIndex,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (context, tapRecordItemIndex, child) {
-                  final Matrix4 transform = tapRecordItemIndex == index
-                      ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                      : Matrix4.identity();
-                  return AnimatedTapContainer(
-                    transform: transform,
-                    child: child,
-                    onTap: () {
-                      // Navigator.pushNamed(
-                      //   context,
-                      //   Routes.mikanBangumiDetails,
-                      //   arguments: {
-                      //     "url": record.url,
-                      //     "cover": record.cover,
-                      //     "name": record.name,
-                      //     "title": record.title,
-                      //   },
-                      // );
-                    },
-                    onTapStart: () {
-                      context.read<SearchModel>().tapRecordItemIndex = index;
-                    },
-                    onTapEnd: () {
-                      context.read<SearchModel>().tapRecordItemIndex = -1;
-                    },
-                  );
-                },
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Text(
-                            record.title,
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Padding(
-                            child: Wrap(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                    right: 4.0,
-                                    bottom: 4.0,
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 4.0,
-                                    vertical: 2.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: accentColor.withOpacity(0.87),
-                                    borderRadius: BorderRadius.circular(2.0),
-                                  ),
-                                  child: Text(
-                                    record.publishAt,
-                                    style: tagStyle,
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                    right: 4.0,
-                                    bottom: 4.0,
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 4.0,
-                                    vertical: 2.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: accentColor.withOpacity(0.87),
-                                    borderRadius: BorderRadius.circular(2.0),
-                                  ),
-                                  child: Text(
-                                    record.size,
-                                    style: tagStyle,
-                                  ),
-                                ),
-                                if (record.tags.isNotEmpty)
-                                  ...List.generate(record.tags.length, (index) {
-                                    return Container(
-                                      margin: EdgeInsets.only(
-                                        right: 4.0,
-                                        bottom: 4.0,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 4.0,
-                                        vertical: 2.0,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: accentColor.withOpacity(0.87),
-                                        borderRadius:
-                                            BorderRadius.circular(2.0),
-                                      ),
-                                      child: Text(
-                                        record.tags[index],
-                                        style: tagStyle,
-                                      ),
-                                    );
-                                  })
-                              ],
-                            ),
-                            padding: EdgeInsets.only(
-                              top: 8.0,
-                              bottom: 4.0,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              IconButton(
-                                icon: Icon(FluentIcons.channel_24_regular),
-                                color: accentColor,
-                                tooltip: "打开详情页",
-                                iconSize: 20.0,
-                                onPressed: () {},
-                              ),
-                              IconButton(
-                                icon:
-                                    Icon(FluentIcons.cloud_download_24_regular),
-                                tooltip: "复制并尝试打开种子链接",
-                                color: accentColor,
-                                iconSize: 20.0,
-                                onPressed: () {
-                                  record.torrent.launchApp();
-                                  record.torrent.copy();
-                                },
-                              ),
-                              IconButton(
-                                icon:
-                                    Icon(FluentIcons.clipboard_link_24_regular),
-                                color: accentColor,
-                                tooltip: "复制并尝试打开磁力链接",
-                                iconSize: 20.0,
-                                onPressed: () {
-                                  record.magnet.launchApp();
-                                  record.magnet.copy();
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(FluentIcons.share_24_regular),
-                                color: accentColor,
-                                tooltip: "分享",
-                                iconSize: 20.0,
-                                onPressed: () {
-                                  record.magnet.share();
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(FluentIcons.star_24_regular),
-                                color: accentColor,
-                                tooltip: "收藏",
-                                iconSize: 20.0,
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-            childCount: records.length,
+        return SliverPadding(
+          padding: EdgeInsets.symmetric(vertical: 8.0),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (_, index) {
+                final RecordItem record = records[index];
+                return Selector<SearchModel, int>(
+                  selector: (_, model) => model.tapRecordItemIndex,
+                  shouldRebuild: (pre, next) => pre != next,
+                  builder: (context, tapRecordItemIndex, child) {
+                    final Matrix4 transform = tapRecordItemIndex == index
+                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                        : Matrix4.identity();
+                    return SimpleRecordItem(
+                      index: index,
+                      record: record,
+                      accentColor: accentColor,
+                      primaryColor: primaryColor,
+                      backgroundColor: backgroundColor,
+                      fileTagStyle: fileTagStyle,
+                      titleTagStyle: titleTagStyle,
+                      transform: transform,
+                      onTap: () {},
+                      onTapStart: () {
+                        context
+                            .read<SearchModel>()
+                            .tapRecordItemIndex = index;
+                      },
+                      onTapEnd: () {
+                        context
+                            .read<SearchModel>()
+                            .tapRecordItemIndex = -1;
+                      },
+                    );
+                  },
+                );
+              },
+              childCount: records.length,
+            ),
           ),
         );
       },
     );
   }
 
-  Widget _buildSearchResultSection(Color cationColor) {
+  Widget _buildSearchResultSection(final Color cationColor) {
     return Selector<SearchModel, List<RecordItem>>(
       selector: (_, model) => model.searchResult?.searchs,
       shouldRebuild: (pre, next) => pre != next,
@@ -281,45 +153,12 @@ class SearchFragment extends StatelessWidget {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
         }
-        final double topPadding =
-            Provider.of<SearchModel>(context, listen: false)
-                        .searchResult
-                        ?.bangumis
-                        ?.isNullOrEmpty ==
-                    true
-                ? 16.0
-                : 8.0;
-        return SliverPinnedToBoxAdapter(
-          child: Selector<SearchModel, bool>(
-            selector: (_, model) => model.hasScrolled,
-            shouldRebuild: (pre, next) => pre != next,
-            builder: (_, hasScrolled, child) {
-              return
-                AnimatedContainer(
-                  padding: EdgeInsets.only(
-                    left: 16.0,
-                    right: 16.0,
-                    top: topPadding,
-                    bottom: 8.0,
-                  ),
-                  decoration: BoxDecoration(
-                      color: Theme
-                          .of(context)
-                          .scaffoldBackgroundColor,
-                      boxShadow: hasScrolled
-                          ? [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.024),
-                              offset: Offset(0, 1),
-                              blurRadius: 3.0,
-                              spreadRadius: 3.0,
-                            ),
-                          ]
-                        : null),
-                duration: Duration(milliseconds: 240),
-                child: child,
-              );
-            },
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+            ),
             child: Text(
               "搜索结果",
               style: TextStyle(
@@ -345,12 +184,13 @@ class SearchFragment extends StatelessWidget {
         return SliverToBoxAdapter(
           child: Container(
             width: double.infinity,
-            height: 196,
+            height: 204,
             child: WaterfallFlow.builder(
               physics: BouncingScrollPhysics(),
               padding: EdgeInsets.only(
                 left: 16.0,
                 right: 16.0,
+                bottom: 8.0,
               ),
               scrollDirection: Axis.horizontal,
               itemCount: bangumis.length,
@@ -373,7 +213,8 @@ class SearchFragment extends StatelessWidget {
                         margin: EdgeInsets.symmetric(
                           vertical: 8.0,
                         ),
-                        onTapStart: () => context
+                        onTapStart: () =>
+                        context
                             .read<SearchModel>()
                             .tapBangumiItemFlag = currFlag,
                         onTapEnd: () => context
@@ -419,7 +260,7 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommendSection(Color cationColor) {
+  Widget _buildRecommendSection(final Color cationColor) {
     return Selector<SearchModel, List<Bangumi>>(
       selector: (_, model) => model.searchResult?.bangumis,
       shouldRebuild: (pre, next) => pre != next,
@@ -429,11 +270,11 @@ class SearchFragment extends StatelessWidget {
         }
         return SliverToBoxAdapter(child: child);
       },
-      child: Container(
+      child: Padding(
         padding: EdgeInsets.only(
           left: 16.0,
           right: 16.0,
-          top: 8.0,
+          bottom: 8.0,
         ),
         child: Text(
           "相关推荐",
@@ -447,7 +288,8 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSubgroupList(BuildContext context) {
+  Widget _buildSubgroupList(final BuildContext context,
+      final Color scaffoldBackgroundColor,) {
     return Selector<SearchModel, List<Subgroup>>(
       selector: (_, model) => model.searchResult?.subgroups,
       shouldRebuild: (pre, next) => pre != next,
@@ -457,61 +299,95 @@ class SearchFragment extends StatelessWidget {
         }
         final bool less = subgroups.length < 5;
         return SliverPinnedToBoxAdapter(
-          child: Container(
-            width: double.infinity,
-            height: less ? 56 : 96,
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: WaterfallFlow.builder(
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                top: 8.0,
-                bottom: 8.0,
-              ),
-              scrollDirection: Axis.horizontal,
-              itemCount: subgroups.length,
-              gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                crossAxisCount: less ? 1 : 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-                lastChildLayoutTypeBuilder: (index) => LastChildLayoutType.none,
-              ),
-              itemBuilder: (context, index) {
-                final subgroup = subgroups[index];
-                return Selector<SearchModel, String>(
-                  builder: (_, subgroupId, __) {
-                    final Color color = subgroup.id == subgroupId
-                        ? Theme.of(context).primaryColor
-                        : Theme.of(context).accentColor;
-                    return MaterialButton(
-                      minWidth: 0,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
+          child: Transform.translate(
+            offset: Offset(0, -2),
+            child: Selector<SearchModel, bool>(
+              selector: (_, model) => model.hasScrolled,
+              shouldRebuild: (pre, next) => pre != next,
+              builder: (_, hasScrolled, child) {
+                return AnimatedContainer(
+                  width: double.infinity,
+                  height: less ? 56.0 + 2.0 : 96.0 + 2.0,
+                  decoration: BoxDecoration(
+                    color: scaffoldBackgroundColor,
+                    boxShadow: hasScrolled
+                        ? [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.024),
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        spreadRadius: 3.0,
                       ),
-                      child: Text(
-                        subgroup.name,
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          height: 1.25,
-                          fontWeight: FontWeight.w500,
-                          color: color,
-                        ),
-                      ),
-                      color: color.withOpacity(0.12),
-                      elevation: 0,
-                      onPressed: () {
-                        context.read<SearchModel>().subgroupId = subgroup.id;
-                      },
-                    );
-                  },
-                  selector: (_, model) => model.subgroupId,
-                  shouldRebuild: (pre, next) => pre != next,
+                    ]
+                        : null,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(16.0),
+                      bottomRight: Radius.circular(16.0),
+                    ),
+                  ),
+                  duration: Duration(milliseconds: 240),
+                  child: child,
                 );
               },
+              child: WaterfallFlow.builder(
+                physics: BouncingScrollPhysics(),
+                padding: EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 16.0,
+                ),
+                scrollDirection: Axis.horizontal,
+                itemCount: subgroups.length,
+                gridDelegate:
+                SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: less ? 1 : 2,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
+                  lastChildLayoutTypeBuilder: (index) =>
+                  LastChildLayoutType.none,
+                ),
+                itemBuilder: (context, index) {
+                  final subgroup = subgroups[index];
+                  return Selector<SearchModel, String>(
+                    builder: (_, subgroupId, __) {
+                      final Color color = subgroup.id == subgroupId
+                          ? Theme
+                          .of(context)
+                          .primaryColor
+                          : Theme
+                          .of(context)
+                          .accentColor;
+                      return MaterialButton(
+                        minWidth: 0,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Text(
+                          subgroup.name,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            height: 1.25,
+                            fontWeight: FontWeight.w500,
+                            color: color,
+                          ),
+                        ),
+                        color: color.withOpacity(0.12),
+                        elevation: 0,
+                        onPressed: () {
+                          context
+                              .read<SearchModel>()
+                              .subgroupId = subgroup.id;
+                        },
+                      );
+                    },
+                    selector: (_, model) => model.subgroupId,
+                    shouldRebuild: (pre, next) => pre != next,
+                  );
+                },
+              ),
             ),
           ),
         );
@@ -519,7 +395,7 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSubgroupSection(Color cationColor) {
+  Widget _buildSubgroupSection(final Color cationColor) {
     return Selector<SearchModel, List<Subgroup>>(
       selector: (_, model) => model.searchResult?.subgroups,
       shouldRebuild: (pre, next) => pre != next,
@@ -531,11 +407,11 @@ class SearchFragment extends StatelessWidget {
           child: child,
         );
       },
-      child: Container(
+      child: Padding(
         padding: EdgeInsets.only(
-          top: 10.0,
           left: 16.0,
           right: 16.0,
+          bottom: 16.0,
         ),
         child: Text(
           "字幕组",
@@ -549,15 +425,16 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(final BuildContext context,
+      final Color scaffoldBackgroundColor,) {
     return SliverPinnedToBoxAdapter(
       child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: scaffoldBackgroundColor,
         padding: EdgeInsets.only(
           left: 16.0,
           right: 16.0,
           top: 24.0,
-          bottom: 8.0,
+          bottom: 16.0,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

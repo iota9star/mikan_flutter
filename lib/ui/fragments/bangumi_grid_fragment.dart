@@ -17,18 +17,29 @@ import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class BangumiGridFragment extends StatelessWidget {
+  final String flag;
   final List<Bangumi> bangumis;
   final ValueNotifier<double> scrollNotifier;
   final ValueNotifier<double> _scrollNotifier = ValueNotifier(0);
 
-  BangumiGridFragment({Key key, this.bangumis, this.scrollNotifier})
+  BangumiGridFragment({Key key, this.bangumis, this.scrollNotifier, this.flag})
       : super(key: key);
 
   final double wrapperHeight = Sz.screenHeight / 2;
   final double sectionHeight = 57;
   final double itemHeight = (Sz.screenWidth - 32 - 32) / 3 + 40 + 16;
 
-  Widget _buildBangumiList(final List<Bangumi> bangumis) {
+  @override
+  Widget build(BuildContext context) {
+    return _buildBangumiList(context, bangumis);
+  }
+
+  Widget _buildBangumiList(
+    final BuildContext context,
+    final List<Bangumi> bangumis,
+  ) {
+    final Color accentColor = Theme.of(context).accentColor;
+    final Color backgroundColor = Theme.of(context).backgroundColor;
     return SliverPadding(
       padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
       sliver: SliverWaterfallFlow(
@@ -42,8 +53,13 @@ class BangumiGridFragment extends StatelessWidget {
           },
         ),
         delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return _buildBangumiItem(context, bangumis[index], index);
+              (context, index) {
+            return _buildBangumiItem(
+              accentColor,
+              backgroundColor,
+              bangumis[index],
+              index,
+            );
           },
           childCount: bangumis.length,
         ),
@@ -51,28 +67,32 @@ class BangumiGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiItem(
-    final BuildContext context,
-    final Bangumi bangumi,
-    final int index,
-  ) {
-    final String currFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
+  Widget _buildBangumiItem(final Color accentColor,
+      final Color backgroundColor,
+      final Bangumi bangumi,
+      final int index,) {
+    final String currFlag = "$flag:bangumi:${bangumi.id}:${bangumi.cover}";
+    final String msg = [bangumi.name, bangumi.updateAt]
+        .where((element) => element.isNotBlank)
+        .join("\n");
     return Selector<IndexModel, String>(
       builder: (context, tapScaleFlag, child) {
         final Matrix4 transform = tapScaleFlag == currFlag
             ? Matrix4.diagonal3Values(0.9, 0.9, 1)
             : Matrix4.identity();
-        final Widget cover =
-            _buildBangumiListItemCover(currFlag, bangumi, index);
-        // final Color tagBgColor = Theme.of(context).primaryColor.withOpacity(0.87);
-        // final Color tagColor = tagBgColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
+        final Widget cover = _buildBangumiListItemCover(
+          backgroundColor,
+          currFlag,
+          bangumi,
+          index,
+        );
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             AnimatedTapContainer(
               transform: transform,
               onTapStart: () =>
-                  context
+              context
                   .read<IndexModel>()
                   .tapBangumiListItemFlag = currFlag,
               onTapEnd: () =>
@@ -80,7 +100,7 @@ class BangumiGridFragment extends StatelessWidget {
                   .read<IndexModel>()
                   .tapBangumiListItemFlag = null,
               onTap: () {
-                if (bangumi.grey) {
+                if (bangumi.grey == true) {
                   "此番组下暂无作品".toast();
                 } else {
                   Navigator.pushNamed(
@@ -95,19 +115,21 @@ class BangumiGridFragment extends StatelessWidget {
                 }
               },
               child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(10.0)),
+                borderRadius:
+                BorderRadius.only(topRight: Radius.circular(10.0)),
                 child: Stack(
                   overflow: Overflow.clip,
                   children: [
                     Tooltip(
-                      padding:
-                      EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 6.0,
+                        horizontal: 8.0,
+                      ),
                       showDuration: Duration(seconds: 3),
-                      message: bangumi.name + "\n" + bangumi.updateAt,
+                      message: msg,
                       child: cover,
                     ),
-                    if (bangumi.num > 0)
+                    if (bangumi.num != null && bangumi.num > 0)
                       Positioned(
                         right: -20.0,
                         top: -8,
@@ -133,72 +155,45 @@ class BangumiGridFragment extends StatelessWidget {
                     Positioned(
                       child: bangumi.subscribed
                           ? SizedBox(
-                              width: 24.0,
-                              height: 24.0,
-                              child: IconButton(
-                                tooltip: "取消订阅",
-                                padding: EdgeInsets.all(2.0),
-                                icon: Icon(
-                                  FluentIcons.heart_24_filled,
-                                  color: Colors.redAccent,
-                                ),
-                                onPressed: () {
-                                  context
-                                      .read<IndexModel>()
-                                      .subscribeBangumi(bangumi);
-                                },
-                              ),
-                            )
+                        width: 24.0,
+                        height: 24.0,
+                        child: IconButton(
+                          tooltip: "取消订阅",
+                          padding: EdgeInsets.all(2.0),
+                          icon: Icon(
+                            FluentIcons.heart_24_filled,
+                            color: Colors.redAccent,
+                          ),
+                          onPressed: () {
+                            context
+                                .read<IndexModel>()
+                                .subscribeBangumi(bangumi);
+                          },
+                        ),
+                      )
                           : Container(
-                              width: 24.0,
-                              height: 24.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.black38,
-                              ),
-                              child: IconButton(
-                                tooltip: "订阅",
-                                padding: EdgeInsets.all(2.0),
-                                iconSize: 16.0,
-                                icon: Icon(
-                                  FluentIcons.heart_24_regular,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  context
-                                      .read<IndexModel>()
-                                      .subscribeBangumi(bangumi);
-                                },
-                              ),
+                        width: 24.0,
+                        height: 24.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.black38,
+                        ),
+                        child: IconButton(
+                          tooltip: "订阅",
+                          padding: EdgeInsets.all(2.0),
+                          iconSize: 16.0,
+                          icon: Icon(
+                            FluentIcons.heart_24_regular,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            context
+                                .read<IndexModel>()
+                                .subscribeBangumi(bangumi);
+                          },
+                        ),
                       ),
                     ),
-                    // Positioned(
-                    //   child: Container(
-                    //     width: 24,
-                    //     height: 24,
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(12.0),
-                    //       color: tagBgColor,
-                    //       border: Border.all(
-                    //         color: Theme.of(context).scaffoldBackgroundColor,
-                    //         width: 2.0,
-                    //       ),
-                    //     ),
-                    //     child: Center(
-                    //       child: Text(
-                    //         bangumi.week,
-                    //         style: TextStyle(
-                    //           color: tagColor,
-                    //           height: 1.25,
-                    //           fontWeight: FontWeight.bold,
-                    //           fontSize: 12.0,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    //   bottom: -2,
-                    //   right: -2,
-                    // ),
                   ],
                 ),
               ),
@@ -209,7 +204,7 @@ class BangumiGridFragment extends StatelessWidget {
             Tooltip(
               padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
               showDuration: Duration(seconds: 3),
-              message: bangumi.name + "\n" + bangumi.updateAt,
+              message: msg,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -222,10 +217,8 @@ class BangumiGridFragment extends StatelessWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          bangumi.grey
-                              ? Colors.grey
-                              : Theme.of(context).accentColor,
-                          Theme.of(context).accentColor.withOpacity(0.1),
+                          bangumi.grey == true ? Colors.grey : accentColor,
+                          accentColor.withOpacity(0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(2)),
@@ -247,14 +240,15 @@ class BangumiGridFragment extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
-              bangumi.updateAt,
-              maxLines: 1,
-              style: TextStyle(
-                fontSize: 10.0,
-                height: 1.25,
-              ),
-            )
+            if (bangumi.updateAt.isNotBlank)
+              Text(
+                bangumi.updateAt,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 10.0,
+                  height: 1.25,
+                ),
+              )
           ],
         );
       },
@@ -263,11 +257,10 @@ class BangumiGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiListItemCover(
-    final String currFlag,
-    final Bangumi bangumi,
-    final int index,
-  ) {
+  Widget _buildBangumiListItemCover(final Color backgroundColor,
+      final String currFlag,
+      final Bangumi bangumi,
+      final int index,) {
     return ExtendedImage(
       image: CachedNetworkImageProvider(bangumi.cover),
       shape: BoxShape.rectangle,
@@ -278,6 +271,7 @@ class BangumiGridFragment extends StatelessWidget {
           child = Container(
             padding: EdgeInsets.all(28.0),
             decoration: BoxDecoration(
+              color: backgroundColor,
               boxShadow: [
                 BoxShadow(
                   blurRadius: 8.0,
@@ -305,6 +299,7 @@ class BangumiGridFragment extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
+              color: backgroundColor,
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
@@ -314,7 +309,11 @@ class BangumiGridFragment extends StatelessWidget {
             ),
           );
         } else if (value.extendedImageLoadState == LoadState.completed) {
-          child = _buildScrollableBackgroundCover(value, bangumi);
+          child = _buildScrollableBackgroundCover(
+            backgroundColor,
+            value,
+            bangumi,
+          );
         }
         return AspectRatio(
           aspectRatio: 1.0,
@@ -327,12 +326,12 @@ class BangumiGridFragment extends StatelessWidget {
     );
   }
 
-  ValueListenableBuilder<double> _buildScrollableBackgroundCover(
-      ExtendedImageState state,
-      Bangumi bangumi,) {
+  Widget _buildScrollableBackgroundCover(final Color backgroundColor,
+      final ExtendedImageState state,
+      final Bangumi bangumi,) {
     return ValueListenableBuilder(
       valueListenable: _scrollNotifier,
-      builder: (BuildContext context, double scrolledOffset, Widget child) {
+      builder: (context, scrolledOffset, child) {
         final double itemPosition = itemHeight * bangumi.location.row +
             sectionHeight * bangumi.location.srow;
         final double align = ((scrolledOffset + wrapperHeight - itemPosition) /
@@ -348,12 +347,13 @@ class BangumiGridFragment extends StatelessWidget {
                 color: Colors.black.withAlpha(24),
               )
             ],
+            color: backgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             image: DecorationImage(
               image: state.imageProvider,
               fit: BoxFit.cover,
               alignment: Alignment(align, align),
-              colorFilter: bangumi.grey
+              colorFilter: bangumi.grey == true
                   ? ColorFilter.mode(Colors.grey, BlendMode.color)
                   : null,
             ),
@@ -361,10 +361,5 @@ class BangumiGridFragment extends StatelessWidget {
         );
       },
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildBangumiList(bangumis);
   }
 }

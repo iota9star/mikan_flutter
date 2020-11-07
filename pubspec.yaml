@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^0.5.1
-  firebase_analytics: ^6.1.0
-  firebase_crashlytics: ^0.2.2
+  firebase_core: ^0.5.2
+  firebase_analytics: ^6.2.0
+  firebase_crashlytics: ^0.2.3
   path_provider: ^1.6.24
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
@@ -28,7 +28,7 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   async: ^2.4.2
   isolate: ^2.0.3
-  fluentui_system_icons: ^1.1.54
+  fluentui_system_icons: ^1.1.83
   clipboard: ^0.1.2+8
   url_launcher: ^5.7.10
   share: ^0.6.5+4
@@ -57,3 +57,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+
+
+flutter_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/mikan.png"
