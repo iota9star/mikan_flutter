@@ -44,6 +44,8 @@ class IndexFragment extends StatelessWidget {
           primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
     final Color backgroundColor = Theme.of(context).backgroundColor;
+    final Color scaffoldBackgroundColor =
+        Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
       body: NotificationListener(
         onNotification: (notification) {
@@ -64,7 +66,13 @@ class IndexFragment extends StatelessWidget {
           builder: (_, bangumiRows, __) {
             return CustomScrollView(
               slivers: [
-                SliverPinnedToBoxAdapter(child: _buildHeader(context)),
+                SliverPinnedToBoxAdapter(
+                  child: _buildHeader(
+                    context,
+                    backgroundColor,
+                    scaffoldBackgroundColor,
+                  ),
+                ),
                 SliverToBoxAdapter(child: _buildCarousels()),
                 SliverToBoxAdapter(
                   child: Padding(
@@ -270,7 +278,9 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final BuildContext context) {
+  Widget _buildHeader(final BuildContext context,
+      final Color backgroundColor,
+      final Color scaffoldBackgroundColor,) {
     return Selector<IndexModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
@@ -283,9 +293,7 @@ class IndexFragment extends StatelessWidget {
             bottom: 4.0,
           ),
           decoration: BoxDecoration(
-              color: Theme
-                  .of(context)
-                  .scaffoldBackgroundColor,
+              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
                 BoxShadow(
