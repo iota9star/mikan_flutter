@@ -17,12 +17,14 @@ class IndexModel extends CancelableBaseModel {
   List<Season> _seasons = [];
   List<BangumiRow> _bangumiRows = [];
   Map<String, List<RecordItem>> _rss = {};
+  List<RecordItem> _ovas = [];
   List<Carousel> _carousels = [];
   Season _selectedSeason;
   User _user;
   String _tapBangumiListItemFlag;
   String _tapBangumiRssItemFlag;
   String _tapBangumiCarouselItemFlag;
+  String _tapBangumiOVAItemFlag;
   BangumiRow _selectedBangumiRow;
 
   bool _hasScrolled = false;
@@ -64,6 +66,13 @@ class IndexModel extends CancelableBaseModel {
     notifyListeners();
   }
 
+  String get tapBangumiOVAItemFlag => _tapBangumiOVAItemFlag;
+
+  set tapBangumiOVAItemFlag(String value) {
+    _tapBangumiOVAItemFlag = value;
+    notifyListeners();
+  }
+
   bool _seasonLoading = false;
 
   bool get seasonLoading => _seasonLoading;
@@ -72,18 +81,38 @@ class IndexModel extends CancelableBaseModel {
 
   List<Season> get seasons => _seasons;
 
+  List<RecordItem> get ovas => _ovas;
+
   final RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 
   RefreshController get refreshController => _refreshController;
 
+  bool _ovaLoading = false;
+
+  bool get ovaLoading => _ovaLoading;
+
   IndexModel() {
     loadIndex();
+    _loadOVA();
   }
 
   Future loadIndex() async {
     if (this._seasonLoading) return "加载中，请稍候...".toast();
     await (this + _loadIndex());
+  }
+
+  _loadOVA() async {
+    this._ovaLoading = true;
+    notifyListeners();
+    final Resp resp = await (this + Repo.ova());
+    this._ovaLoading = false;
+    if (resp.success) {
+      this._ovas = resp.data;
+    } else {
+      "获取OVA失败：${resp.msg}".toast();
+    }
+    notifyListeners();
   }
 
   _loadIndex() async {

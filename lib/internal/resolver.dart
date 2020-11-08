@@ -92,6 +92,8 @@ class Resolver {
     Element element;
     List<Element> tempEles;
     String temp;
+    String tempLowerCase;
+    Set<String> tags;
     for (final ele in elements) {
       record = RecordItem();
       element = ele.querySelector("div.sk-col.rss-thumb");
@@ -116,11 +118,23 @@ class Resolver {
           if (temp.isNotBlank) {
             record.torrent = MikanUrl.BASE_URL + temp;
           }
-          record.title =
-              element.text.trim().replaceAll("【", "[").replaceAll("】", "]");
-          temp = element.querySelector("span")?.text;
+          temp = element.querySelector("span")?.text?.trim();
           if (temp.isNotBlank) {
-            record.size = temp.replaceAll("\[|\]", "");
+            record.size = temp.replaceAll(r"[", "").replaceAll(r"]", "");
+          }
+          element.querySelector("span")?.remove();
+          temp = element.text;
+          if (temp.isNotBlank) {
+            temp = temp.trim().replaceAll("【", "[").replaceAll("】", "]");
+            tempLowerCase = temp.toLowerCase();
+            tags = LinkedHashSet();
+            keywords.forEach((key, value) {
+              if (tempLowerCase.contains(key)) {
+                tags.add(value);
+              }
+            });
+            record.title = temp;
+            record.tags = tags.toList()..sort((a, b) => a.compareTo(b));
           }
         }
         element = tempEles.getOrNull(1);
@@ -129,7 +143,7 @@ class Resolver {
         record.url = element?.attributes?.getOrNull("href");
       }
       record.publishAt =
-          ele.querySelector("div.sk-col.pull-right.publish-date")?.text?.trim();
+          ele.querySelector("div.sk-col.pull-right")?.text?.trim();
       list.add(record);
     }
     return list;
@@ -198,22 +212,24 @@ class Resolver {
       elements = ele.querySelectorAll("td");
       record.url =
           MikanUrl.BASE_URL + elements[0].children[0].attributes['href'];
-      temp = elements[0]
-          .children[0]
-          .text
-          .trim()
-          .replaceAll("【", "[")
-          .replaceAll("】", "]");
-      tags = LinkedHashSet();
-      tempLowerCase = temp.toLowerCase();
-      keywords.forEach((key, value) {
-        if (tempLowerCase.contains(key)) {
-          tags.add(value);
-        }
-      });
-      record.tags = tags.toList()
-        ..sort((a, b) => a.compareTo(b));
-      record.title = temp;
+      temp = elements
+          .getOrNull(0)
+          ?.children
+          ?.getOrNull(0)
+          ?.text;
+      if (temp.isNotBlank) {
+        temp = temp.trim().replaceAll("【", "[").replaceAll("】", "]");
+        tags = LinkedHashSet();
+        tempLowerCase = temp.toLowerCase();
+        keywords.forEach((key, value) {
+          if (tempLowerCase.contains(key)) {
+            tags.add(value);
+          }
+        });
+        record.tags = tags.toList()
+          ..sort((a, b) => a.compareTo(b));
+        record.title = temp;
+      }
       record.size = elements[1].text.trim();
       record.publishAt = elements[2].text.trim();
       record.magnet = elements[0].children[1].attributes["data-clipboard-text"];
@@ -273,17 +289,20 @@ class Resolver {
       record.groups = subgroups;
       tempElements = elements[2].children;
       tempElement = tempElements[0];
-      temp = tempElement.text.trim().replaceAll("【", "[").replaceAll("】", "]");
-      tags = LinkedHashSet();
-      tempLowerCase = temp.toLowerCase();
-      keywords.forEach((key, value) {
-        if (tempLowerCase.contains(key)) {
-          tags.add(value);
-        }
-      });
-      record.tags = tags.toList()
-        ..sort((a, b) => a.compareTo(b));
-      record.title = temp;
+      temp = tempElement.text;
+      if (temp.isNotBlank) {
+        temp = temp.trim().replaceAll("【", "[").replaceAll("】", "]");
+        tags = LinkedHashSet();
+        tempLowerCase = temp.toLowerCase();
+        keywords.forEach((key, value) {
+          if (tempLowerCase.contains(key)) {
+            tags.add(value);
+          }
+        });
+        record.tags = tags.toList()
+          ..sort((a, b) => a.compareTo(b));
+        record.title = temp;
+      }
       record.url = MikanUrl.BASE_URL + tempElement.attributes['href'];
       record.magnet = tempElements[1].attributes['data-clipboard-text'];
       record.size = elements[3].text.trim();
@@ -535,17 +554,20 @@ class Resolver {
           element = ele.children[0];
           record.magnet = element.children[1].attributes['data-clipboard-text'];
           element = element.children[0];
-          temp = element.text.trim().replaceAll("【", "[").replaceAll("】", "]");
-          tempLowerCase = temp.toLowerCase();
-          tags = LinkedHashSet();
-          keywords.forEach((key, value) {
-            if (tempLowerCase.contains(key)) {
-              tags.add(value);
-            }
-          });
-          record.title = temp;
-          record.tags = tags.toList()
-            ..sort((a, b) => a.compareTo(b));
+          temp = element.text;
+          if (temp.isNotBlank) {
+            temp = temp.trim().replaceAll("【", "[").replaceAll("】", "]");
+            tempLowerCase = temp.toLowerCase();
+            tags = LinkedHashSet();
+            keywords.forEach((key, value) {
+              if (tempLowerCase.contains(key)) {
+                tags.add(value);
+              }
+            });
+            record.title = temp;
+            record.tags = tags.toList()
+              ..sort((a, b) => a.compareTo(b));
+          }
           record.url = MikanUrl.BASE_URL + element.attributes["href"];
           record.size = ele.children[1].text.trim();
           record.publishAt = ele.children[2].text.trim();
@@ -653,17 +675,20 @@ class Resolver {
       element = ele.children[0];
       record.magnet = element.children[1].attributes['data-clipboard-text'];
       element = element.children[0];
-      temp = element.text.trim().replaceAll("【", "[").replaceAll("】", "]");
-      tempLowerCase = temp.toLowerCase();
-      tags = LinkedHashSet();
-      keywords.forEach((key, value) {
-        if (tempLowerCase.contains(key)) {
-          tags.add(value);
-        }
-      });
-      record.title = temp;
-      record.tags = tags.toList()
-        ..sort((a, b) => a.compareTo(b));
+      temp = element.text;
+      if (temp.isNotBlank) {
+        temp = temp.trim().replaceAll("【", "[").replaceAll("】", "]");
+        tempLowerCase = temp.toLowerCase();
+        tags = LinkedHashSet();
+        keywords.forEach((key, value) {
+          if (tempLowerCase.contains(key)) {
+            tags.add(value);
+          }
+        });
+        record.title = temp;
+        record.tags = tags.toList()
+          ..sort((a, b) => a.compareTo(b));
+      }
       record.url = MikanUrl.BASE_URL + element.attributes["href"];
       record.size = ele.children[1].text.trim();
       record.publishAt = ele.children[2].text.trim();

@@ -1,10 +1,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 
-class SimpleRecordItem extends StatelessWidget {
+class OVARecordItem extends StatelessWidget {
   final int index;
   final Matrix4 transform;
   final RecordItem record;
@@ -17,7 +18,7 @@ class SimpleRecordItem extends StatelessWidget {
   final VoidCallback onTapStart;
   final VoidCallback onTapEnd;
 
-  const SimpleRecordItem({
+  const OVARecordItem({
     @required this.index,
     @required this.record,
     @required this.accentColor,
@@ -34,13 +35,13 @@ class SimpleRecordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedTapContainer(
+      width: Sz.screenWidth * 0.9 - 32.0,
       onTap: onTap,
       onTapEnd: onTapEnd,
       onTapStart: onTapStart,
       transform: transform,
-      margin: EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 8.0,
+      margin: EdgeInsets.only(
+        right: 16.0,
       ),
       decoration: BoxDecoration(
         gradient: _createGradientByIndex(index, backgroundColor),
@@ -70,7 +71,9 @@ class SimpleRecordItem extends StatelessWidget {
               top: 8.0,
             ),
             child: Text(
-              record.title,
+              record.title + "\n",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 14.0,
                 height: 1.25,
@@ -80,65 +83,67 @@ class SimpleRecordItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(
               top: 8.0,
-              left: 16.0,
-              right: 16.0,
             ),
-            child: Wrap(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 4.0,
-                    bottom: 4.0,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 4.0,
-                    vertical: 2.0,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        accentColor,
-                        accentColor.withOpacity(0.56),
-                      ],
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 16.0,
+                      right: 4.0,
+                      bottom: 4.0,
                     ),
-                    borderRadius: BorderRadius.circular(2.0),
-                  ),
-                  child: Text(
-                    record.size,
-                    style: fileTagStyle,
-                  ),
-                ),
-                if (!record.tags.isNullOrEmpty)
-                  ...List.generate(record.tags.length, (index) {
-                    return Container(
-                      margin: EdgeInsets.only(
-                        right: 4.0,
-                        bottom: 4.0,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 4.0,
+                      vertical: 2.0,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          accentColor,
+                          accentColor.withOpacity(0.56),
+                        ],
                       ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.0,
-                        vertical: 2.0,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            primaryColor,
-                            primaryColor.withOpacity(0.56),
-                          ],
+                      borderRadius: BorderRadius.circular(2.0),
+                    ),
+                    child: Text(
+                      record.size,
+                      style: fileTagStyle,
+                    ),
+                  ),
+                  if (!record.tags.isNullOrEmpty)
+                    ...List.generate(record.tags.length, (index) {
+                      return Container(
+                        margin: EdgeInsets.only(
+                          right: 4.0,
+                          bottom: 4.0,
                         ),
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      child: Text(
-                        record.tags[index],
-                        style: titleTagStyle,
-                      ),
-                    );
-                  }),
-              ],
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 4.0,
+                          vertical: 2.0,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              primaryColor,
+                              primaryColor.withOpacity(0.56),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(2.0),
+                        ),
+                        child: Text(
+                          record.tags[index],
+                          style: titleTagStyle,
+                        ),
+                      );
+                    }),
+                ],
+              ),
             ),
           ),
           Row(

@@ -89,6 +89,7 @@ class SubgroupPage extends StatelessWidget {
                                       subgroup.name,
                                       style: TextStyle(
                                         fontSize: 28,
+                                        height: 1.25,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

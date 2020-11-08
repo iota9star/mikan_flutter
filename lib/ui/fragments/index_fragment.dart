@@ -1,4 +1,3 @@
-import 'dart:math' as Math;
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -8,7 +7,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -19,6 +17,7 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
+import 'package:mikan_flutter/ui/components/ova_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
@@ -31,6 +30,20 @@ class IndexFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color accentColor = Theme.of(context).accentColor;
+    final Color primaryColor = Theme.of(context).primaryColor;
+    final TextStyle fileTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+    );
+    final TextStyle titleTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color:
+          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+    );
+    final Color backgroundColor = Theme.of(context).backgroundColor;
     return Scaffold(
       body: NotificationListener(
         onNotification: (notification) {
@@ -51,15 +64,33 @@ class IndexFragment extends StatelessWidget {
           builder: (_, bangumiRows, __) {
             return CustomScrollView(
               slivers: [
-                SliverPinnedToBoxAdapter(
-                  child: _buildHeader(context),
+                SliverPinnedToBoxAdapter(child: _buildHeader(context)),
+                SliverToBoxAdapter(child: _buildCarousels()),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      top: 16.0,
+                      bottom: 8.0,
+                    ),
+                    child: Text(
+                      "OVA",
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        height: 1.25,
+                      ),
+                    ),
+                  ),
                 ),
                 SliverToBoxAdapter(
-                  child: Column(
-                    children: <Widget>[
-                      _buildCarousels(),
-                      _buildRssList(),
-                    ],
+                  child: _buildOVAList(
+                    accentColor,
+                    primaryColor,
+                    backgroundColor,
+                    fileTagStyle,
+                    titleTagStyle,
                   ),
                 ),
                 ...List.generate(bangumiRows.length, (index) {
@@ -155,233 +186,6 @@ class IndexFragment extends StatelessWidget {
               ],
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRssList() {
-    return Selector<IndexModel, Map<String, List<RecordItem>>>(
-      selector: (_, model) => model.rss,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, rss, __) {
-        if (rss.isNotEmpty)
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 16.0,
-                  right: 16.0,
-                  top: 16.0,
-                ),
-                child: Text(
-                  "我的订阅 ❤ 昨日至今",
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-              SizedBox(height: 8.0),
-              SizedBox(
-                height: 64.0 + 24.0,
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  itemBuilder: (_, index) {
-                    if (index == 0) {
-                      return _buildMoreRssItemBtn(context, rss);
-                    }
-                    final entry = rss.entries.elementAt(index - 1);
-                    return _buildRssListItemCover(entry);
-                  },
-                  itemCount: rss.length + 1,
-                  scrollDirection: Axis.horizontal,
-                  physics: BouncingScrollPhysics(),
-                ),
-              ),
-            ],
-          );
-        return Container();
-      },
-    );
-  }
-
-  Selector<IndexModel, String> _buildMoreRssItemBtn(
-      BuildContext context, Map<String, List<RecordItem>> rss) {
-    return Selector<IndexModel, String>(
-      selector: (_, model) => model.tapBangumiRssItemFlag,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (_, tapScaleFlag, child) {
-        final String currFlag = "rss:more-rss";
-        final Matrix4 transform = tapScaleFlag == currFlag
-            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-            : Matrix4.identity();
-        return AnimatedTapContainer(
-          transform: transform,
-          onTapStart: () =>
-              context.read<IndexModel>().tapBangumiRssItemFlag = currFlag,
-          onTapEnd: () =>
-              context.read<IndexModel>().tapBangumiRssItemFlag = null,
-          width: 64.0,
-          margin: EdgeInsets.symmetric(
-            horizontal: 6.0,
-            vertical: 12.0,
-          ),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(
-                rss.entries
-                    .elementAt(0)
-                    .value[0].cover,
-              ),
-            ),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 8.0,
-                color: Colors.black.withOpacity(0.1),
-              ),
-            ],
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          ),
-          child: child,
-        );
-      },
-      child: Transform.scale(
-        scale: 1.08,
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
-            child: Center(
-              child: Text(
-                "更多\n订阅",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).accentColor,
-                  height: 1.25,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRssListItemCover(
-      final MapEntry<String, List<RecordItem>> entry,) {
-    final List<RecordItem> records = entry.value;
-    final int recordsLength = records.length;
-    final String bangumiCover = records[0].cover;
-    final String bangumiId = entry.key;
-    final String badge = recordsLength > 99 ? "99+" : "+$recordsLength";
-    final String currFlag = "rss:$bangumiId:$bangumiCover";
-    return Selector<IndexModel, String>(
-      shouldRebuild: (pre, next) => pre != next,
-      selector: (_, model) => model.tapBangumiRssItemFlag,
-      builder: (context, tapScaleFlag, child) {
-        final Matrix4 transform = tapScaleFlag == currFlag
-            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-            : Matrix4.identity();
-        return AnimatedTapContainer(
-          transform: transform,
-          onTapStart: () =>
-          context
-              .read<IndexModel>()
-              .tapBangumiRssItemFlag = currFlag,
-          onTapEnd: () =>
-          context
-              .read<IndexModel>()
-              .tapBangumiRssItemFlag = null,
-          width: 64.0,
-          margin: EdgeInsets.symmetric(
-            horizontal: 6.0,
-            vertical: 12.0,
-          ),
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 8.0,
-                color: Colors.black.withOpacity(0.08),
-              ),
-            ],
-          ),
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              Routes.bangumiDetails,
-              arguments: {
-                "heroTag": currFlag,
-                "bangumiId": bangumiId,
-                "cover": bangumiCover,
-              },
-            );
-          },
-          child: child,
-        );
-      },
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        child: Stack(
-          fit: StackFit.loose,
-          overflow: Overflow.clip,
-          children: [
-            Positioned.fill(
-              child: Hero(
-                tag: currFlag,
-                child: CachedNetworkImage(
-                  imageUrl: bangumiCover,
-                  fit: BoxFit.cover,
-                  placeholder: (_, __) =>
-                      Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Center(
-                          child: SpinKitPumpingHeart(
-                            duration: Duration(milliseconds: 960),
-                            itemBuilder: (_, __) =>
-                                Image.asset(
-                                  "assets/mikan.png",
-                                ),
-                          ),
-                        ),
-                      ),
-                  errorWidget: (_, __, ___) =>
-                      Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Center(
-                          child: Image.asset(
-                            "assets/mikan.png",
-                          ),
-                        ),
-                      ),
-                ),
-              ),
-            ),
-            Positioned(
-              right: -20.0,
-              top: -8,
-              child: Transform.rotate(
-                angle: Math.pi / 4.0,
-                child: Container(
-                  width: 48.0,
-                  padding: EdgeInsets.only(top: 12.0),
-                  color: Colors.redAccent,
-                  child: Text(
-                    badge,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 10.0,
-                      color: Colors.white,
-                      height: 1.25,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -685,7 +489,7 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Flexible _buildSeasonItem(final Season season) {
+  Widget _buildSeasonItem(final Season season) {
     return Flexible(
       child: FractionallySizedBox(
         widthFactor: 1,
@@ -733,6 +537,80 @@ class IndexFragment extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildOVAList(final Color accentColor,
+      final Color primaryColor,
+      final Color backgroundColor,
+      final TextStyle fileTagStyle,
+      final TextStyle titleTagStyle,) {
+    return Selector<IndexModel, List<RecordItem>>(
+      selector: (_, model) => model.ovas,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (context, records, __) {
+        final bool loading =
+        context.select<IndexModel, bool>((model) => model.ovaLoading);
+        if (loading) {
+          return Container(
+            height: 160.0,
+            child: Center(
+              child: CupertinoActivityIndicator(),
+            ),
+          );
+        }
+        if (records.isNullOrEmpty) {
+          return Container(
+            height: 160.0,
+            child: Center(
+              child: Text("暂无OVA"),
+            ),
+          );
+        }
+        return SizedBox(
+          height: 162.0,
+          child: ListView.builder(
+            itemCount: records.length,
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.only(left: 16.0),
+            itemBuilder: (context, index) {
+              final RecordItem record = records[index];
+              final String currFlag = "ova:$index";
+              return Selector<IndexModel, String>(
+                selector: (_, model) => model.tapBangumiOVAItemFlag,
+                shouldRebuild: (pre, next) => pre != next,
+                builder: (_, tapScaleFlag, __) {
+                  final Matrix4 transform = tapScaleFlag == currFlag
+                      ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                      : Matrix4.identity();
+                  return OVARecordItem(
+                    index: index,
+                    record: record,
+                    accentColor: accentColor,
+                    primaryColor: primaryColor,
+                    backgroundColor: backgroundColor,
+                    fileTagStyle: fileTagStyle,
+                    titleTagStyle: titleTagStyle,
+                    transform: transform,
+                    onTap: () {},
+                    onTapStart: () {
+                      context
+                          .read<IndexModel>()
+                          .tapBangumiOVAItemFlag =
+                          currFlag;
+                    },
+                    onTapEnd: () {
+                      context
+                          .read<IndexModel>()
+                          .tapBangumiOVAItemFlag = null;
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
