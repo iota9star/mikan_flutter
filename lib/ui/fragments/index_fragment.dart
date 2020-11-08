@@ -18,7 +18,7 @@ import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/ui/components/ova_record_item.dart';
-import 'package:mikan_flutter/ui/fragments/bangumi_grid_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -173,7 +173,7 @@ class IndexFragment extends StatelessWidget {
                         ),
                       ),
                     ),
-                    BangumiGridFragment(
+                    BangumiSliverGridFragment(
                       bangumis: bangumiRow.bangumis,
                       scrollNotifier: _scrollNotifier,
                     ),
@@ -221,8 +221,7 @@ class IndexFragment extends StatelessWidget {
                     tag: currFlag,
                     child: AnimatedTapContainer(
                       transform: transform,
-                      onTapStart: () =>
-                      context
+                      onTapStart: () => context
                           .read<IndexModel>()
                           .tapBangumiCarouselItemFlag = currFlag,
                       onTapEnd: () =>
@@ -293,17 +292,24 @@ class IndexFragment extends StatelessWidget {
             bottom: 4.0,
           ),
           decoration: BoxDecoration(
-              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
-              boxShadow: hasScrolled
-                  ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.024),
-                  offset: Offset(0, 1),
-                  blurRadius: 3.0,
-                  spreadRadius: 3.0,
-                ),
-              ]
-                  : null),
+            color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+            borderRadius: hasScrolled
+                ? BorderRadius.only(
+              bottomLeft: Radius.circular(16.0),
+              bottomRight: Radius.circular(16.0),
+            )
+                : null,
+            boxShadow: hasScrolled
+                ? [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.024),
+                offset: Offset(0, 1),
+                blurRadius: 3.0,
+                spreadRadius: 3.0,
+              ),
+            ]
+                : null,
+          ),
           duration: Duration(milliseconds: 240),
           child: child,
         );

@@ -72,4 +72,4 @@ extension HexColor on Color {
       '${blue.toRadixString(16).padLeft(2, '0')}';
 }
 
-const extension = 0;
+eee() {}

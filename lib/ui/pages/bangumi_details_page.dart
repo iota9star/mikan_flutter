@@ -105,7 +105,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Icon(FluentIcons.caret_left_24_regular),
+                              child: Icon(FluentIcons.chevron_left_24_regular),
                               color: backgroundColor.withOpacity(0.87),
                               minWidth: 0,
                               padding: EdgeInsets.all(10.0),
@@ -554,9 +554,10 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
   }
 
   _showSubgroupPanel(final BuildContext context) {
-    showBarModalBottomSheet(
+    showCupertinoModalBottomSheet(
       context: context,
       expand: true,
+      topRadius: Radius.circular(16.0),
       builder: (context, scrollController) {
         return BangumiDetailsSubgroupFragment(
           scrollController: scrollController,

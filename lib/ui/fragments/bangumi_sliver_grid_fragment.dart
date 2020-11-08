@@ -16,13 +16,14 @@ import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
-class BangumiGridFragment extends StatelessWidget {
+class BangumiSliverGridFragment extends StatelessWidget {
   final String flag;
   final List<Bangumi> bangumis;
   final ValueNotifier<double> scrollNotifier;
   final ValueNotifier<double> _scrollNotifier = ValueNotifier(0);
 
-  BangumiGridFragment({Key key, this.bangumis, this.scrollNotifier, this.flag})
+  BangumiSliverGridFragment(
+      {Key key, this.bangumis, this.scrollNotifier, this.flag})
       : super(key: key);
 
   final double wrapperHeight = Sz.screenHeight / 2;

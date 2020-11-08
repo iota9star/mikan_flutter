@@ -10,13 +10,12 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:mikan_flutter/providers/models/subscribed_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class IndexModel extends CancelableBaseModel {
   List<YearSeason> _years = [];
-  List<Season> _seasons = [];
   List<BangumiRow> _bangumiRows = [];
-  Map<String, List<RecordItem>> _rss = {};
   List<RecordItem> _ovas = [];
   List<Carousel> _carousels = [];
   Season _selectedSeason;
@@ -79,8 +78,6 @@ class IndexModel extends CancelableBaseModel {
 
   Season get selectedSeason => _selectedSeason;
 
-  List<Season> get seasons => _seasons;
-
   List<RecordItem> get ovas => _ovas;
 
   final RefreshController _refreshController =
@@ -91,6 +88,12 @@ class IndexModel extends CancelableBaseModel {
   bool _ovaLoading = false;
 
   bool get ovaLoading => _ovaLoading;
+
+  SubscribedModel _subscribedModel;
+
+  set subscribedModel(SubscribedModel value) {
+    _subscribedModel = value;
+  }
 
   IndexModel() {
     loadIndex();
@@ -124,21 +127,13 @@ class IndexModel extends CancelableBaseModel {
       final Index index = resp.data;
       if (index == null) return;
       this._years = index.years;
-      this._seasons = [];
-      for (final YearSeason ys in this._years) {
-        this._seasons.addAll(ys.seasons);
-        for (final Season season in ys.seasons) {
-          if (season.active) {
-            this._selectedSeason = season;
-          }
-        }
-      }
-      if (this._selectedSeason == null && this._seasons.isNotEmpty) {
-        this._selectedSeason = this._seasons[0];
-      }
+      this._selectedSeason = this._years
+          ?.getOrNull(0)
+          ?.seasons
+          ?.getOrNull(0);
+      _subscribedModel.loadMySubscribedSeasonBangumi(this._selectedSeason);
       this._bangumiRows = index.bangumiRows;
       this._selectedBangumiRow = this._bangumiRows[0];
-      this._rss = index.rss;
       this._carousels = index.carousels;
       this._user = index.user;
       "加载完成...".toast();
@@ -153,8 +148,6 @@ class IndexModel extends CancelableBaseModel {
   }
 
   List<BangumiRow> get bangumiRows => _bangumiRows;
-
-  Map<String, List<RecordItem>> get rss => _rss;
 
   List<Carousel> get carousels => _carousels;
 

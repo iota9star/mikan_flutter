@@ -10,7 +10,7 @@ class Repo {
     final extra = {"$MikanFunc": MikanFunc.SEASON};
     final Options options = Options(extra: extra);
     return await Http.get(
-      MikanUrl.WEEK_URL,
+      MikanUrl.SEASON_UPDATE,
       queryParameters: parameters,
       options: options,
     );
@@ -21,7 +21,7 @@ class Repo {
     final extra = {"$MikanFunc": MikanFunc.DAY};
     final Options options = Options(extra: extra);
     return await Http.get(
-      MikanUrl.DAY_URL,
+      MikanUrl.DAY_UPDATE,
       queryParameters: parameters,
       options: options,
     );
@@ -99,17 +99,35 @@ class Repo {
     final String subgroupId,
   }) async {
     final Options options = Options(
-        headers: {
-          "origin": "https://mikanani.me",
-          "referer": "https://mikanani.me/",
-        },
-        contentType: "application/json; charset=UTF-8",
-        responseType: ResponseType.json);
+      headers: {
+        "origin": "https://mikanani.me",
+        "referer": "https://mikanani.me/",
+      },
+      contentType: "application/json; charset=UTF-8",
+      responseType: ResponseType.json,
+    );
     return await Http.post(
       subscribe ? MikanUrl.UNSUBSCRIBE_BANGUMI : MikanUrl.SUBSCRIBE_BANGUMI,
       data: <String, dynamic>{
         "BangumiID": bangumiId,
         "SubtitleGroupID": subgroupId,
+      },
+      options: options,
+    );
+  }
+
+  static Future<Resp> mySubscribedSeasonBangumi(
+      final String year, final String season) async {
+    final Options options = Options(headers: {
+      "referer": "https://mikanani.me/Home/MyBangumi",
+    }, extra: {
+      "$MikanFunc": MikanFunc.MY_SUBSCRIBE_SEASON_BANGUMI
+    });
+    return await Http.get(
+      MikanUrl.MY_SUBSCRIBE_SEASON_BANGUMI,
+      queryParameters: <String, dynamic>{
+        "year": year,
+        "seasonStr": season,
       },
       options: options,
     );

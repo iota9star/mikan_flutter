@@ -13,6 +13,7 @@ import 'package:mikan_flutter/providers/models/firebase_model.dart';
 import 'package:mikan_flutter/providers/models/home_model.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/providers/models/list_model.dart';
+import 'package:mikan_flutter/providers/models/subscribed_model.dart';
 import 'package:mikan_flutter/providers/models/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -66,8 +67,14 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<FirebaseModel>(
             create: (context) => FirebaseModel(),
           ),
-          ListenableProvider<IndexModel>(
+          ChangeNotifierProvider<SubscribedModel>(
+            create: (context) => SubscribedModel(),
+            lazy: false,
+          ),
+          ChangeNotifierProxyProvider<SubscribedModel, IndexModel>(
             create: (context) => IndexModel(),
+            update: (_, subscribed, index) =>
+                index..subscribedModel = subscribed,
             lazy: false,
           ),
           ChangeNotifierProvider<ListModel>(
@@ -81,8 +88,10 @@ class MyApp extends StatelessWidget {
         ],
         child: Consumer<ThemeModel>(
           builder: (context, themeModel, child) {
-            final FirebaseModel firebaseModel =
-                Provider.of<FirebaseModel>(context, listen: false);
+            final FirebaseModel firebaseModel = Provider.of<FirebaseModel>(
+              context,
+              listen: false,
+            );
             return RefreshConfiguration(
               autoLoad: true,
               // 头部触发刷新的越界距离
@@ -91,8 +100,11 @@ class MyApp extends StatelessWidget {
                 refreshStyle: RefreshStyle.Follow,
               ),
               // 自定义回弹动画,三个属性值意义请查询flutter api
-              springDescription:
-                  SpringDescription(stiffness: 170, damping: 16, mass: 1.9),
+              springDescription: SpringDescription(
+                stiffness: 170,
+                damping: 16,
+                mass: 1.9,
+              ),
               //头部最大可以拖动的范围,如果发生冲出视图范围区域,请设置这个属性
               maxOverScrollExtent: 240,
               // 底部最大可以拖动的范围
@@ -113,25 +125,23 @@ class MyApp extends StatelessWidget {
                 onGenerateRoute: (settings) => onGenerateRouteHelper(settings),
                 navigatorObservers: [
                   firebaseModel.observer,
-                  FFNavigatorObserver(
-                      routeChange: (Route newRoute, Route oldRoute) {
-                        //you can track page here
-                        final RouteSettings oldSettings = oldRoute?.settings;
-                        final RouteSettings newSettings = newRoute?.settings;
-                        logd(
-                            "route change: ${oldSettings?.name} => ${newSettings
-                                ?.name}");
-                        // if (newSettings is FFRouteSettings &&
-                        //     oldSettings is FFRouteSettings) {
-                        //   if (newSettings?.showStatusBar !=
-                        //       oldSettings?.showStatusBar) {
-                        //     if (newSettings?.showStatusBar == true) {
-                        //       SystemChrome.setEnabledSystemUIOverlays(
-                        //         SystemUiOverlay.values,
-                        //       );
-                        //       SystemChrome.setSystemUIOverlayStyle(
-                        //         SystemUiOverlayStyle.dark,
-                        //       );
+                  FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
+                    //you can track page here
+                    final RouteSettings oldSettings = oldRoute?.settings;
+                    final RouteSettings newSettings = newRoute?.settings;
+                    logd("route change: "
+                        "${oldSettings?.name} => ${newSettings?.name}");
+                    // if (newSettings is FFRouteSettings &&
+                    //     oldSettings is FFRouteSettings) {
+                    //   if (newSettings?.showStatusBar !=
+                    //       oldSettings?.showStatusBar) {
+                    //     if (newSettings?.showStatusBar == true) {
+                    //       SystemChrome.setEnabledSystemUIOverlays(
+                    //         SystemUiOverlay.values,
+                    //       );
+                    //       SystemChrome.setSystemUIOverlayStyle(
+                    //         SystemUiOverlayStyle.dark,
+                    //       );
                     //     } else {
                     //       SystemChrome.setEnabledSystemUIOverlays([]);
                     //     }

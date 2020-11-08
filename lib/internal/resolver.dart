@@ -188,17 +188,11 @@ class Resolver {
     Bangumi bangumi;
     for (final Element ele in eles) {
       bangumi = Bangumi();
-      temp = ele
-          .querySelector("a")
-          .attributes['href'];
+      temp = ele.querySelector("a").attributes['href'];
       bangumi.id = temp.replaceAll("/Home/Bangumi/", "");
       bangumi.cover = MikanUrl.BASE_URL +
-          ele
-              .querySelector("span")
-              .attributes["data-src"].split("?")[0];
-      bangumi.name = ele
-          .querySelector(".an-text")
-          .attributes['title'].trim();
+          ele.querySelector("span").attributes["data-src"].split("?")[0];
+      bangumi.name = ele.querySelector(".an-text").attributes['title'].trim();
       bangumis.add(bangumi);
     }
     eles = document.querySelectorAll("tr.js-search-results-row") ?? [];
@@ -697,5 +691,40 @@ class Resolver {
       records.add(record);
     }
     return records;
+  }
+
+  static Future<List<Bangumi>> parseMySubscribed(Document document) async {
+    final List<Element> elements =
+        document.querySelectorAll("li") ?? [];
+    Bangumi bangumi;
+    Map<dynamic, String> attributes;
+    int i = 1;
+    List<Bangumi> bangumis = [];
+    for (final Element ele in elements) {
+      bangumi = Bangumi();
+      attributes = ele
+          .querySelector("span")
+          .attributes;
+      bangumi.id = attributes["data-bangumiid"];
+      bangumi.cover = MikanUrl.BASE_URL + attributes["data-src"].split("?")[0];
+      bangumi.grey = ele.querySelector("span.greyout") != null;
+      bangumi.updateAt = ele
+          .querySelector(".date-text")
+          .text
+          .trim();
+      attributes = (ele.querySelector(".an-text") ??
+          ele.querySelector(".date-text[title]"))
+          .attributes;
+      bangumi.name = attributes['title'];
+      bangumi.subscribed = ele.querySelector(".active") != null;
+      bangumi.num =
+          int.tryParse(ele
+              .querySelector(".num-node")
+              ?.text ?? "0") ?? 0;
+      bangumi.location = Location(i, (i / 3).ceil());
+      i++;
+      bangumis.add(bangumi);
+    }
+    return bangumis;
   }
 }

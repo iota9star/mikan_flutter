@@ -13,6 +13,8 @@ class MikanFunc {
   static const String DETAILS = "DETAILS";
   static const String SUBSCRIBE_BANGUMI = "SUBSCRIBE_BANGUMI";
   static const String UNSUBSCRIBE_BANGUMI = "UNSUBSCRIBE_BANGUMI";
+  static const String MY_SUBSCRIBE_SEASON_BANGUMI =
+      "MY_SUBSCRIBE_SEASON_BANGUMI";
 }
 
 class MikanUrl {
@@ -20,33 +22,36 @@ class MikanUrl {
 
   static const String BASE_URL = "https://mikanani.me";
 
-  /// https://mikanani.me/Home/EpisodeUpdateRows?predate=0&enddate=1&maximumitems=6
-  static const String DAY_URL = "/Home/EpisodeUpdateRows";
+  /// [最近更新](https://mikanani.me/Home/EpisodeUpdateRows?predate=0&enddate=1&maximumitems=6)
+  static const String DAY_UPDATE = "/Home/EpisodeUpdateRows";
 
-  ///  https://mikanani.me/Home/BangumiCoverFlowByDayOfWeek?year=2020&seasonStr=%E5%86%AC
-  static const String WEEK_URL = "/Home/BangumiCoverFlowByDayOfWeek";
+  /// [季度信息](https://mikanani.me/Home/BangumiCoverFlowByDayOfWeek?year=2020&seasonStr=%E5%86%AC)
+  static const String SEASON_UPDATE = "/Home/BangumiCoverFlowByDayOfWeek";
 
-  ///  https://mikanani.me/Home/Search?searchstr=%E5%88%80%E5%89%91%E7%A5%9E%E5%9F%9F&subgroupid=19&page=1
+  /// [搜索](https://mikanani.me/Home/Search?searchstr=%E5%88%80%E5%89%91%E7%A5%9E%E5%9F%9F&subgroupid=19&page=1)
   static const String SEARCH = "/Home/Search";
 
-  /// https://mikanani.me/Home/Classic/1
+  /// [更新列表](https://mikanani.me/Home/Classic/1)
   static const String LIST = "/Home/Classic";
 
-  /// https://mikanani.me/Home/PublishGroup/33
+  /// [字幕组信息](https://mikanani.me/Home/PublishGroup/33)
   static const String SUBGROUP = "/Home/PublishGroup";
 
-  /// https://mikanani.me/Home/Bangumi/2229
+  /// [番组信息](https://mikanani.me/Home/Bangumi/2229)
   static const String BANGUMI = "/Home/Bangumi";
 
-  /// https://mikanani.me/Home/ExpandEpisodeTable?bangumiId=227&subtitleGroupId=161&take=65
+  /// [番组BT列表](https://mikanani.me/Home/ExpandEpisodeTable?bangumiId=227&subtitleGroupId=161&take=65)
   static const String BANGUMI_MORE = "/Home/ExpandEpisodeTable";
 
-  /// https://mikanani.me/Account/Login?ReturnUrl=%2F
+  /// [登录](https://mikanani.me/Account/Login?ReturnUrl=%2F)
   static const String LOGIN = "/Account/Login";
 
-  /// https://mikanani.me/Home/SubscribeBangumi
+  /// [订阅](https://mikanani.me/Home/SubscribeBangumi)
   static const String SUBSCRIBE_BANGUMI = "/Home/SubscribeBangumi";
 
-  /// https://mikanani.me/Home/UnsubscribeBangumi
+  /// [取消订阅](https://mikanani.me/Home/UnsubscribeBangumi)
   static const String UNSUBSCRIBE_BANGUMI = "/Home/UnsubscribeBangumi";
+
+  /// [季度订阅](https://mikanani.me/Home/BangumiCoverFlow?year=2020&seasonStr=%E7%A7%8B)
+  static const String MY_SUBSCRIBE_SEASON_BANGUMI = "/Home/BangumiCoverFlow";
 }

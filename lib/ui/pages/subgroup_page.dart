@@ -8,7 +8,7 @@ import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_gallery.dart';
 import 'package:mikan_flutter/providers/models/subgroup_model.dart';
-import 'package:mikan_flutter/ui/fragments/bangumi_grid_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
@@ -33,6 +33,8 @@ class SubgroupPage extends StatelessWidget {
           create: (_) => SubgroupModel(subgroup),
           child: Builder(
             builder: (context) {
+              final SubgroupModel subgroupModel =
+                  Provider.of<SubgroupModel>(context, listen: false);
               return NotificationListener(
                 onNotification: (notification) {
                   if (notification is OverscrollIndicatorNotification) {
@@ -62,19 +64,21 @@ class SubgroupPage extends StatelessWidget {
                                       : scaffoldBackgroundColor,
                                   boxShadow: hasScrolled
                                       ? [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.024),
-                                            offset: Offset(0, 1),
-                                            blurRadius: 3.0,
-                                            spreadRadius: 3.0,
-                                          ),
-                                        ]
+                                    BoxShadow(
+                                      color:
+                                      Colors.black.withOpacity(0.024),
+                                      offset: Offset(0, 1),
+                                      blurRadius: 3.0,
+                                      spreadRadius: 3.0,
+                                    ),
+                                  ]
                                       : null,
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: hasScrolled
+                                      ? BorderRadius.only(
                                     bottomLeft: Radius.circular(16.0),
                                     bottomRight: Radius.circular(16.0),
-                                  ),
+                                  )
+                                      : null,
                                 ),
                                 padding: EdgeInsets.only(
                                   top: 16.0 + Sz.statusBarHeight,
@@ -99,8 +103,7 @@ class SubgroupPage extends StatelessWidget {
                             );
                           },
                         ),
-                        if (Provider.of<SubgroupModel>(context, listen: false)
-                            .loading)
+                        if (subgroupModel.loading)
                           SliverFillRemaining(
                             child: Center(
                               child: CupertinoActivityIndicator(),
@@ -134,7 +137,7 @@ class SubgroupPage extends StatelessWidget {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    CrossAxisAlignment.center,
                                     children: <Widget>[
                                       Expanded(
                                         child: Text(
@@ -164,7 +167,7 @@ class SubgroupPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              BangumiGridFragment(
+                              BangumiSliverGridFragment(
                                 flag: section,
                                 bangumis: gallery.bangumis,
                               ),
