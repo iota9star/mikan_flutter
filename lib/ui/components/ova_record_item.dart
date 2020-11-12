@@ -1,4 +1,5 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
@@ -81,16 +82,19 @@ class OVARecordItem extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
+              left: 12.0,
+              right: 12.0,
               top: 8.0,
             ),
             child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
                   Container(
                     margin: EdgeInsets.only(
-                      left: 16.0,
+                      left: 4.0,
                       right: 4.0,
                       bottom: 4.0,
                     ),

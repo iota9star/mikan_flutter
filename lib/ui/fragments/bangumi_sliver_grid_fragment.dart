@@ -6,7 +6,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -22,9 +21,12 @@ class BangumiSliverGridFragment extends StatelessWidget {
   final ValueNotifier<double> scrollNotifier;
   final ValueNotifier<double> _scrollNotifier = ValueNotifier(0);
 
-  BangumiSliverGridFragment(
-      {Key key, this.bangumis, this.scrollNotifier, this.flag})
-      : super(key: key);
+  BangumiSliverGridFragment({
+    Key key,
+    this.bangumis,
+    this.scrollNotifier,
+    this.flag,
+  }) : super(key: key);
 
   final double wrapperHeight = Sz.screenHeight / 2;
   final double sectionHeight = 57;
@@ -48,10 +50,10 @@ class BangumiSliverGridFragment extends StatelessWidget {
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           crossAxisCount: 3,
-          collectGarbage: (List<int> garbages) {
-            garbages.forEach(
-                (index) => CachedNetworkImageProvider(bangumis[index].cover));
-          },
+          // collectGarbage: (List<int> garbages) {
+          //   garbages.forEach(
+          //       (index) => CachedNetworkImageProvider(bangumis[index].cover));
+          // },
         ),
         delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -68,10 +70,12 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiItem(final Color accentColor,
-      final Color backgroundColor,
-      final Bangumi bangumi,
-      final int index,) {
+  Widget _buildBangumiItem(
+    final Color accentColor,
+    final Color backgroundColor,
+    final Bangumi bangumi,
+    final int index,
+  ) {
     final String currFlag = "$flag:bangumi:${bangumi.id}:${bangumi.cover}";
     final String msg = [bangumi.name, bangumi.updateAt]
         .where((element) => element.isNotBlank)
@@ -81,11 +85,10 @@ class BangumiSliverGridFragment extends StatelessWidget {
         final Matrix4 transform = tapScaleFlag == currFlag
             ? Matrix4.diagonal3Values(0.9, 0.9, 1)
             : Matrix4.identity();
-        final Widget cover = _buildBangumiListItemCover(
+        final Widget cover = _buildBangumiItemCover(
           backgroundColor,
           currFlag,
           bangumi,
-          index,
         );
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -116,8 +119,9 @@ class BangumiSliverGridFragment extends StatelessWidget {
                 }
               },
               child: ClipRRect(
-                borderRadius:
-                BorderRadius.only(topRight: Radius.circular(10.0)),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                ),
                 child: Stack(
                   overflow: Overflow.clip,
                   children: [
@@ -258,63 +262,30 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiListItemCover(final Color backgroundColor,
+  Widget _buildBangumiItemCover(final Color backgroundColor,
       final String currFlag,
-      final Bangumi bangumi,
-      final int index,) {
+      final Bangumi bangumi,) {
     return ExtendedImage(
       image: CachedNetworkImageProvider(bangumi.cover),
       shape: BoxShape.rectangle,
-      clearMemoryCacheWhenDispose: true,
-      loadStateChanged: (ExtendedImageState value) {
+      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      clearMemoryCacheWhenDispose: false,
+      loadStateChanged: (ExtendedImageState state) {
         Widget child;
-        if (value.extendedImageLoadState == LoadState.loading) {
-          child = Container(
-            padding: EdgeInsets.all(28.0),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                ),
-              ],
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            ),
-            child: Center(
-              child: SpinKitPumpingHeart(
-                duration: Duration(milliseconds: 960),
-                itemBuilder: (_, __) => Image.asset(
-                  "assets/mikan.png",
-                ),
-              ),
-            ),
-          );
-        }
-        if (value.extendedImageLoadState == LoadState.failed) {
-          child = Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
-              color: backgroundColor,
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              image: DecorationImage(
-                image: ExtendedAssetImageProvider("assets/mikan.png"),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
-              ),
-            ),
-          );
-        } else if (value.extendedImageLoadState == LoadState.completed) {
-          child = _buildScrollableBackgroundCover(
-            backgroundColor,
-            value,
-            bangumi,
-          );
+        switch (state.extendedImageLoadState) {
+          case LoadState.loading:
+            child = _buildBangumiItemPlaceholder(backgroundColor);
+            break;
+          case LoadState.completed:
+            child = _buildScrollableBackgroundCover(
+              backgroundColor,
+              bangumi,
+              state.imageProvider,
+            );
+            break;
+          case LoadState.failed:
+            child = _buildBangumiItemError(backgroundColor);
+            break;
         }
         return AspectRatio(
           aspectRatio: 1.0,
@@ -327,9 +298,48 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
+  Widget _buildBangumiItemPlaceholder(Color backgroundColor) {
+    return Container(
+      padding: EdgeInsets.all(28.0),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 8.0,
+            color: Colors.black.withAlpha(24),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Image.asset(
+          "assets/mikan.png",
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBangumiItemError(final Color backgroundColor,) {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 8.0,
+            color: Colors.black.withAlpha(24),
+          )
+        ],
+        color: backgroundColor,
+        image: DecorationImage(
+          image: ExtendedAssetImageProvider("assets/mikan.png"),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+        ),
+      ),
+    );
+  }
+
   Widget _buildScrollableBackgroundCover(final Color backgroundColor,
-      final ExtendedImageState state,
-      final Bangumi bangumi,) {
+      final Bangumi bangumi,
+      final ImageProvider imageProvider,) {
     return ValueListenableBuilder(
       valueListenable: _scrollNotifier,
       builder: (context, scrolledOffset, child) {
@@ -349,9 +359,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
               )
             ],
             color: backgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
             image: DecorationImage(
-              image: state.imageProvider,
+              image: imageProvider,
               fit: BoxFit.cover,
               alignment: Alignment(align, align),
               colorFilter: bangumi.grey == true
