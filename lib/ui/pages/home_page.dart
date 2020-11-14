@@ -21,28 +21,36 @@ class HomePage extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
-        bottomNavigationBar: BottomBarView(
-          items: [
-            BarItem(
-              icon: FluentIcons.home_24_regular,
-              selectedIconPath: "assets/mikan.png",
-              isSelected: true,
-            ),
-            BarItem(
-              icon: FluentIcons.list_24_regular,
-              selectedIcon: FluentIcons.list_24_filled,
-            ),
-            BarItem(
-              icon: FluentIcons.collections_24_regular,
-              selectedIcon: FluentIcons.collections_24_filled,
-            ),
-          ],
-          onItemClick: (index) {
-            context.read<HomeModel>().selectedIndex = index;
+        bottomNavigationBar: Selector<HomeModel, int>(
+          selector: (_, model) => model.selectedIndex,
+          shouldRebuild: (pre, next) => pre != next,
+          builder: (_, selectIndex, __) {
+            return BottomBarView(
+              items: [
+                BarItem(
+                  icon: FluentIcons.home_24_regular,
+                  selectedIconPath: "assets/mikan.png",
+                  isSelected: selectIndex == 0,
+                ),
+                BarItem(
+                  icon: FluentIcons.list_24_regular,
+                  selectedIcon: FluentIcons.list_24_filled,
+                  isSelected: selectIndex == 1,
+                ),
+                BarItem(
+                  icon: FluentIcons.collections_24_regular,
+                  selectedIcon: FluentIcons.collections_24_filled,
+                  isSelected: selectIndex == 2,
+                ),
+              ],
+              onItemClick: (index) {
+                context.read<HomeModel>().selectedIndex = index;
+              },
+            );
           },
         ),
         body: Selector<HomeModel, int>(
-          builder: (BuildContext context, int selectIndex, Widget child) {
+          builder: (_, selectIndex, __) {
             return IndexedStack(
               children: [
                 IndexFragment(),

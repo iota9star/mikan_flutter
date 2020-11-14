@@ -52,168 +52,11 @@ class SubscribedFragment extends StatelessWidget {
             onRefresh: subscribedModel.refresh,
             child: CustomScrollView(
               slivers: [
-                Selector<SubscribedModel, bool>(
-                  selector: (_, model) => model.hasScrolled,
-                  builder: (_, hasScrolled, __) {
-                    return SliverPinnedToBoxAdapter(
-                      child: AnimatedContainer(
-                        decoration: BoxDecoration(
-                          color: hasScrolled
-                              ? backgroundColor
-                              : scaffoldBackgroundColor,
-                          boxShadow: hasScrolled
-                              ? [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.024),
-                                    offset: Offset(0, 1),
-                                    blurRadius: 3.0,
-                                    spreadRadius: 3.0,
-                                  ),
-                                ]
-                              : null,
-                          borderRadius: hasScrolled
-                              ? BorderRadius.only(
-                                  bottomLeft: Radius.circular(16.0),
-                                  bottomRight: Radius.circular(16.0),
-                                )
-                              : null,
-                        ),
-                        padding: EdgeInsets.only(
-                          top: 16.0 + Sz.statusBarHeight,
-                          left: 16.0,
-                          right: 16.0,
-                          bottom: 16.0,
-                        ),
-                        duration: Duration(milliseconds: 240),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "我的订阅",
-                              style: TextStyle(
-                                fontSize: 28,
-                                height: 1.25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      top: 16.0,
-                      bottom: 8.0,
-                    ),
-                    child: Text(
-                      "最近更新",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        height: 1.25,
-                      ),
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(child: _buildRssList(backgroundColor)),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      top: 16.0,
-                      bottom: 8.0,
-                    ),
-                    child: Text(
-                      "季度订阅",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        height: 1.25,
-                      ),
-                    ),
-                  ),
-                ),
-                Selector<SubscribedModel, List<Bangumi>>(
-                  selector: (_, model) => model.bangumis,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (context, bangumis, __) {
-                    if (context.select<SubscribedModel, bool>(
-                        (model) => model.seasonLoading)) {
-                      return SliverToBoxAdapter(
-                        child: Container(
-                          width: double.infinity,
-                          height: 240.0,
-                          margin: EdgeInsets.only(
-                            left: 16.0,
-                            right: 16.0,
-                            bottom: 8.0,
-                            top: 8.0,
-                          ),
-                          padding: EdgeInsets.only(
-                            left: 24.0,
-                            right: 24.0,
-                            bottom: 24.0,
-                            top: 24.0,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topRight,
-                              end: Alignment.bottomLeft,
-                              colors: [
-                                backgroundColor.withOpacity(0.72),
-                                backgroundColor.withOpacity(0.9),
-                              ],
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          child: Center(child: CupertinoActivityIndicator()),
-                        ),
-                      );
-                    }
-                    if (bangumis.isNullOrEmpty) {
-                      return SliverToBoxAdapter(
-                        child: Container(
-                          width: double.infinity,
-                          height: 240.0,
-                          margin: EdgeInsets.only(
-                            left: 16.0,
-                            right: 16.0,
-                            bottom: 8.0,
-                            top: 8.0,
-                          ),
-                          padding: EdgeInsets.only(
-                            left: 24.0,
-                            right: 24.0,
-                            bottom: 24.0,
-                            top: 24.0,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topRight,
-                              end: Alignment.bottomLeft,
-                              colors: [
-                                backgroundColor.withOpacity(0.72),
-                                backgroundColor.withOpacity(0.9),
-                              ],
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
-                        ),
-                      );
-                    }
-                    return BangumiSliverGridFragment(
-                      bangumis: bangumis,
-                    );
-                  },
-                )
+                _buildHeader(backgroundColor, scaffoldBackgroundColor),
+                _buildRssSection(),
+                _buildRssList(backgroundColor),
+                _buildSeasonRssSection(),
+                _buildSeasonRssList(backgroundColor)
               ],
             ),
           ),
@@ -222,56 +65,229 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRssList(final Color backgroundColor) {
-    return Selector<SubscribedModel, Map<String, List<RecordItem>>>(
-      selector: (_, model) => model.rss,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, rss, __) {
-        if (rss.isSafeNotEmpty)
-          return SizedBox(
-            height: 64.0 + 24.0,
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              itemBuilder: (_, index) {
-                if (index == 0) {
-                  return _buildMoreRssItemBtn(context, rss);
-                }
-                final entry = rss.entries.elementAt(index - 1);
-                return _buildRssListItemCover(entry);
-              },
-              itemCount: rss.length + 1,
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
+  Widget _buildHeader(
+      final Color backgroundColor, final Color scaffoldBackgroundColor) {
+    return Selector<SubscribedModel, bool>(
+      selector: (_, model) => model.hasScrolled,
+      builder: (_, hasScrolled, __) {
+        return SliverPinnedToBoxAdapter(
+          child: AnimatedContainer(
+            decoration: BoxDecoration(
+              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              boxShadow: hasScrolled
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.024),
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        spreadRadius: 3.0,
+                      ),
+                    ]
+                  : null,
+              borderRadius: hasScrolled
+                  ? BorderRadius.only(
+                      bottomLeft: Radius.circular(16.0),
+                      bottomRight: Radius.circular(16.0),
+                    )
+                  : null,
             ),
-          );
-        return Container(
-          width: double.infinity,
-          margin: EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            bottom: 8.0,
-            top: 8.0,
-          ),
-          padding: EdgeInsets.only(
-            left: 24.0,
-            right: 24.0,
-            bottom: 24.0,
-            top: 24.0,
-          ),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [
-                backgroundColor.withOpacity(0.72),
-                backgroundColor.withOpacity(0.9),
+            padding: EdgeInsets.only(
+              top: 16.0 + Sz.statusBarHeight,
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0,
+            ),
+            duration: Duration(milliseconds: 240),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  "我的订阅",
+                  style: TextStyle(
+                    fontSize: 24,
+                    height: 1.25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
-            borderRadius: BorderRadius.all(Radius.circular(16.0)),
           ),
-          child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
         );
       },
+    );
+  }
+
+  Widget _buildSeasonRssList(final Color backgroundColor) {
+    return Selector<SubscribedModel, List<Bangumi>>(
+      selector: (_, model) => model.bangumis,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (context, bangumis, __) {
+        if (context
+            .select<SubscribedModel, bool>((model) => model.seasonLoading)) {
+          return SliverToBoxAdapter(
+            child: Container(
+              width: double.infinity,
+              height: 240.0,
+              margin: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                bottom: 8.0,
+                top: 8.0,
+              ),
+              padding: EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                bottom: 24.0,
+                top: 24.0,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    backgroundColor.withOpacity(0.72),
+                    backgroundColor.withOpacity(0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              ),
+              child: Center(child: CupertinoActivityIndicator()),
+            ),
+          );
+        }
+        if (bangumis.isNullOrEmpty) {
+          return SliverToBoxAdapter(
+            child: Container(
+              width: double.infinity,
+              height: 240.0,
+              margin: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                bottom: 8.0,
+                top: 8.0,
+              ),
+              padding: EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                bottom: 24.0,
+                top: 24.0,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    backgroundColor.withOpacity(0.72),
+                    backgroundColor.withOpacity(0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              ),
+              child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
+            ),
+          );
+        }
+        return BangumiSliverGridFragment(
+          flag: "subscribed",
+          bangumis: bangumis,
+        );
+      },
+    );
+  }
+
+  Widget _buildSeasonRssSection() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          top: 16.0,
+          bottom: 8.0,
+        ),
+        child: Text(
+          "季度订阅",
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            height: 1.25,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRssSection() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          top: 16.0,
+          bottom: 8.0,
+        ),
+        child: Text(
+          "最近更新",
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            height: 1.25,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRssList(final Color backgroundColor) {
+    return SliverToBoxAdapter(
+      child: Selector<SubscribedModel, Map<String, List<RecordItem>>>(
+        selector: (_, model) => model.rss,
+        shouldRebuild: (pre, next) => pre != next,
+        builder: (context, rss, __) {
+          if (rss.isSafeNotEmpty)
+            return SizedBox(
+              height: 64.0 + 24.0,
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                itemBuilder: (_, index) {
+                  if (index == 0) {
+                    return _buildMoreRssItemBtn(context, rss);
+                  }
+                  final entry = rss.entries.elementAt(index - 1);
+                  return _buildRssListItemCover(entry);
+                },
+                itemCount: rss.length + 1,
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+              ),
+            );
+          return Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 8.0,
+              top: 8.0,
+            ),
+            padding: EdgeInsets.only(
+              left: 24.0,
+              right: 24.0,
+              bottom: 24.0,
+              top: 24.0,
+            ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+                  backgroundColor.withOpacity(0.72),
+                  backgroundColor.withOpacity(0.9),
+                ],
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+            child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
+          );
+        },
+      ),
     );
   }
 

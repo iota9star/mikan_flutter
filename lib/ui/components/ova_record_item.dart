@@ -154,13 +154,6 @@ class OVARecordItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               IconButton(
-                icon: Icon(FluentIcons.channel_24_regular),
-                color: accentColor,
-                tooltip: "打开详情页",
-                iconSize: 20.0,
-                onPressed: () {},
-              ),
-              IconButton(
                 icon: Icon(FluentIcons.cloud_download_24_regular),
                 tooltip: "复制并尝试打开种子链接",
                 color: accentColor,

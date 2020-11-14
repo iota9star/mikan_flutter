@@ -45,7 +45,7 @@ class IndexFragment extends StatelessWidget {
     final Color backgroundColor = Theme.of(context).backgroundColor;
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
-    final Color headline3Color = Theme.of(context).textTheme.headline3.color;
+    final Color headline3Color = Theme.of(context).textTheme.subtitle1.color;
     final IndexModel indexModel =
         Provider.of<IndexModel>(context, listen: false);
     return Scaffold(
@@ -155,7 +155,7 @@ class IndexFragment extends StatelessWidget {
               child: Text(
                 bangumiRow.name,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 20.0,
                   height: 1.25,
                   fontWeight: FontWeight.bold,
                 ),

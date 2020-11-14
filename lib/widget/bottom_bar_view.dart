@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 
@@ -13,7 +14,6 @@ class BarItem {
   bool isSelected;
   int _index = 0;
   double _size;
-  AnimationController _animationController;
 
   BarItem({
     this.icon,
@@ -31,7 +31,7 @@ class BottomBarView extends StatefulWidget {
     this.items,
     this.onItemClick,
     this.height = 64,
-    this.iconSize = 30,
+    this.iconSize = 28,
   })  : assert(height > iconSize),
         super(key: key);
 
@@ -46,15 +46,15 @@ class BottomBarView extends StatefulWidget {
 
 class _BottomBarViewState extends State<BottomBarView>
     with TickerProviderStateMixin {
-  AnimationController animationController;
+  AnimationController _animationController;
 
   @override
   void initState() {
-    animationController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 800),
     );
-    animationController.forward();
+    _animationController.forward();
     super.initState();
   }
 
@@ -63,36 +63,18 @@ class _BottomBarViewState extends State<BottomBarView>
     return Container(
       height: widget.height + Sz.navBarHeight,
       padding: EdgeInsets.only(bottom: Sz.navBarHeight),
-      child: AnimatedBuilder(
-        animation: animationController,
-        builder: (BuildContext context, Widget child) {
-          return Transform(
-            transform: Matrix4.translationValues(0.0, 0.0, 0.0),
-            child: PhysicalShape(
-              color: Theme.of(context).backgroundColor,
-              elevation: 16.0,
-              clipper: TabClipper(
-                radius: Tween<double>(begin: 0.0, end: 1.0)
-                        .animate(
-                          CurvedAnimation(
-                            parent: animationController,
-                            curve: Curves.fastOutSlowIn,
-                          ),
-                        )
-                        .value *
-                    widget.height,
-              ),
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: _buildBarItemView(),
-                ),
-              ),
-            ),
-          );
-        },
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(16.0),
+          topLeft: Radius.circular(16.0),
+        ),
+        color: Theme.of(context).backgroundColor,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: _buildBarItemView(),
       ),
     );
   }
@@ -140,24 +122,26 @@ class _BottomBarItemView extends StatefulWidget {
 class _BottomBarItemViewState extends State<_BottomBarItemView>
     with TickerProviderStateMixin {
   List<Widget> _points;
+  AnimationController _animationController;
 
   @override
   void initState() {
-    widget.barItem._animationController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
-    )..addStatusListener((AnimationStatus status) {
+    )
+      ..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           if (!mounted) return;
           widget.removeAllSelect();
-          widget.barItem._animationController.reverse();
+          _animationController.reverse();
         }
       });
     super.initState();
   }
 
   void setAnimation() {
-    widget.barItem?._animationController?.forward();
+    _animationController?.forward();
   }
 
   Widget _toBarIcon(final BarItem barItem) {
@@ -219,7 +203,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
                     alignment: Alignment.center,
                     scale: Tween<double>(begin: 0.88, end: 1.0).animate(
                       CurvedAnimation(
-                        parent: widget.barItem._animationController,
+                        parent: _animationController,
                         curve: Interval(
                           0.1,
                           1.0,
@@ -274,7 +258,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
         alignment: Alignment.center,
         scale: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
-            parent: widget.barItem._animationController,
+            parent: _animationController,
             curve: Interval(
               interval[0],
               interval[1],
