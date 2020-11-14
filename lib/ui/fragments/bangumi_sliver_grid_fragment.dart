@@ -1,7 +1,6 @@
 import 'dart:math' as Math;
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,13 +17,10 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 class BangumiSliverGridFragment extends StatelessWidget {
   final String flag;
   final List<Bangumi> bangumis;
-  final ValueNotifier<double> scrollNotifier;
-  final ValueNotifier<double> _scrollNotifier = ValueNotifier(0);
 
   BangumiSliverGridFragment({
     Key key,
     this.bangumis,
-    this.scrollNotifier,
     this.flag,
   }) : super(key: key);
 
@@ -47,13 +43,9 @@ class BangumiSliverGridFragment extends StatelessWidget {
       padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
       sliver: SliverWaterfallFlow(
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
           crossAxisCount: 3,
-          // collectGarbage: (List<int> garbages) {
-          //   garbages.forEach(
-          //       (index) => CachedNetworkImageProvider(bangumis[index].cover));
-          // },
         ),
         delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -76,7 +68,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final Bangumi bangumi,
     final int index,
   ) {
-    final String currFlag = "$flag:bangumi:${bangumi.id}:${bangumi.cover}";
+    final String currFlag =
+        "$flag:bangumi:$index:${bangumi.id}:${bangumi.cover}";
     final String msg = [bangumi.name, bangumi.updateAt]
         .where((element) => element.isNotBlank)
         .join("\n");
@@ -96,13 +89,9 @@ class BangumiSliverGridFragment extends StatelessWidget {
             AnimatedTapContainer(
               transform: transform,
               onTapStart: () =>
-              context
-                  .read<IndexModel>()
-                  .tapBangumiListItemFlag = currFlag,
+                  context.read<IndexModel>().tapBangumiListItemFlag = currFlag,
               onTapEnd: () =>
-              context
-                  .read<IndexModel>()
-                  .tapBangumiListItemFlag = null,
+                  context.read<IndexModel>().tapBangumiListItemFlag = null,
               onTap: () {
                 if (bangumi.grey == true) {
                   "此番组下暂无作品".toast();
@@ -265,11 +254,11 @@ class BangumiSliverGridFragment extends StatelessWidget {
   Widget _buildBangumiItemCover(final Color backgroundColor,
       final String currFlag,
       final Bangumi bangumi,) {
-    return ExtendedImage(
-      image: CachedNetworkImageProvider(bangumi.cover),
+    return ExtendedImage.network(
+      bangumi.cover,
       shape: BoxShape.rectangle,
       borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      clearMemoryCacheWhenDispose: false,
+      clearMemoryCacheWhenDispose: true,
       loadStateChanged: (ExtendedImageState state) {
         Widget child;
         switch (state.extendedImageLoadState) {
@@ -311,7 +300,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: Image.asset(
+        child: ExtendedImage.asset(
           "assets/mikan.png",
         ),
       ),
@@ -340,36 +329,23 @@ class BangumiSliverGridFragment extends StatelessWidget {
   Widget _buildScrollableBackgroundCover(final Color backgroundColor,
       final Bangumi bangumi,
       final ImageProvider imageProvider,) {
-    return ValueListenableBuilder(
-      valueListenable: _scrollNotifier,
-      builder: (context, scrolledOffset, child) {
-        final double itemPosition = itemHeight * bangumi.location.row +
-            sectionHeight * bangumi.location.srow;
-        final double align = ((scrolledOffset + wrapperHeight - itemPosition) /
-            (wrapperHeight - itemHeight / 2))
-            .clamp(0.0, 1.0) *
-            2 -
-            1;
-        return Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 8.0,
-                color: Colors.black.withAlpha(24),
-              )
-            ],
-            color: backgroundColor,
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-              alignment: Alignment(align, align),
-              colorFilter: bangumi.grey == true
-                  ? ColorFilter.mode(Colors.grey, BlendMode.color)
-                  : null,
-            ),
-          ),
-        );
-      },
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 8.0,
+            color: Colors.black.withAlpha(24),
+          )
+        ],
+        color: backgroundColor,
+        image: DecorationImage(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          colorFilter: bangumi.grey == true
+              ? ColorFilter.mode(Colors.grey, BlendMode.color)
+              : null,
+        ),
+      ),
     );
   }
 }

@@ -14,12 +14,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @immutable
 class BangumiDetailsSubgroupFragment extends StatelessWidget {
-  final ScrollController scrollController;
   final BangumiDetailsModel bangumiDetailsModel;
 
   const BangumiDetailsSubgroupFragment({
     Key key,
-    @required this.scrollController,
     @required this.bangumiDetailsModel,
   }) : super(key: key);
 
@@ -56,7 +54,7 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                     final double offset = notification.metrics.pixels;
                     context
                         .read<BangumiDetailsModel>()
-                        .setScrolledSubgroupRecords(offset > 0);
+                        .setScrolledSubgroupRecords(offset > 0.0);
                   }
                 }
                 return true;
@@ -159,7 +157,7 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                           ),
                           child: ListView.builder(
                             padding: EdgeInsets.symmetric(vertical: 8.0),
-                            controller: scrollController,
+                            controller: ModalScrollController.of(context),
                             itemCount: subgroupBangumi.records.length,
                             itemBuilder: (context, ind) {
                               final record = subgroupBangumi.records[ind];
@@ -186,7 +184,7 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                                     },
                                     onTapEnd: () {
                                       bangumiDetailsModel.tapRecordItemFlag =
-                                      -1;
+                                          -1;
                                     },
                                   );
                                 },
@@ -221,11 +219,12 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
       context: context,
       expand: false,
       topRadius: Radius.circular(16.0),
-      builder: (context, scrollController) {
+      builder: (context) {
         return Material(
           color: backgroundColor,
           child: ListView.builder(
             shrinkWrap: true,
+            controller: ModalScrollController.of(context),
             padding: EdgeInsets.only(bottom: 8.0 + Sz.navBarHeight, top: 8.0),
             itemBuilder: (context, index) {
               final Subgroup subgroup = subgroups[index];

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
@@ -50,10 +50,8 @@ class BangumiDetailsModel extends CancelableBaseModel {
 
   BangumiDetailsModel(this.id, this.cover) {
     this._loadBangumiDetails();
-    Future.delayed(
-      Duration(milliseconds: 300),
-      () => this._loadCoverMainColor(),
-    );
+    Future.delayed(Duration(milliseconds: 640))
+        .whenComplete(() => this._loadCoverMainColor());
   }
 
   SubgroupBangumi _subgroupBangumi;
@@ -81,7 +79,7 @@ class BangumiDetailsModel extends CancelableBaseModel {
 
   _loadCoverMainColor() {
     PaletteGenerator.fromImageProvider(
-      CachedNetworkImageProvider(this.cover, scale: 0.25),
+      ExtendedNetworkImageProvider(this.cover),
       maximumColorCount: 3,
       targets: [
         PaletteTarget.lightVibrant,
@@ -132,11 +130,5 @@ class BangumiDetailsModel extends CancelableBaseModel {
       resp.msg?.toast();
     }
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _refreshController?.dispose();
-    super.dispose();
   }
 }

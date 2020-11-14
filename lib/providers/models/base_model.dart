@@ -49,7 +49,15 @@ class CancelableBaseModel extends BaseModel {
     });
     _jobs.add(completer);
     completer.complete(future);
-    completer.operation.value.whenComplete(() {
+    completer.operation.value.then((value) {
+      if (this._disposed) {
+        logd("$runtimeType 当前model已disposed，中断...");
+        throw "$runtimeType";
+      }
+      return value;
+    }).catchError((e) {
+      logd("$runtimeType 发生错误: $e");
+    }).whenComplete(() {
       _jobs.remove(completer);
       logd("$runtimeType 执行完了一个任务...");
     });

@@ -10,7 +10,6 @@ import 'package:html/parser.dart';
 import 'package:isolate/isolate_runner.dart';
 import 'package:isolate/load_balancer.dart';
 import 'package:mikan_flutter/base/store.dart';
-import 'package:mikan_flutter/base/system.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/logger.dart';
@@ -26,20 +25,13 @@ class _BaseInterceptor extends InterceptorsWrapper {
     options.headers["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/86.0.4240.75 Safari/537.36 "
-        "MikanFlutter/$appVersion";
+        "MikanFlutter/unlimited";
     options.headers['upgrade-insecure-requests'] = 1;
-    options.headers['device'] = deviceModel;
     options.headers['client'] = "mikan_flutter";
-    options.headers['client-version'] = appVersion;
     options.headers['os'] = Platform.operatingSystem;
     options.headers['os-version'] = Platform.operatingSystemVersion;
     return options;
   }
-
-  final String deviceModel;
-  final String appVersion;
-
-  _BaseInterceptor({this.deviceModel, this.appVersion});
 }
 
 class MikanTransformer extends DefaultTransformer {
@@ -99,16 +91,15 @@ class _Http extends DioForNative {
   }) : super(options) {
     // this.httpClientAdapter = Http2Adapter(ConnectionManager());
     this.interceptors
-      ..add(_BaseInterceptor(
-        deviceModel: deviceModel,
-        appVersion: appVersion,
-      ))
+      ..add(_BaseInterceptor())
       ..add(
         LogInterceptor(
-            requestHeader: true,
-            responseHeader: true,
-            error: true,
-            logPrint: (obj) => logd(obj)),
+          requestHeader: false,
+          responseHeader: false,
+          request: false,
+          error: true,
+          logPrint: (obj) => logd(obj),
+        ),
       )
       ..add(CookieManager(PersistCookieJar(dir: cacheDir + "/cookies")));
 
@@ -226,8 +217,6 @@ class Http {
       queryParameters: queryParameters,
       options: options,
       cacheDir: Store.cacheDir.path,
-      deviceModel: await System.getDeviceModel(),
-      appVersion: await System.getAppVersion(),
     );
     return await _Fetcher._asyncInIsolate(proto);
   }
@@ -245,8 +234,6 @@ class Http {
       queryParameters: queryParameters,
       options: options,
       cacheDir: Store.cacheDir.path,
-      deviceModel: await System.getDeviceModel(),
-      appVersion: await System.getAppVersion(),
     );
     return await _Fetcher._asyncInIsolate(proto);
   }

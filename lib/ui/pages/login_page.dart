@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class LoginPage extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Image.asset(
+                      ExtendedImage.asset(
                         "assets/mikan.png",
                         width: 96.0,
                       ),
@@ -83,15 +84,14 @@ class LoginPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.1),
                       borderRadius:
-                          const BorderRadius.all(Radius.circular(16.0)),
+                      const BorderRadius.all(Radius.circular(16.0)),
                     ),
                     child: Builder(
                       builder: (context) {
                         return TextField(
                           controller:
-                          Provider
-                              .of<LoginModel>(context, listen: false)
-                              .accountController,
+                              Provider.of<LoginModel>(context, listen: false)
+                                  .accountController,
                           decoration: InputDecoration(
                               border: InputBorder.none,
                               labelText: '帐号',
@@ -109,7 +109,7 @@ class LoginPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.1),
                       borderRadius:
-                          const BorderRadius.all(Radius.circular(16.0)),
+                      const BorderRadius.all(Radius.circular(16.0)),
                     ),
                     child: Builder(
                       builder: (BuildContext context) {
@@ -219,11 +219,11 @@ class LoginPage extends StatelessWidget {
                                             () {
                                           context
                                               .read<IndexModel>()
-                                              .loadIndex();
+                                              .refresh();
                                           Navigator.popUntil(
                                             context,
                                                 (route) =>
-                                                route.settings.name ==
+                                            route.settings.name ==
                                                 Routes.home,
                                           );
                                         },

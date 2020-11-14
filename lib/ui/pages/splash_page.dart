@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/material.dart';
 import 'package:kenburns/kenburns.dart';
@@ -36,7 +36,7 @@ class SplashPage extends StatelessWidget {
               child: Column(
                 children: [
                   GestureDetector(
-                    child: Image.asset(
+                    child: ExtendedImage.asset(
                       "assets/mikan.png",
                       width: 108,
                     ),
@@ -80,8 +80,8 @@ class SplashPage extends StatelessWidget {
           for (final Bangumi bangumi in row.bangumis) {
             if (bangumi.cover.isNotBlank) {
               imags.add(
-                CachedNetworkImage(
-                  imageUrl: bangumi.cover,
+                ExtendedImage.network(
+                  bangumi.cover,
                   fit: BoxFit.cover,
                 ),
               );

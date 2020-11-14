@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -13,14 +12,11 @@ import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/models/search_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class SearchFragment extends StatelessWidget {
-  final ScrollController scrollController;
-
-  const SearchFragment({Key key, this.scrollController}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final Color scaffoldBackgroundColor =
@@ -38,7 +34,7 @@ class SearchFragment extends StatelessWidget {
                 } else if (notification is ScrollUpdateNotification) {
                   if (notification.depth == 0) {
                     final double offset = notification.metrics.pixels;
-                    context.read<SearchModel>().hasScrolled = offset > 0;
+                    context.read<SearchModel>().hasScrolled = offset > 0.0;
                   }
                 }
                 return true;
@@ -57,7 +53,7 @@ class SearchFragment extends StatelessWidget {
   ) {
     final Color cationColor = Theme.of(context).textTheme.caption.color;
     return CustomScrollView(
-      physics: BouncingScrollPhysics(),
+      controller: ModalScrollController.of(context),
       slivers: [
         _buildHeader(context, scaffoldBackgroundColor),
         _buildSubgroupSection(cationColor),
@@ -434,7 +430,7 @@ class SearchFragment extends StatelessWidget {
                   child: Text(
                     "Search",
                     style: TextStyle(
-                      fontSize: 28.0,
+                      fontSize: 24.0,
                       fontWeight: FontWeight.bold,
                       height: 1.25,
                     ),
@@ -513,8 +509,8 @@ class SearchFragment extends StatelessWidget {
     final String currFlag,
     final Bangumi bangumi,
   ) {
-    return ExtendedImage(
-      image: CachedNetworkImageProvider(bangumi.cover),
+    return ExtendedImage.network(
+      bangumi.cover,
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {
         Widget child = Row(
@@ -569,7 +565,7 @@ class SearchFragment extends StatelessWidget {
               child: SpinKitPumpingHeart(
                 duration: Duration(milliseconds: 960),
                 itemBuilder: (_, __) =>
-                    Image.asset(
+                    ExtendedImage.asset(
                       "assets/mikan.png",
                     ),
               ),

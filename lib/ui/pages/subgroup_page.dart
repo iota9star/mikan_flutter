@@ -42,7 +42,7 @@ class SubgroupPage extends StatelessWidget {
                   } else if (notification is ScrollUpdateNotification) {
                     if (notification.depth == 0) {
                       final double offset = notification.metrics.pixels;
-                      context.read<SubgroupModel>().hasScrolled = offset > 0;
+                      context.read<SubgroupModel>().hasScrolled = offset > 0.0;
                     }
                   }
                   return true;
@@ -92,7 +92,7 @@ class SubgroupPage extends StatelessWidget {
                                     Text(
                                       subgroup.name,
                                       style: TextStyle(
-                                        fontSize: 28,
+                                        fontSize: 24,
                                         height: 1.25,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -125,14 +125,6 @@ class SubgroupPage extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color: scaffoldBackgroundColor,
-                                    // boxShadow: [
-                                    //   BoxShadow(
-                                    //     offset: Offset(0, 4.0),
-                                    //     blurRadius: 12.0,
-                                    //     spreadRadius: -12.0,
-                                    //     color: Colors.black26,
-                                    //   )
-                                    // ],
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
@@ -143,7 +135,7 @@ class SubgroupPage extends StatelessWidget {
                                         child: Text(
                                           section,
                                           style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 18,
                                             height: 1.25,
                                             fontWeight: FontWeight.bold,
                                           ),

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 
@@ -145,8 +146,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     widget.barItem._animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
-    )
-      ..addStatusListener((AnimationStatus status) {
+    )..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           if (!mounted) return;
           widget.removeAllSelect();
@@ -163,7 +163,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
   Widget _toBarIcon(final BarItem barItem) {
     if (barItem.isSelected) {
       return barItem.selectedIcon == null
-          ? Image.asset(
+          ? ExtendedImage.asset(
         barItem.selectedIconPath,
         width: barItem._size + 4,
         height: barItem._size + 4,
@@ -177,7 +177,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
       );
     }
     return barItem.icon == null
-        ? Image.asset(
+        ? ExtendedImage.asset(
       barItem.iconPath,
       width: barItem._size,
       height: barItem._size,
@@ -218,10 +218,15 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
                   ScaleTransition(
                     alignment: Alignment.center,
                     scale: Tween<double>(begin: 0.88, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: widget.barItem._animationController,
-                            curve: Interval(0.1, 1.0,
-                                curve: Curves.fastOutSlowIn))),
+                      CurvedAnimation(
+                        parent: widget.barItem._animationController,
+                        curve: Interval(
+                          0.1,
+                          1.0,
+                          curve: Curves.fastOutSlowIn,
+                        ),
+                      ),
+                    ),
                     child: _toBarIcon(widget.barItem),
                   ),
                   ..._points,
@@ -235,8 +240,11 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     );
   }
 
-  Positioned _buildPoint(BuildContext context, final double size,
-      final double angle, final Color color, final List<double> interval) {
+  Positioned _buildPoint(BuildContext context,
+      final double size,
+      final double angle,
+      final Color color,
+      final List<double> interval,) {
     final radius = (64 - 16) / 2;
     final x = radius * math.cos(angle);
     final y = radius * math.sin(angle);
@@ -264,10 +272,16 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
       right: right,
       child: ScaleTransition(
         alignment: Alignment.center,
-        scale: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+          CurvedAnimation(
             parent: widget.barItem._animationController,
-            curve: Interval(interval[0], interval[1],
-                curve: Curves.fastOutSlowIn))),
+            curve: Interval(
+              interval[0],
+              interval[1],
+              curve: Curves.fastOutSlowIn,
+            ),
+          ),
+        ),
         child: Container(
           width: size,
           height: size,

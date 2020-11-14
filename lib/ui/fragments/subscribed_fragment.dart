@@ -1,11 +1,10 @@
 import 'dart:math' as Math;
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/internal/ui.dart';
@@ -16,7 +15,6 @@ import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/providers/models/subscribed_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
-import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -24,7 +22,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class SubscribedFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
     final Color backgroundColor = Theme.of(context).backgroundColor;
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
@@ -40,17 +37,14 @@ class SubscribedFragment extends StatelessWidget {
             } else if (notification is ScrollUpdateNotification) {
               if (notification.depth == 0) {
                 final double offset = notification.metrics.pixels;
-                // 给下拉刷新一点余地,防止抖动
-                subscribedModel.hasScrolled = offset > 4.0;
+                subscribedModel.hasScrolled = offset > 0.0;
               }
             }
             return true;
           },
           child: SmartRefresher(
-            header: Indicator.header(
-              context,
-              accentColor,
-              top: 16.0 + Sz.statusBarHeight,
+            header: WaterDropMaterialHeader(
+              distance: Sz.statusBarHeight + 18.0,
             ),
             controller: subscribedModel.refreshController,
             enablePullDown: true,
@@ -307,7 +301,7 @@ class SubscribedFragment extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(
+              image: ExtendedNetworkImageProvider(
                 rss.entries.elementAt(0).value[0].cover,
               ),
             ),
@@ -402,28 +396,36 @@ class SubscribedFragment extends StatelessWidget {
             Positioned.fill(
               child: Hero(
                 tag: currFlag,
-                child: CachedNetworkImage(
-                  imageUrl: bangumiCover,
+                child: ExtendedImage.network(
+                  bangumiCover,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) => Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Center(
-                      child: SpinKitPumpingHeart(
-                        duration: Duration(milliseconds: 960),
-                        itemBuilder: (_, __) => Image.asset(
-                          "assets/mikan.png",
-                        ),
-                      ),
-                    ),
-                  ),
-                  errorWidget: (_, __, ___) => Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Center(
-                      child: Image.asset(
-                        "assets/mikan.png",
-                      ),
-                    ),
-                  ),
+                  loadStateChanged: (state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        return Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(
+                            child: ExtendedImage.asset(
+                              "assets/mikan.png",
+                            ),
+                          ),
+                        );
+                      case LoadState.failed:
+                        return Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(
+                            child: ExtendedImage.asset(
+                              "assets/mikan.png",
+                              colorBlendMode: BlendMode.color,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        );
+                      case LoadState.completed:
+                        return null;
+                    }
+                    return null;
+                  },
                 ),
               ),
             ),

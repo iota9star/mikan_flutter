@@ -96,13 +96,13 @@ class IndexModel extends CancelableBaseModel {
   }
 
   IndexModel() {
-    loadIndex();
-    _loadOVA();
+    refresh();
   }
 
-  Future loadIndex() async {
-    if (this._seasonLoading) return "加载中，请稍候...".toast();
-    await (this + _loadIndex());
+  refresh() async {
+    await _loadIndex();
+    await _loadOVA();
+    _refreshController.refreshCompleted();
   }
 
   _loadOVA() async {
@@ -121,16 +121,13 @@ class IndexModel extends CancelableBaseModel {
   _loadIndex() async {
     this._seasonLoading = true;
     notifyListeners();
-    final Resp resp = await Repo.index();
+    final Resp resp = await (this + Repo.index());
     this._seasonLoading = false;
     if (resp.success) {
       final Index index = resp.data;
       if (index == null) return;
       this._years = index.years;
-      this._selectedSeason = this._years
-          ?.getOrNull(0)
-          ?.seasons
-          ?.getOrNull(0);
+      this._selectedSeason = this._years?.getOrNull(0)?.seasons?.getOrNull(0);
       _subscribedModel.loadMySubscribedSeasonBangumi(this._selectedSeason);
       this._bangumiRows = index.bangumiRows;
       this._selectedBangumiRow = this._bangumiRows[0];
@@ -165,7 +162,6 @@ class IndexModel extends CancelableBaseModel {
       this._selectedSeason.season,
     );
     this._seasonLoading = false;
-    if (this.disposed) return;
     if (resp.success) {
       this._bangumiRows = resp.data;
       "加载完成...".toast();

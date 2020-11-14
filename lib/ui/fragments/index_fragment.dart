@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,11 +23,10 @@ import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @immutable
 class IndexFragment extends StatelessWidget {
-  final ValueNotifier<double> _scrollNotifier = ValueNotifier<double>(0.0);
-
   @override
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
@@ -47,6 +46,8 @@ class IndexFragment extends StatelessWidget {
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
     final Color headline3Color = Theme.of(context).textTheme.headline3.color;
+    final IndexModel indexModel =
+        Provider.of<IndexModel>(context, listen: false);
     return Scaffold(
       body: NotificationListener(
         onNotification: (notification) {
@@ -55,8 +56,7 @@ class IndexFragment extends StatelessWidget {
           } else if (notification is ScrollUpdateNotification) {
             if (notification.depth == 0) {
               final double offset = notification.metrics.pixels;
-              context.read<IndexModel>().hasScrolled = offset > 0;
-              _scrollNotifier.value = offset;
+              context.read<IndexModel>().hasScrolled = offset > 0.0;
             }
           }
           return true;
@@ -65,37 +65,45 @@ class IndexFragment extends StatelessWidget {
           selector: (_, model) => model.bangumiRows,
           shouldRebuild: (pre, next) => pre != next,
           builder: (_, bangumiRows, __) {
-            return CustomScrollView(
-              slivers: [
-                _buildHeader(
-                  context,
-                  backgroundColor,
-                  scaffoldBackgroundColor,
-                ),
-                _buildCarousels(),
-                _buildOVASection(),
-                _buildOVAList(
-                  accentColor,
-                  primaryColor,
-                  backgroundColor,
-                  fileTagStyle,
-                  titleTagStyle,
-                ),
-                ...List.generate(bangumiRows.length, (index) {
-                  final BangumiRow bangumiRow = bangumiRows[index];
-                  return [
-                    _buildWeekSection(
-                      scaffoldBackgroundColor,
-                      headline3Color,
-                      bangumiRow,
-                    ),
-                    BangumiSliverGridFragment(
-                      bangumis: bangumiRow.bangumis,
-                      scrollNotifier: _scrollNotifier,
-                    ),
-                  ];
-                }).expand((element) => element),
-              ],
+            return SmartRefresher(
+              controller: indexModel.refreshController,
+              enablePullUp: false,
+              enablePullDown: true,
+              header: WaterDropMaterialHeader(
+                distance: Sz.statusBarHeight + 10.0,
+              ),
+              onRefresh: indexModel.refresh,
+              child: CustomScrollView(
+                slivers: [
+                  _buildHeader(
+                    context,
+                    backgroundColor,
+                    scaffoldBackgroundColor,
+                  ),
+                  _buildCarousels(),
+                  _buildOVASection(),
+                  _buildOVAList(
+                    accentColor,
+                    primaryColor,
+                    backgroundColor,
+                    fileTagStyle,
+                    titleTagStyle,
+                  ),
+                  ...List.generate(bangumiRows.length, (index) {
+                    final BangumiRow bangumiRow = bangumiRows[index];
+                    return [
+                      _buildWeekSection(
+                        scaffoldBackgroundColor,
+                        headline3Color,
+                        bangumiRow,
+                      ),
+                      BangumiSliverGridFragment(
+                        bangumis: bangumiRow.bangumis,
+                      ),
+                    ];
+                  }).expand((element) => element),
+                ],
+              ),
             );
           },
         ),
@@ -254,7 +262,7 @@ class IndexFragment extends StatelessWidget {
                           ],
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
+                            image: ExtendedNetworkImageProvider(
                               carousel.cover,
                             ),
                           ),
@@ -331,6 +339,7 @@ class IndexFragment extends StatelessWidget {
                         withoutName ? "Welcome to Mikan" : "Hi, ${user.name}",
                         style: TextStyle(
                           fontSize: 14,
+                          height: 1.25,
                           fontWeight: FontWeight.bold,
                         ),
                       );
@@ -350,6 +359,7 @@ class IndexFragment extends StatelessWidget {
                             season.title,
                             style: TextStyle(
                               fontSize: 24.0,
+                              height: 1.25,
                               fontWeight: FontWeight.bold,
                             ),
                           );
@@ -365,7 +375,7 @@ class IndexFragment extends StatelessWidget {
                         ),
                         minWidth: 0,
                         color: backgroundColor,
-                        padding: EdgeInsets.all(6.0),
+                        padding: EdgeInsets.all(5.0),
                         shape: CircleBorder(),
                       ),
                     ],
@@ -392,25 +402,27 @@ class IndexFragment extends StatelessWidget {
                 builder: (_, user, __) {
                   return user?.avatar?.isNotBlank == true
                       ? ClipOval(
-                    child: CachedNetworkImage(
+                    child: ExtendedImage.network(
+                      user?.avatar,
                       width: 36.0,
                       height: 36.0,
-                      imageUrl: user?.avatar,
-                      placeholder: (_, __) =>
-                          Image.asset(
-                            "assets/mikan.png",
-                            width: 36.0,
-                            height: 36.0,
-                          ),
-                      errorWidget: (_, __, ___) =>
-                          Image.asset(
-                            "assets/mikan.png",
-                            width: 36.0,
-                            height: 36.0,
-                          ),
+                      loadStateChanged: (state) {
+                        switch (state.extendedImageLoadState) {
+                          case LoadState.loading:
+                          case LoadState.failed:
+                            return ExtendedImage.asset(
+                              "assets/mikan.png",
+                              width: 36.0,
+                              height: 36.0,
+                            );
+                          case LoadState.completed:
+                            return null;
+                        }
+                        return null;
+                      },
                     ),
                   )
-                      : Image.asset(
+                      : ExtendedImage.asset(
                     "assets/mikan.png",
                     width: 36.0,
                     height: 36.0,
@@ -431,13 +443,13 @@ class IndexFragment extends StatelessWidget {
     return showCupertinoModalBottomSheet(
       context: context,
       topRadius: Radius.circular(16.0),
-      builder: (context, controller) {
+      builder: (context) {
         return Material(
           color: Theme
               .of(context)
               .backgroundColor,
           child: SingleChildScrollView(
-            controller: controller,
+            controller: ModalScrollController.of(context),
             child: Padding(
               padding: EdgeInsets.only(
                 left: 16.0,
@@ -562,30 +574,13 @@ class IndexFragment extends StatelessWidget {
       final Color backgroundColor,
       final TextStyle fileTagStyle,
       final TextStyle titleTagStyle,) {
-    return SliverToBoxAdapter(
-      child: Selector<IndexModel, List<RecordItem>>(
-        selector: (_, model) => model.ovas,
-        shouldRebuild: (pre, next) => pre != next,
-        builder: (context, records, __) {
-          final bool loading =
-          context.select<IndexModel, bool>((model) => model.ovaLoading);
-          if (loading) {
-            return Container(
-              height: 160.0,
-              child: Center(
-                child: CupertinoActivityIndicator(),
-              ),
-            );
-          }
-          if (records.isNullOrEmpty) {
-            return Container(
-              height: 160.0,
-              child: Center(
-                child: Text("暂无OVA"),
-              ),
-            );
-          }
-          return SizedBox(
+    return Selector<IndexModel, List<RecordItem>>(
+      selector: (_, model) => model.ovas,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (context, records, __) {
+        if (records.isNullOrEmpty) return SliverToBoxAdapter();
+        return SliverToBoxAdapter(
+          child: SizedBox(
             height: 162.0,
             child: ListView.builder(
               itemCount: records.length,
@@ -627,9 +622,9 @@ class IndexFragment extends StatelessWidget {
                 );
               },
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -640,10 +635,8 @@ class IndexFragment extends StatelessWidget {
       bounce: true,
       enableDrag: false,
       topRadius: Radius.circular(16.0),
-      builder: (context, scrollController) {
-        return SearchFragment(
-          scrollController: scrollController,
-        );
+      builder: (context) {
+        return SearchFragment();
       },
     );
   }
