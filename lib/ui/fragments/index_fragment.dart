@@ -31,10 +31,12 @@ class IndexFragment extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
     final Color primaryColor = Theme.of(context).primaryColor;
+    final Color accentTextColor =
+        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
     final TextStyle fileTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
-      color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+      color: accentTextColor,
     );
     final TextStyle titleTagStyle = TextStyle(
       fontSize: 10,
@@ -70,6 +72,8 @@ class IndexFragment extends StatelessWidget {
               enablePullUp: false,
               enablePullDown: true,
               header: WaterDropMaterialHeader(
+                backgroundColor: accentColor,
+                color: accentTextColor,
                 distance: Sz.statusBarHeight + 10.0,
               ),
               onRefresh: indexModel.refresh,
@@ -581,7 +585,7 @@ class IndexFragment extends StatelessWidget {
         if (records.isNullOrEmpty) return SliverToBoxAdapter();
         return SliverToBoxAdapter(
           child: SizedBox(
-            height: 162.0,
+            height: 160.0,
             child: ListView.builder(
               itemCount: records.length,
               scrollDirection: Axis.horizontal,
@@ -640,115 +644,4 @@ class IndexFragment extends StatelessWidget {
       },
     );
   }
-// Future _showYearSeasonBottomSheet(BuildContext context) {
-//   return showCupertinoModalBottomSheet(
-//     context: context,
-//     expand: false,
-//     builder: (context, controller) {
-//       return Material(
-//         color: Theme.of(context).backgroundColor,
-//         child: Padding(
-//           padding: EdgeInsets.only(
-//             left: 16.0,
-//             right: 16.0,
-//             top: 16.0,
-//             bottom: 16.0 + Sz.navBarHeight,
-//           ),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "番组列表",
-//                 style: TextStyle(
-//                   fontSize: 24.0,
-//                   height: 1.25,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//               SizedBox(height: 12.0),
-//               Expanded(
-//                 child: Selector<IndexModel, List<YearSeason>>(
-//                   selector: (_, model) => model.years,
-//                   shouldRebuild: (pre, next) => pre != next,
-//                   builder: (_, years, __) {
-//                     return ListView.builder(
-//                       itemCount: years.length,
-//                       controller: controller,
-//                       itemBuilder: (context, index) {
-//                         final year = years[index];
-//                         return Row(
-//                           mainAxisSize: MainAxisSize.max,
-//                           children: [
-//                             Text(
-//                               year.year,
-//                               style: TextStyle(
-//                                 fontSize: 20.0,
-//                                 height: 1.25,
-//                                 fontWeight: FontWeight.w500,
-//                               ),
-//                             ),
-//                             SizedBox(width: 16.0),
-//                             ...List.generate(
-//                               4,
-//                               (index) {
-//                                 if (year.seasons.length > index) {
-//                                   final String season =
-//                                       year.seasons[index].season;
-//                                   return Flexible(
-//                                     child: FractionallySizedBox(
-//                                       widthFactor: 1,
-//                                       child: Padding(
-//                                         padding: const EdgeInsets.all(8.0),
-//                                         child: MaterialButton(
-//                                           minWidth: 0,
-//                                           materialTapTargetSize:
-//                                               MaterialTapTargetSize
-//                                                   .shrinkWrap,
-//                                           padding: EdgeInsets.all(0.0),
-//                                           shape: RoundedRectangleBorder(
-//                                             borderRadius: BorderRadius.all(
-//                                               Radius.circular(10.0),
-//                                             ),
-//                                           ),
-//                                           child: Text(
-//                                             season,
-//                                             style: TextStyle(
-//                                               fontSize: 18.0,
-//                                               height: 1.25,
-//                                               fontWeight: FontWeight.w500,
-//                                               color: Theme.of(context)
-//                                                   .accentColor,
-//                                             ),
-//                                           ),
-//                                           color: Theme.of(context)
-//                                               .accentColor
-//                                               .withOpacity(0.3),
-//                                           elevation: 0,
-//                                           onPressed: () {},
-//                                         ),
-//                                       ),
-//                                     ),
-//                                   );
-//                                 } else {
-//                                   return Flexible(
-//                                     child:
-//                                         FractionallySizedBox(widthFactor: 1),
-//                                   );
-//                                 }
-//                               },
-//                             ),
-//                           ],
-//                         );
-//                       },
-//                     );
-//                   },
-//                 ),
-//               )
-//             ],
-//           ),
-//         ),
-//       );
-//     },
-//   );
-// }
 }

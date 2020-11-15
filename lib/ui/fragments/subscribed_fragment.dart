@@ -22,6 +22,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class SubscribedFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final Color accentColor = Theme.of(context).accentColor;
+    final Color accentTextColor =
+        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
     final Color backgroundColor = Theme.of(context).backgroundColor;
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
@@ -44,7 +47,9 @@ class SubscribedFragment extends StatelessWidget {
           },
           child: SmartRefresher(
             header: WaterDropMaterialHeader(
-              distance: Sz.statusBarHeight + 18.0,
+              backgroundColor: accentColor,
+              color: accentTextColor,
+              distance: Sz.statusBarHeight + 12.0,
             ),
             controller: subscribedModel.refreshController,
             enablePullDown: true,
@@ -65,8 +70,8 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(
-      final Color backgroundColor, final Color scaffoldBackgroundColor) {
+  Widget _buildHeader(final Color backgroundColor,
+      final Color scaffoldBackgroundColor,) {
     return Selector<SubscribedModel, bool>(
       selector: (_, model) => model.hasScrolled,
       builder: (_, hasScrolled, __) {
@@ -76,7 +81,7 @@ class SubscribedFragment extends StatelessWidget {
               color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
-                      BoxShadow(
+                BoxShadow(
                         color: Colors.black.withOpacity(0.024),
                         offset: Offset(0, 1),
                         blurRadius: 3.0,

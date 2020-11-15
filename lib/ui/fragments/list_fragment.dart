@@ -15,16 +15,18 @@ class ListFragment extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
     final Color primaryColor = Theme.of(context).primaryColor;
+    final Color accentTextColor =
+        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
     final TextStyle fileTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
-      color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+      color: accentTextColor,
     );
     final TextStyle titleTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
       color:
-      primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
     final Color backgroundColor = Theme.of(context).backgroundColor;
     final Color scaffoldBackgroundColor =
@@ -45,6 +47,8 @@ class ListFragment extends StatelessWidget {
         },
         child: SmartRefresher(
           header: WaterDropMaterialHeader(
+            backgroundColor: accentColor,
+            color: accentTextColor,
             distance: Sz.statusBarHeight + 18.0,
           ),
           footer: Indicator.footer(context, accentColor, bottom: 16.0),

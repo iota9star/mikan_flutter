@@ -43,8 +43,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
       padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
       sliver: SliverWaterfallFlow(
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
           crossAxisCount: 3,
         ),
         delegate: SliverChildBuilderDelegate(

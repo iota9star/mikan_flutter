@@ -134,7 +134,7 @@ class Resolver {
               }
             });
             record.title = temp;
-            record.tags = tags.toList()..sort((a, b) => a.compareTo(b));
+            record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
           }
         }
         element = tempEles.getOrNull(1);
@@ -221,7 +221,7 @@ class Resolver {
           }
         });
         record.tags = tags.toList()
-          ..sort((a, b) => a.compareTo(b));
+          ..sort((a, b) => b.compareTo(a));
         record.title = temp;
       }
       record.size = elements[1].text.trim();
@@ -294,7 +294,7 @@ class Resolver {
           }
         });
         record.tags = tags.toList()
-          ..sort((a, b) => a.compareTo(b));
+          ..sort((a, b) => b.compareTo(a));
         record.title = temp;
       }
       record.url = MikanUrl.BASE_URL + tempElement.attributes['href'];
@@ -560,7 +560,7 @@ class Resolver {
             });
             record.title = temp;
             record.tags = tags.toList()
-              ..sort((a, b) => a.compareTo(b));
+              ..sort((a, b) => b.compareTo(a));
           }
           record.url = MikanUrl.BASE_URL + element.attributes["href"];
           record.size = ele.children[1].text.trim();
@@ -616,7 +616,7 @@ class Resolver {
         }
       });
       recordDetails.tags = tags.toList()
-        ..sort((a, b) => a.compareTo(b));
+        ..sort((a, b) => b.compareTo(a));
     }
     recordDetails.subscribed = document
         .querySelector(".subscribed-badge")
@@ -681,7 +681,7 @@ class Resolver {
         });
         record.title = temp;
         record.tags = tags.toList()
-          ..sort((a, b) => a.compareTo(b));
+          ..sort((a, b) => b.compareTo(a));
       }
       record.url = MikanUrl.BASE_URL + element.attributes["href"];
       record.size = ele.children[1].text.trim();
