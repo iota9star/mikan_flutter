@@ -1,0 +1,27 @@
+name: Flutter
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  build:
+    name: release apk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup jdk
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 1.8
+      - name: setup flutter
+        uses: subosito/flutter-action@v1.4.0
+        with:
+          channel: "stable"
+          flutter-version: "1.22.x"
+      - run: flutter pub get
+      - run: flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
+      - name: release apk
+        uses: ncipollo/release-action@v1.7.3
+          with:
+            artifacts: "build/app/outputs/apk/release/*.apk"
+            token: ${{ secrets.ACTION_TOKEN }}
