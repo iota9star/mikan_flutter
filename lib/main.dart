@@ -20,7 +20,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _initFirebase();
+  await Store.init();
+  runApp(MyApp());
+}
 
+Future _initFirebase() async {
   await Firebase.initializeApp();
 
   if (kDebugMode) {
@@ -40,9 +45,6 @@ main() async {
       errorAndStacktrace.last,
     );
   }).sendPort);
-
-  await Store.init();
-  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
