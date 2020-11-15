@@ -30,6 +30,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.2'
+    ndkVersion "20.0.5594570"
     defaultConfig {
         applicationId "io.nichijou.flutter.mikan"
         minSdkVersion 21
