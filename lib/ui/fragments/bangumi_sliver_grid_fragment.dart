@@ -48,7 +48,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
           crossAxisCount: 3,
         ),
         delegate: SliverChildBuilderDelegate(
-              (context, index) {
+          (context, index) {
             return _buildBangumiItem(
               accentColor,
               backgroundColor,
@@ -98,12 +98,12 @@ class BangumiSliverGridFragment extends StatelessWidget {
                 } else {
                   Navigator.pushNamed(
                     context,
-                    Routes.bangumiDetails,
-                    arguments: {
-                      "heroTag": currFlag,
-                      "bangumiId": bangumi.id,
-                      "cover": bangumi.cover,
-                    },
+                    Routes.bangumi.name,
+                    arguments: Routes.bangumi.d(
+                      heroTag: currFlag,
+                      bangumiId: bangumi.id,
+                      cover: bangumi.cover,
+                    ),
                   );
                 }
               },
@@ -149,44 +149,44 @@ class BangumiSliverGridFragment extends StatelessWidget {
                     Positioned(
                       child: bangumi.subscribed
                           ? SizedBox(
-                        width: 24.0,
-                        height: 24.0,
-                        child: IconButton(
-                          tooltip: "取消订阅",
-                          padding: EdgeInsets.all(2.0),
-                          icon: Icon(
-                            FluentIcons.heart_24_filled,
-                            color: Colors.redAccent,
-                          ),
-                          onPressed: () {
-                            context
-                                .read<IndexModel>()
-                                .subscribeBangumi(bangumi);
-                          },
-                        ),
-                      )
+                              width: 24.0,
+                              height: 24.0,
+                              child: IconButton(
+                                tooltip: "取消订阅",
+                                padding: EdgeInsets.all(2.0),
+                                icon: Icon(
+                                  FluentIcons.heart_24_filled,
+                                  color: Colors.redAccent,
+                                ),
+                                onPressed: () {
+                                  context
+                                      .read<IndexModel>()
+                                      .subscribeBangumi(bangumi);
+                                },
+                              ),
+                            )
                           : Container(
-                        width: 24.0,
-                        height: 24.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.black38,
-                        ),
-                        child: IconButton(
-                          tooltip: "订阅",
-                          padding: EdgeInsets.all(2.0),
-                          iconSize: 16.0,
-                          icon: Icon(
-                            FluentIcons.heart_24_regular,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            context
-                                .read<IndexModel>()
-                                .subscribeBangumi(bangumi);
-                          },
-                        ),
-                      ),
+                              width: 24.0,
+                              height: 24.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.black38,
+                              ),
+                              child: IconButton(
+                                tooltip: "订阅",
+                                padding: EdgeInsets.all(2.0),
+                                iconSize: 16.0,
+                                icon: Icon(
+                                  FluentIcons.heart_24_regular,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  context
+                                      .read<IndexModel>()
+                                      .subscribeBangumi(bangumi);
+                                },
+                              ),
+                            ),
                     ),
                   ],
                 ),

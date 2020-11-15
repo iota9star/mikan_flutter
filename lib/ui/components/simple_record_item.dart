@@ -173,13 +173,13 @@ class SimpleRecordItem extends StatelessWidget {
                   record.magnet.share();
                 },
               ),
-              IconButton(
-                icon: Icon(FluentIcons.star_24_regular),
-                color: accentColor,
-                tooltip: "收藏",
-                iconSize: 20.0,
-                onPressed: () {},
-              ),
+              // IconButton(
+              //   icon: Icon(FluentIcons.star_24_regular),
+              //   color: accentColor,
+              //   tooltip: "收藏",
+              //   iconSize: 20.0,
+              //   onPressed: () {},
+              // ),
             ],
           ),
         ],

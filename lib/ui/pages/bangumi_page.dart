@@ -14,38 +14,38 @@ import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/models/bangumi_details_model.dart';
-import 'package:mikan_flutter/ui/fragments/bangumi_details_subgroup_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/bangumi_subgroup_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "bangumi/details",
-  routeName: "bangumi-details",
+  name: "bangumi",
+  routeName: "bangumi",
 )
-class BangumiDetailsPage extends StatefulWidget {
+class BangumiPage extends StatefulWidget {
   final String heroTag;
   final String bangumiId;
   final String cover;
 
-  const BangumiDetailsPage({Key key, this.bangumiId, this.cover, this.heroTag})
+  const BangumiPage({Key key, this.bangumiId, this.cover, this.heroTag})
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _BangumiDetailsPageState();
+  State<StatefulWidget> createState() => _BangumiPageState();
 }
 
-class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
-  BangumiDetailsModel _bangumiDetailsModel;
+class _BangumiPageState extends State<BangumiPage> {
+  BangumiModel _bangumiModel;
 
   @override
   void initState() {
-    _bangumiDetailsModel = BangumiDetailsModel(widget.bangumiId, widget.cover);
+    _bangumiModel = BangumiModel(widget.bangumiId, widget.cover);
     super.initState();
   }
 
   @override
   void dispose() {
-    _bangumiDetailsModel.dispose();
+    _bangumiModel.dispose();
     super.dispose();
   }
 
@@ -56,8 +56,8 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
-        body: ChangeNotifierProvider<BangumiDetailsModel>.value(
-          value: _bangumiDetailsModel,
+        body: ChangeNotifierProvider<BangumiModel>.value(
+          value: _bangumiModel,
           child: Builder(
             builder: (context) {
               return Stack(
@@ -71,7 +71,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
                           image: ExtendedNetworkImageProvider(widget.cover),
                         ),
                       ),
-                      child: Selector<BangumiDetailsModel, Color>(
+                      child: Selector<BangumiModel, Color>(
                         builder: (_, bgColor, __) {
                           final color = bgColor ?? backgroundColor;
                           return BackdropFilter(
@@ -163,7 +163,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
   }
 
   Widget _buildLoading(final Color backgroundColor) {
-    return Selector<BangumiDetailsModel, bool>(
+    return Selector<BangumiModel, bool>(
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, loading, __) {
@@ -206,7 +206,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
     Color backgroundColor,
     Color accentColor,
   ) {
-    return Selector<BangumiDetailsModel, BangumiDetails>(
+    return Selector<BangumiModel, BangumiDetails>(
       selector: (_, model) => model.bangumiDetails,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, bangumiDetails, _) {
@@ -266,7 +266,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
     Color backgroundColor,
     Color accentColor,
   ) {
-    return Selector<BangumiDetailsModel, List<SubgroupBangumi>>(
+    return Selector<BangumiModel, List<SubgroupBangumi>>(
       selector: (_, model) => model.bangumiDetails?.subgroupBangumis,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, subgroups, __) {
@@ -319,9 +319,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
                       ),
                       backgroundColor: accentColor.withOpacity(0.18),
                       onPressed: () {
-                        context
-                            .read<BangumiDetailsModel>()
-                            .selectedSubgroupId =
+                        context.read<BangumiModel>().selectedSubgroupId =
                             subgroups[subgroupIndex].subgroupId;
                         _showSubgroupPanel(context);
                       },
@@ -415,7 +413,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
   Widget _buildBangumiBase(final Color accentColor,
       final Color backgroundColor,
       final String cover,) {
-    return Selector<BangumiDetailsModel, BangumiDetails>(
+    return Selector<BangumiModel, BangumiDetails>(
       selector: (_, model) => model.bangumiDetails,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, bangumiDetails, _) {
@@ -531,7 +529,7 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
             ),
           );
         } else if (value.extendedImageLoadState == LoadState.completed) {
-          _bangumiDetailsModel.coverSize = Size(
+          _bangumiModel.coverSize = Size(
             value.extendedImageInfo.image.width.toDouble(),
             value.extendedImageInfo.image.height.toDouble(),
           );
@@ -552,10 +550,10 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
           );
         }
         return AspectRatio(
-          aspectRatio: _bangumiDetailsModel.coverSize == null
+          aspectRatio: _bangumiModel.coverSize == null
               ? 1
-              : _bangumiDetailsModel.coverSize.width /
-              _bangumiDetailsModel.coverSize.height,
+              : _bangumiModel.coverSize.width /
+              _bangumiModel.coverSize.height,
           child: Hero(
             tag: widget.heroTag,
             child: child,
@@ -571,8 +569,8 @@ class _BangumiDetailsPageState extends State<BangumiDetailsPage> {
       expand: true,
       topRadius: Radius.circular(16.0),
       builder: (context) {
-        return BangumiDetailsSubgroupFragment(
-          bangumiDetailsModel: _bangumiDetailsModel,
+        return BangumiSubgroupFragment(
+          bangumiModel: _bangumiModel,
         );
       },
     );

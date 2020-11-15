@@ -89,10 +89,11 @@ class OVARecordItem extends StatelessWidget {
             ),
             foregroundDecoration: BoxDecoration(
               gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [Colors.white.withOpacity(0), backgroundColor],
-                  stops: [0.8, 1]),
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [backgroundColor.withOpacity(0), backgroundColor],
+                stops: [0.8, 1],
+              ),
             ),
             child: SingleChildScrollView(
               physics: NeverScrollableScrollPhysics(),
@@ -186,13 +187,13 @@ class OVARecordItem extends StatelessWidget {
                   record.magnet.share();
                 },
               ),
-              IconButton(
-                icon: Icon(FluentIcons.star_24_regular),
-                color: accentColor,
-                tooltip: "收藏",
-                iconSize: 20.0,
-                onPressed: () {},
-              ),
+              // IconButton(
+              //   icon: Icon(FluentIcons.star_24_regular),
+              //   color: accentColor,
+              //   tooltip: "收藏",
+              //   iconSize: 20.0,
+              //   onPressed: () {},
+              // ),
             ],
           ),
         ],

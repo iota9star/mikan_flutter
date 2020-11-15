@@ -13,6 +13,7 @@ import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/providers/models/subscribed_model.dart';
+import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:provider/provider.dart';
@@ -23,8 +24,20 @@ class SubscribedFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
+    final Color primaryColor = Theme.of(context).primaryColor;
     final Color accentTextColor =
         accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
+    final TextStyle fileTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: accentTextColor,
+    );
+    final TextStyle titleTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color:
+          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+    );
     final Color backgroundColor = Theme.of(context).backgroundColor;
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
@@ -61,7 +74,16 @@ class SubscribedFragment extends StatelessWidget {
                 _buildRssSection(),
                 _buildRssList(backgroundColor),
                 _buildSeasonRssSection(),
-                _buildSeasonRssList(backgroundColor)
+                _buildSeasonRssList(backgroundColor),
+                _buildRssRecordsSection(),
+                _buildRssRecordsList(
+                  subscribedModel,
+                  accentColor,
+                  primaryColor,
+                  backgroundColor,
+                  fileTagStyle,
+                  titleTagStyle,
+                ),
               ],
             ),
           ),
@@ -82,11 +104,11 @@ class SubscribedFragment extends StatelessWidget {
               boxShadow: hasScrolled
                   ? [
                 BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
+                  color: Colors.black.withOpacity(0.024),
+                  offset: Offset(0, 1),
+                  blurRadius: 3.0,
+                  spreadRadius: 3.0,
+                ),
                     ]
                   : null,
               borderRadius: hasScrolled
@@ -397,12 +419,12 @@ class SubscribedFragment extends StatelessWidget {
           onTap: () {
             Navigator.pushNamed(
               context,
-              Routes.bangumiDetails,
-              arguments: {
-                "heroTag": currFlag,
-                "bangumiId": bangumiId,
-                "cover": bangumiCover,
-              },
+              Routes.bangumi.name,
+              arguments: Routes.bangumi.d(
+                heroTag: currFlag,
+                bangumiId: bangumiId,
+                cover: bangumiCover,
+              ),
             );
           },
           child: child,
@@ -474,6 +496,83 @@ class SubscribedFragment extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildRssRecordsSection() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          top: 16.0,
+          bottom: 8.0,
+        ),
+        child: Text(
+          "更新列表",
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            height: 1.25,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRssRecordsList(final SubscribedModel subscribedModel,
+      final Color accentColor,
+      final Color primaryColor,
+      final Color backgroundColor,
+      final TextStyle fileTagStyle,
+      final TextStyle titleTagStyle,) {
+    return Selector<SubscribedModel, List<RecordItem>>(
+      selector: (_, model) => model.records,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, records, __) {
+        if (records.isNullOrEmpty) {
+          return SliverToBoxAdapter();
+        }
+        return SliverPadding(
+          padding: EdgeInsets.only(
+            bottom: 8.0,
+          ),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                final RecordItem record = records[index];
+                return Selector<SubscribedModel, int>(
+                  selector: (_, model) => model.tapRecordItemIndex,
+                  shouldRebuild: (pre, next) => pre != next,
+                  builder: (_, scaleIndex, __) {
+                    final Matrix4 transform = scaleIndex == index
+                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                        : Matrix4.identity();
+                    return RssRecordItem(
+                      index: index,
+                      record: record,
+                      accentColor: accentColor,
+                      primaryColor: primaryColor,
+                      backgroundColor: backgroundColor,
+                      fileTagStyle: fileTagStyle,
+                      titleTagStyle: titleTagStyle,
+                      transform: transform,
+                      onTap: () {},
+                      onTapStart: () {
+                        subscribedModel.tapRecordItemIndex = index;
+                      },
+                      onTapEnd: () {
+                        subscribedModel.tapRecordItemIndex = null;
+                      },
+                    );
+                  },
+                );
+              },
+              childCount: records.length,
+            ),
+          ),
+        );
+      },
     );
   }
 }

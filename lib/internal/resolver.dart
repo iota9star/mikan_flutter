@@ -213,11 +213,7 @@ class Resolver {
       elements = ele.querySelectorAll("td");
       record.url =
           MikanUrl.BASE_URL + elements[0].children[0].attributes['href'];
-      temp = elements
-          .getOrNull(0)
-          ?.children
-          ?.getOrNull(0)
-          ?.text;
+      temp = elements.getOrNull(0)?.children?.getOrNull(0)?.text;
       if (temp.isNotBlank) {
         temp = temp.trim().replaceAll("【", "[").replaceAll("】", "]");
         tags = LinkedHashSet();
@@ -227,8 +223,7 @@ class Resolver {
             tags.add(value);
           }
         });
-        record.tags = tags.toList()
-          ..sort((a, b) => b.compareTo(a));
+        record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
         record.title = temp;
       }
       record.size = elements[1].text.trim();
@@ -444,6 +439,7 @@ class Resolver {
         i++;
         bangumis.add(bangumi);
       }
+      bangumis = HashSet.from(bangumis).toList().cast<Bangumi>();
       bangumis.sort((a, b) {
         if (a.subscribed && b.subscribed) {
           return 0;

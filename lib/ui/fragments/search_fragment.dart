@@ -187,8 +187,11 @@ class SearchFragment extends StatelessWidget {
                     final Matrix4 transform = tapScaleFlag == currFlag
                         ? Matrix4.diagonal3Values(0.9, 0.9, 1)
                         : Matrix4.identity();
-                    Widget cover =
-                    _buildBangumiListItem(context, currFlag, bangumi);
+                    Widget cover = _buildBangumiListItem(
+                      context,
+                      currFlag,
+                      bangumi,
+                    );
                     return Tooltip(
                       message: bangumi.name,
                       child: AnimatedTapContainer(
@@ -197,8 +200,7 @@ class SearchFragment extends StatelessWidget {
                         margin: EdgeInsets.symmetric(
                           vertical: 8.0,
                         ),
-                        onTapStart: () =>
-                        context
+                        onTapStart: () => context
                             .read<SearchModel>()
                             .tapBangumiItemFlag = currFlag,
                         onTapEnd: () =>
@@ -216,12 +218,12 @@ class SearchFragment extends StatelessWidget {
                         onTap: () {
                           Navigator.pushNamed(
                             context,
-                            Routes.bangumiDetails,
-                            arguments: {
-                              "heroTag": currFlag,
-                              "bangumiId": bangumi.id,
-                              "cover": bangumi.cover,
-                            },
+                            Routes.bangumi.name,
+                            arguments: Routes.bangumi.d(
+                              heroTag: currFlag,
+                              bangumiId: bangumi.id,
+                              cover: bangumi.cover,
+                            ),
                           );
                         },
                         child: cover,

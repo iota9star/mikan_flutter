@@ -115,9 +115,11 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildWeekSection(final Color scaffoldBackgroundColor,
-      final Color headline3Color,
-      final BangumiRow bangumiRow,) {
+  Widget _buildWeekSection(
+    final Color scaffoldBackgroundColor,
+    final Color headline3Color,
+    final BangumiRow bangumiRow,
+  ) {
     final simple = [
       if (bangumiRow.updatedNum > 0) "🚀 ${bangumiRow.updatedNum}部",
       if (bangumiRow.subscribedUpdatedNum > 0)
@@ -244,12 +246,12 @@ class IndexFragment extends StatelessWidget {
                         onTap: () {
                           Navigator.pushNamed(
                             context,
-                            Routes.bangumiDetails,
-                            arguments: {
-                              "heroTag": currFlag,
-                              "bangumiId": carousel.id,
-                              "cover": carousel.cover,
-                            },
+                            Routes.bangumi.name,
+                            arguments: Routes.bangumi.d(
+                              heroTag: currFlag,
+                              bangumiId: carousel.id,
+                              cover: carousel.cover,
+                            ),
                           );
                         },
                         margin: EdgeInsets.only(top: 16.0, bottom: 12.0),

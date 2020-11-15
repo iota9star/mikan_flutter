@@ -13,9 +13,20 @@ class SubscribedModel extends CancelableBaseModel {
   bool _recordsLoading = false;
   Season _season;
   List<Bangumi> _bangumis;
-  Map<String, List<RecordItem>> _rss = {};
+  Map<String, List<RecordItem>> _rss;
+  List<RecordItem> _records;
+  int _tapRecordItemIndex;
+
+  int get tapRecordItemIndex => _tapRecordItemIndex;
+
+  set tapRecordItemIndex(int value) {
+    _tapRecordItemIndex = value;
+    notifyListeners();
+  }
 
   Map<String, List<RecordItem>> get rss => _rss;
+
+  List<RecordItem> get records => _records;
 
   bool get seasonLoading => _seasonLoading;
 
@@ -72,6 +83,7 @@ class SubscribedModel extends CancelableBaseModel {
     notifyListeners();
     final Resp resp = await (this + Repo.day(2, 1));
     if (resp.success) {
+      this._records = resp.data ?? [];
       this._rss = groupBy(resp.data ?? [], (it) => it.id);
     } else {
       "获取最近更新失败：${resp.msg}".toast();

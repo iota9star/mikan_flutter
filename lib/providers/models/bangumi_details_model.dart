@@ -11,7 +11,7 @@ import 'package:mikan_flutter/providers/models/base_model.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class BangumiDetailsModel extends CancelableBaseModel {
+class BangumiModel extends CancelableBaseModel {
   final String id;
   final String cover;
   int _tapRecordItemFlag;
@@ -48,7 +48,7 @@ class BangumiDetailsModel extends CancelableBaseModel {
 
   RefreshController get refreshController => _refreshController;
 
-  BangumiDetailsModel(this.id, this.cover) {
+  BangumiModel(this.id, this.cover) {
     this._loadBangumiDetails();
     Future.delayed(Duration(milliseconds: 640))
         .whenComplete(() => this._loadCoverMainColor());

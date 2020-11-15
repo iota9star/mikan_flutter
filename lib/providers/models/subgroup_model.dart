@@ -4,6 +4,7 @@ import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_gallery.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SubgroupModel extends CancelableBaseModel {
   bool _hasScrolled = false;
@@ -31,6 +32,7 @@ class SubgroupModel extends CancelableBaseModel {
   bool get loading => _loading;
 
   SubgroupModel(this.subgroup) {
+    this._loading = true;
     this._loadBangumis();
   }
 
@@ -38,9 +40,11 @@ class SubgroupModel extends CancelableBaseModel {
 
   List<SubgroupGallery> get galleries => _galleries;
 
+  final RefreshController _refreshController = RefreshController();
+
+  RefreshController get refreshController => _refreshController;
+
   _loadBangumis() async {
-    this._loading = true;
-    notifyListeners();
     final Resp resp = await (this + Repo.subgroup(this.subgroup.id));
     this._loading = false;
     if (resp.success) {
@@ -49,5 +53,11 @@ class SubgroupModel extends CancelableBaseModel {
       "加载字幕组作品年表失败：${resp.msg}".toast();
     }
     notifyListeners();
+  }
+
+  refresh() async {
+    if (this._loading) return _refreshController.refreshCompleted();
+    await _loadBangumis();
+    _refreshController.refreshCompleted();
   }
 }

@@ -156,8 +156,10 @@ class ComplexRecordItem extends StatelessWidget {
                         onTap: () {
                           Navigator.pushNamed(
                             context,
-                            Routes.subgroup,
-                            arguments: {"subgroup": subgroups[index]},
+                            Routes.subgroup.name,
+                            arguments: Routes.subgroup.d(
+                              subgroup: subgroups[index],
+                            ),
                           );
                         },
                         child: Container(
@@ -167,13 +169,14 @@ class ComplexRecordItem extends StatelessWidget {
                             left: index == 0 ? 16.0 : 4.0,
                           ),
                           child: Center(
-                              child: Text(
-                            subgroups[index].name[0],
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: titleTagStyle.color,
+                            child: Text(
+                              subgroups[index].name[0],
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: titleTagStyle.color,
+                              ),
                             ),
-                          )),
+                          ),
                           decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12.0)),
@@ -221,13 +224,13 @@ class ComplexRecordItem extends StatelessWidget {
                   record.magnet.share();
                 },
               ),
-              IconButton(
-                icon: Icon(FluentIcons.star_24_regular),
-                color: accentColor,
-                tooltip: "收藏",
-                iconSize: 20.0,
-                onPressed: () {},
-              ),
+              // IconButton(
+              //   icon: Icon(FluentIcons.star_24_regular),
+              //   color: accentColor,
+              //   tooltip: "收藏",
+              //   iconSize: 20.0,
+              //   onPressed: () {},
+              // ),
             ],
           ),
         ],

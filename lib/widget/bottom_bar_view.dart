@@ -129,8 +129,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
-    )
-      ..addStatusListener((AnimationStatus status) {
+    )..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           if (!mounted) return;
           widget.removeAllSelect();
@@ -262,7 +261,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
             curve: Interval(
               interval[0],
               interval[1],
-              curve: Curves.fastOutSlowIn,
+              curve: Curves.bounceInOut,
             ),
           ),
         ),
@@ -301,34 +300,5 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
       );
     }
     return points;
-  }
-}
-
-class TabClipper extends CustomClipper<Path> {
-  TabClipper({this.radius = 38.0});
-
-  final double radius;
-
-  @override
-  Path getClip(Size size) {
-    final Path path = Path();
-    path.lineTo(0, 0);
-    path.arcTo(Rect.fromLTWH(0, 0, radius, radius), degreeToRadians(180),
-        degreeToRadians(90), false);
-    path.arcTo(Rect.fromLTWH(size.width - radius, 0, radius, radius),
-        degreeToRadians(270), degreeToRadians(90), false);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(TabClipper oldClipper) => true;
-
-  double degreeToRadians(double degree) {
-    return (math.pi / 180) * degree;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
@@ -13,12 +14,12 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @immutable
-class BangumiDetailsSubgroupFragment extends StatelessWidget {
-  final BangumiDetailsModel bangumiDetailsModel;
+class BangumiSubgroupFragment extends StatelessWidget {
+  final BangumiModel bangumiModel;
 
-  const BangumiDetailsSubgroupFragment({
+  const BangumiSubgroupFragment({
     Key key,
-    @required this.bangumiDetailsModel,
+    @required this.bangumiModel,
   }) : super(key: key);
 
   @override
@@ -30,11 +31,12 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
       height: 1.25,
       color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
+    final Color primaryTextColor =
+        primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
     final TextStyle titleTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
-      color:
-          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+      color: primaryTextColor,
     );
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
@@ -42,7 +44,7 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
     return Material(
       color: scaffoldBackgroundColor,
       child: ChangeNotifierProvider.value(
-        value: bangumiDetailsModel,
+        value: bangumiModel,
         child: Builder(
           builder: (context) {
             return NotificationListener(
@@ -53,22 +55,22 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                   if (notification.depth == 0) {
                     final double offset = notification.metrics.pixels;
                     context
-                        .read<BangumiDetailsModel>()
+                        .read<BangumiModel>()
                         .setScrolledSubgroupRecords(offset > 0.0);
                   }
                 }
                 return true;
               },
-              child: Selector<BangumiDetailsModel, SubgroupBangumi>(
+              child: Selector<BangumiModel, SubgroupBangumi>(
                 selector: (_, model) => model.subgroupBangumi,
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (context, subgroupBangumi, child) {
                   if (subgroupBangumi == null) return Container();
                   return Column(
                     children: [
-                      Selector<BangumiDetailsModel, bool>(
+                      Selector<BangumiModel, bool>(
                         selector: (_, model) =>
-                            model.hasScrolledSubgroupRecords,
+                        model.hasScrolledSubgroupRecords,
                         shouldRebuild: (pre, next) => pre != next,
                         builder: (_, hasScrolled, child) {
                           return AnimatedContainer(
@@ -135,6 +137,8 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                                 } else {
                                   _showSubgroupPanel(
                                     context,
+                                    primaryColor,
+                                    primaryTextColor,
                                     backgroundColor,
                                     subgroups,
                                   );
@@ -146,10 +150,10 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                       ),
                       Expanded(
                         child: SmartRefresher(
-                          controller: bangumiDetailsModel.refreshController,
+                          controller: bangumiModel.refreshController,
                           enablePullDown: false,
                           enablePullUp: true,
-                          onLoading: bangumiDetailsModel.loadSubgroupList,
+                          onLoading: bangumiModel.loadSubgroupList,
                           footer: Indicator.footer(
                             context,
                             accentColor,
@@ -161,7 +165,7 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                             itemCount: subgroupBangumi.records.length,
                             itemBuilder: (context, ind) {
                               final record = subgroupBangumi.records[ind];
-                              return Selector<BangumiDetailsModel, int>(
+                              return Selector<BangumiModel, int>(
                                 selector: (_, model) => model.tapRecordItemFlag,
                                 shouldRebuild: (pre, next) => pre != next,
                                 builder: (_, tapFlag, __) {
@@ -179,12 +183,10 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
                                     transform: transform,
                                     onTap: () {},
                                     onTapStart: () {
-                                      bangumiDetailsModel.tapRecordItemFlag =
-                                          ind;
+                                      bangumiModel.tapRecordItemFlag = ind;
                                     },
                                     onTapEnd: () {
-                                      bangumiDetailsModel.tapRecordItemFlag =
-                                          -1;
+                                      bangumiModel.tapRecordItemFlag = -1;
                                     },
                                   );
                                 },
@@ -207,12 +209,14 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
   void _push2SubgroupPage(BuildContext context, Subgroup subgroup) {
     Navigator.pushNamed(
       context,
-      Routes.subgroup,
-      arguments: {"subgroup": subgroup},
+      Routes.subgroup.name,
+      arguments: Routes.subgroup.d(subgroup: subgroup),
     );
   }
 
   _showSubgroupPanel(final BuildContext context,
+      final Color primaryColor,
+      final Color primaryTextColor,
       final Color backgroundColor,
       final List<Subgroup> subgroups,) {
     showCupertinoModalBottomSheet(
@@ -222,44 +226,84 @@ class BangumiDetailsSubgroupFragment extends StatelessWidget {
       builder: (context) {
         return Material(
           color: backgroundColor,
-          child: ListView.builder(
-            shrinkWrap: true,
-            controller: ModalScrollController.of(context),
-            padding: EdgeInsets.only(bottom: 8.0 + Sz.navBarHeight, top: 8.0),
-            itemBuilder: (context, index) {
-              final Subgroup subgroup = subgroups[index];
-              return InkWell(
-                onTap: () {
-                  _push2SubgroupPage(context, subgroup);
-                },
-                child: Container(
-                  padding:
-                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Row(
-                    children: [
-                      Icon(
-                        FluentIcons.contact_card_group_24_regular,
-                        size: 28.0,
-                      ),
-                      SizedBox(
-                        width: 12.0,
-                      ),
-                      Expanded(
-                        child: Text(
-                          subgroup.name,
-                          style: TextStyle(
-                            height: 1.25,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 16.0,
+                  bottom: 8.0,
+                  left: 16.0,
+                  right: 16.0,
                 ),
-              );
-            },
-            itemCount: subgroups.length,
+                child: const Text("请选择字幕组"),
+              ),
+              ...List.generate(
+                subgroups.length,
+                    (index) {
+                  final Subgroup subgroup = subgroups[index];
+                  return InkWell(
+                    onTap: () {
+                      _push2SubgroupPage(context, subgroup);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 24.0,
+                            height: 24.0,
+                            child: Center(
+                              child: Text(
+                                subgroups[index].name[0],
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.25,
+                                  color: primaryTextColor,
+                                ),
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  primaryColor,
+                                  primaryColor.withOpacity(0.56),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 12.0,
+                          ),
+                          Expanded(
+                            child: Text(
+                              subgroup.name,
+                              style: TextStyle(
+                                height: 1.25,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(
+                height: 8.0 + Sz.navBarHeight,
+              )
+            ],
           ),
         );
       },

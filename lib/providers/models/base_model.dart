@@ -56,7 +56,7 @@ class CancelableBaseModel extends BaseModel {
       }
       return value;
     }).catchError((e) {
-      logd("$runtimeType 发生错误: $e");
+      logd("$runtimeType: $e");
     }).whenComplete(() {
       _jobs.remove(completer);
       logd("$runtimeType 执行完了一个任务...");
