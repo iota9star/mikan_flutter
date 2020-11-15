@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import "package:collection/collection.dart";
 import 'package:html/dom.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mikan_flutter/internal/caches.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/enums.dart';
@@ -142,8 +143,14 @@ class Resolver {
         element = tempEles.getOrNull(2);
         record.url = element?.attributes?.getOrNull("href");
       }
-      record.publishAt =
-          ele.querySelector("div.sk-col.pull-right")?.text?.trim();
+      temp = ele.querySelector("div.sk-col.pull-right")?.text?.trim();
+      if (temp.isNotBlank &&
+          RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
+        await Jiffy.locale("zh-cn");
+        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+      } else {
+        record.publishAt = temp;
+      }
       list.add(record);
     }
     return list;
@@ -225,7 +232,14 @@ class Resolver {
         record.title = temp;
       }
       record.size = elements[1].text.trim();
-      record.publishAt = elements[2].text.trim();
+      temp = elements[2].text.trim();
+      if (temp.isNotBlank &&
+          RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
+        await Jiffy.locale("zh-cn");
+        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+      } else {
+        record.publishAt = temp;
+      }
       record.magnet = elements[0].children[1].attributes["data-clipboard-text"];
       record.torrent =
           MikanUrl.BASE_URL + elements[3].children[0].attributes["href"];
@@ -255,7 +269,14 @@ class Resolver {
     for (final Element ele in eles) {
       elements = ele.children ?? [];
       record = RecordItem();
-      record.publishAt = elements[0].text.trim();
+      temp = elements[0].text.trim();
+      if (temp.isNotBlank &&
+          RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
+        await Jiffy.locale("zh-cn");
+        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+      } else {
+        record.publishAt = temp;
+      }
       element = elements[1];
       tempElements = element.querySelectorAll("li");
       subgroups = [];
@@ -564,7 +585,14 @@ class Resolver {
           }
           record.url = MikanUrl.BASE_URL + element.attributes["href"];
           record.size = ele.children[1].text.trim();
-          record.publishAt = ele.children[2].text.trim();
+          temp = ele.children[2].text.trim();
+          if (temp.isNotBlank &&
+              RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
+            await Jiffy.locale("zh-cn");
+            record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+          } else {
+            record.publishAt = temp;
+          }
           record.torrent = MikanUrl.BASE_URL +
               ele.children[3].children[0].attributes["href"];
           records.add(record);
@@ -685,7 +713,14 @@ class Resolver {
       }
       record.url = MikanUrl.BASE_URL + element.attributes["href"];
       record.size = ele.children[1].text.trim();
-      record.publishAt = ele.children[2].text.trim();
+      temp = ele.children[2].text.trim();
+      if (temp.isNotBlank &&
+          RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
+        await Jiffy.locale("zh-cn");
+        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+      } else {
+        record.publishAt = temp;
+      }
       record.torrent =
           MikanUrl.BASE_URL + ele.children[3].children[0].attributes["href"];
       records.add(record);
@@ -694,8 +729,7 @@ class Resolver {
   }
 
   static Future<List<Bangumi>> parseMySubscribed(Document document) async {
-    final List<Element> elements =
-        document.querySelectorAll("li") ?? [];
+    final List<Element> elements = document.querySelectorAll("li") ?? [];
     Bangumi bangumi;
     Map<dynamic, String> attributes;
     int i = 1;
