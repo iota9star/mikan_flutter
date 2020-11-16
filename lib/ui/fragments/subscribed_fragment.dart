@@ -92,8 +92,10 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final Color backgroundColor,
-      final Color scaffoldBackgroundColor,) {
+  Widget _buildHeader(
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
+  ) {
     return Selector<SubscribedModel, bool>(
       selector: (_, model) => model.hasScrolled,
       builder: (_, hasScrolled, __) {
@@ -103,12 +105,12 @@ class SubscribedFragment extends StatelessWidget {
               color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.024),
-                  offset: Offset(0, 1),
-                  blurRadius: 3.0,
-                  spreadRadius: 3.0,
-                ),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.024),
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        spreadRadius: 3.0,
+                      ),
                     ]
                   : null,
               borderRadius: hasScrolled
@@ -500,23 +502,30 @@ class SubscribedFragment extends StatelessWidget {
   }
 
   Widget _buildRssRecordsSection() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 16.0,
-          bottom: 8.0,
-        ),
-        child: Text(
-          "更新列表",
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-            height: 1.25,
+    return Selector<SubscribedModel, List<RecordItem>>(
+      selector: (_, model) => model.records,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, records, __) {
+        if (records.isNullOrEmpty) return SliverToBoxAdapter();
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 16.0,
+              bottom: 8.0,
+            ),
+            child: Text(
+              "更新列表",
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
