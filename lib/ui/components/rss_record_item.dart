@@ -47,7 +47,7 @@ class RssRecordItem extends StatelessWidget {
         vertical: 8.0,
       ),
       decoration: BoxDecoration(
-        gradient: _createGradientByIndex(index, backgroundColor),
+        color: backgroundColor,
         borderRadius: BorderRadius.all(Radius.circular(16.0)),
       ),
       height: 204.0,
@@ -256,56 +256,6 @@ class RssRecordItem extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  LinearGradient _createGradientByIndex(
-    final int index,
-    final Color backgroundColor,
-  ) {
-    final Color withOpacity = backgroundColor.withOpacity(0.48);
-    switch (index % 6) {
-      case 0:
-        return LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [withOpacity, backgroundColor],
-        );
-      case 1:
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [withOpacity, backgroundColor],
-        );
-      case 2:
-        return LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [withOpacity, backgroundColor],
-        );
-      case 3:
-        return LinearGradient(
-          begin: Alignment.bottomRight,
-          end: Alignment.topLeft,
-          colors: [withOpacity, backgroundColor],
-        );
-      case 4:
-        return LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [withOpacity, backgroundColor],
-        );
-      case 5:
-        return LinearGradient(
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-          colors: [withOpacity, backgroundColor],
-        );
-    }
-    return LinearGradient(
-      begin: Alignment.bottomRight,
-      end: Alignment.topLeft,
-      colors: [withOpacity, backgroundColor],
     );
   }
 }

@@ -4,12 +4,15 @@
 // **************************************************************************
 
 import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 
 import 'ui/pages/bangumi_page.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
+import 'ui/pages/recent_subscribed_page.dart';
 import 'ui/pages/splash_page.dart';
 import 'ui/pages/subgroup_page.dart';
 
@@ -38,6 +41,15 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         name: name,
         widget: LoginPage(),
         routeName: 'login',
+      );
+    case 'recent-subscribed':
+      return RouteResult(
+        name: name,
+        widget: RecentSubscribedPage(
+          key: arguments['key'] as Key,
+          loaded: arguments['loaded'] as List<RecordItem>,
+        ),
+        routeName: 'recent-subscribed',
       );
     case 'splash':
       return RouteResult(

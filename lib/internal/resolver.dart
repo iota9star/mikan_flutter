@@ -309,8 +309,7 @@ class Resolver {
             tags.add(value);
           }
         });
-        record.tags = tags.toList()
-          ..sort((a, b) => b.compareTo(a));
+        record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
         record.title = temp;
       }
       record.url = MikanUrl.BASE_URL + tempElement.attributes['href'];
@@ -523,7 +522,7 @@ class Resolver {
         subgroupBangumi = SubgroupBangumi();
         element = subs.elementAt(i);
         temp = element.children[0].attributes["href"];
-        subgroupBangumi.subgroupId = element.attributes?.getOrNull("id");
+        subgroupBangumi.dataId = element.attributes?.getOrNull("id");
         temp = element.nodes
             .getOrNull(0)
             ?.text
@@ -537,7 +536,7 @@ class Resolver {
         }
         subgroupBangumi.subscribed =
             element
-                ?.querySelector(".subscribed")
+                .querySelector(".subscribed")
                 ?.text
                 ?.trim() == "已订阅";
         subgroups = [];
@@ -551,12 +550,22 @@ class Resolver {
                 .last;
             subgroups.add(subgroup);
           }
-        } else {
-          subgroups.add(Subgroup(
-            id: subgroupBangumi.subgroupId,
-            name: subgroupBangumi.name,
-          ));
         }
+        if (subgroups.isEmpty) {
+          element = element.querySelector("a:nth-child(1)");
+          if (element != null) {
+            temp = element?.attributes?.getOrNull("href");
+            if (temp?.startsWith("/Home/PublishGroup") == true) {
+              subgroup = Subgroup();
+              subgroup.name = element.text;
+              subgroup.id = temp
+                  .split("/")
+                  .last;
+              subgroups.add(subgroup);
+            }
+          }
+        }
+        subgroupBangumi.subgroups = subgroups;
         records = [];
         element = tables.elementAt(i);
         elements = element.querySelectorAll("tbody > tr");
@@ -593,7 +602,6 @@ class Resolver {
               ele.children[3].children[0].attributes["href"];
           records.add(record);
         }
-        subgroupBangumi.subgroups = subgroups;
         subgroupBangumi.records = records;
         bangumiDetails.subgroupBangumis.add(subgroupBangumi);
       }

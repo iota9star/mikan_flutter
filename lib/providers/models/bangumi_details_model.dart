@@ -59,11 +59,11 @@ class BangumiModel extends CancelableBaseModel {
   SubgroupBangumi get subgroupBangumi => _subgroupBangumi;
 
   set selectedSubgroupId(String value) {
-    if (value == _subgroupBangumi?.subgroupId) {
+    if (value == _subgroupBangumi?.dataId) {
       return;
     }
     _subgroupBangumi = _bangumiDetails.subgroupBangumis.firstWhere(
-          (element) => element.subgroupId == value,
+          (element) => element.dataId == value,
       orElse: () => null,
     );
     _hasScrolledSubgroupRecords = false;
@@ -102,7 +102,7 @@ class BangumiModel extends CancelableBaseModel {
     final Resp resp = await (this +
         Repo.bangumiMore(
           this.id,
-          this._subgroupBangumi.subgroupId,
+          this._subgroupBangumi.dataId,
           this._subgroupBangumi.records.length + 20,
         ));
     if (resp.success) {

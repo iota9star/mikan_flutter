@@ -51,7 +51,11 @@ class ListFragment extends StatelessWidget {
             color: accentTextColor,
             distance: Sz.statusBarHeight + 18.0,
           ),
-          footer: Indicator.footer(context, accentColor, bottom: 16.0),
+          footer: Indicator.footer(
+            context,
+            accentColor,
+            bottom: 16.0 + Sz.navBarHeight,
+          ),
           enablePullDown: true,
           enablePullUp: true,
           controller: listModel.refreshController,

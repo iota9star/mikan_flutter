@@ -77,7 +77,6 @@ class SubscribedFragment extends StatelessWidget {
                 _buildSeasonRssList(backgroundColor),
                 _buildRssRecordsSection(),
                 _buildRssRecordsList(
-                  subscribedModel,
                   accentColor,
                   primaryColor,
                   backgroundColor,
@@ -270,13 +269,13 @@ class SubscribedFragment extends StatelessWidget {
       child: Selector<SubscribedModel, Map<String, List<RecordItem>>>(
         selector: (_, model) => model.rss,
         shouldRebuild: (pre, next) => pre != next,
-        builder: (context, rss, __) {
+        builder: (_, rss, __) {
           if (rss.isSafeNotEmpty)
             return SizedBox(
               height: 64.0 + 24.0,
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
-                itemBuilder: (_, index) {
+                itemBuilder: (context, index) {
                   if (index == 0) {
                     return _buildMoreRssItemBtn(context, rss);
                   }
@@ -338,6 +337,14 @@ class SubscribedFragment extends StatelessWidget {
               context.read<IndexModel>().tapBangumiRssItemFlag = currFlag,
           onTapEnd: () =>
               context.read<IndexModel>().tapBangumiRssItemFlag = null,
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              Routes.recentSubscribed.name,
+              arguments: Routes.recentSubscribed
+                  .d(loaded: context.read<SubscribedModel>().records),
+            );
+          },
           width: 64.0,
           margin: EdgeInsets.symmetric(
             horizontal: 6.0,
@@ -369,10 +376,12 @@ class SubscribedFragment extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
             child: Center(
               child: Text(
-                "更多\n订阅",
+                "更多\n更新",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).accentColor,
+                  color: Theme
+                      .of(context)
+                      .accentColor,
                   height: 1.25,
                 ),
               ),
@@ -529,8 +538,7 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRssRecordsList(final SubscribedModel subscribedModel,
-      final Color accentColor,
+  Widget _buildRssRecordsList(final Color accentColor,
       final Color primaryColor,
       final Color backgroundColor,
       final TextStyle fileTagStyle,
@@ -553,7 +561,7 @@ class SubscribedFragment extends StatelessWidget {
                 return Selector<SubscribedModel, int>(
                   selector: (_, model) => model.tapRecordItemIndex,
                   shouldRebuild: (pre, next) => pre != next,
-                  builder: (_, scaleIndex, __) {
+                  builder: (context, scaleIndex, __) {
                     final Matrix4 transform = scaleIndex == index
                         ? Matrix4.diagonal3Values(0.9, 0.9, 1)
                         : Matrix4.identity();
@@ -568,10 +576,16 @@ class SubscribedFragment extends StatelessWidget {
                       transform: transform,
                       onTap: () {},
                       onTapStart: () {
-                        subscribedModel.tapRecordItemIndex = index;
+                        context
+                            .read<SubscribedModel>()
+                            .tapRecordItemIndex =
+                            index;
                       },
                       onTapEnd: () {
-                        subscribedModel.tapRecordItemIndex = null;
+                        context
+                            .read<SubscribedModel>()
+                            .tapRecordItemIndex =
+                        null;
                       },
                     );
                   },

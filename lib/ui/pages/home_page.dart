@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 @FFRoute(
   name: "home",
   routeName: "home",
-)
+  argumentImports: ["import 'package:flutter/material.dart';"])
 @immutable
 class HomePage extends StatelessWidget {
   @override

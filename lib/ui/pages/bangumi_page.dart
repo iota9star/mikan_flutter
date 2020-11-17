@@ -320,7 +320,7 @@ class _BangumiPageState extends State<BangumiPage> {
                       backgroundColor: accentColor.withOpacity(0.18),
                       onPressed: () {
                         context.read<BangumiModel>().selectedSubgroupId =
-                            subgroups[subgroupIndex].subgroupId;
+                            subgroups[subgroupIndex].dataId;
                         _showSubgroupPanel(context);
                       },
                     );
@@ -383,24 +383,24 @@ class _BangumiPageState extends State<BangumiPage> {
                     ),
                     child: _buildBangumiCover(context, cover),
                   ),
-                  Spacer(flex: 3),
-                  MaterialButton(
-                    onPressed: () {},
-                    child: Icon(FluentIcons.thumb_like_24_filled),
-                    color: Colors.pinkAccent,
-                    padding: EdgeInsets.all(12.0),
-                    minWidth: 0,
-                    shape: CircleBorder(),
-                  ),
-                  Spacer(),
-                  MaterialButton(
-                    onPressed: () {},
-                    child: Icon(FluentIcons.star_24_filled),
-                    color: Colors.blueAccent,
-                    minWidth: 0,
-                    padding: EdgeInsets.all(16.0),
-                    shape: CircleBorder(),
-                  ),
+                  // Spacer(flex: 3),
+                  // MaterialButton(
+                  //   onPressed: () {},
+                  //   child: Icon(FluentIcons.thumb_like_24_filled),
+                  //   color: Colors.pinkAccent,
+                  //   padding: EdgeInsets.all(12.0),
+                  //   minWidth: 0,
+                  //   shape: CircleBorder(),
+                  // ),
+                  // Spacer(),
+                  // MaterialButton(
+                  //   onPressed: () {},
+                  //   child: Icon(FluentIcons.star_24_filled),
+                  //   color: Colors.blueAccent,
+                  //   minWidth: 0,
+                  //   padding: EdgeInsets.all(16.0),
+                  //   shape: CircleBorder(),
+                  // ),
                 ],
               ),
             ),

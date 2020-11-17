@@ -70,7 +70,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
                     children: [
                       Selector<BangumiModel, bool>(
                         selector: (_, model) =>
-                        model.hasScrolledSubgroupRecords,
+                            model.hasScrolledSubgroupRecords,
                         shouldRebuild: (pre, next) => pre != next,
                         builder: (_, hasScrolled, child) {
                           return AnimatedContainer(
@@ -124,27 +124,28 @@ class BangumiSubgroupFragment extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            IconButton(
-                              padding: EdgeInsets.zero,
-                              tooltip: "查看字幕组详情",
-                              icon: Icon(FluentIcons.library_24_regular),
-                              onPressed: () {
-                                final List<Subgroup> subgroups =
-                                    subgroupBangumi.subgroups;
-                                if (subgroups.length == 1) {
-                                  final Subgroup subgroup = subgroups[0];
-                                  _push2SubgroupPage(context, subgroup);
-                                } else {
-                                  _showSubgroupPanel(
-                                    context,
-                                    primaryColor,
-                                    primaryTextColor,
-                                    backgroundColor,
-                                    subgroups,
-                                  );
-                                }
-                              },
-                            ),
+                            if (subgroupBangumi.subgroups.isNotEmpty)
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                tooltip: "查看字幕组详情",
+                                icon: Icon(FluentIcons.library_24_regular),
+                                onPressed: () {
+                                  final List<Subgroup> subgroups =
+                                      subgroupBangumi.subgroups;
+                                  if (subgroups.length == 1) {
+                                    final Subgroup subgroup = subgroups[0];
+                                    _push2SubgroupPage(context, subgroup);
+                                  } else {
+                                    _showSubgroupPanel(
+                                      context,
+                                      primaryColor,
+                                      primaryTextColor,
+                                      backgroundColor,
+                                      subgroups,
+                                    );
+                                  }
+                                },
+                              ),
                           ],
                         ),
                       ),
@@ -157,7 +158,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
                           footer: Indicator.footer(
                             context,
                             accentColor,
-                            bottom: 16.0,
+                            bottom: 16.0 + Sz.navBarHeight,
                           ),
                           child: ListView.builder(
                             padding: EdgeInsets.symmetric(vertical: 8.0),

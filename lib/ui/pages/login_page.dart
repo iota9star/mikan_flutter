@@ -11,6 +11,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/providers/models/login_model.dart';
+import 'package:mikan_flutter/providers/models/subscribed_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
@@ -84,7 +85,7 @@ class LoginPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.1),
                       borderRadius:
-                      const BorderRadius.all(Radius.circular(16.0)),
+                          const BorderRadius.all(Radius.circular(16.0)),
                     ),
                     child: Builder(
                       builder: (context) {
@@ -217,8 +218,9 @@ class LoginPage extends StatelessWidget {
                                       if (isNotOk || loading) return;
                                       context.read<LoginModel>().submit(
                                             () {
+                                          context.read<IndexModel>().refresh();
                                           context
-                                              .read<IndexModel>()
+                                              .read<SubscribedModel>()
                                               .refresh();
                                           Navigator.popUntil(
                                             context,

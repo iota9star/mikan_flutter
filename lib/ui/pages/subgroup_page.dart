@@ -15,6 +15,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 @FFRoute(
   name: "subgroup",
   routeName: "subgroup",
+  argumentImports: [
+    "import 'package:mikan_flutter/model/subgroup.dart';",
+    "import 'package:flutter/material.dart';",
+  ],
 )
 @immutable
 class SubgroupPage extends StatelessWidget {
@@ -38,7 +42,7 @@ class SubgroupPage extends StatelessWidget {
           child: Builder(
             builder: (context) {
               final SubgroupModel subgroupModel =
-              Provider.of<SubgroupModel>(context, listen: false);
+                  Provider.of<SubgroupModel>(context, listen: false);
               return NotificationListener(
                 onNotification: (notification) {
                   if (notification is OverscrollIndicatorNotification) {

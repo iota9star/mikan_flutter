@@ -52,7 +52,12 @@ class ListModel extends CancelableBaseModel {
   Future _loadList(final int page) async {
     final int willLoadPage = page + 1;
     final Resp resp = await (this + Repo.list(willLoadPage));
-    this._refreshController.refreshCompleted();
+    if (this._refreshController.isRefresh) {
+      this._refreshController.refreshCompleted();
+    }
+    if (this._refreshController.isLoading) {
+      this._refreshController.loadComplete();
+    }
     if (resp.success) {
       final List<RecordItem> records = resp.data;
       if (records.isNullOrEmpty) {

@@ -3,7 +3,7 @@ import 'package:mikan_flutter/model/subgroup.dart';
 
 class SubgroupBangumi {
   String name;
-  String subgroupId;
+  String dataId;
   List<Subgroup> subgroups;
   bool subscribed;
   List<RecordItem> records;
@@ -14,10 +14,10 @@ class SubgroupBangumi {
       other is SubgroupBangumi &&
           runtimeType == other.runtimeType &&
           name == other.name &&
-          subgroupId == other.subgroupId &&
+          dataId == other.dataId &&
           records.length == other.records.length;
 
   @override
   int get hashCode =>
-      name.hashCode ^ subgroupId.hashCode ^ records.length.hashCode;
+      name.hashCode ^ dataId.hashCode ^ records.length.hashCode;
 }
