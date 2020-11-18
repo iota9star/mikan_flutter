@@ -7,12 +7,15 @@ import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
+import 'package:mikan_flutter/model/year_season.dart';
 
 import 'ui/pages/bangumi_page.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
 import 'ui/pages/recent_subscribed_page.dart';
+import 'ui/pages/season_subscribed_page.dart';
 import 'ui/pages/splash_page.dart';
 import 'ui/pages/subgroup_page.dart';
 
@@ -65,6 +68,16 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           subgroup: arguments['subgroup'] as Subgroup,
         ),
         routeName: 'subgroup',
+      );
+    case 'subscribed-season':
+      return RouteResult(
+        name: name,
+        widget: SubscribedSeasonPage(
+          key: arguments['key'] as Key,
+          years: arguments['years'] as List<YearSeason>,
+          galleries: arguments['galleries'] as List<SeasonGallery>,
+        ),
+        routeName: 'subscribed-season',
       );
     default:
       return const RouteResult(name: 'flutterCandies://notfound');

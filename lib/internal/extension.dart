@@ -1,6 +1,7 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -51,6 +52,28 @@ extension StringExt on String {
   share() {
     if (this.isNullOrBlank) return "没有内容供分享".toast();
     Share.share(this);
+  }
+}
+
+extension RefreshControllerExt on RefreshController {
+  completed([bool noMore = false]) {
+    if (this.isRefresh) {
+      this.refreshCompleted();
+    } else if (this.isLoading) {
+      if (noMore) {
+        this.loadNoData();
+      } else {
+        this.loadComplete();
+      }
+    }
+  }
+
+  failed() {
+    if (this.isRefresh) {
+      this.refreshFailed();
+    } else if (this.isLoading) {
+      this.loadFailed();
+    }
   }
 }
 

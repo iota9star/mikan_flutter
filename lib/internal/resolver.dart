@@ -16,9 +16,9 @@ import 'package:mikan_flutter/model/record_details.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/search.dart';
 import 'package:mikan_flutter/model/season.dart';
+import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
-import 'package:mikan_flutter/model/subgroup_gallery.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 
@@ -392,28 +392,23 @@ class Resolver {
     return yearSeasons;
   }
 
-  static Future<List<SubgroupGallery>> parseSubgroup(
-      final Document document,) async {
+  static Future<List<SeasonGallery>> parseSubgroup(
+    final Document document,
+  ) async {
     final List<Element> eles = document.querySelectorAll(
         "#js-sort-wrapper > div.pubgroup-timeline-item[data-index]");
-    List<SubgroupGallery> list = [];
-    SubgroupGallery subgroupGallery;
+    List<SeasonGallery> list = [];
+    SeasonGallery subgroupGallery;
     Bangumi bangumi;
     List<Bangumi> bangumis;
     List<Element> elements;
     Map attributes;
     int i = 1;
     for (final Element ele in eles) {
-      subgroupGallery = SubgroupGallery();
-      subgroupGallery.date = ele
-          .querySelector(".pubgroup-date")
-          .text
-          .trim();
+      subgroupGallery = SeasonGallery();
+      subgroupGallery.date = ele.querySelector(".pubgroup-date").text.trim();
       subgroupGallery.season =
-          ele
-              .querySelector(".pubgroup-season")
-              .text
-              .trim();
+          ele.querySelector(".pubgroup-season").text.trim();
       subgroupGallery.isCurrentSeason =
           ele.querySelector(".pubgroup-season.current-season") != null;
       elements = ele.querySelectorAll("li[data-bangumiid]") ?? [];

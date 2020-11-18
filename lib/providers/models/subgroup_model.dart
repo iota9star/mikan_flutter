@@ -1,8 +1,8 @@
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
+import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
-import 'package:mikan_flutter/model/subgroup_gallery.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -36,9 +36,9 @@ class SubgroupModel extends CancelableBaseModel {
     this._loadBangumis();
   }
 
-  List<SubgroupGallery> _galleries;
+  List<SeasonGallery> _galleries;
 
-  List<SubgroupGallery> get galleries => _galleries;
+  List<SeasonGallery> get galleries => _galleries;
 
   final RefreshController _refreshController = RefreshController();
 

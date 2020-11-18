@@ -63,7 +63,7 @@ class BangumiModel extends CancelableBaseModel {
       return;
     }
     _subgroupBangumi = _bangumiDetails.subgroupBangumis.firstWhere(
-          (element) => element.dataId == value,
+      (element) => element.dataId == value,
       orElse: () => null,
     );
     _hasScrolledSubgroupRecords = false;

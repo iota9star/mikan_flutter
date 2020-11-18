@@ -1,30 +1,39 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
-import 'package:mikan_flutter/model/subgroup.dart';
-import 'package:mikan_flutter/providers/models/subgroup_model.dart';
+import 'package:mikan_flutter/model/year_season.dart';
+import 'package:mikan_flutter/providers/models/season_subscribed_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
+import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @FFRoute(
-  name: "subgroup",
-  routeName: "subgroup",
+  name: "subscribed-season",
+  routeName: "subscribed-season",
   argumentImports: [
-    "import 'package:mikan_flutter/model/subgroup.dart';",
+    "import 'package:mikan_flutter/model/year_season.dart';",
+    "import 'package:mikan_flutter/model/season_gallery.dart';",
     "import 'package:flutter/material.dart';",
   ],
 )
 @immutable
-class SubgroupPage extends StatelessWidget {
-  final Subgroup subgroup;
+class SubscribedSeasonPage extends StatelessWidget {
+  final List<YearSeason> years;
 
-  const SubgroupPage({Key key, this.subgroup}) : super(key: key);
+  final List<SeasonGallery> galleries;
+
+  const SubscribedSeasonPage({
+    Key key,
+    this.years,
+    this.galleries,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +47,11 @@ class SubgroupPage extends StatelessWidget {
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
         body: ChangeNotifierProvider(
-          create: (_) => SubgroupModel(subgroup),
+          create: (_) => SeasonSubscribedModel(this.years, this.galleries),
           child: Builder(
             builder: (context) {
-              final SubgroupModel subgroupModel =
-                  Provider.of<SubgroupModel>(context, listen: false);
+              final SeasonSubscribedModel seasonSubscribedModel =
+                  Provider.of<SeasonSubscribedModel>(context, listen: false);
               return NotificationListener(
                 onNotification: (notification) {
                   if (notification is OverscrollIndicatorNotification) {
@@ -50,28 +59,34 @@ class SubgroupPage extends StatelessWidget {
                   } else if (notification is ScrollUpdateNotification) {
                     if (notification.depth == 0) {
                       final double offset = notification.metrics.pixels;
-                      subgroupModel.hasScrolled = offset > 0.0;
+                      seasonSubscribedModel.hasScrolled = offset > 0.0;
                     }
                   }
                   return true;
                 },
-                child: Selector<SubgroupModel, List<SeasonGallery>>(
+                child: Selector<SeasonSubscribedModel, List<SeasonGallery>>(
                   selector: (_, model) => model.galleries,
-                  shouldRebuild: (pre, next) => pre != next,
+                  shouldRebuild: (pre, next) => listEquals(pre, next),
                   builder: (context, galleries, __) {
                     return SmartRefresher(
-                      controller: subgroupModel.refreshController,
+                      controller: seasonSubscribedModel.refreshController,
                       header: WaterDropMaterialHeader(
                         backgroundColor: accentColor,
                         color: accentTextColor,
                         distance: Sz.statusBarHeight + 18.0,
                       ),
+                      footer: Indicator.footer(
+                        context,
+                        accentColor,
+                        bottom: 16.0 + Sz.navBarHeight,
+                      ),
                       enablePullDown: true,
-                      enablePullUp: false,
-                      onRefresh: subgroupModel.refresh,
+                      enablePullUp: true,
+                      onRefresh: seasonSubscribedModel.refresh,
+                      onLoading: seasonSubscribedModel.loadMore,
                       child: CustomScrollView(
                         slivers: [
-                          Selector<SubgroupModel, bool>(
+                          Selector<SeasonSubscribedModel, bool>(
                             selector: (_, model) => model.hasScrolled,
                             builder: (_, hasScrolled, __) {
                               return SliverPinnedToBoxAdapter(
@@ -93,9 +108,9 @@ class SubgroupPage extends StatelessWidget {
                                         : null,
                                     borderRadius: hasScrolled
                                         ? BorderRadius.only(
-                                      bottomLeft: Radius.circular(16.0),
-                                      bottomRight: Radius.circular(16.0),
-                                    )
+                                            bottomLeft: Radius.circular(16.0),
+                                            bottomRight: Radius.circular(16.0),
+                                          )
                                         : null,
                                   ),
                                   padding: EdgeInsets.only(
@@ -108,7 +123,7 @@ class SubgroupPage extends StatelessWidget {
                                   child: Row(
                                     children: <Widget>[
                                       Text(
-                                        subgroup.name,
+                                        "季度订阅番组",
                                         style: TextStyle(
                                           fontSize: 24,
                                           height: 1.25,
@@ -121,17 +136,10 @@ class SubgroupPage extends StatelessWidget {
                               );
                             },
                           ),
-                          if (subgroupModel.loading)
-                            SliverFillRemaining(
-                              child: Center(
-                                child: CupertinoActivityIndicator(),
-                              ),
-                            ),
                           if (galleries.isSafeNotEmpty)
                             ...List.generate(galleries.length, (index) {
                               final SeasonGallery gallery = galleries[index];
-                              final String section =
-                                  "${gallery.date} ${gallery.season}";
+                              final String section = gallery.season;
                               return <Widget>[
                                 SliverToBoxAdapter(
                                   child: Container(
@@ -147,7 +155,7 @@ class SubgroupPage extends StatelessWidget {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.max,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Expanded(
                                           child: Text(
@@ -177,10 +185,48 @@ class SubgroupPage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                BangumiSliverGridFragment(
-                                  flag: section,
-                                  bangumis: gallery.bangumis,
-                                ),
+                                gallery.bangumis.isNullOrEmpty
+                                    ? SliverToBoxAdapter(
+                                        child: Container(
+                                          width: double.infinity,
+                                          height: 240.0,
+                                          margin: EdgeInsets.only(
+                                            left: 16.0,
+                                            right: 16.0,
+                                            bottom: 8.0,
+                                            top: 8.0,
+                                          ),
+                                          padding: EdgeInsets.only(
+                                            left: 24.0,
+                                            right: 24.0,
+                                            bottom: 24.0,
+                                            top: 24.0,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topRight,
+                                              end: Alignment.bottomLeft,
+                                              colors: [
+                                                backgroundColor
+                                                    .withOpacity(0.72),
+                                                backgroundColor
+                                                    .withOpacity(0.9),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(16.0)),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              ">_< 您还没有订阅当前季度番组，快去添加订阅吧",
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : BangumiSliverGridFragment(
+                                        flag: section,
+                                        bangumis: gallery.bangumis,
+                                      ),
                               ];
                             }).expand((element) => element),
                         ],

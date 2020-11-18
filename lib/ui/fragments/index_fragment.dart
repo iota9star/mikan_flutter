@@ -235,8 +235,7 @@ class IndexFragment extends StatelessWidget {
                       tag: currFlag,
                       child: AnimatedTapContainer(
                         transform: transform,
-                        onTapStart: () =>
-                        context
+                        onTapStart: () => context
                             .read<IndexModel>()
                             .tapBangumiCarouselItemFlag = currFlag,
                         onTapEnd: () =>

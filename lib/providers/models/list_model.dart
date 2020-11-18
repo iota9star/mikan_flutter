@@ -52,13 +52,8 @@ class ListModel extends CancelableBaseModel {
   Future _loadList(final int page) async {
     final int willLoadPage = page + 1;
     final Resp resp = await (this + Repo.list(willLoadPage));
-    if (this._refreshController.isRefresh) {
-      this._refreshController.refreshCompleted();
-    }
-    if (this._refreshController.isLoading) {
-      this._refreshController.loadComplete();
-    }
     if (resp.success) {
+      this._refreshController.completed();
       final List<RecordItem> records = resp.data;
       if (records.isNullOrEmpty) {
         return "未获取到数据...".toast();
@@ -78,6 +73,8 @@ class ListModel extends CancelableBaseModel {
         notifyListeners();
       }
       this._page = willLoadPage;
+    } else {
+      this._refreshController.failed();
     }
   }
 

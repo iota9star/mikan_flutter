@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -11,6 +12,8 @@ import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/model/season_gallery.dart';
+import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/providers/models/subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
@@ -73,8 +76,8 @@ class SubscribedFragment extends StatelessWidget {
                 _buildHeader(backgroundColor, scaffoldBackgroundColor),
                 _buildRssSection(),
                 _buildRssList(backgroundColor),
-                _buildSeasonRssSection(),
-                _buildSeasonRssList(backgroundColor),
+                _buildSeasonRssSection(context, subscribedModel),
+                _buildSeasonRssList(subscribedModel, backgroundColor),
                 _buildRssRecordsSection(),
                 _buildRssRecordsList(
                   accentColor,
@@ -144,7 +147,10 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSeasonRssList(final Color backgroundColor) {
+  Widget _buildSeasonRssList(
+    final SubscribedModel subscribedModel,
+    final Color backgroundColor,
+  ) {
     return Selector<SubscribedModel, List<Bangumi>>(
       selector: (_, model) => model.bangumis,
       shouldRebuild: (pre, next) => pre != next,
@@ -222,22 +228,70 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSeasonRssSection() {
+  Widget _buildSeasonRssSection(final BuildContext context,
+      final SubscribedModel subscribedModel,) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.only(
           left: 16.0,
-          right: 16.0,
+          right: 8.0,
           top: 16.0,
           bottom: 8.0,
         ),
-        child: Text(
-          "季度订阅",
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-            height: 1.25,
-          ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "季度订阅",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  height: 1.25,
+                ),
+              ),
+            ),
+            Selector<SubscribedModel, List<YearSeason>>(
+              selector: (_, model) => model.years,
+              shouldRebuild: (pre, next) => pre != next,
+              builder: (_, years, __) {
+                if (years.isNullOrEmpty) return Container();
+                return FlatButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.subscribedSeason.name,
+                      arguments: Routes.subscribedSeason.d(
+                        years: subscribedModel.years,
+                        galleries: [
+                          SeasonGallery(
+                            season: subscribedModel.season.title,
+                            bangumis: subscribedModel.bangumis,
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                  minWidth: 0,
+                  padding: EdgeInsets.only(
+                    left: 16.0,
+                    right: 8.0,
+                    top: 8.0,
+                    bottom: 8.0,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  child: Row(
+                    children: [
+                      Text("更多"),
+                      Icon(
+                        FluentIcons.chevron_right_24_regular,
+                        size: 16.0,
+                      )
+                    ],
+                  ),
+                );
+              },
+            )
+          ],
         ),
       ),
     );

@@ -5,7 +5,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
+import 'package:mikan_flutter/model/year_season.dart';
 
 const List<String> routeNames = <String>[
   'bangumi',
@@ -14,6 +16,7 @@ const List<String> routeNames = <String>[
   'recent-subscribed',
   'splash',
   'subgroup',
+  'subscribed-season',
 ];
 
 class Routes {
@@ -72,6 +75,17 @@ class Routes {
   ///
   /// SubgroupPage : [Key key, Subgroup subgroup]
   static const _Subgroup subgroup = _Subgroup();
+
+  /// 'subscribed-season'
+  ///
+  /// [name] : 'subscribed-season'
+  ///
+  /// [routeName] : 'subscribed-season'
+  ///
+  /// [constructors] :
+  ///
+  /// SubscribedSeasonPage : [Key key, List<YearSeason> years, List<SeasonGallery> galleries]
+  static const _SubscribedSeason subscribedSeason = _SubscribedSeason();
 }
 
 class _Bangumi {
@@ -115,6 +129,23 @@ class _Subgroup {
   Map<String, dynamic> d({Key key, Subgroup subgroup}) => <String, dynamic>{
         'key': key,
         'subgroup': subgroup,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _SubscribedSeason {
+  const _SubscribedSeason();
+
+  String get name => 'subscribed-season';
+
+  Map<String, dynamic> d(
+          {Key key, List<YearSeason> years, List<SeasonGallery> galleries}) =>
+      <String, dynamic>{
+        'key': key,
+        'years': years,
+        'galleries': galleries,
       };
 
   @override

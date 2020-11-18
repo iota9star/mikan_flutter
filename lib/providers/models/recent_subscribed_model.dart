@@ -48,13 +48,8 @@ class RecentSubscribedModel extends CancelableBaseModel {
   loadMoreRecentRecords() async {
     final int next = this._dayOffset + 2;
     final Resp resp = await (this + Repo.day(next, 1));
-    if (this._refreshController.isRefresh) {
-      this._refreshController.refreshCompleted();
-    }
-    if (this._refreshController.isLoading) {
-      this._refreshController.loadComplete();
-    }
     if (resp.success) {
+      this._refreshController.completed();
       final List<RecordItem> data = resp.data ?? [];
       if (data.length == this._records.length) {
         this._step++;
@@ -65,6 +60,7 @@ class RecentSubscribedModel extends CancelableBaseModel {
       this._records = data;
       notifyListeners();
     } else {
+      this._refreshController.failed();
       "获取最近更新失败：${resp.msg}".toast();
     }
   }

@@ -5,6 +5,7 @@ import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season.dart';
+import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -18,6 +19,17 @@ class SubscribedModel extends CancelableBaseModel {
   int _tapRecordItemIndex;
 
   int get tapRecordItemIndex => _tapRecordItemIndex;
+
+  List<YearSeason> _years;
+
+  List<YearSeason> get years => _years;
+
+  set years(List<YearSeason> years) {
+    this._years = years;
+    if (years.isSafeNotEmpty) {
+      this.loadMySubscribedSeasonBangumi(years[0].seasons.first);
+    }
+  }
 
   set tapRecordItemIndex(int value) {
     _tapRecordItemIndex = value;
@@ -59,7 +71,6 @@ class SubscribedModel extends CancelableBaseModel {
     await this.loadRecentRecords();
     await this.loadMySubscribedSeasonBangumi(this._season);
     _refreshController.refreshCompleted();
-    "刷新结束".toast();
   }
 
   loadMySubscribedSeasonBangumi(final Season season) async {
