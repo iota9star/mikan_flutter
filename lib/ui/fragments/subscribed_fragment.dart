@@ -338,12 +338,7 @@ class SubscribedFragment extends StatelessWidget {
           onTapEnd: () =>
               context.read<IndexModel>().tapBangumiRssItemFlag = null,
           onTap: () {
-            Navigator.pushNamed(
-              context,
-              Routes.recentSubscribed.name,
-              arguments: Routes.recentSubscribed
-                  .d(loaded: context.read<SubscribedModel>().records),
-            );
+            _toRecentSubscribedPage(context);
           },
           width: 64.0,
           margin: EdgeInsets.symmetric(
@@ -379,9 +374,7 @@ class SubscribedFragment extends StatelessWidget {
                 "更多\n更新",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Theme
-                      .of(context)
-                      .accentColor,
+                  color: Theme.of(context).accentColor,
                   height: 1.25,
                 ),
               ),
@@ -389,6 +382,15 @@ class SubscribedFragment extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _toRecentSubscribedPage(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      Routes.recentSubscribed.name,
+      arguments: Routes.recentSubscribed
+          .d(loaded: context.read<SubscribedModel>().records),
     );
   }
 
@@ -550,6 +552,7 @@ class SubscribedFragment extends StatelessWidget {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
         }
+        final int length = records.length;
         return SliverPadding(
           padding: EdgeInsets.only(
             bottom: 8.0,
@@ -557,6 +560,20 @@ class SubscribedFragment extends StatelessWidget {
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
                   (context, index) {
+                if (index == length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
+                    child: FlatButton(
+                      onPressed: () {
+                        _toRecentSubscribedPage(context);
+                      },
+                      child: Text("还没过瘾？点击查看更多"),
+                    ),
+                  );
+                }
                 final RecordItem record = records[index];
                 return Selector<SubscribedModel, int>(
                   selector: (_, model) => model.tapRecordItemIndex,
@@ -591,7 +608,7 @@ class SubscribedFragment extends StatelessWidget {
                   },
                 );
               },
-              childCount: records.length,
+              childCount: length > 10 ? length + 1 : length,
             ),
           ),
         );
