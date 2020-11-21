@@ -48,7 +48,7 @@ class IndexFragment extends StatelessWidget {
     final Color backgroundColor = Theme.of(context).backgroundColor;
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
-    final Color headline3Color = Theme.of(context).textTheme.subtitle1.color;
+    final Color subtitleColor = Theme.of(context).textTheme.subtitle1.color;
     final IndexModel indexModel =
         Provider.of<IndexModel>(context, listen: false);
     return Scaffold(
@@ -99,7 +99,7 @@ class IndexFragment extends StatelessWidget {
                     return [
                       _buildWeekSection(
                         scaffoldBackgroundColor,
-                        headline3Color,
+                        subtitleColor,
                         bangumiRow,
                       ),
                       BangumiSliverGridFragment(
@@ -118,7 +118,7 @@ class IndexFragment extends StatelessWidget {
 
   Widget _buildWeekSection(
     final Color scaffoldBackgroundColor,
-    final Color headline3Color,
+    final Color subtitleColor,
     final BangumiRow bangumiRow,
   ) {
     final simple = [
@@ -145,14 +145,6 @@ class IndexFragment extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: scaffoldBackgroundColor,
-          // boxShadow: [
-          //   BoxShadow(
-          //     offset: Offset(0, 4.0),
-          //     blurRadius: 12.0,
-          //     spreadRadius: -12.0,
-          //     color: Colors.black26,
-          //   )
-          // ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -173,7 +165,7 @@ class IndexFragment extends StatelessWidget {
               child: Text(
                 simple,
                 style: TextStyle(
-                  color: headline3Color,
+                  color: subtitleColor,
                   fontSize: 12.0,
                   height: 1.25,
                 ),

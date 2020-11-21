@@ -113,10 +113,7 @@ class SubscribedSeasonPage extends StatelessWidget {
             final SeasonGallery gallery = galleries[index];
             final String seasonTitle = gallery.season;
             return <Widget>[
-              _buildSeasonSection(
-                scaffoldBackgroundColor,
-                seasonTitle,
-              ),
+              _buildSeasonSection(seasonTitle),
               gallery.bangumis.isNullOrEmpty
                   ? _buildEmptySubscribedContainer(
                       backgroundColor,
@@ -168,10 +165,7 @@ class SubscribedSeasonPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeasonSection(
-    final Color scaffoldBackgroundColor,
-    final String seasonTitle,
-  ) {
+  Widget _buildSeasonSection(final String seasonTitle) {
     return SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.only(
@@ -180,38 +174,13 @@ class SubscribedSeasonPage extends StatelessWidget {
           right: 16.0,
           bottom: 8.0,
         ),
-        decoration: BoxDecoration(
-          color: scaffoldBackgroundColor,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                seasonTitle,
-                style: TextStyle(
-                  fontSize: 18,
-                  height: 1.25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            // Tooltip(
-            //   message: full,
-            //   child: Text(
-            //     simple,
-            //     style: TextStyle(
-            //       color: Theme.of(context)
-            //           .textTheme
-            //           .bodyText1
-            //           .color,
-            //       fontSize: 12.0,
-            //       height: 1.25,
-            //     ),
-            //   ),
-            // ),
-          ],
+        child: Text(
+          seasonTitle,
+          style: TextStyle(
+            fontSize: 18,
+            height: 1.25,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -255,7 +224,7 @@ class SubscribedSeasonPage extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Text(
-                  "季度订阅番组",
+                  "季度订阅",
                   style: TextStyle(
                     fontSize: 24,
                     height: 1.25,

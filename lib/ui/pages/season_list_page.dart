@@ -38,6 +38,7 @@ class SeasonListPage extends StatelessWidget {
     final Color backgroundColor = Theme.of(context).backgroundColor;
     final Color scaffoldBackgroundColor =
         Theme.of(context).scaffoldBackgroundColor;
+    final Color subtitleColor = Theme.of(context).textTheme.subtitle1.color;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
@@ -79,140 +80,11 @@ class SeasonListPage extends StatelessWidget {
                       enablePullUp: true,
                       onRefresh: seasonListModel.refresh,
                       onLoading: seasonListModel.loadMore,
-                      child: CustomScrollView(
-                        slivers: [
-                          Selector<SeasonListModel, bool>(
-                            selector: (_, model) => model.hasScrolled,
-                            builder: (_, hasScrolled, __) {
-                              return SliverPinnedToBoxAdapter(
-                                child: AnimatedContainer(
-                                  decoration: BoxDecoration(
-                                    color: hasScrolled
-                                        ? backgroundColor
-                                        : scaffoldBackgroundColor,
-                                    boxShadow: hasScrolled
-                                        ? [
-                                            BoxShadow(
-                                              color: Colors.black
-                                                  .withOpacity(0.024),
-                                              offset: Offset(0, 1),
-                                              blurRadius: 3.0,
-                                              spreadRadius: 3.0,
-                                            ),
-                                          ]
-                                        : null,
-                                    borderRadius: hasScrolled
-                                        ? BorderRadius.only(
-                                            bottomLeft: Radius.circular(16.0),
-                                            bottomRight: Radius.circular(16.0),
-                                          )
-                                        : null,
-                                  ),
-                                  padding: EdgeInsets.only(
-                                    top: 16.0 + Sz.statusBarHeight,
-                                    left: 16.0,
-                                    right: 16.0,
-                                    bottom: 16.0,
-                                  ),
-                                  duration: Duration(milliseconds: 240),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                        "季度番组列表",
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          height: 1.25,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          ...List.generate(seasons.length, (index) {
-                            final SeasonBangumis seasonBangumis =
-                                seasons[index];
-                            final String seasonTitle =
-                                seasonBangumis.season.title;
-                            return <Widget>[
-                              SliverToBoxAdapter(
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                    top: 16.0,
-                                    left: 16.0,
-                                    right: 16.0,
-                                    bottom: 8.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: scaffoldBackgroundColor,
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Text(
-                                          seasonTitle,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            height: 1.25,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              ...List.generate(
-                                seasonBangumis.bangumiRows.length,
-                                (ind) {
-                                  final BangumiRow bangumiRow =
-                                      seasonBangumis.bangumiRows[ind];
-                                  return <Widget>[
-                                    SliverToBoxAdapter(
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                          top: 16.0,
-                                          left: 16.0,
-                                          right: 16.0,
-                                          bottom: 8.0,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: scaffoldBackgroundColor,
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Text(
-                                                bangumiRow.name,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  height: 1.25,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    BangumiSliverGridFragment(
-                                      flag: seasonTitle,
-                                      bangumis: bangumiRow.bangumis,
-                                    ),
-                                  ];
-                                },
-                              ).expand((element) => element),
-                            ];
-                          }).expand((element) => element),
-                        ],
+                      child: _buildContentWrapper(
+                        backgroundColor,
+                        scaffoldBackgroundColor,
+                        subtitleColor,
+                        seasons,
                       ),
                     );
                   },
@@ -222,6 +94,170 @@ class SeasonListPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildContentWrapper(
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
+    final Color subtitleColor,
+    final List<SeasonBangumis> seasons,
+  ) {
+    return CustomScrollView(
+      slivers: [
+        _buildHeader(backgroundColor, scaffoldBackgroundColor),
+        ...List.generate(seasons.length, (index) {
+          final SeasonBangumis seasonBangumis = seasons[index];
+          final String seasonTitle = seasonBangumis.season.title;
+          return <Widget>[
+            _buildSeasonSection(seasonTitle),
+            ...List.generate(
+              seasonBangumis.bangumiRows.length,
+              (ind) {
+                final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
+                return <Widget>[
+                  _buildBangumiRowSection(subtitleColor, bangumiRow),
+                  BangumiSliverGridFragment(
+                    flag: seasonTitle,
+                    bangumis: bangumiRow.bangumis,
+                  ),
+                ];
+              },
+            ).expand((element) => element),
+          ];
+        }).expand((element) => element),
+      ],
+    );
+  }
+
+  Widget _buildSeasonSection(final String seasonTitle) {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: 8.0,
+        ),
+        child: Text(
+          seasonTitle,
+          style: TextStyle(
+            fontSize: 20,
+            height: 1.25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBangumiRowSection(
+    final Color subtitleColor,
+    final BangumiRow bangumiRow,
+  ) {
+    final simple = [
+      if (bangumiRow.updatedNum > 0) "🚀 ${bangumiRow.updatedNum}部",
+      if (bangumiRow.subscribedUpdatedNum > 0)
+        "💖 ${bangumiRow.subscribedUpdatedNum}部",
+      if (bangumiRow.subscribedNum > 0) "❤ ${bangumiRow.subscribedNum}部",
+      "🎬 ${bangumiRow.num}部"
+    ].join("，");
+    final full = [
+      if (bangumiRow.updatedNum > 0) "更新${bangumiRow.updatedNum}部",
+      if (bangumiRow.subscribedUpdatedNum > 0)
+        "订阅更新${bangumiRow.subscribedUpdatedNum}部",
+      if (bangumiRow.subscribedNum > 0) "订阅${bangumiRow.subscribedNum}部",
+      "共${bangumiRow.num}部"
+    ].join("，");
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: 8.0,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                bangumiRow.name,
+                style: TextStyle(
+                  fontSize: 18,
+                  height: 1.25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Tooltip(
+              message: full,
+              child: Text(
+                simple,
+                style: TextStyle(
+                  color: subtitleColor,
+                  fontSize: 12.0,
+                  height: 1.25,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
+  ) {
+    return Selector<SeasonListModel, bool>(
+      selector: (_, model) => model.hasScrolled,
+      builder: (_, hasScrolled, __) {
+        return SliverPinnedToBoxAdapter(
+          child: AnimatedContainer(
+            decoration: BoxDecoration(
+              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              boxShadow: hasScrolled
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.024),
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        spreadRadius: 3.0,
+                      ),
+                    ]
+                  : null,
+              borderRadius: hasScrolled
+                  ? BorderRadius.only(
+                      bottomLeft: Radius.circular(16.0),
+                      bottomRight: Radius.circular(16.0),
+                    )
+                  : null,
+            ),
+            padding: EdgeInsets.only(
+              top: 16.0 + Sz.statusBarHeight,
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0,
+            ),
+            duration: Duration(milliseconds: 240),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  "季度番组",
+                  style: TextStyle(
+                    fontSize: 24,
+                    height: 1.25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

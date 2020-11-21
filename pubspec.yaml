@@ -1,7 +1,7 @@
 name: mikan_flutter
 description: mikanani.me
 
-version: 0.0.4-alpha+4
+version: 0.0.5-alpha+5
 
 environment:
   sdk: ">=2.8.4 <3.0.0"
@@ -38,6 +38,7 @@ dependencies:
   waterfall_flow: ^2.0.5
   modal_bottom_sheet: ^1.0.0+1
   jiffy: ^3.0.1
+  tuple: ^1.0.3
 
 dev_dependencies:
   build_runner: ^1.10.6

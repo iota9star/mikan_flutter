@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -13,6 +14,7 @@ import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/providers/models/login_model.dart';
 import 'package:mikan_flutter/providers/models/subscribed_model.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 @FFRoute(
   name: "login",
@@ -24,9 +26,10 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
     final Color primaryColor = Theme.of(context).primaryColor;
+    final Color scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: ListenableProxyProvider<IndexModel, LoginModel>(
+      child: ChangeNotifierProxyProvider<IndexModel, LoginModel>(
         create: (_) => LoginModel(),
         update: (_, indexModel, loginModel) {
           loginModel.user = indexModel.user;
@@ -41,215 +44,233 @@ class LoginPage extends StatelessWidget {
                 top: Sz.statusBarHeight + 36.0,
                 bottom: 36.0,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      ExtendedImage.asset(
-                        "assets/mikan.png",
-                        width: 96.0,
-                      ),
-                      SizedBox(width: 24.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "Welcome to Mikan",
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                          Text(
-                            "蜜柑计划",
-                            style: TextStyle(
-                              fontSize: 40.0,
-                              height: 1.25,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 56.0,
-                  ),
-                  Text(
-                    'Sign Up',
-                    style: TextStyle(fontSize: 24.0),
-                  ),
-                  SizedBox(
-                    height: 24.0,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(16.0)),
+              child: Builder(builder: (context) {
+                final LoginModel loginModel =
+                    Provider.of<LoginModel>(context, listen: false);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    _buildHeader(),
+                    SizedBox(
+                      height: 42.0,
                     ),
-                    child: Builder(
-                      builder: (context) {
-                        return TextField(
-                          controller:
-                              Provider.of<LoginModel>(context, listen: false)
-                                  .accountController,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              labelText: '帐号',
-                              prefixIcon: Icon(
-                                  FluentIcons.inprivate_account_24_regular)),
-                          keyboardType: TextInputType.text,
-                        );
-                      },
+                    _buildAccountField(loginModel),
+                    SizedBox(
+                      height: 16.0,
                     ),
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      borderRadius:
-                      const BorderRadius.all(Radius.circular(16.0)),
+                    _buildPasswordField(loginModel),
+                    SizedBox(
+                      height: 16.0,
                     ),
-                    child: Builder(
-                      builder: (BuildContext context) {
-                        return TextField(
-                          obscureText: true,
-                          controller:
-                          Provider
-                              .of<LoginModel>(context, listen: false)
-                              .passwordController,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              labelText: '密码',
-                              prefixIcon:
-                              Icon(FluentIcons.password_24_regular)),
-                          keyboardType: TextInputType.visiblePassword,
-                        );
-                      },
+                    _buildRememberRow(accentColor, loginModel),
+                    SizedBox(
+                      height: 16.0,
                     ),
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Builder(builder: (context) {
-                        return Selector<LoginModel, bool>(
-                          selector: (_, model) => model.rememberMe,
-                          builder: (_, checked, __) {
-                            return Checkbox(
-                              value: checked,
-                              visualDensity: VisualDensity(),
-                              activeColor: accentColor,
-                              onChanged: (val) {
-                                context.read<LoginModel>().rememberMe = val;
-                              },
-                            );
-                          },
-                        );
-                      }),
-                      Expanded(child: Text("记住密码")),
-                      FlatButton(
-                        onPressed: () {},
-                        child: Text("忘记密码"),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  FlatButton(
-                    onPressed: () {},
-                    child: Text("还没有账号？赶紧来注册一个吧~"),
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Selector<LoginModel, bool>(
-                        selector: (_, model) => model.loading,
-                        shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, loading, __) {
-                          return Selector<LoginModel, User>(
-                            builder: (_, user, __) {
-                              final bool isNotOk = user == null ||
-                                  user?.token?.isNullOrBlank == true;
-                              final Color iconColor =
-                              (loading ? primaryColor : accentColor)
-                                  .computeLuminance() <
-                                  0.5
-                                  ? Colors.white
-                                  : Colors.black;
-                              return Ink(
-                                decoration: ShapeDecoration(
-                                  shape: CircleBorder(),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      loading ? primaryColor : accentColor,
-                                      (loading ? primaryColor : accentColor)
-                                          .withOpacity(0.8),
-                                    ],
-                                  ),
-                                  shadows: [
-                                    BoxShadow(
-                                      blurRadius: 8,
-                                      color: Colors.black.withAlpha(24),
-                                    )
-                                  ],
-                                ),
-                                child: Builder(builder: (context) {
-                                  return IconButton(
-                                    iconSize: 36.0,
-                                    color: iconColor,
-                                    icon: isNotOk || loading
-                                        ? SpinKitFoldingCube(
-                                      color: iconColor,
-                                      size: 16.0,
-                                      duration: const Duration(
-                                          milliseconds: 1600),
-                                    )
-                                        : Icon(
-                                        FluentIcons.caret_right_24_regular),
-                                    onPressed: () {
-                                      if (isNotOk || loading) return;
-                                      context.read<LoginModel>().submit(
-                                            () {
-                                          context.read<IndexModel>().refresh();
-                                          context
-                                              .read<SubscribedModel>()
-                                              .refresh();
-                                          Navigator.popUntil(
-                                            context,
-                                                (route) =>
-                                            route.settings.name ==
-                                                Routes.home,
-                                          );
-                                        },
-                                      );
-                                    },
-                                  );
-                                }),
-                              );
-                            },
-                            selector: (_, model) => model.user,
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 56.0,
-                  ),
-                ],
-              ),
+                    FlatButton(
+                      onPressed: () {},
+                      child: Text("还没有账号？赶紧来注册一个吧~"),
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    _buildLoginButton(
+                      context,
+                      primaryColor,
+                      accentColor,
+                      scaffoldBackgroundColor,
+                    ),
+                    SizedBox(
+                      height: 56.0,
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildLoginButton(
+    final BuildContext context,
+    final Color primaryColor,
+    final Color accentColor,
+    final Color scaffoldBackgroundColor,
+  ) {
+    return Selector<LoginModel, Tuple2<User, bool>>(
+      selector: (_, model) => Tuple2(model.user, model.loading),
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, tuple, __) {
+        final User user = tuple.item1;
+        final bool loading = tuple.item2;
+        final bool isNotOk = user == null || user?.token?.isNullOrBlank == true;
+        final Color btnColor = loading ? primaryColor : accentColor;
+        final Color iconColor =
+            btnColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
+        return RaisedButton(
+          onPressed: () {
+            if (isNotOk || loading) return;
+            context.read<LoginModel>().submit(() {
+              context.read<IndexModel>().refresh();
+              context.read<SubscribedModel>().refresh();
+              Navigator.popUntil(
+                context,
+                (route) => route.settings.name == Routes.home,
+              );
+            });
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(16.0),
+            ),
+          ),
+          color: scaffoldBackgroundColor.withOpacity(0),
+          padding: EdgeInsets.zero,
+          child: Container(
+            height: 48.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16.0),
+              ),
+              gradient: LinearGradient(
+                colors: [
+                  btnColor,
+                  btnColor.withOpacity(0.64),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (loading)
+                  SpinKitWave(
+                    size: 20.0,
+                    type: SpinKitWaveType.center,
+                    color: iconColor,
+                  ),
+                SizedBox(width: 12.0),
+                Text(
+                  loading ? "登录中..." : "登录",
+                  style: TextStyle(
+                    color: iconColor,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 12.0),
+                if (loading)
+                  SpinKitWave(
+                    size: 20.0,
+                    type: SpinKitWaveType.center,
+                    color: iconColor,
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRememberRow(
+    final Color accentColor,
+    final LoginModel loginModel,
+  ) {
+    return Row(
+      children: <Widget>[
+        Selector<LoginModel, bool>(
+          selector: (_, model) => model.rememberMe,
+          builder: (_, checked, __) {
+            return Checkbox(
+              value: checked,
+              visualDensity: VisualDensity(),
+              activeColor: accentColor,
+              onChanged: (val) {
+                loginModel.rememberMe = val;
+              },
+            );
+          },
+        ),
+        Expanded(child: Text("记住密码")),
+        FlatButton(
+          onPressed: () {},
+          child: Text("忘记密码"),
+        )
+      ],
+    );
+  }
+
+  Widget _buildAccountField(final LoginModel loginModel) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+      ),
+      child: TextField(
+        controller: loginModel.accountController,
+        decoration: InputDecoration(
+          isDense: true,
+          border: InputBorder.none,
+          labelText: '帐号',
+          prefixIcon: Icon(
+            FluentIcons.inprivate_account_24_regular,
+          ),
+        ),
+        keyboardType: TextInputType.text,
+      ),
+    );
+  }
+
+  Widget _buildPasswordField(final LoginModel loginModel) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+      ),
+      child: TextField(
+        obscureText: true,
+        controller: loginModel.passwordController,
+        decoration: InputDecoration(
+          isDense: true,
+          border: InputBorder.none,
+          labelText: '密码',
+          prefixIcon: Icon(FluentIcons.password_24_regular),
+        ),
+        keyboardType: TextInputType.visiblePassword,
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        ExtendedImage.asset(
+          "assets/mikan.png",
+          width: 72.0,
+        ),
+        SizedBox(width: 24.0),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Welcome to Mikan",
+              style: TextStyle(fontSize: 14.0),
+            ),
+            Text(
+              "蜜柑计划",
+              style: TextStyle(
+                fontSize: 32.0,
+                height: 1.25,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        )
+      ],
     );
   }
 }

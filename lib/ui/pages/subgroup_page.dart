@@ -70,121 +70,11 @@ class SubgroupPage extends StatelessWidget {
                       enablePullDown: true,
                       enablePullUp: false,
                       onRefresh: subgroupModel.refresh,
-                      child: CustomScrollView(
-                        slivers: [
-                          Selector<SubgroupModel, bool>(
-                            selector: (_, model) => model.hasScrolled,
-                            builder: (_, hasScrolled, __) {
-                              return SliverPinnedToBoxAdapter(
-                                child: AnimatedContainer(
-                                  decoration: BoxDecoration(
-                                    color: hasScrolled
-                                        ? backgroundColor
-                                        : scaffoldBackgroundColor,
-                                    boxShadow: hasScrolled
-                                        ? [
-                                            BoxShadow(
-                                              color: Colors.black
-                                                  .withOpacity(0.024),
-                                              offset: Offset(0, 1),
-                                              blurRadius: 3.0,
-                                              spreadRadius: 3.0,
-                                            ),
-                                          ]
-                                        : null,
-                                    borderRadius: hasScrolled
-                                        ? BorderRadius.only(
-                                            bottomLeft: Radius.circular(16.0),
-                                            bottomRight: Radius.circular(16.0),
-                                          )
-                                        : null,
-                                  ),
-                                  padding: EdgeInsets.only(
-                                    top: 16.0 + Sz.statusBarHeight,
-                                    left: 16.0,
-                                    right: 16.0,
-                                    bottom: 16.0,
-                                  ),
-                                  duration: Duration(milliseconds: 240),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                        subgroup.name,
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          height: 1.25,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          if (subgroupModel.loading)
-                            SliverFillRemaining(
-                              child: Center(
-                                child: CupertinoActivityIndicator(),
-                              ),
-                            ),
-                          if (galleries.isSafeNotEmpty)
-                            ...List.generate(galleries.length, (index) {
-                              final SeasonGallery gallery = galleries[index];
-                              final String section =
-                                  "${gallery.date} ${gallery.season}";
-                              return <Widget>[
-                                SliverToBoxAdapter(
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                      top: 16.0,
-                                      left: 16.0,
-                                      right: 16.0,
-                                      bottom: 8.0,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: scaffoldBackgroundColor,
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(
-                                            section,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              height: 1.25,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        // Tooltip(
-                                        //   message: full,
-                                        //   child: Text(
-                                        //     simple,
-                                        //     style: TextStyle(
-                                        //       color: Theme.of(context)
-                                        //           .textTheme
-                                        //           .bodyText1
-                                        //           .color,
-                                        //       fontSize: 12.0,
-                                        //       height: 1.25,
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                BangumiSliverGridFragment(
-                                  flag: section,
-                                  bangumis: gallery.bangumis,
-                                ),
-                              ];
-                            }).expand((element) => element),
-                        ],
+                      child: _buildContentWrapper(
+                        backgroundColor,
+                        scaffoldBackgroundColor,
+                        subgroupModel,
+                        galleries,
                       ),
                     );
                   },
@@ -194,6 +84,111 @@ class SubgroupPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildContentWrapper(
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
+    final SubgroupModel subgroupModel,
+    final List<SeasonGallery> galleries,
+  ) {
+    return CustomScrollView(
+      slivers: [
+        _buildHeader(backgroundColor, scaffoldBackgroundColor),
+        if (subgroupModel.loading)
+          SliverFillRemaining(
+            child: Center(
+              child: CupertinoActivityIndicator(),
+            ),
+          ),
+        if (galleries.isSafeNotEmpty)
+          ...List.generate(galleries.length, (index) {
+            final SeasonGallery gallery = galleries[index];
+            final String section = "${gallery.date} ${gallery.season}";
+            return <Widget>[
+              _buildYearSeasonSection(section),
+              BangumiSliverGridFragment(
+                flag: section,
+                bangumis: gallery.bangumis,
+              ),
+            ];
+          }).expand((element) => element),
+      ],
+    );
+  }
+
+  Widget _buildYearSeasonSection(final String section) {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 16.0,
+          left: 16.0,
+          right: 16.0,
+          bottom: 8.0,
+        ),
+        child: Text(
+          section,
+          style: TextStyle(
+            fontSize: 18,
+            height: 1.25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
+  ) {
+    return Selector<SubgroupModel, bool>(
+      selector: (_, model) => model.hasScrolled,
+      builder: (_, hasScrolled, __) {
+        return SliverPinnedToBoxAdapter(
+          child: AnimatedContainer(
+            decoration: BoxDecoration(
+              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              boxShadow: hasScrolled
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.024),
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        spreadRadius: 3.0,
+                      ),
+                    ]
+                  : null,
+              borderRadius: hasScrolled
+                  ? BorderRadius.only(
+                      bottomLeft: Radius.circular(16.0),
+                      bottomRight: Radius.circular(16.0),
+                    )
+                  : null,
+            ),
+            padding: EdgeInsets.only(
+              top: 16.0 + Sz.statusBarHeight,
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0,
+            ),
+            duration: Duration(milliseconds: 240),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  subgroup.name,
+                  style: TextStyle(
+                    fontSize: 24,
+                    height: 1.25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

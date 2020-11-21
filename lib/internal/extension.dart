@@ -18,7 +18,6 @@ extension IterableExt<T> on Iterable<T> {
   bool eq(Iterable<T> other) {
     if (this == null) return other == null;
     if (other == null || this.length != other.length) return false;
-    if (!identical(this, other)) return false;
     for (int index = 0; index < this.length; index += 1) {
       if (this.elementAt(index) != other.elementAt(index)) return false;
     }
@@ -41,12 +40,12 @@ extension ListExt<T> on List<T> {
   bool eq(List<T> other) {
     if (this == null) return other == null;
     if (other == null || this.length != other.length) return false;
-    if (!identical(this, other)) return false;
     for (int index = 0; index < this.length; index += 1) {
       if (this[index] != other[index]) return false;
     }
     return true;
   }
+  static a(){}
 
   bool ne(List<T> other) => !this.eq(other);
 }
