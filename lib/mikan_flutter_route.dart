@@ -10,14 +10,14 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/year_season.dart';
-
 import 'ui/pages/bangumi_page.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
 import 'ui/pages/recent_subscribed_page.dart';
-import 'ui/pages/season_subscribed_page.dart';
+import 'ui/pages/season_list_page.dart';
 import 'ui/pages/splash_page.dart';
 import 'ui/pages/subgroup_page.dart';
+import 'ui/pages/subscribed_season_page.dart';
 
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   arguments = arguments ?? const <String, dynamic>{};
@@ -53,6 +53,15 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           loaded: arguments['loaded'] as List<RecordItem>,
         ),
         routeName: 'recent-subscribed',
+      );
+    case 'season-list':
+      return RouteResult(
+        name: name,
+        widget: SeasonListPage(
+          key: arguments['key'] as Key,
+          years: arguments['years'] as List<YearSeason>,
+        ),
+        routeName: 'season-list',
       );
     case 'splash':
       return RouteResult(

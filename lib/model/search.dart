@@ -5,11 +5,23 @@ import 'package:mikan_flutter/model/subgroup.dart';
 class SearchResult {
   List<Bangumi> bangumis;
   List<Subgroup> subgroups;
-  List<RecordItem> searchs;
+  List<RecordItem> records;
 
   SearchResult({
     this.bangumis,
     this.subgroups,
-    this.searchs,
+    this.records,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SearchResult &&
+          runtimeType == other.runtimeType &&
+          bangumis == other.bangumis &&
+          subgroups == other.subgroups &&
+          records == other.records;
+
+  @override
+  int get hashCode => bangumis.hashCode ^ subgroups.hashCode ^ records.hashCode;
 }

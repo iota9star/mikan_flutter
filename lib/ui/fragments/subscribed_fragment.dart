@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
@@ -153,10 +154,9 @@ class SubscribedFragment extends StatelessWidget {
   ) {
     return Selector<SubscribedModel, List<Bangumi>>(
       selector: (_, model) => model.bangumis,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, bangumis, __) {
-        if (context
-            .select<SubscribedModel, bool>((model) => model.seasonLoading)) {
+        if (subscribedModel.seasonLoading) {
           return SliverToBoxAdapter(
             child: Container(
               width: double.infinity,
@@ -228,8 +228,10 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSeasonRssSection(final BuildContext context,
-      final SubscribedModel subscribedModel,) {
+  Widget _buildSeasonRssSection(
+    final BuildContext context,
+    final SubscribedModel subscribedModel,
+  ) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.only(
@@ -252,7 +254,7 @@ class SubscribedFragment extends StatelessWidget {
             ),
             Selector<SubscribedModel, List<YearSeason>>(
               selector: (_, model) => model.years,
-              shouldRebuild: (pre, next) => pre != next,
+              shouldRebuild: (pre, next) => pre.ne(next),
               builder: (_, years, __) {
                 if (years.isNullOrEmpty) return Container();
                 return FlatButton(
@@ -322,7 +324,7 @@ class SubscribedFragment extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Selector<SubscribedModel, Map<String, List<RecordItem>>>(
         selector: (_, model) => model.rss,
-        shouldRebuild: (pre, next) => pre != next,
+        shouldRebuild: (pre, next) => !mapEquals(pre, next),
         builder: (_, rss, __) {
           if (rss.isSafeNotEmpty)
             return SizedBox(
@@ -569,7 +571,7 @@ class SubscribedFragment extends StatelessWidget {
   Widget _buildRssRecordsSection() {
     return Selector<SubscribedModel, List<RecordItem>>(
       selector: (_, model) => model.records,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
         if (records.isNullOrEmpty) return SliverToBoxAdapter();
         return SliverToBoxAdapter(
@@ -594,14 +596,16 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRssRecordsList(final Color accentColor,
-      final Color primaryColor,
-      final Color backgroundColor,
-      final TextStyle fileTagStyle,
-      final TextStyle titleTagStyle,) {
+  Widget _buildRssRecordsList(
+    final Color accentColor,
+    final Color primaryColor,
+    final Color backgroundColor,
+    final TextStyle fileTagStyle,
+    final TextStyle titleTagStyle,
+  ) {
     return Selector<SubscribedModel, List<RecordItem>>(
       selector: (_, model) => model.records,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
@@ -613,7 +617,7 @@ class SubscribedFragment extends StatelessWidget {
           ),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (context, index) {
+              (context, index) {
                 if (index == length) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
@@ -647,16 +651,12 @@ class SubscribedFragment extends StatelessWidget {
                       transform: transform,
                       onTap: () {},
                       onTapStart: () {
-                        context
-                            .read<SubscribedModel>()
-                            .tapRecordItemIndex =
+                        context.read<SubscribedModel>().tapRecordItemIndex =
                             index;
                       },
                       onTapEnd: () {
-                        context
-                            .read<SubscribedModel>()
-                            .tapRecordItemIndex =
-                        null;
+                        context.read<SubscribedModel>().tapRecordItemIndex =
+                            null;
                       },
                     );
                   },

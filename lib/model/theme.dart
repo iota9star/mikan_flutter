@@ -38,4 +38,33 @@ class Theme extends HiveObject {
     this.darkScaffoldBackgroundColor,
     this.fontFamily,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Theme &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          canDelete == other.canDelete &&
+          autoMode == other.autoMode &&
+          primaryColor == other.primaryColor &&
+          accentColor == other.accentColor &&
+          lightBackgroundColor == other.lightBackgroundColor &&
+          darkBackgroundColor == other.darkBackgroundColor &&
+          lightScaffoldBackgroundColor == other.lightScaffoldBackgroundColor &&
+          darkScaffoldBackgroundColor == other.darkScaffoldBackgroundColor &&
+          fontFamily == other.fontFamily;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      canDelete.hashCode ^
+      autoMode.hashCode ^
+      primaryColor.hashCode ^
+      accentColor.hashCode ^
+      lightBackgroundColor.hashCode ^
+      darkBackgroundColor.hashCode ^
+      lightScaffoldBackgroundColor.hashCode ^
+      darkScaffoldBackgroundColor.hashCode ^
+      fontFamily.hashCode;
 }

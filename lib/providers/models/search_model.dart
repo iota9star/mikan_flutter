@@ -57,7 +57,7 @@ class SearchModel extends CancelableBaseModel {
   set subgroupId(final String value) {
     this._subgroupId = this._subgroupId == value ? null : value;
     this._searchResult?.bangumis = null;
-    this._searchResult?.searchs = null;
+    this._searchResult?.records = null;
     this._searching(keywords, subgroupId: this._subgroupId);
   }
 

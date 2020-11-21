@@ -243,7 +243,7 @@ class Resolver {
     return SearchResult(
       bangumis: bangumis,
       subgroups: subgroups,
-      searchs: searchs,
+      records: searchs,
     );
   }
 

@@ -51,8 +51,8 @@ class CancelableBaseModel extends BaseModel {
     completer.complete(future);
     completer.operation.value.then((value) {
       if (this._disposed) {
-        logd("$runtimeType 当前model已disposed，中断...");
-        throw "$runtimeType";
+        logd("$runtimeType 当前model已disposed，打断施法...");
+        throw "当前model已disposed，打断施法...";
       }
       return value;
     }).catchError((e) {

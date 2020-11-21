@@ -2,7 +2,9 @@ import 'dart:math' as Math;
 
 import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
@@ -69,6 +71,7 @@ class SplashPage extends StatelessWidget {
     final int coverCount = 3 * row;
     return Selector<IndexModel, List<BangumiRow>>(
       selector: (_, model) => model.bangumiRows,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, bangumiRows, __) {
         final List<Widget> covers = [];
         final bangumis = bangumiRows

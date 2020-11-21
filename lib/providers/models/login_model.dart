@@ -5,7 +5,7 @@ import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/models/base_model.dart';
 
-class LoginModel extends BaseModel {
+class LoginModel extends CancelableBaseModel {
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -44,8 +44,7 @@ class LoginModel extends BaseModel {
     };
     this._loading = true;
     notifyListeners();
-    final Resp resp = await Repo.submit(loginPrams);
-    if (this.disposed) return;
+    final Resp resp = await (this + Repo.submit(loginPrams));
     this._loading = false;
     notifyListeners();
     if (resp.success) {

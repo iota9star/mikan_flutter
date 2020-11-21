@@ -19,10 +19,25 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  CustomWidgetsFlutterBinding.ensureInitialized();
   await _initFirebase();
   await Store.init();
   runApp(MyApp());
+}
+
+class CustomWidgetsFlutterBinding extends WidgetsFlutterBinding {
+  @override
+  ImageCache createImageCache() {
+    final ImageCache imageCache = super.createImageCache();
+    imageCache.maximumSize = 72;
+    imageCache.maximumSizeBytes = 72 * 1024 * 1024; // 72MB
+    return imageCache;
+  }
+
+  static WidgetsBinding ensureInitialized() {
+    if (WidgetsBinding.instance == null) CustomWidgetsFlutterBinding();
+    return WidgetsBinding.instance;
+  }
 }
 
 Future _initFirebase() async {

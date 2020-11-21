@@ -18,4 +18,23 @@ class Index {
     this.carousels,
     this.user,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Index &&
+          runtimeType == other.runtimeType &&
+          years == other.years &&
+          bangumiRows == other.bangumiRows &&
+          rss == other.rss &&
+          carousels == other.carousels &&
+          user == other.user;
+
+  @override
+  int get hashCode =>
+      years.hashCode ^
+      bangumiRows.hashCode ^
+      rss.hashCode ^
+      carousels.hashCode ^
+      user.hashCode;
 }

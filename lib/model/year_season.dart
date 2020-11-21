@@ -10,7 +10,13 @@ class YearSeason {
   });
 
   @override
-  String toString() {
-    return 'YearSeason{year: $year, seasons: $seasons}';
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is YearSeason &&
+          runtimeType == other.runtimeType &&
+          year == other.year &&
+          seasons == other.seasons;
+
+  @override
+  int get hashCode => year.hashCode ^ seasons.hashCode;
 }

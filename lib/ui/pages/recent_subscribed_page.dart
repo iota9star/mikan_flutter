@@ -1,7 +1,9 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -112,7 +114,7 @@ class RecentSubscribedPage extends StatelessWidget {
   ) {
     return Selector<RecentSubscribedModel, List<RecordItem>>(
       selector: (_, model) => model.records,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
         return SliverList(
           delegate: SliverChildBuilderDelegate(

@@ -15,9 +15,15 @@ class SubgroupBangumi {
           runtimeType == other.runtimeType &&
           name == other.name &&
           dataId == other.dataId &&
-          records.length == other.records.length;
+          subgroups == other.subgroups &&
+          subscribed == other.subscribed &&
+          records == other.records;
 
   @override
   int get hashCode =>
-      name.hashCode ^ dataId.hashCode ^ records.length.hashCode;
+      name.hashCode ^
+      dataId.hashCode ^
+      subgroups.hashCode ^
+      subscribed.hashCode ^
+      records.hashCode;
 }

@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -15,11 +16,11 @@ import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
-import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/ui/components/ova_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/season_modal_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +66,7 @@ class IndexFragment extends StatelessWidget {
         },
         child: Selector<IndexModel, List<BangumiRow>>(
           selector: (_, model) => model.bangumiRows,
-          shouldRebuild: (pre, next) => pre != next,
+          shouldRebuild: (pre, next) => pre.ne(next),
           builder: (_, bangumiRows, __) {
             return SmartRefresher(
               controller: indexModel.refreshController,
@@ -187,6 +188,7 @@ class IndexFragment extends StatelessWidget {
   Widget _buildOVASection() {
     return Selector<IndexModel, List<RecordItem>>(
       selector: (_, model) => model.ovas,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, ovas, child) {
         if (ovas.isSafeNotEmpty) return child;
         return SliverToBoxAdapter();
@@ -215,7 +217,7 @@ class IndexFragment extends StatelessWidget {
   Widget _buildCarousels() {
     return Selector<IndexModel, List<Carousel>>(
       selector: (_, model) => model.carousels,
-      shouldRebuild: (pre, next) => pre.length != next.length,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, carousels, __) {
         if (carousels.isNotEmpty)
           return SliverToBoxAdapter(
@@ -238,8 +240,7 @@ class IndexFragment extends StatelessWidget {
                         onTapStart: () => context
                             .read<IndexModel>()
                             .tapBangumiCarouselItemFlag = currFlag,
-                        onTapEnd: () =>
-                        context
+                        onTapEnd: () => context
                             .read<IndexModel>()
                             .tapBangumiCarouselItemFlag = null,
                         onTap: () {
@@ -256,9 +257,7 @@ class IndexFragment extends StatelessWidget {
                         margin: EdgeInsets.only(top: 16.0, bottom: 12.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                          color: Theme
-                              .of(context)
-                              .backgroundColor,
+                          color: Theme.of(context).backgroundColor,
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 8,
@@ -292,9 +291,11 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final BuildContext context,
-      final Color backgroundColor,
-      final Color scaffoldBackgroundColor,) {
+  Widget _buildHeader(
+    final BuildContext context,
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
+  ) {
     return SliverPinnedToBoxAdapter(
       child: Selector<IndexModel, bool>(
         selector: (_, model) => model.hasScrolled,
@@ -311,135 +312,138 @@ class IndexFragment extends StatelessWidget {
               color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
               borderRadius: hasScrolled
                   ? BorderRadius.only(
-                bottomLeft: Radius.circular(16.0),
-                bottomRight: Radius.circular(16.0),
-              )
+                      bottomLeft: Radius.circular(16.0),
+                      bottomRight: Radius.circular(16.0),
+                    )
                   : null,
               boxShadow: hasScrolled
                   ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.024),
-                  offset: Offset(0, 1),
-                  blurRadius: 3.0,
-                  spreadRadius: 3.0,
-                ),
-              ]
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.024),
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        spreadRadius: 3.0,
+                      ),
+                    ]
                   : null,
             ),
             duration: Duration(milliseconds: 240),
-            child: child,
-          );
-        },
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Selector<IndexModel, User>(
-                    builder: (_, user, __) {
-                      final withoutName =
-                          user == null || user.name.isNullOrBlank;
-                      return Text(
-                        withoutName ? "Welcome to Mikan" : "Hi, ${user.name}",
-                        style: TextStyle(
-                          fontSize: 14,
-                          height: 1.25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    },
-                    selector: (_, model) => model.user,
-                    shouldRebuild: (pre, next) => pre != next,
-                  ),
-                  Row(
-                    children: [
-                      Selector<IndexModel, Season>(
-                        selector: (_, model) => model.selectedSeason,
-                        shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, season, __) {
-                          return season == null
-                              ? Container()
-                              : Text(
-                            season.title,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Selector<IndexModel, User>(
+                        builder: (_, user, __) {
+                          final withoutName =
+                              user == null || user.name.isNullOrBlank;
+                          return Text(
+                            withoutName
+                                ? "Welcome to Mikan"
+                                : "Hi, ${user.name}",
                             style: TextStyle(
-                              fontSize: 24.0,
+                              fontSize: 14,
                               height: 1.25,
                               fontWeight: FontWeight.bold,
                             ),
                           );
                         },
+                        selector: (_, model) => model.user,
+                        shouldRebuild: (pre, next) => pre != next,
                       ),
-                      MaterialButton(
-                        onPressed: () {
-                          _showYearSeasonBottomSheet(context);
-                        },
-                        child: Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 16.0,
-                        ),
-                        minWidth: 0,
-                        color: backgroundColor,
-                        padding: EdgeInsets.all(5.0),
-                        shape: CircleBorder(),
-                      ),
+                      Row(
+                        children: [
+                          Selector<IndexModel, Season>(
+                            selector: (_, model) => model.selectedSeason,
+                            shouldRebuild: (pre, next) => pre != next,
+                            builder: (_, season, __) {
+                              return season == null
+                                  ? Container()
+                                  : Text(
+                                      season.title,
+                                      style: TextStyle(
+                                        fontSize: 24.0,
+                                        height: 1.25,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                            },
+                          ),
+                          MaterialButton(
+                            onPressed: () {
+                              _showYearSeasonBottomSheet(context);
+                            },
+                            child: Icon(
+                              FluentIcons.chevron_down_24_regular,
+                              size: 16.0,
+                            ),
+                            minWidth: 0,
+                            color: hasScrolled
+                                ? scaffoldBackgroundColor
+                                : backgroundColor,
+                            padding: EdgeInsets.all(5.0),
+                            shape: CircleBorder(),
+                          ),
+                        ],
+                      )
                     ],
-                  )
-                ],
-              ),
-            ),
-            MaterialButton(
-              onPressed: () {
-                _showSearchPanel(context);
-              },
-              child: Icon(FluentIcons.search_24_regular),
-              minWidth: 0,
-              padding: EdgeInsets.all(10.0),
-              shape: CircleBorder(),
-            ),
-            MaterialButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(Routes.login);
-              },
-              child: Selector<IndexModel, User>(
-                selector: (_, model) => model.user,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (_, user, __) {
-                  return user?.avatar?.isNotBlank == true
-                      ? ClipOval(
-                    child: ExtendedImage.network(
-                      user?.avatar,
-                      width: 36.0,
-                      height: 36.0,
-                      loadStateChanged: (state) {
-                        switch (state.extendedImageLoadState) {
-                          case LoadState.loading:
-                          case LoadState.failed:
-                            return ExtendedImage.asset(
+                  ),
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    _showSearchPanel(context);
+                  },
+                  child: Icon(FluentIcons.search_24_regular),
+                  minWidth: 0,
+                  padding: EdgeInsets.all(10.0),
+                  shape: CircleBorder(),
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(Routes.login);
+                  },
+                  child: Selector<IndexModel, User>(
+                    selector: (_, model) => model.user,
+                    shouldRebuild: (pre, next) => pre != next,
+                    builder: (_, user, __) {
+                      return user?.avatar?.isNotBlank == true
+                          ? ClipOval(
+                              child: ExtendedImage.network(
+                                user?.avatar,
+                                width: 36.0,
+                                height: 36.0,
+                                loadStateChanged: (state) {
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                    case LoadState.failed:
+                                      return ExtendedImage.asset(
+                                        "assets/mikan.png",
+                                        width: 36.0,
+                                        height: 36.0,
+                                      );
+                                    case LoadState.completed:
+                                      return null;
+                                  }
+                                  return null;
+                                },
+                              ),
+                            )
+                          : ExtendedImage.asset(
                               "assets/mikan.png",
                               width: 36.0,
                               height: 36.0,
                             );
-                          case LoadState.completed:
-                            return null;
-                        }
-                        return null;
-                      },
-                    ),
-                  )
-                      : ExtendedImage.asset(
-                    "assets/mikan.png",
-                    width: 36.0,
-                    height: 36.0,
-                  );
-                },
-              ),
-              minWidth: 0,
-              padding: EdgeInsets.all(10.0),
-              shape: CircleBorder(),
+                    },
+                  ),
+                  minWidth: 0,
+                  padding: EdgeInsets.all(10.0),
+                  shape: CircleBorder(),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -449,139 +453,21 @@ class IndexFragment extends StatelessWidget {
       context: context,
       topRadius: Radius.circular(16.0),
       builder: (context) {
-        return Material(
-          color: Theme
-              .of(context)
-              .backgroundColor,
-          child: SingleChildScrollView(
-            controller: ModalScrollController.of(context),
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                top: 24.0,
-                bottom: 16.0 + Sz.navBarHeight,
-              ),
-              child: Selector<IndexModel, List<YearSeason>>(
-                selector: (_, model) => model.years,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (_, years, __) {
-                  if (years.isNullOrEmpty) return Container();
-                  final widgets = List.generate(
-                    years.length,
-                        (index) {
-                      final year = years[index];
-                      return Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text(
-                            year.year,
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              height: 1.25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(width: 12.0),
-                          ...List.generate(
-                            4,
-                                (index) {
-                              if (year.seasons.length > index) {
-                                return _buildSeasonItem(year.seasons[index]);
-                              } else {
-                                return Flexible(
-                                  child: FractionallySizedBox(widthFactor: 1),
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "番组列表",
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          height: 1.25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 12.0),
-                      ...widgets
-                    ],
-                  );
-                },
-              ),
-            ),
-          ),
-        );
+        return SeasonModalFragment();
       },
     );
   }
 
-  Widget _buildSeasonItem(final Season season) {
-    return Flexible(
-      child: FractionallySizedBox(
-        widthFactor: 1,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Selector<IndexModel, Season>(
-            selector: (_, model) => model.selectedSeason,
-            shouldRebuild: (pre, next) => pre != next,
-            builder: (context, selectedSeason, _) {
-              final Color color = season.title == selectedSeason.title
-                  ? Theme
-                  .of(context)
-                  .primaryColor
-                  : Theme
-                  .of(context)
-                  .accentColor;
-              return Tooltip(
-                message: season.title,
-                child: MaterialButton(
-                  minWidth: 0,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: EdgeInsets.all(0.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
-                  ),
-                  child: Text(
-                    season.season,
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      height: 1.25,
-                      fontWeight: FontWeight.w500,
-                      color: color,
-                    ),
-                  ),
-                  color: color.withOpacity(0.12),
-                  elevation: 0,
-                  onPressed: () {
-                    context.read<IndexModel>().loadSeason(season);
-                  },
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOVAList(final Color accentColor,
-      final Color primaryColor,
-      final Color backgroundColor,
-      final TextStyle fileTagStyle,
-      final TextStyle titleTagStyle,) {
+  Widget _buildOVAList(
+    final Color accentColor,
+    final Color primaryColor,
+    final Color backgroundColor,
+    final TextStyle fileTagStyle,
+    final TextStyle titleTagStyle,
+  ) {
     return Selector<IndexModel, List<RecordItem>>(
       selector: (_, model) => model.ovas,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, records, __) {
         if (records.isNullOrEmpty) return SliverToBoxAdapter();
         return SliverToBoxAdapter(
@@ -612,15 +498,11 @@ class IndexFragment extends StatelessWidget {
                       transform: transform,
                       onTap: () {},
                       onTapStart: () {
-                        context
-                            .read<IndexModel>()
-                            .tapBangumiOVAItemFlag =
+                        context.read<IndexModel>().tapBangumiOVAItemFlag =
                             currFlag;
                       },
                       onTapEnd: () {
-                        context
-                            .read<IndexModel>()
-                            .tapBangumiOVAItemFlag = null;
+                        context.read<IndexModel>().tapBangumiOVAItemFlag = null;
                       },
                     );
                   },

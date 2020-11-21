@@ -101,7 +101,11 @@ class _Http extends DioForNative {
           logPrint: (obj) => logd(obj),
         ),
       )
-      ..add(CookieManager(PersistCookieJar(dir: cacheDir + "/cookies")));
+      ..add(
+        CookieManager(
+          PersistCookieJar(dir: cacheDir + "/cookies"),
+        ),
+      );
 
     this.transformer = MikanTransformer();
   }

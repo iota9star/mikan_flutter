@@ -82,8 +82,8 @@ class SearchFragment extends StatelessWidget {
     );
     final Color backgroundColor = Theme.of(context).backgroundColor;
     return Selector<SearchModel, List<RecordItem>>(
-      selector: (_, model) => model.searchResult?.searchs,
-      shouldRebuild: (pre, next) => pre != next,
+      selector: (_, model) => model.searchResult?.records,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
@@ -131,8 +131,8 @@ class SearchFragment extends StatelessWidget {
 
   Widget _buildSearchResultSection(final Color cationColor) {
     return Selector<SearchModel, List<RecordItem>>(
-      selector: (_, model) => model.searchResult?.searchs,
-      shouldRebuild: (pre, next) => pre != next,
+      selector: (_, model) => model.searchResult?.records,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, records, child) {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
@@ -140,8 +140,10 @@ class SearchFragment extends StatelessWidget {
         return SliverToBoxAdapter(
           child: Padding(
             padding: EdgeInsets.only(
+              top: 8.0,
               left: 16.0,
               right: 16.0,
+              bottom: 8.0,
             ),
             child: Text(
               "搜索结果",
@@ -160,7 +162,7 @@ class SearchFragment extends StatelessWidget {
   Widget _buildRecommendList() {
     return Selector<SearchModel, List<Bangumi>>(
       selector: (_, model) => model.searchResult?.bangumis,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, bangumis, __) {
         if (bangumis.isNullOrEmpty) {
           return SliverToBoxAdapter();
@@ -168,13 +170,12 @@ class SearchFragment extends StatelessWidget {
         return SliverToBoxAdapter(
           child: Container(
             width: double.infinity,
-            height: 204,
+            height: 220,
             child: WaterfallFlow.builder(
               physics: BouncingScrollPhysics(),
               padding: EdgeInsets.only(
                 left: 16.0,
                 right: 16.0,
-                bottom: 8.0,
               ),
               scrollDirection: Axis.horizontal,
               itemCount: bangumis.length,
@@ -198,13 +199,12 @@ class SearchFragment extends StatelessWidget {
                         height: double.infinity,
                         transform: transform,
                         margin: EdgeInsets.symmetric(
-                          vertical: 8.0,
+                          vertical: 16.0,
                         ),
                         onTapStart: () => context
                             .read<SearchModel>()
                             .tapBangumiItemFlag = currFlag,
-                        onTapEnd: () =>
-                        context
+                        onTapEnd: () => context
                             .read<SearchModel>()
                             .tapBangumiItemFlag = null,
                         decoration: BoxDecoration(
@@ -250,7 +250,7 @@ class SearchFragment extends StatelessWidget {
   Widget _buildRecommendSection(final Color cationColor) {
     return Selector<SearchModel, List<Bangumi>>(
       selector: (_, model) => model.searchResult?.bangumis,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, bangumis, child) {
         if (bangumis.isNullOrEmpty) {
           return SliverToBoxAdapter();
@@ -259,6 +259,7 @@ class SearchFragment extends StatelessWidget {
       },
       child: Padding(
         padding: EdgeInsets.only(
+          top: 8.0,
           left: 16.0,
           right: 16.0,
           bottom: 8.0,
@@ -275,11 +276,13 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSubgroupList(final BuildContext context,
-      final Color scaffoldBackgroundColor,) {
+  Widget _buildSubgroupList(
+    final BuildContext context,
+    final Color scaffoldBackgroundColor,
+  ) {
     return Selector<SearchModel, List<Subgroup>>(
       selector: (_, model) => model.searchResult?.subgroups,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, subgroups, __) {
         if (subgroups.isNullOrEmpty) {
           return SliverToBoxAdapter();
@@ -294,18 +297,18 @@ class SearchFragment extends StatelessWidget {
               builder: (_, hasScrolled, child) {
                 return AnimatedContainer(
                   width: double.infinity,
-                  height: less ? 56.0 + 2.0 : 96.0 + 2.0,
+                  height: less ? 72.0 : 112.0,
                   decoration: BoxDecoration(
                     color: scaffoldBackgroundColor,
                     boxShadow: hasScrolled
                         ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.024),
+                              offset: Offset(0, 1),
+                              blurRadius: 3.0,
+                              spreadRadius: 3.0,
+                            ),
+                          ]
                         : null,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(16.0),
@@ -319,6 +322,7 @@ class SearchFragment extends StatelessWidget {
               child: WaterfallFlow.builder(
                 physics: BouncingScrollPhysics(),
                 padding: EdgeInsets.only(
+                  top: 16.0,
                   left: 16.0,
                   right: 16.0,
                   bottom: 16.0,
@@ -326,24 +330,20 @@ class SearchFragment extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: subgroups.length,
                 gridDelegate:
-                SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
                   crossAxisCount: less ? 1 : 2,
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
                   lastChildLayoutTypeBuilder: (index) =>
-                  LastChildLayoutType.none,
+                      LastChildLayoutType.none,
                 ),
                 itemBuilder: (context, index) {
                   final subgroup = subgroups[index];
                   return Selector<SearchModel, String>(
                     builder: (_, subgroupId, __) {
                       final Color color = subgroup.id == subgroupId
-                          ? Theme
-                          .of(context)
-                          .primaryColor
-                          : Theme
-                          .of(context)
-                          .accentColor;
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).accentColor;
                       return MaterialButton(
                         minWidth: 0,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -364,9 +364,7 @@ class SearchFragment extends StatelessWidget {
                         color: color.withOpacity(0.12),
                         elevation: 0,
                         onPressed: () {
-                          context
-                              .read<SearchModel>()
-                              .subgroupId = subgroup.id;
+                          context.read<SearchModel>().subgroupId = subgroup.id;
                         },
                       );
                     },
@@ -385,7 +383,7 @@ class SearchFragment extends StatelessWidget {
   Widget _buildSubgroupSection(final Color cationColor) {
     return Selector<SearchModel, List<Subgroup>>(
       selector: (_, model) => model.searchResult?.subgroups,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, subgroups, child) {
         if (subgroups.isNullOrEmpty) {
           return SliverToBoxAdapter();
@@ -396,9 +394,10 @@ class SearchFragment extends StatelessWidget {
       },
       child: Padding(
         padding: EdgeInsets.only(
+          top: 8.0,
           left: 16.0,
           right: 16.0,
-          bottom: 16.0,
+          bottom: 8.0,
         ),
         child: Text(
           "字幕组",
@@ -412,8 +411,10 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final BuildContext context,
-      final Color scaffoldBackgroundColor,) {
+  Widget _buildHeader(
+    final BuildContext context,
+    final Color scaffoldBackgroundColor,
+  ) {
     return SliverPinnedToBoxAdapter(
       child: Container(
         color: scaffoldBackgroundColor,
@@ -474,9 +475,7 @@ class SearchFragment extends StatelessWidget {
                       labelText: '请输入搜索关键字',
                       prefixIcon: Icon(
                         FluentIcons.search_24_regular,
-                        color: Theme
-                            .of(context)
-                            .accentColor,
+                        color: Theme.of(context).accentColor,
                       ),
                       contentPadding: EdgeInsets.only(top: -2),
                       alignLabelWithHint: true,
@@ -528,13 +527,8 @@ class SearchFragment extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Theme
-                        .of(context)
-                        .accentColor,
-                    Theme
-                        .of(context)
-                        .accentColor
-                        .withOpacity(0.1),
+                    Theme.of(context).accentColor,
+                    Theme.of(context).accentColor.withOpacity(0.1),
                   ],
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(2)),
@@ -566,10 +560,9 @@ class SearchFragment extends StatelessWidget {
             child: Center(
               child: SpinKitPumpingHeart(
                 duration: Duration(milliseconds: 960),
-                itemBuilder: (_, __) =>
-                    ExtendedImage.asset(
-                      "assets/mikan.png",
-                    ),
+                itemBuilder: (_, __) => ExtendedImage.asset(
+                  "assets/mikan.png",
+                ),
               ),
             ),
           );

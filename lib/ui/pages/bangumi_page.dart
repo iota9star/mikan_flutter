@@ -268,7 +268,7 @@ class _BangumiPageState extends State<BangumiPage> {
   ) {
     return Selector<BangumiModel, List<SubgroupBangumi>>(
       selector: (_, model) => model.bangumiDetails?.subgroupBangumis,
-      shouldRebuild: (pre, next) => pre != next,
+      shouldRebuild: (pre, next) =>pre.ne(next),
       builder: (context, subgroups, __) {
         if (subgroups.isNullOrEmpty) {
           return Container();

@@ -133,8 +133,10 @@ class ListFragment extends StatelessWidget {
     );
   }
 
-  SliverPinnedToBoxAdapter _buildHeader(
-      Color backgroundColor, Color scaffoldBackgroundColor) {
+  Widget _buildHeader(
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
+  ) {
     return SliverPinnedToBoxAdapter(
       child: Selector<ListModel, bool>(
         selector: (_, model) => model.hasScrolled,

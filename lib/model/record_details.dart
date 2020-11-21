@@ -18,4 +18,35 @@ class RecordDetails {
   // 种子下载地址
   String torrent;
   List<String> tags;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RecordDetails &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          cover == other.cover &&
+          name == other.name &&
+          subscribed == other.subscribed &&
+          more == other.more &&
+          intro == other.intro &&
+          url == other.url &&
+          title == other.title &&
+          magnet == other.magnet &&
+          torrent == other.torrent &&
+          tags == other.tags;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      cover.hashCode ^
+      name.hashCode ^
+      subscribed.hashCode ^
+      more.hashCode ^
+      intro.hashCode ^
+      url.hashCode ^
+      title.hashCode ^
+      magnet.hashCode ^
+      torrent.hashCode ^
+      tags.hashCode;
 }

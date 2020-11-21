@@ -1,6 +1,7 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
@@ -57,7 +58,7 @@ class SubgroupPage extends StatelessWidget {
                 },
                 child: Selector<SubgroupModel, List<SeasonGallery>>(
                   selector: (_, model) => model.galleries,
-                  shouldRebuild: (pre, next) => pre != next,
+                  shouldRebuild: (pre, next) => pre.ne(next),
                   builder: (context, galleries, __) {
                     return SmartRefresher(
                       controller: subgroupModel.refreshController,
@@ -93,9 +94,9 @@ class SubgroupPage extends StatelessWidget {
                                         : null,
                                     borderRadius: hasScrolled
                                         ? BorderRadius.only(
-                                      bottomLeft: Radius.circular(16.0),
-                                      bottomRight: Radius.circular(16.0),
-                                    )
+                                            bottomLeft: Radius.circular(16.0),
+                                            bottomRight: Radius.circular(16.0),
+                                          )
                                         : null,
                                   ),
                                   padding: EdgeInsets.only(
@@ -147,7 +148,7 @@ class SubgroupPage extends StatelessWidget {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.max,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Expanded(
                                           child: Text(

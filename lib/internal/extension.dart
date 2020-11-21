@@ -14,6 +14,41 @@ extension IterableExt<T> on Iterable<T> {
     if (this.isNullOrEmpty) return null;
     return this.elementAt(index);
   }
+
+  bool eq(Iterable<T> other) {
+    if (this == null) return other == null;
+    if (other == null || this.length != other.length) return false;
+    if (!identical(this, other)) return false;
+    for (int index = 0; index < this.length; index += 1) {
+      if (this.elementAt(index) != other.elementAt(index)) return false;
+    }
+    return true;
+  }
+
+  bool ne(Iterable<T> other) => !this.eq(other);
+}
+
+extension ListExt<T> on List<T> {
+  bool get isNullOrEmpty => this == null || this.isEmpty;
+
+  bool get isSafeNotEmpty => !this.isNullOrEmpty;
+
+  T getOrNull(final int index) {
+    if (this.isNullOrEmpty) return null;
+    return this[index];
+  }
+
+  bool eq(List<T> other) {
+    if (this == null) return other == null;
+    if (other == null || this.length != other.length) return false;
+    if (!identical(this, other)) return false;
+    for (int index = 0; index < this.length; index += 1) {
+      if (this[index] != other[index]) return false;
+    }
+    return true;
+  }
+
+  bool ne(List<T> other) => !this.eq(other);
 }
 
 extension MapExt<K, V> on Map<K, V> {

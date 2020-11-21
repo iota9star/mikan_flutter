@@ -58,4 +58,15 @@ class Location {
   final int row;
 
   const Location(this.srow, this.row);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Location &&
+          runtimeType == other.runtimeType &&
+          srow == other.srow &&
+          row == other.row;
+
+  @override
+  int get hashCode => srow.hashCode ^ row.hashCode;
 }
