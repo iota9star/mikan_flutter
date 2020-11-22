@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/models/index_model.dart';
@@ -36,19 +35,19 @@ class LoginPage extends StatelessWidget {
           loginModel.user = indexModel.user;
           return loginModel;
         },
-        child: Scaffold(
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: 24.0,
-                right: 24.0,
-                top: Sz.statusBarHeight + 36.0,
-                bottom: 36.0,
-              ),
-              child: Builder(builder: (context) {
-                final LoginModel loginModel =
-                    Provider.of<LoginModel>(context, listen: false);
-                return Column(
+        child: Builder(builder: (context) {
+          final LoginModel loginModel =
+              Provider.of<LoginModel>(context, listen: false);
+          return Scaffold(
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 24.0,
+                  right: 24.0,
+                  top: Sz.statusBarHeight + 36.0,
+                  bottom: 36.0,
+                ),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     _buildHeader(),
@@ -84,11 +83,11 @@ class LoginPage extends StatelessWidget {
                       height: 56.0,
                     ),
                   ],
-                );
-              }),
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

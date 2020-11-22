@@ -16,6 +16,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+@immutable
 class SearchFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,24 +26,22 @@ class SearchFragment extends StatelessWidget {
       color: scaffoldBackgroundColor,
       child: ChangeNotifierProvider(
         create: (_) => SearchModel(),
-        child: Builder(
-          builder: (context) {
-            return NotificationListener(
-              onNotification: (notification) {
-                if (notification is OverscrollIndicatorNotification) {
-                  notification.disallowGlow();
-                } else if (notification is ScrollUpdateNotification) {
-                  if (notification.depth == 0) {
-                    final double offset = notification.metrics.pixels;
-                    context.read<SearchModel>().hasScrolled = offset > 0.0;
-                  }
+        child: Builder(builder: (context) {
+          return NotificationListener(
+            onNotification: (notification) {
+              if (notification is OverscrollIndicatorNotification) {
+                notification.disallowGlow();
+              } else if (notification is ScrollUpdateNotification) {
+                if (notification.depth == 0) {
+                  final double offset = notification.metrics.pixels;
+                  context.read<SearchModel>().hasScrolled = offset > 0.0;
                 }
-                return true;
-              },
-              child: _buildCustomScrollView(context, scaffoldBackgroundColor),
-            );
-          },
-        ),
+              }
+              return true;
+            },
+            child: _buildCustomScrollView(context, scaffoldBackgroundColor),
+          );
+        }),
       ),
     );
   }

@@ -9,7 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -77,8 +76,9 @@ class SubscribedFragment extends StatelessWidget {
                 _buildHeader(backgroundColor, scaffoldBackgroundColor),
                 _buildRssSection(),
                 _buildRssList(backgroundColor),
-                _buildSeasonRssSection(context, backgroundColor,subscribedModel),
-                _buildSeasonRssList(subscribedModel, backgroundColor),
+                _buildSeasonRssSection(
+                    context, backgroundColor, subscribedModel),
+                _buildSeasonRssList(backgroundColor, subscribedModel),
                 _buildRssRecordsSection(),
                 _buildRssRecordsList(
                   accentColor,
@@ -150,8 +150,8 @@ class SubscribedFragment extends StatelessWidget {
   }
 
   Widget _buildSeasonRssList(
-    final SubscribedModel subscribedModel,
     final Color backgroundColor,
+    final SubscribedModel subscribedModel,
   ) {
     return Selector<SubscribedModel, List<Bangumi>>(
       selector: (_, model) => model.bangumis,

@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/models/recent_subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
@@ -49,58 +48,56 @@ class RecentSubscribedPage extends StatelessWidget {
         Theme.of(context).scaffoldBackgroundColor;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: Scaffold(
-        body: ChangeNotifierProvider(
-          create: (_) => RecentSubscribedModel(this.loaded),
-          child: Builder(
-            builder: (context) {
-              final RecentSubscribedModel recentSubscribedModel =
-                  Provider.of<RecentSubscribedModel>(context, listen: false);
-              return NotificationListener(
-                onNotification: (notification) {
-                  if (notification is OverscrollIndicatorNotification) {
-                    notification.disallowGlow();
-                  } else if (notification is ScrollUpdateNotification) {
-                    if (notification.depth == 0) {
-                      final double offset = notification.metrics.pixels;
-                      recentSubscribedModel.hasScrolled = offset > 0.0;
-                    }
+      child: ChangeNotifierProvider(
+        create: (_) => RecentSubscribedModel(this.loaded),
+        child: Builder(builder: (context) {
+          final RecentSubscribedModel recentSubscribedModel =
+              Provider.of<RecentSubscribedModel>(context, listen: false);
+          return Scaffold(
+            body: NotificationListener(
+              onNotification: (notification) {
+                if (notification is OverscrollIndicatorNotification) {
+                  notification.disallowGlow();
+                } else if (notification is ScrollUpdateNotification) {
+                  if (notification.depth == 0) {
+                    final double offset = notification.metrics.pixels;
+                    recentSubscribedModel.hasScrolled = offset > 0.0;
                   }
-                  return true;
-                },
-                child: SmartRefresher(
-                  controller: recentSubscribedModel.refreshController,
-                  header: WaterDropMaterialHeader(
-                    backgroundColor: accentColor,
-                    color: accentTextColor,
-                    distance: Sz.statusBarHeight + 18.0,
-                  ),
-                  footer: Indicator.footer(
-                    context,
-                    accentColor,
-                    bottom: 16.0 + Sz.navBarHeight,
-                  ),
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: recentSubscribedModel.refresh,
-                  onLoading: recentSubscribedModel.loadMoreRecentRecords,
-                  child: CustomScrollView(
-                    slivers: [
-                      _buildHeader(backgroundColor, scaffoldBackgroundColor),
-                      _buildRecordsList(
-                        accentColor,
-                        primaryColor,
-                        backgroundColor,
-                        fileTagStyle,
-                        titleTagStyle,
-                      )
-                    ],
-                  ),
+                }
+                return true;
+              },
+              child: SmartRefresher(
+                controller: recentSubscribedModel.refreshController,
+                header: WaterDropMaterialHeader(
+                  backgroundColor: accentColor,
+                  color: accentTextColor,
+                  distance: Sz.statusBarHeight + 18.0,
                 ),
-              );
-            },
-          ),
-        ),
+                footer: Indicator.footer(
+                  context,
+                  accentColor,
+                  bottom: 16.0 + Sz.navBarHeight,
+                ),
+                enablePullDown: true,
+                enablePullUp: true,
+                onRefresh: recentSubscribedModel.refresh,
+                onLoading: recentSubscribedModel.loadMoreRecentRecords,
+                child: CustomScrollView(
+                  slivers: [
+                    _buildHeader(backgroundColor, scaffoldBackgroundColor),
+                    _buildRecordsList(
+                      accentColor,
+                      primaryColor,
+                      backgroundColor,
+                      fileTagStyle,
+                      titleTagStyle,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/models/subgroup_model.dart';
@@ -37,52 +36,50 @@ class SubgroupPage extends StatelessWidget {
         Theme.of(context).scaffoldBackgroundColor;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: Scaffold(
-        body: ChangeNotifierProvider(
-          create: (_) => SubgroupModel(subgroup),
-          child: Builder(
-            builder: (context) {
-              final SubgroupModel subgroupModel =
-                  Provider.of<SubgroupModel>(context, listen: false);
-              return NotificationListener(
-                onNotification: (notification) {
-                  if (notification is OverscrollIndicatorNotification) {
-                    notification.disallowGlow();
-                  } else if (notification is ScrollUpdateNotification) {
-                    if (notification.depth == 0) {
-                      final double offset = notification.metrics.pixels;
-                      subgroupModel.hasScrolled = offset > 0.0;
-                    }
+      child: ChangeNotifierProvider(
+        create: (_) => SubgroupModel(subgroup),
+        child: Builder(builder: (context) {
+          final SubgroupModel subgroupModel =
+              Provider.of<SubgroupModel>(context, listen: false);
+          return Scaffold(
+            body: NotificationListener(
+              onNotification: (notification) {
+                if (notification is OverscrollIndicatorNotification) {
+                  notification.disallowGlow();
+                } else if (notification is ScrollUpdateNotification) {
+                  if (notification.depth == 0) {
+                    final double offset = notification.metrics.pixels;
+                    subgroupModel.hasScrolled = offset > 0.0;
                   }
-                  return true;
+                }
+                return true;
+              },
+              child: Selector<SubgroupModel, List<SeasonGallery>>(
+                selector: (_, model) => model.galleries,
+                shouldRebuild: (pre, next) => pre.ne(next),
+                builder: (context, galleries, __) {
+                  return SmartRefresher(
+                    controller: subgroupModel.refreshController,
+                    header: WaterDropMaterialHeader(
+                      backgroundColor: accentColor,
+                      color: accentTextColor,
+                      distance: Sz.statusBarHeight + 18.0,
+                    ),
+                    enablePullDown: true,
+                    enablePullUp: false,
+                    onRefresh: subgroupModel.refresh,
+                    child: _buildContentWrapper(
+                      backgroundColor,
+                      scaffoldBackgroundColor,
+                      subgroupModel,
+                      galleries,
+                    ),
+                  );
                 },
-                child: Selector<SubgroupModel, List<SeasonGallery>>(
-                  selector: (_, model) => model.galleries,
-                  shouldRebuild: (pre, next) => pre.ne(next),
-                  builder: (context, galleries, __) {
-                    return SmartRefresher(
-                      controller: subgroupModel.refreshController,
-                      header: WaterDropMaterialHeader(
-                        backgroundColor: accentColor,
-                        color: accentTextColor,
-                        distance: Sz.statusBarHeight + 18.0,
-                      ),
-                      enablePullDown: true,
-                      enablePullUp: false,
-                      onRefresh: subgroupModel.refresh,
-                      child: _buildContentWrapper(
-                        backgroundColor,
-                        scaffoldBackgroundColor,
-                        subgroupModel,
-                        galleries,
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

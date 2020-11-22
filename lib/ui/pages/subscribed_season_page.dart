@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/subscribed_season_model.dart';
@@ -45,57 +44,55 @@ class SubscribedSeasonPage extends StatelessWidget {
         Theme.of(context).scaffoldBackgroundColor;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: Scaffold(
-        body: ChangeNotifierProvider(
-          create: (_) => SubscribedSeasonModel(this.years, this.galleries),
-          child: Builder(
-            builder: (context) {
-              final SubscribedSeasonModel seasonSubscribedModel =
-                  Provider.of<SubscribedSeasonModel>(context, listen: false);
-              return NotificationListener(
-                onNotification: (notification) {
-                  if (notification is OverscrollIndicatorNotification) {
-                    notification.disallowGlow();
-                  } else if (notification is ScrollUpdateNotification) {
-                    if (notification.depth == 0) {
-                      final double offset = notification.metrics.pixels;
-                      seasonSubscribedModel.hasScrolled = offset > 0.0;
-                    }
+      child: ChangeNotifierProvider(
+        create: (_) => SubscribedSeasonModel(this.years, this.galleries),
+        child: Builder(builder: (context) {
+          final SubscribedSeasonModel seasonSubscribedModel =
+              Provider.of<SubscribedSeasonModel>(context, listen: false);
+          return Scaffold(
+            body: NotificationListener(
+              onNotification: (notification) {
+                if (notification is OverscrollIndicatorNotification) {
+                  notification.disallowGlow();
+                } else if (notification is ScrollUpdateNotification) {
+                  if (notification.depth == 0) {
+                    final double offset = notification.metrics.pixels;
+                    seasonSubscribedModel.hasScrolled = offset > 0.0;
                   }
-                  return true;
+                }
+                return true;
+              },
+              child: Selector<SubscribedSeasonModel, List<SeasonGallery>>(
+                selector: (_, model) => model.galleries,
+                shouldRebuild: (pre, next) => pre.ne(next),
+                builder: (context, galleries, __) {
+                  return SmartRefresher(
+                    controller: seasonSubscribedModel.refreshController,
+                    header: WaterDropMaterialHeader(
+                      backgroundColor: accentColor,
+                      color: accentTextColor,
+                      distance: Sz.statusBarHeight + 18.0,
+                    ),
+                    footer: Indicator.footer(
+                      context,
+                      accentColor,
+                      bottom: 16.0 + Sz.navBarHeight,
+                    ),
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    onRefresh: seasonSubscribedModel.refresh,
+                    onLoading: seasonSubscribedModel.loadMore,
+                    child: _buildContentWrapper(
+                      backgroundColor,
+                      scaffoldBackgroundColor,
+                      galleries,
+                    ),
+                  );
                 },
-                child: Selector<SubscribedSeasonModel, List<SeasonGallery>>(
-                  selector: (_, model) => model.galleries,
-                  shouldRebuild: (pre, next) => pre.ne(next),
-                  builder: (context, galleries, __) {
-                    return SmartRefresher(
-                      controller: seasonSubscribedModel.refreshController,
-                      header: WaterDropMaterialHeader(
-                        backgroundColor: accentColor,
-                        color: accentTextColor,
-                        distance: Sz.statusBarHeight + 18.0,
-                      ),
-                      footer: Indicator.footer(
-                        context,
-                        accentColor,
-                        bottom: 16.0 + Sz.navBarHeight,
-                      ),
-                      enablePullDown: true,
-                      enablePullUp: true,
-                      onRefresh: seasonSubscribedModel.refresh,
-                      onLoading: seasonSubscribedModel.loadMore,
-                      child: _buildContentWrapper(
-                        backgroundColor,
-                        scaffoldBackgroundColor,
-                        galleries,
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

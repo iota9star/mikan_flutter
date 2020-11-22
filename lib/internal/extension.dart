@@ -1,5 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
@@ -139,6 +140,32 @@ extension HexColor on Color {
       '${red.toRadixString(16).padLeft(2, '0')}'
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
+const SystemUiOverlayStyle _light = SystemUiOverlayStyle(
+  systemNavigationBarColor: Colors.transparent,
+  systemNavigationBarDividerColor: Colors.transparent,
+  statusBarColor: Colors.transparent,
+  systemNavigationBarIconBrightness: Brightness.light,
+  statusBarIconBrightness: Brightness.light,
+  statusBarBrightness: Brightness.dark,
+);
+
+const SystemUiOverlayStyle _dark = SystemUiOverlayStyle(
+  systemNavigationBarColor: Colors.transparent,
+  systemNavigationBarDividerColor: Colors.transparent,
+  statusBarColor: Colors.transparent,
+  systemNavigationBarIconBrightness: Brightness.light,
+  statusBarIconBrightness: Brightness.dark,
+  statusBarBrightness: Brightness.light,
+);
+
+extension BuildContextExt on BuildContext {
+  SystemUiOverlayStyle get fitSystemUiOverlayStyle {
+    return Theme.of(this).scaffoldBackgroundColor.computeLuminance() < 0.5
+        ? _light
+        : _dark;
+  }
 }
 
 eee() {}

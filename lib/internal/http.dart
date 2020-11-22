@@ -37,7 +37,9 @@ class _BaseInterceptor extends InterceptorsWrapper {
 class MikanTransformer extends DefaultTransformer {
   @override
   Future transformResponse(
-      RequestOptions options, ResponseBody response) async {
+    RequestOptions options,
+    ResponseBody response,
+  ) async {
     final transformResponse = await super.transformResponse(options, response);
     final String func = options.extra["$MikanFunc"];
     if (func.isNotBlank && transformResponse is String) {
@@ -112,7 +114,7 @@ class _Http extends DioForNative {
 }
 
 final Future<LoadBalancer> loadBalancer =
-    LoadBalancer.create(4, IsolateRunner.spawn);
+    LoadBalancer.create(1, IsolateRunner.spawn);
 
 class _Fetcher {
   _Http _http;

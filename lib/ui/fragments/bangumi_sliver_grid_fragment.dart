@@ -14,6 +14,7 @@ import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+@immutable
 class BangumiSliverGridFragment extends StatelessWidget {
   final String flag;
   final List<Bangumi> bangumis;

@@ -10,10 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
-import 'package:mikan_flutter/providers/models/bangumi_details_model.dart';
+import 'package:mikan_flutter/providers/models/bangumi_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_subgroup_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +21,8 @@ import 'package:provider/provider.dart';
   name: "bangumi",
   routeName: "bangumi",
 )
-class BangumiPage extends StatefulWidget {
+@immutable
+class BangumiPage extends StatelessWidget {
   final String heroTag;
   final String bangumiId;
   final String cover;
@@ -31,133 +31,117 @@ class BangumiPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _BangumiPageState();
-}
-
-class _BangumiPageState extends State<BangumiPage> {
-  BangumiModel _bangumiModel;
-
-  @override
-  void initState() {
-    _bangumiModel = BangumiModel(widget.bangumiId, widget.cover);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _bangumiModel.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
     final Color backgroundColor = Theme.of(context).backgroundColor;
+    final Color subtitleColor = Theme.of(context).textTheme.subtitle1.color;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: Scaffold(
-        body: ChangeNotifierProvider<BangumiModel>.value(
-          value: _bangumiModel,
-          child: Builder(
-            builder: (context) {
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: ExtendedNetworkImageProvider(widget.cover),
-                        ),
-                      ),
-                      child: Selector<BangumiModel, Color>(
-                        selector: (_, model) => model.coverMainColor,
-                        shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, bgColor, __) {
-                          final color = bgColor ?? backgroundColor;
-                          return BackdropFilter(
-                            filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
-                            child: AnimatedContainer(
-                              duration: Duration(milliseconds: 640),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [Colors.transparent, color],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+      child: ChangeNotifierProvider<BangumiModel>(
+        create: (_) => BangumiModel(this.bangumiId, this.cover),
+        child: Builder(builder: (context) {
+          final BangumiModel bangumiModel = Provider.of(context, listen: false);
+          return Scaffold(
+            body: Stack(
+              fit: StackFit.expand,
+              children: [
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: ExtendedNetworkImageProvider(this.cover),
                       ),
                     ),
-                  ),
-                  Positioned.fill(
-                    child: CustomScrollView(
-                      physics: BouncingScrollPhysics(),
-                      slivers: [
-                        SliverPinnedToBoxAdapter(
-                          child: Container(
-                            padding: EdgeInsets.only(
-                              top: Sz.statusBarHeight + 12.0,
-                              left: 16.0,
-                              right: 16.0,
-                            ),
-                            // decoration: BoxDecoration(color: backgroundColor),
-                            child: Row(
-                              children: [
-                                MaterialButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child:
-                                      Icon(FluentIcons.chevron_left_24_regular),
-                                  color: backgroundColor.withOpacity(0.87),
-                                  minWidth: 0,
-                                  padding: EdgeInsets.all(10.0),
-                                  shape: CircleBorder(),
-                                ),
-                              ],
+                    child: Selector<BangumiModel, Color>(
+                      selector: (_, model) => model.coverMainColor,
+                      shouldRebuild: (pre, next) => pre != next,
+                      builder: (_, bgColor, __) {
+                        final color = bgColor ?? backgroundColor;
+                        return BackdropFilter(
+                          filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 640),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Colors.transparent, color],
+                              ),
                             ),
                           ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: CustomScrollView(
+                    physics: BouncingScrollPhysics(),
+                    slivers: [
+                      SliverPinnedToBoxAdapter(
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            top: Sz.statusBarHeight + 12.0,
+                            left: 16.0,
+                            right: 16.0,
+                          ),
+                          child: Row(
                             children: [
-                              SizedBox(height: 98.0),
-                              _buildBangumiTop(
-                                accentColor,
-                                backgroundColor,
-                                widget.cover,
+                              MaterialButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child:
+                                    Icon(FluentIcons.chevron_left_24_regular),
+                                color: backgroundColor.withOpacity(0.87),
+                                minWidth: 0,
+                                padding: EdgeInsets.all(10.0),
+                                shape: CircleBorder(),
                               ),
-                              _buildLoading(backgroundColor),
-                              _buildBangumiBase(
-                                accentColor,
-                                backgroundColor,
-                                widget.cover,
-                              ),
-                              _buildBangumiSubgroups(
-                                backgroundColor,
-                                accentColor,
-                              ),
-                              _buildBangumiIntro(
-                                backgroundColor,
-                                accentColor,
-                              ),
-                              SizedBox(height: Sz.navBarHeight + 36.0)
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 98.0),
+                            _buildBangumiTop(
+                              context,
+                              accentColor,
+                              backgroundColor,
+                              this.cover,
+                              bangumiModel,
+                            ),
+                            _buildLoading(backgroundColor),
+                            _buildBangumiBase(
+                              accentColor,
+                              subtitleColor,
+                              backgroundColor,
+                              this.cover,
+                            ),
+                            _buildBangumiSubgroups(
+                              backgroundColor,
+                              accentColor,
+                              bangumiModel,
+                            ),
+                            _buildBangumiIntro(
+                              backgroundColor,
+                              accentColor,
+                            ),
+                            SizedBox(height: Sz.navBarHeight + 36.0)
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              );
-            },
-          ),
-        ),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
@@ -263,12 +247,13 @@ class _BangumiPageState extends State<BangumiPage> {
   }
 
   Widget _buildBangumiSubgroups(
-    Color backgroundColor,
-    Color accentColor,
+    final Color backgroundColor,
+    final Color accentColor,
+    final BangumiModel bangumiModel,
   ) {
     return Selector<BangumiModel, List<SubgroupBangumi>>(
       selector: (_, model) => model.bangumiDetails?.subgroupBangumis,
-      shouldRebuild: (pre, next) =>pre.ne(next),
+      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, subgroups, __) {
         if (subgroups.isNullOrEmpty) {
           return Container();
@@ -302,30 +287,27 @@ class _BangumiPageState extends State<BangumiPage> {
               Wrap(
                 spacing: 14.0,
                 runSpacing: 14.0,
-                children: List.generate(
-                  subgroups.length,
-                      (subgroupIndex) {
-                    final String groupName = subgroups[subgroupIndex].name;
-                    return ActionChip(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      tooltip: groupName,
-                      label: Text(
-                        groupName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: accentColor,
-                        ),
+                children: List.generate(subgroups.length, (subgroupIndex) {
+                  final String groupName = subgroups[subgroupIndex].name;
+                  return ActionChip(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    tooltip: groupName,
+                    label: Text(
+                      groupName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: accentColor,
                       ),
-                      backgroundColor: accentColor.withOpacity(0.18),
-                      onPressed: () {
-                        context.read<BangumiModel>().selectedSubgroupId =
-                            subgroups[subgroupIndex].dataId;
-                        _showSubgroupPanel(context);
-                      },
-                    );
-                  },
-                ),
+                    ),
+                    backgroundColor: accentColor.withOpacity(0.18),
+                    onPressed: () {
+                      context.read<BangumiModel>().selectedSubgroupId =
+                          subgroups[subgroupIndex].dataId;
+                      _showSubgroupPanel(context, bangumiModel);
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -334,9 +316,13 @@ class _BangumiPageState extends State<BangumiPage> {
     );
   }
 
-  Widget _buildBangumiTop(final Color accentColor,
-      final Color backgroundColor,
-      final String cover,) {
+  Widget _buildBangumiTop(
+    final BuildContext context,
+    final Color accentColor,
+    final Color backgroundColor,
+    final String cover,
+    final BangumiModel bangumiModel,
+  ) {
     return Column(
       children: [
         Stack(
@@ -381,7 +367,7 @@ class _BangumiPageState extends State<BangumiPage> {
                         )
                       ],
                     ),
-                    child: _buildBangumiCover(context, cover),
+                    child: _buildBangumiCover(context, cover, bangumiModel),
                   ),
                   // Spacer(flex: 3),
                   // MaterialButton(
@@ -410,9 +396,12 @@ class _BangumiPageState extends State<BangumiPage> {
     );
   }
 
-  Widget _buildBangumiBase(final Color accentColor,
-      final Color backgroundColor,
-      final String cover,) {
+  Widget _buildBangumiBase(
+    final Color accentColor,
+    final Color subtitleColor,
+    final Color backgroundColor,
+    final String cover,
+  ) {
     return Selector<BangumiModel, BangumiDetails>(
       selector: (_, model) => model.bangumiDetails,
       shouldRebuild: (pre, next) => pre != next,
@@ -458,21 +447,16 @@ class _BangumiPageState extends State<BangumiPage> {
               ),
               SizedBox(height: 8.0),
               ...bangumiDetails.more.entries
-                  .map((e) =>
-                  Text(
-                    "${e.key}: ${e.value}",
-                    softWrap: true,
-                    style: TextStyle(
-                      height: 1.6,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
-                      color: Theme
-                          .of(context)
-                          .textTheme
-                          .subtitle1
-                          .color,
-                    ),
-                  ))
+                  .map((e) => Text(
+                        "${e.key}: ${e.value}",
+                        softWrap: true,
+                        style: TextStyle(
+                          height: 1.6,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                          color: subtitleColor,
+                        ),
+                      ))
                   .toList(),
             ],
           ),
@@ -481,7 +465,11 @@ class _BangumiPageState extends State<BangumiPage> {
     );
   }
 
-  Widget _buildBangumiCover(final BuildContext context, final String cover) {
+  Widget _buildBangumiCover(
+    final BuildContext context,
+    final String cover,
+    final BangumiModel bangumiModel,
+  ) {
     return ExtendedImage.network(
       cover,
       width: 136.0,
@@ -503,10 +491,9 @@ class _BangumiPageState extends State<BangumiPage> {
             child: Center(
               child: SpinKitPumpingHeart(
                 duration: Duration(milliseconds: 960),
-                itemBuilder: (_, __) =>
-                    ExtendedImage.asset(
-                      "assets/mikan.png",
-                    ),
+                itemBuilder: (_, __) => ExtendedImage.asset(
+                  "assets/mikan.png",
+                ),
               ),
             ),
           );
@@ -529,7 +516,7 @@ class _BangumiPageState extends State<BangumiPage> {
             ),
           );
         } else if (value.extendedImageLoadState == LoadState.completed) {
-          _bangumiModel.coverSize = Size(
+          bangumiModel.coverSize = Size(
             value.extendedImageInfo.image.width.toDouble(),
             value.extendedImageInfo.image.height.toDouble(),
           );
@@ -550,12 +537,11 @@ class _BangumiPageState extends State<BangumiPage> {
           );
         }
         return AspectRatio(
-          aspectRatio: _bangumiModel.coverSize == null
+          aspectRatio: bangumiModel.coverSize == null
               ? 1
-              : _bangumiModel.coverSize.width /
-              _bangumiModel.coverSize.height,
+              : bangumiModel.coverSize.width / bangumiModel.coverSize.height,
           child: Hero(
-            tag: widget.heroTag,
+            tag: this.heroTag,
             child: child,
           ),
         );
@@ -563,14 +549,17 @@ class _BangumiPageState extends State<BangumiPage> {
     );
   }
 
-  _showSubgroupPanel(final BuildContext context) {
+  _showSubgroupPanel(
+    final BuildContext context,
+    final BangumiModel bangumiModel,
+  ) {
     showCupertinoModalBottomSheet(
       context: context,
       expand: true,
       topRadius: Radius.circular(16.0),
       builder: (context) {
         return BangumiSubgroupFragment(
-          bangumiModel: _bangumiModel,
+          bangumiModel: bangumiModel,
         );
       },
     );

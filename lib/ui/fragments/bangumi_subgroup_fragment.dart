@@ -6,7 +6,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
-import 'package:mikan_flutter/providers/models/bangumi_details_model.dart';
+import 'package:mikan_flutter/providers/models/bangumi_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -45,53 +45,51 @@ class BangumiSubgroupFragment extends StatelessWidget {
       color: scaffoldBackgroundColor,
       child: ChangeNotifierProvider.value(
         value: bangumiModel,
-        child: Builder(
-          builder: (context) {
-            return NotificationListener(
-              onNotification: (notification) {
-                if (notification is OverscrollIndicatorNotification) {
-                  notification.disallowGlow();
-                } else if (notification is ScrollUpdateNotification) {
-                  if (notification.depth == 0) {
-                    final double offset = notification.metrics.pixels;
-                    context
-                        .read<BangumiModel>()
-                        .setScrolledSubgroupRecords(offset > 0.0);
-                  }
+        child: Builder(builder: (context) {
+          return NotificationListener(
+            onNotification: (notification) {
+              if (notification is OverscrollIndicatorNotification) {
+                notification.disallowGlow();
+              } else if (notification is ScrollUpdateNotification) {
+                if (notification.depth == 0) {
+                  final double offset = notification.metrics.pixels;
+                  context
+                      .read<BangumiModel>()
+                      .setScrolledSubgroupRecords(offset > 0.0);
                 }
-                return true;
+              }
+              return true;
+            },
+            child: Selector<BangumiModel, SubgroupBangumi>(
+              selector: (_, model) => model.subgroupBangumi,
+              shouldRebuild: (pre, next) => pre != next,
+              builder: (context, subgroupBangumi, child) {
+                if (subgroupBangumi == null) return Container();
+                return Column(
+                  children: [
+                    _buildHeader(
+                      context,
+                      primaryColor,
+                      primaryTextColor,
+                      backgroundColor,
+                      scaffoldBackgroundColor,
+                      subgroupBangumi,
+                    ),
+                    _buildContentWrapper(
+                      context,
+                      primaryColor,
+                      accentColor,
+                      backgroundColor,
+                      titleTagStyle,
+                      fileTagStyle,
+                      subgroupBangumi,
+                    ),
+                  ],
+                );
               },
-              child: Selector<BangumiModel, SubgroupBangumi>(
-                selector: (_, model) => model.subgroupBangumi,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (context, subgroupBangumi, child) {
-                  if (subgroupBangumi == null) return Container();
-                  return Column(
-                    children: [
-                      _buildHeader(
-                        context,
-                        primaryColor,
-                        primaryTextColor,
-                        backgroundColor,
-                        scaffoldBackgroundColor,
-                        subgroupBangumi,
-                      ),
-                      _buildContentWrapper(
-                        context,
-                        primaryColor,
-                        accentColor,
-                        backgroundColor,
-                        titleTagStyle,
-                        fileTagStyle,
-                        subgroupBangumi,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            );
-          },
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

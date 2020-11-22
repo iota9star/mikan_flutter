@@ -4,6 +4,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 
+@immutable
 class SimpleRecordItem extends StatelessWidget {
   final int index;
   final Matrix4 transform;

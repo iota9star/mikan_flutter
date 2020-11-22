@@ -11,6 +11,7 @@ import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
+@immutable
 class SeasonModalFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

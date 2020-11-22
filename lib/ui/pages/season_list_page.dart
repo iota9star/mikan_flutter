@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/internal/ui.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/season_bangumi_rows.dart';
 import 'package:mikan_flutter/model/year_season.dart';
@@ -41,58 +40,56 @@ class SeasonListPage extends StatelessWidget {
     final Color subtitleColor = Theme.of(context).textTheme.subtitle1.color;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: Scaffold(
-        body: ChangeNotifierProvider(
-          create: (_) => SeasonListModel(this.years),
-          child: Builder(
-            builder: (context) {
-              final SeasonListModel seasonListModel =
-                  Provider.of<SeasonListModel>(context, listen: false);
-              return NotificationListener(
-                onNotification: (notification) {
-                  if (notification is OverscrollIndicatorNotification) {
-                    notification.disallowGlow();
-                  } else if (notification is ScrollUpdateNotification) {
-                    if (notification.depth == 0) {
-                      final double offset = notification.metrics.pixels;
-                      seasonListModel.hasScrolled = offset > 0.0;
-                    }
+      child: ChangeNotifierProvider(
+        create: (_) => SeasonListModel(this.years),
+        child: Builder(builder: (context) {
+          final SeasonListModel seasonListModel =
+              Provider.of<SeasonListModel>(context, listen: false);
+          return Scaffold(
+            body: NotificationListener(
+              onNotification: (notification) {
+                if (notification is OverscrollIndicatorNotification) {
+                  notification.disallowGlow();
+                } else if (notification is ScrollUpdateNotification) {
+                  if (notification.depth == 0) {
+                    final double offset = notification.metrics.pixels;
+                    seasonListModel.hasScrolled = offset > 0.0;
                   }
-                  return true;
+                }
+                return true;
+              },
+              child: Selector<SeasonListModel, List<SeasonBangumis>>(
+                selector: (_, model) => model.seasonBangumis,
+                shouldRebuild: (pre, next) => pre.ne(next),
+                builder: (context, seasons, __) {
+                  return SmartRefresher(
+                    controller: seasonListModel.refreshController,
+                    header: WaterDropMaterialHeader(
+                      backgroundColor: accentColor,
+                      color: accentTextColor,
+                      distance: Sz.statusBarHeight + 18.0,
+                    ),
+                    footer: Indicator.footer(
+                      context,
+                      accentColor,
+                      bottom: 16.0 + Sz.navBarHeight,
+                    ),
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    onRefresh: seasonListModel.refresh,
+                    onLoading: seasonListModel.loadMore,
+                    child: _buildContentWrapper(
+                      backgroundColor,
+                      scaffoldBackgroundColor,
+                      subtitleColor,
+                      seasons,
+                    ),
+                  );
                 },
-                child: Selector<SeasonListModel, List<SeasonBangumis>>(
-                  selector: (_, model) => model.seasonBangumis,
-                  shouldRebuild: (pre, next) => pre.ne(next),
-                  builder: (context, seasons, __) {
-                    return SmartRefresher(
-                      controller: seasonListModel.refreshController,
-                      header: WaterDropMaterialHeader(
-                        backgroundColor: accentColor,
-                        color: accentTextColor,
-                        distance: Sz.statusBarHeight + 18.0,
-                      ),
-                      footer: Indicator.footer(
-                        context,
-                        accentColor,
-                        bottom: 16.0 + Sz.navBarHeight,
-                      ),
-                      enablePullDown: true,
-                      enablePullUp: true,
-                      onRefresh: seasonListModel.refresh,
-                      onLoading: seasonListModel.loadMore,
-                      child: _buildContentWrapper(
-                        backgroundColor,
-                        scaffoldBackgroundColor,
-                        subtitleColor,
-                        seasons,
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

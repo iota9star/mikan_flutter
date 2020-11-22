@@ -6,6 +6,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 
+@immutable
 class RssRecordItem extends StatelessWidget {
   final int index;
   final Matrix4 transform;
