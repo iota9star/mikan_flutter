@@ -1,5 +1,7 @@
 # 蜜柑计划
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f969750dc4aa424ead664219ddcf321d)](https://app.codacy.com/gh/iota9star/mikan_flutter?utm_source=github.com&utm_medium=referral&utm_content=iota9star/mikan_flutter&utm_campaign=Badge_Grade)
+
 ![蜜柑计划](static/art/banner.png)
 
 https:&#x2F;&#x2F;mikanani.me
