@@ -1,5 +1,5 @@
 # 蜜柑计划
-
+![Apache License 2.0](https://img.shields.io/github/license/iota9star/mikan_flutter) ![下载量](https://img.shields.io/github/downloads/iota9star/mikan_flutter/total) ![最新release](https://img.shields.io/github/v/release/iota9star/mikan_flutter) ![open issues](https://img.shields.io/github/issues/iota9star/mikan_flutter) ![fork](https://img.shields.io/github/forks/iota9star/mikan_flutter?style=social) ![build](https://img.shields.io/github/workflow/status/iota9star/mikan_flutter/daily%20build%20apk) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f969750dc4aa424ead664219ddcf321d)](https://app.codacy.com/gh/iota9star/mikan_flutter?utm_source=github.com&utm_medium=referral&utm_content=iota9star/mikan_flutter&utm_campaign=Badge_Grade)
 ![蜜柑计划](static/art/banner.png)
 
 https:&#x2F;&#x2F;mikanani.me
@@ -19,7 +19,8 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ## Screenshot 
-|  |  |  |  |
+
+| :heart: | :fire: | :sparkles: | :ok_hand: |
 | -----| ---- | ---- | ---- |
 | ![](static/screenshot/Screenshot_20201122-182028.jpg) | ![](static/screenshot/Screenshot_20201122-182049.jpg) | ![](static/screenshot/Screenshot_20201122-182112.jpg) | ![](static/screenshot/Screenshot_20201122-182135.jpg) |
 | ![](static/screenshot/Screenshot_20201122-182147.jpg) | ![](static/screenshot/Screenshot_20201122-182210.jpg) | ![](static/screenshot/Screenshot_20201122-182217.jpg) | ![](static/screenshot/Screenshot_20201122-182234.jpg) |
