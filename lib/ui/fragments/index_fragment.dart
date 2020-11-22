@@ -327,6 +327,8 @@ class IndexFragment extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Selector<IndexModel, User>(
+                        selector: (_, model) => model.user,
+                        shouldRebuild: (pre, next) => pre != next,
                         builder: (_, user, __) {
                           final withoutName =
                               user == null || user.name.isNullOrBlank;
@@ -341,8 +343,6 @@ class IndexFragment extends StatelessWidget {
                             ),
                           );
                         },
-                        selector: (_, model) => model.user,
-                        shouldRebuild: (pre, next) => pre != next,
                       ),
                       Row(
                         children: [

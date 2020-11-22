@@ -184,6 +184,8 @@ class SearchFragment extends StatelessWidget {
                 final String currFlag =
                     "bangumi:${bangumi.id}:${bangumi.cover}";
                 return Selector<SearchModel, String>(
+                  selector: (_, model) => model.tapBangumiItemFlag,
+                  shouldRebuild: (pre, next) => pre != next,
                   builder: (context, tapScaleFlag, child) {
                     final Matrix4 transform = tapScaleFlag == currFlag
                         ? Matrix4.diagonal3Values(0.9, 0.9, 1)
@@ -230,8 +232,6 @@ class SearchFragment extends StatelessWidget {
                       ),
                     );
                   },
-                  selector: (_, model) => model.tapBangumiItemFlag,
-                  shouldRebuild: (pre, next) => pre != next,
                 );
               },
               gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
@@ -340,6 +340,8 @@ class SearchFragment extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final subgroup = subgroups[index];
                   return Selector<SearchModel, String>(
+                    selector: (_, model) => model.subgroupId,
+                    shouldRebuild: (pre, next) => pre != next,
                     builder: (_, subgroupId, __) {
                       final Color color = subgroup.id == subgroupId
                           ? Theme.of(context).primaryColor
@@ -368,8 +370,6 @@ class SearchFragment extends StatelessWidget {
                         },
                       );
                     },
-                    selector: (_, model) => model.subgroupId,
-                    shouldRebuild: (pre, next) => pre != next,
                   );
                 },
               ),

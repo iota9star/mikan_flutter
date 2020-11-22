@@ -51,6 +51,8 @@ class HomePage extends StatelessWidget {
           },
         ),
         body: Selector<HomeModel, int>(
+          selector: (_, model) => model.selectedIndex,
+          shouldRebuild: (pre, next) => pre != next,
           builder: (_, selectIndex, __) {
             return IndexedStack(
               children: [
@@ -61,10 +63,7 @@ class HomePage extends StatelessWidget {
               index: selectIndex,
             );
           },
-          selector: (_, model) => model.selectedIndex,
-          shouldRebuild: (pre, next) => pre != next,
         ),
-        // body: MyFragment(),
       ),
     );
   }

@@ -68,133 +68,22 @@ class BangumiSubgroupFragment extends StatelessWidget {
                   if (subgroupBangumi == null) return Container();
                   return Column(
                     children: [
-                      Selector<BangumiModel, bool>(
-                        selector: (_, model) =>
-                            model.hasScrolledSubgroupRecords,
-                        shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, hasScrolled, child) {
-                          return AnimatedContainer(
-                            padding: EdgeInsets.only(
-                              right: 16.0,
-                              top: 16.0,
-                              bottom: 16.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: hasScrolled
-                                  ? backgroundColor
-                                  : scaffoldBackgroundColor,
-                              borderRadius: hasScrolled
-                                  ? BorderRadius.only(
-                                      bottomLeft: Radius.circular(16.0),
-                                      bottomRight: Radius.circular(16.0),
-                                    )
-                                  : null,
-                              boxShadow: hasScrolled
-                                  ? [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.024),
-                                        offset: Offset(0, 1),
-                                        blurRadius: 3.0,
-                                        spreadRadius: 3.0,
-                                      ),
-                                    ]
-                                  : null,
-                            ),
-                            duration: Duration(milliseconds: 240),
-                            child: child,
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            IconButton(
-                              padding: EdgeInsets.zero,
-                              tooltip: "返回上一页",
-                              icon: Icon(FluentIcons.chevron_left_24_regular),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            Expanded(
-                              child: Text(
-                                subgroupBangumi.name,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.25,
-                                ),
-                              ),
-                            ),
-                            if (subgroupBangumi.subgroups.isNotEmpty)
-                              IconButton(
-                                padding: EdgeInsets.zero,
-                                tooltip: "查看字幕组详情",
-                                icon: Icon(FluentIcons.library_24_regular),
-                                onPressed: () {
-                                  final List<Subgroup> subgroups =
-                                      subgroupBangumi.subgroups;
-                                  if (subgroups.length == 1) {
-                                    final Subgroup subgroup = subgroups[0];
-                                    _push2SubgroupPage(context, subgroup);
-                                  } else {
-                                    _showSubgroupPanel(
-                                      context,
-                                      primaryColor,
-                                      primaryTextColor,
-                                      backgroundColor,
-                                      subgroups,
-                                    );
-                                  }
-                                },
-                              ),
-                          ],
-                        ),
+                      _buildHeader(
+                        context,
+                        primaryColor,
+                        primaryTextColor,
+                        backgroundColor,
+                        scaffoldBackgroundColor,
+                        subgroupBangumi,
                       ),
-                      Expanded(
-                        child: SmartRefresher(
-                          controller: bangumiModel.refreshController,
-                          enablePullDown: false,
-                          enablePullUp: true,
-                          onLoading: bangumiModel.loadSubgroupList,
-                          footer: Indicator.footer(
-                            context,
-                            accentColor,
-                            bottom: 16.0 + Sz.navBarHeight,
-                          ),
-                          child: ListView.builder(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            controller: ModalScrollController.of(context),
-                            itemCount: subgroupBangumi.records.length,
-                            itemBuilder: (context, ind) {
-                              final record = subgroupBangumi.records[ind];
-                              return Selector<BangumiModel, int>(
-                                selector: (_, model) => model.tapRecordItemFlag,
-                                shouldRebuild: (pre, next) => pre != next,
-                                builder: (_, tapFlag, __) {
-                                  final Matrix4 transform = tapFlag == ind
-                                      ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                                      : Matrix4.identity();
-                                  return SimpleRecordItem(
-                                    index: ind,
-                                    accentColor: accentColor,
-                                    fileTagStyle: fileTagStyle,
-                                    primaryColor: primaryColor,
-                                    backgroundColor: backgroundColor,
-                                    titleTagStyle: titleTagStyle,
-                                    record: record,
-                                    transform: transform,
-                                    onTap: () {},
-                                    onTapStart: () {
-                                      bangumiModel.tapRecordItemFlag = ind;
-                                    },
-                                    onTapEnd: () {
-                                      bangumiModel.tapRecordItemFlag = -1;
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ),
+                      _buildContentWrapper(
+                        context,
+                        primaryColor,
+                        accentColor,
+                        backgroundColor,
+                        titleTagStyle,
+                        fileTagStyle,
+                        subgroupBangumi,
                       ),
                     ],
                   );
@@ -207,6 +96,152 @@ class BangumiSubgroupFragment extends StatelessWidget {
     );
   }
 
+  Widget _buildContentWrapper(
+    final BuildContext context,
+    final Color primaryColor,
+    final Color accentColor,
+    final Color backgroundColor,
+    final TextStyle titleTagStyle,
+    final TextStyle fileTagStyle,
+    final SubgroupBangumi subgroupBangumi,
+  ) {
+    return Expanded(
+      child: SmartRefresher(
+        controller: bangumiModel.refreshController,
+        enablePullDown: false,
+        enablePullUp: true,
+        onLoading: bangumiModel.loadSubgroupList,
+        footer: Indicator.footer(
+          context,
+          accentColor,
+          bottom: 16.0 + Sz.navBarHeight,
+        ),
+        child: ListView.builder(
+          padding: EdgeInsets.symmetric(vertical: 8.0),
+          controller: ModalScrollController.of(context),
+          itemCount: subgroupBangumi.records.length,
+          itemBuilder: (context, ind) {
+            final record = subgroupBangumi.records[ind];
+            return Selector<BangumiModel, int>(
+              selector: (_, model) => model.tapRecordItemFlag,
+              shouldRebuild: (pre, next) => pre != next,
+              builder: (_, tapFlag, __) {
+                final Matrix4 transform = tapFlag == ind
+                    ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                    : Matrix4.identity();
+                return SimpleRecordItem(
+                  index: ind,
+                  accentColor: accentColor,
+                  fileTagStyle: fileTagStyle,
+                  primaryColor: primaryColor,
+                  backgroundColor: backgroundColor,
+                  titleTagStyle: titleTagStyle,
+                  record: record,
+                  transform: transform,
+                  onTap: () {},
+                  onTapStart: () {
+                    bangumiModel.tapRecordItemFlag = ind;
+                  },
+                  onTapEnd: () {
+                    bangumiModel.tapRecordItemFlag = -1;
+                  },
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(
+    final BuildContext context,
+    final Color primaryColor,
+    final Color primaryTextColor,
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
+    final SubgroupBangumi subgroupBangumi,
+  ) {
+    return Selector<BangumiModel, bool>(
+      selector: (_, model) => model.hasScrolledSubgroupRecords,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, hasScrolled, child) {
+        return AnimatedContainer(
+          padding: EdgeInsets.only(
+            right: 8.0,
+            left: 16.0,
+            top: 16.0,
+            bottom: 16.0,
+          ),
+          decoration: BoxDecoration(
+            color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+            borderRadius: hasScrolled
+                ? BorderRadius.only(
+                    bottomLeft: Radius.circular(16.0),
+                    bottomRight: Radius.circular(16.0),
+                  )
+                : null,
+            boxShadow: hasScrolled
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.024),
+                      offset: Offset(0, 1),
+                      blurRadius: 3.0,
+                      spreadRadius: 3.0,
+                    ),
+                  ]
+                : null,
+          ),
+          duration: Duration(milliseconds: 240),
+          child: child,
+        );
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              subgroupBangumi.name,
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
+            ),
+          ),
+          if (subgroupBangumi.subgroups.isNotEmpty)
+            IconButton(
+              padding: EdgeInsets.zero,
+              tooltip: "查看字幕组详情",
+              icon: Icon(FluentIcons.group_24_regular),
+              onPressed: () {
+                final List<Subgroup> subgroups = subgroupBangumi.subgroups;
+                if (subgroups.length == 1) {
+                  final Subgroup subgroup = subgroups[0];
+                  _push2SubgroupPage(context, subgroup);
+                } else {
+                  _showSubgroupPanel(
+                    context,
+                    primaryColor,
+                    primaryTextColor,
+                    backgroundColor,
+                    subgroups,
+                  );
+                }
+              },
+            ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            tooltip: "返回上一页",
+            icon: Icon(FluentIcons.dismiss_24_regular),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   void _push2SubgroupPage(BuildContext context, Subgroup subgroup) {
     Navigator.pushNamed(
       context,
@@ -215,11 +250,13 @@ class BangumiSubgroupFragment extends StatelessWidget {
     );
   }
 
-  _showSubgroupPanel(final BuildContext context,
-      final Color primaryColor,
-      final Color primaryTextColor,
-      final Color backgroundColor,
-      final List<Subgroup> subgroups,) {
+  _showSubgroupPanel(
+    final BuildContext context,
+    final Color primaryColor,
+    final Color primaryTextColor,
+    final Color backgroundColor,
+    final List<Subgroup> subgroups,
+  ) {
     showCupertinoModalBottomSheet(
       context: context,
       expand: false,
@@ -242,7 +279,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
               ),
               ...List.generate(
                 subgroups.length,
-                    (index) {
+                (index) {
                   final Subgroup subgroup = subgroups[index];
                   return InkWell(
                     onTap: () {

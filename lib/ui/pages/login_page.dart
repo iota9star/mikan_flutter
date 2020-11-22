@@ -26,7 +26,8 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color accentColor = Theme.of(context).accentColor;
     final Color primaryColor = Theme.of(context).primaryColor;
-    final Color scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final Color scaffoldBackgroundColor =
+        Theme.of(context).scaffoldBackgroundColor;
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProxyProvider<IndexModel, LoginModel>(
@@ -183,6 +184,7 @@ class LoginPage extends StatelessWidget {
       children: <Widget>[
         Selector<LoginModel, bool>(
           selector: (_, model) => model.rememberMe,
+          shouldRebuild: (pre, next) => pre != next,
           builder: (_, checked, __) {
             return Checkbox(
               value: checked,

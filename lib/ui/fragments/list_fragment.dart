@@ -140,6 +140,7 @@ class ListFragment extends StatelessWidget {
     return SliverPinnedToBoxAdapter(
       child: Selector<ListModel, bool>(
         selector: (_, model) => model.hasScrolled,
+        shouldRebuild: (pre, next) => pre != next,
         builder: (_, hasScrolled, __) {
           return AnimatedContainer(
             decoration: BoxDecoration(

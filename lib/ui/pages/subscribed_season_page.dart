@@ -115,9 +115,7 @@ class SubscribedSeasonPage extends StatelessWidget {
             return <Widget>[
               _buildSeasonSection(seasonTitle),
               gallery.bangumis.isNullOrEmpty
-                  ? _buildEmptySubscribedContainer(
-                      backgroundColor,
-                    )
+                  ? _buildEmptySubscribedContainer(backgroundColor)
                   : BangumiSliverGridFragment(
                       flag: seasonTitle,
                       bangumis: gallery.bangumis,
@@ -128,7 +126,7 @@ class SubscribedSeasonPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptySubscribedContainer(Color backgroundColor) {
+  Widget _buildEmptySubscribedContainer(final Color backgroundColor) {
     return SliverToBoxAdapter(
       child: Container(
         width: double.infinity,
@@ -187,11 +185,12 @@ class SubscribedSeasonPage extends StatelessWidget {
   }
 
   Widget _buildHeader(
-    Color backgroundColor,
-    Color scaffoldBackgroundColor,
+    final Color backgroundColor,
+    final Color scaffoldBackgroundColor,
   ) {
     return Selector<SubscribedSeasonModel, bool>(
       selector: (_, model) => model.hasScrolled,
+      shouldRebuild: (pre, next) => pre != next,
       builder: (_, hasScrolled, __) {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(

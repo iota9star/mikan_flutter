@@ -162,6 +162,7 @@ class RecentSubscribedPage extends StatelessWidget {
   ) {
     return Selector<RecentSubscribedModel, bool>(
       selector: (_, model) => model.hasScrolled,
+      shouldRebuild: (pre, next) => pre != next,
       builder: (_, hasScrolled, __) {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
@@ -194,7 +195,7 @@ class RecentSubscribedPage extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Text(
-                  "最近更新列表",
+                  "订阅更新",
                   style: TextStyle(
                     fontSize: 24,
                     height: 1.25,

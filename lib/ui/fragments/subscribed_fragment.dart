@@ -77,7 +77,7 @@ class SubscribedFragment extends StatelessWidget {
                 _buildHeader(backgroundColor, scaffoldBackgroundColor),
                 _buildRssSection(),
                 _buildRssList(backgroundColor),
-                _buildSeasonRssSection(context, subscribedModel),
+                _buildSeasonRssSection(context, backgroundColor,subscribedModel),
                 _buildSeasonRssList(subscribedModel, backgroundColor),
                 _buildRssRecordsSection(),
                 _buildRssRecordsList(
@@ -101,6 +101,7 @@ class SubscribedFragment extends StatelessWidget {
   ) {
     return Selector<SubscribedModel, bool>(
       selector: (_, model) => model.hasScrolled,
+      shouldRebuild: (pre, next) => pre != next,
       builder: (_, hasScrolled, __) {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
@@ -230,6 +231,7 @@ class SubscribedFragment extends StatelessWidget {
 
   Widget _buildSeasonRssSection(
     final BuildContext context,
+    final Color backgroundColor,
     final SubscribedModel subscribedModel,
   ) {
     return SliverToBoxAdapter(
@@ -257,7 +259,7 @@ class SubscribedFragment extends StatelessWidget {
               shouldRebuild: (pre, next) => pre.ne(next),
               builder: (_, years, __) {
                 if (years.isNullOrEmpty) return Container();
-                return FlatButton(
+                return MaterialButton(
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -273,22 +275,13 @@ class SubscribedFragment extends StatelessWidget {
                       ),
                     );
                   },
+                  color: backgroundColor,
                   minWidth: 0,
-                  padding: EdgeInsets.only(
-                    left: 16.0,
-                    right: 8.0,
-                    top: 8.0,
-                    bottom: 8.0,
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  child: Row(
-                    children: [
-                      Text("更多"),
-                      Icon(
-                        FluentIcons.chevron_right_24_regular,
-                        size: 16.0,
-                      )
-                    ],
+                  padding: EdgeInsets.all(5.0),
+                  shape: CircleBorder(),
+                  child: Icon(
+                    FluentIcons.chevron_right_24_regular,
+                    size: 16.0,
                   ),
                 );
               },
@@ -324,7 +317,7 @@ class SubscribedFragment extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Selector<SubscribedModel, Map<String, List<RecordItem>>>(
         selector: (_, model) => model.rss,
-        shouldRebuild: (pre, next) => !mapEquals(pre, next),
+        shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, rss, __) {
           if (rss.isSafeNotEmpty)
             return SizedBox(
@@ -460,8 +453,8 @@ class SubscribedFragment extends StatelessWidget {
     final String badge = recordsLength > 99 ? "99+" : "+$recordsLength";
     final String currFlag = "rss:$bangumiId:$bangumiCover";
     return Selector<IndexModel, String>(
-      shouldRebuild: (pre, next) => pre != next,
       selector: (_, model) => model.tapBangumiRssItemFlag,
+      shouldRebuild: (pre, next) => pre != next,
       builder: (context, tapScaleFlag, child) {
         final Matrix4 transform = tapScaleFlag == currFlag
             ? Matrix4.diagonal3Values(0.9, 0.9, 1)
@@ -628,7 +621,7 @@ class SubscribedFragment extends StatelessWidget {
                       onPressed: () {
                         _toRecentSubscribedPage(context);
                       },
-                      child: Text("还没过瘾？点击查看更多"),
+                      child: Text("没有找到您需要的？点击查看更多"),
                     ),
                   );
                 }

@@ -145,6 +145,7 @@ class SubgroupPage extends StatelessWidget {
   ) {
     return Selector<SubgroupModel, bool>(
       selector: (_, model) => model.hasScrolled,
+      shouldRebuild: (pre, next) => pre != next,
       builder: (_, hasScrolled, __) {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(

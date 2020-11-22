@@ -74,6 +74,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
         .where((element) => element.isNotBlank)
         .join("\n");
     return Selector<IndexModel, String>(
+      selector: (_, model) => model.tapBangumiListItemFlag,
+      shouldRebuild: (pre, next) => pre != next,
       builder: (context, tapScaleFlag, child) {
         final Matrix4 transform = tapScaleFlag == currFlag
             ? Matrix4.diagonal3Values(0.9, 0.9, 1)
@@ -246,14 +248,14 @@ class BangumiSliverGridFragment extends StatelessWidget {
           ],
         );
       },
-      selector: (_, model) => model.tapBangumiListItemFlag,
-      shouldRebuild: (pre, next) => pre != next,
     );
   }
 
-  Widget _buildBangumiItemCover(final Color backgroundColor,
-      final String currFlag,
-      final Bangumi bangumi,) {
+  Widget _buildBangumiItemCover(
+    final Color backgroundColor,
+    final String currFlag,
+    final Bangumi bangumi,
+  ) {
     return ExtendedImage.network(
       bangumi.cover,
       shape: BoxShape.rectangle,
@@ -287,7 +289,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiItemPlaceholder(Color backgroundColor) {
+  Widget _buildBangumiItemPlaceholder(final Color backgroundColor) {
     return Container(
       padding: EdgeInsets.all(28.0),
       decoration: BoxDecoration(
@@ -307,7 +309,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiItemError(final Color backgroundColor,) {
+  Widget _buildBangumiItemError(final Color backgroundColor) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -326,9 +328,11 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildScrollableBackgroundCover(final Color backgroundColor,
-      final Bangumi bangumi,
-      final ImageProvider imageProvider,) {
+  Widget _buildScrollableBackgroundCover(
+    final Color backgroundColor,
+    final Bangumi bangumi,
+    final ImageProvider imageProvider,
+  ) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [

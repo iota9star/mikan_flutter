@@ -72,6 +72,8 @@ class _BangumiPageState extends State<BangumiPage> {
                         ),
                       ),
                       child: Selector<BangumiModel, Color>(
+                        selector: (_, model) => model.coverMainColor,
+                        shouldRebuild: (pre, next) => pre != next,
                         builder: (_, bgColor, __) {
                           final color = bgColor ?? backgroundColor;
                           return BackdropFilter(
@@ -88,8 +90,6 @@ class _BangumiPageState extends State<BangumiPage> {
                             ),
                           );
                         },
-                        selector: (_, model) => model.coverMainColor,
-                        shouldRebuild: (pre, next) => pre != next,
                       ),
                     ),
                   ),

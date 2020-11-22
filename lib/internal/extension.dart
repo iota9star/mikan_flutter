@@ -45,7 +45,6 @@ extension ListExt<T> on List<T> {
     }
     return true;
   }
-  static a(){}
 
   bool ne(List<T> other) => !this.eq(other);
 }
@@ -56,6 +55,19 @@ extension MapExt<K, V> on Map<K, V> {
   bool get isSafeNotEmpty => !this.isNullOrEmpty;
 
   V getOrNull(K key) => this == null ? null : this[key];
+
+  bool eq(Map<K, V> other) {
+    if (this == null) return other == null;
+    if (other == null || this.length != other.length) return false;
+    for (final K key in this.keys) {
+      if (!other.containsKey(key) || other[key] != this[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool ne(Map<K, V> other) => !this.eq(other);
 }
 
 extension StringExt on String {
