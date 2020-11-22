@@ -157,10 +157,8 @@ class IndexModel extends CancelableBaseModel {
     this._selectedSeason = season;
     notifyListeners();
     this._seasonLoading = true;
-    final Resp resp = await Repo.season(
-      this._selectedSeason.year,
-      this._selectedSeason.season,
-    );
+    final Resp resp = await (this +
+        Repo.season(this._selectedSeason.year, this._selectedSeason.season));
     this._seasonLoading = false;
     if (resp.success) {
       this._bangumiRows = resp.data;
@@ -175,27 +173,23 @@ class IndexModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  subscribeBangumi(final Bangumi bangumi) {
-    Repo.subscribeBangumi(bangumi.subscribed, bangumi.id).then((resp) async {
-      if (resp.success) {
-        this.tapBangumiListItemFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
-        notifyListeners();
-        Future.delayed(
-          Duration(milliseconds: 360),
-          () {
-            bangumi.subscribed = !bangumi.subscribed;
-            this.tapBangumiListItemFlag = null;
-            notifyListeners();
-          },
-        );
-      } else {
-        if (resp.msg.isNotBlank) {
-          resp.msg.toast();
-        } else {
-          "操作失败...".toast();
-        }
-      }
-    });
+  subscribeBangumi(final Bangumi bangumi) async {
+    final Resp resp =
+        await (this + Repo.subscribeBangumi(bangumi.subscribed, bangumi.id));
+    if (resp.success) {
+      this.tapBangumiListItemFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
+      notifyListeners();
+      Future.delayed(
+        Duration(milliseconds: 360),
+        () {
+          bangumi.subscribed = !bangumi.subscribed;
+          this.tapBangumiListItemFlag = null;
+          notifyListeners();
+        },
+      );
+    } else {
+      "操作失败：${resp.msg}".toast();
+    }
   }
 }
 

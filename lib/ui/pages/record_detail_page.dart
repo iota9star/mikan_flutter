@@ -9,7 +9,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
+import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_details.dart';
+import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/providers/models/record_detail_model.dart';
 import 'package:provider/provider.dart';
 
@@ -360,7 +362,7 @@ class RecordDetailPage extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
               child: Row(
                 children: [
-                  _buildBangumiCover(recordDetail),
+                  _buildBangumiCover(context, recordDetail),
                   Spacer(),
                   MaterialButton(
                     onPressed: () {
@@ -389,7 +391,7 @@ class RecordDetailPage extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     shape: CircleBorder(),
                   ),
-                  SizedBox(width: 24.0),
+                  SizedBox(width: 16.0),
                   MaterialButton(
                     onPressed: () {
                       recordDetail.magnet.launchApp();
@@ -482,15 +484,14 @@ class RecordDetailPage extends StatelessWidget {
   }
 
   Widget _buildBangumiCover(
-    final RecordDetail recordDetail,
-  ) {
+      final BuildContext context, final RecordDetail recordDetail) {
     return ExtendedImage.network(
       recordDetail.cover,
       width: 136.0,
       shape: BoxShape.rectangle,
-      loadStateChanged: (ExtendedImageState value) {
+      loadStateChanged: (state) {
         Widget child;
-        if (value.extendedImageLoadState == LoadState.loading) {
+        if (state.extendedImageLoadState == LoadState.loading) {
           child = Container(
             padding: EdgeInsets.all(28.0),
             decoration: BoxDecoration(
@@ -511,8 +512,7 @@ class RecordDetailPage extends StatelessWidget {
               ),
             ),
           );
-        }
-        if (value.extendedImageLoadState == LoadState.failed) {
+        } else if (state.extendedImageLoadState == LoadState.failed) {
           child = Container(
             decoration: BoxDecoration(
               boxShadow: [
@@ -529,10 +529,10 @@ class RecordDetailPage extends StatelessWidget {
               ),
             ),
           );
-        } else if (value.extendedImageLoadState == LoadState.completed) {
+        } else if (state.extendedImageLoadState == LoadState.completed) {
           recordDetail.coverSize = Size(
-            value.extendedImageInfo.image.width.toDouble(),
-            value.extendedImageInfo.image.height.toDouble(),
+            state.extendedImageInfo.image.width.toDouble(),
+            state.extendedImageInfo.image.height.toDouble(),
           );
           child = Container(
             decoration: BoxDecoration(
@@ -544,7 +544,7 @@ class RecordDetailPage extends StatelessWidget {
               ],
               borderRadius: BorderRadius.all(Radius.circular(16.0)),
               image: DecorationImage(
-                image: value.imageProvider,
+                image: state.imageProvider,
                 fit: BoxFit.cover,
               ),
             ),
@@ -554,7 +554,55 @@ class RecordDetailPage extends StatelessWidget {
           aspectRatio: recordDetail.coverSize == null
               ? 1
               : recordDetail.coverSize.width / recordDetail.coverSize.height,
-          child: child,
+          child: Stack(
+            children: [
+              Positioned.fill(child: child),
+              Positioned(
+                child: recordDetail.subscribed
+                    ? SizedBox(
+                        width: 24.0,
+                        height: 24.0,
+                        child: IconButton(
+                          tooltip: "取消订阅",
+                          padding: EdgeInsets.all(2.0),
+                          icon: Icon(
+                            FluentIcons.heart_24_filled,
+                            color: Colors.redAccent,
+                          ),
+                          onPressed: () {
+                            context.read<IndexModel>().subscribeBangumi(Bangumi(
+                                  id: recordDetail.id,
+                                  subscribed: recordDetail.subscribed,
+                                ));
+                          },
+                        ),
+                      )
+                    : Container(
+                        width: 24.0,
+                        height: 24.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.black38,
+                        ),
+                        child: IconButton(
+                          tooltip: "订阅",
+                          padding: EdgeInsets.all(2.0),
+                          iconSize: 16.0,
+                          icon: Icon(
+                            FluentIcons.heart_24_regular,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            context.read<IndexModel>().subscribeBangumi(Bangumi(
+                                  id: recordDetail.id,
+                                  subscribed: recordDetail.subscribed,
+                                ));
+                          },
+                        ),
+                      ),
+              ),
+            ],
+          ),
         );
       },
     );
