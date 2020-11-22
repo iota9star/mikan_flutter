@@ -1,6 +1,6 @@
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 
-class BangumiDetails {
+class BangumiDetail {
   String id;
   String cover;
   String name;
@@ -12,7 +12,7 @@ class BangumiDetails {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BangumiDetails &&
+      other is BangumiDetail &&
           runtimeType == other.runtimeType &&
           id == other.id &&
           cover == other.cover &&

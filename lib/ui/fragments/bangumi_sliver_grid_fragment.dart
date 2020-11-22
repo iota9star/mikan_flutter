@@ -262,7 +262,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
       shape: BoxShape.rectangle,
       borderRadius: BorderRadius.all(Radius.circular(10.0)),
       clearMemoryCacheWhenDispose: true,
-      loadStateChanged: (ExtendedImageState state) {
+      loadStateChanged: (state) {
         Widget child;
         switch (state.extendedImageLoadState) {
           case LoadState.loading:

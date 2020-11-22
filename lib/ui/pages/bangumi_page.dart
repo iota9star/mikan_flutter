@@ -123,13 +123,13 @@ class BangumiPage extends StatelessWidget {
                               this.cover,
                             ),
                             _buildBangumiSubgroups(
-                              backgroundColor,
                               accentColor,
+                              backgroundColor,
                               bangumiModel,
                             ),
                             _buildBangumiIntro(
-                              backgroundColor,
                               accentColor,
+                              backgroundColor,
                             ),
                             SizedBox(height: Sz.navBarHeight + 36.0)
                           ],
@@ -187,14 +187,14 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildBangumiIntro(
-    Color backgroundColor,
-    Color accentColor,
+    final Color accentColor,
+    final Color backgroundColor,
   ) {
-    return Selector<BangumiModel, BangumiDetails>(
-      selector: (_, model) => model.bangumiDetails,
+    return Selector<BangumiModel, BangumiDetail>(
+      selector: (_, model) => model.bangumiDetail,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (context, bangumiDetails, _) {
-        if (bangumiDetails == null || bangumiDetails.intro.isNullOrBlank) {
+      builder: (context, bangumiDetail, _) {
+        if (bangumiDetail == null || bangumiDetail.intro.isNullOrBlank) {
           return Container();
         }
         return Container(
@@ -230,7 +230,7 @@ class BangumiPage extends StatelessWidget {
               ),
               SizedBox(height: 8.0),
               Text(
-                bangumiDetails.intro,
+                bangumiDetail.intro,
                 textAlign: TextAlign.justify,
                 softWrap: true,
                 style: TextStyle(
@@ -247,12 +247,12 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildBangumiSubgroups(
-    final Color backgroundColor,
     final Color accentColor,
+    final Color backgroundColor,
     final BangumiModel bangumiModel,
   ) {
     return Selector<BangumiModel, List<SubgroupBangumi>>(
-      selector: (_, model) => model.bangumiDetails?.subgroupBangumis,
+      selector: (_, model) => model.bangumiDetail?.subgroupBangumis,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, subgroups, __) {
         if (subgroups.isNullOrEmpty) {
@@ -355,20 +355,10 @@ class BangumiPage extends StatelessWidget {
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
+              margin: EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
               child: Row(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 8.0,
-                          color: Colors.black.withOpacity(0.08),
-                        )
-                      ],
-                    ),
-                    child: _buildBangumiCover(context, cover, bangumiModel),
-                  ),
+                  _buildBangumiCover(cover, bangumiModel),
                   // Spacer(flex: 3),
                   // MaterialButton(
                   //   onPressed: () {},
@@ -402,11 +392,11 @@ class BangumiPage extends StatelessWidget {
     final Color backgroundColor,
     final String cover,
   ) {
-    return Selector<BangumiModel, BangumiDetails>(
-      selector: (_, model) => model.bangumiDetails,
+    return Selector<BangumiModel, BangumiDetail>(
+      selector: (_, model) => model.bangumiDetail,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (context, bangumiDetails, _) {
-        if (bangumiDetails == null) {
+      builder: (context, bangumiDetail, _) {
+        if (bangumiDetail == null) {
           return Container();
         }
         return Container(
@@ -438,7 +428,7 @@ class BangumiPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                bangumiDetails.name,
+                bangumiDetail.name,
                 style: TextStyle(
                   color: accentColor,
                   fontWeight: FontWeight.bold,
@@ -446,7 +436,7 @@ class BangumiPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8.0),
-              ...bangumiDetails.more.entries
+              ...bangumiDetail.more.entries
                   .map((e) => Text(
                         "${e.key}: ${e.value}",
                         softWrap: true,
@@ -466,7 +456,6 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildBangumiCover(
-    final BuildContext context,
     final String cover,
     final BangumiModel bangumiModel,
   ) {

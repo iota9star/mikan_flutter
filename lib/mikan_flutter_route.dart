@@ -14,6 +14,7 @@ import 'ui/pages/bangumi_page.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
 import 'ui/pages/recent_subscribed_page.dart';
+import 'ui/pages/record_detail_page.dart';
 import 'ui/pages/season_list_page.dart';
 import 'ui/pages/splash_page.dart';
 import 'ui/pages/subgroup_page.dart';
@@ -53,6 +54,15 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           loaded: arguments['loaded'] as List<RecordItem>,
         ),
         routeName: 'recent-subscribed',
+      );
+    case 'record-detail':
+      return RouteResult(
+        name: name,
+        widget: RecordDetailPage(
+          key: arguments['key'] as Key,
+          url: arguments['url'] as String,
+        ),
+        routeName: 'record-detail',
       );
     case 'season-list':
       return RouteResult(

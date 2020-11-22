@@ -1,10 +1,15 @@
-class RecordDetails {
+import 'dart:ui';
+
+import 'package:mikan_flutter/model/subgroup.dart';
+
+class RecordDetail {
   String id;
   String cover;
   String name;
   bool subscribed;
   Map<String, String> more;
   String intro;
+  List<Subgroup> subgroups;
 
   // 详情地址
   String url;
@@ -19,10 +24,12 @@ class RecordDetails {
   String torrent;
   List<String> tags;
 
+  Size coverSize;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RecordDetails &&
+      other is RecordDetail &&
           runtimeType == other.runtimeType &&
           id == other.id &&
           cover == other.cover &&
@@ -30,6 +37,7 @@ class RecordDetails {
           subscribed == other.subscribed &&
           more == other.more &&
           intro == other.intro &&
+          subgroups == other.subgroups &&
           url == other.url &&
           title == other.title &&
           magnet == other.magnet &&
@@ -44,6 +52,7 @@ class RecordDetails {
       subscribed.hashCode ^
       more.hashCode ^
       intro.hashCode ^
+      subgroups.hashCode ^
       url.hashCode ^
       title.hashCode ^
       magnet.hashCode ^

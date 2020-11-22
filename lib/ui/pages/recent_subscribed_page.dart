@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
+import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/models/recent_subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
@@ -133,7 +134,13 @@ class RecentSubscribedPage extends StatelessWidget {
                     fileTagStyle: fileTagStyle,
                     titleTagStyle: titleTagStyle,
                     transform: transform,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        Routes.recordDetail.name,
+                        arguments: Routes.recordDetail.d(url: record.url),
+                      );
+                    },
                     onTapStart: () {
                       context.read<RecentSubscribedModel>().tapRecordItemIndex =
                           index;

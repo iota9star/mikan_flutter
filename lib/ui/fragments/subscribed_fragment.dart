@@ -642,7 +642,13 @@ class SubscribedFragment extends StatelessWidget {
                       fileTagStyle: fileTagStyle,
                       titleTagStyle: titleTagStyle,
                       transform: transform,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          Routes.recordDetail.name,
+                          arguments: Routes.recordDetail.d(url: record.url),
+                        );
+                      },
                       onTapStart: () {
                         context.read<SubscribedModel>().tapRecordItemIndex =
                             index;

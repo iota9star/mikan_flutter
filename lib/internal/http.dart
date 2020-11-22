@@ -73,9 +73,9 @@ class MikanTransformer extends DefaultTransformer {
           return await Resolver.parseBangumiMore(document);
           break;
         case MikanFunc.DETAILS:
-          return await Resolver.parseDetails(document);
+          return await Resolver.parseRecordDetail(document);
           break;
-        case MikanFunc.MY_SUBSCRIBE_SEASON_BANGUMI:
+        case MikanFunc.SUBSCRIBED_SEASON:
           return await Resolver.parseMySubscribed(document);
           break;
       }

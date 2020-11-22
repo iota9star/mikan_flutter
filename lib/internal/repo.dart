@@ -121,10 +121,10 @@ class Repo {
     final Options options = Options(headers: {
       "referer": "https://mikanani.me/Home/MyBangumi",
     }, extra: {
-      "$MikanFunc": MikanFunc.MY_SUBSCRIBE_SEASON_BANGUMI
+      "$MikanFunc": MikanFunc.SUBSCRIBED_SEASON
     });
     return await Http.get(
-      MikanUrl.MY_SUBSCRIBE_SEASON_BANGUMI,
+      MikanUrl.SUBSCRIBED_SEASON,
       queryParameters: <String, dynamic>{
         "year": year,
         "seasonStr": season,

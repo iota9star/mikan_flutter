@@ -14,6 +14,7 @@ const List<String> routeNames = <String>[
   'home',
   'login',
   'recent-subscribed',
+  'record-detail',
   'season-list',
   'splash',
   'subgroup',
@@ -58,6 +59,17 @@ class Routes {
   ///
   /// RecentSubscribedPage : [Key key, List<RecordItem> loaded]
   static const _RecentSubscribed recentSubscribed = _RecentSubscribed();
+
+  /// 'record-detail'
+  ///
+  /// [name] : 'record-detail'
+  ///
+  /// [routeName] : 'record-detail'
+  ///
+  /// [constructors] :
+  ///
+  /// RecordDetailPage : [Key key, String url]
+  static const _RecordDetail recordDetail = _RecordDetail();
 
   /// 'season-list'
   ///
@@ -127,6 +139,20 @@ class _RecentSubscribed {
       <String, dynamic>{
         'key': key,
         'loaded': loaded,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _RecordDetail {
+  const _RecordDetail();
+
+  String get name => 'record-detail';
+
+  Map<String, dynamic> d({Key key, String url}) => <String, dynamic>{
+        'key': key,
+        'url': url,
       };
 
   @override

@@ -136,7 +136,13 @@ class BangumiSubgroupFragment extends StatelessWidget {
                   titleTagStyle: titleTagStyle,
                   record: record,
                   transform: transform,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.recordDetail.name,
+                      arguments: Routes.recordDetail.d(url: record.url),
+                    );
+                  },
                   onTapStart: () {
                     bangumiModel.tapRecordItemFlag = ind;
                   },

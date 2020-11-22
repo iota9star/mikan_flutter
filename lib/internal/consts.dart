@@ -13,8 +13,7 @@ class MikanFunc {
   static const String DETAILS = "DETAILS";
   static const String SUBSCRIBE_BANGUMI = "SUBSCRIBE_BANGUMI";
   static const String UNSUBSCRIBE_BANGUMI = "UNSUBSCRIBE_BANGUMI";
-  static const String MY_SUBSCRIBE_SEASON_BANGUMI =
-      "MY_SUBSCRIBE_SEASON_BANGUMI";
+  static const String SUBSCRIBED_SEASON = "SUBSCRIBED_SEASON";
 }
 
 class MikanUrl {
@@ -53,5 +52,5 @@ class MikanUrl {
   static const String UNSUBSCRIBE_BANGUMI = "/Home/UnsubscribeBangumi";
 
   /// [季度订阅](https://mikanani.me/Home/BangumiCoverFlow?year=2020&seasonStr=%E7%A7%8B)
-  static const String MY_SUBSCRIBE_SEASON_BANGUMI = "/Home/BangumiCoverFlow";
+  static const String SUBSCRIBED_SEASON = "/Home/BangumiCoverFlow";
 }

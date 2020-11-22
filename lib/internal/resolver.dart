@@ -340,7 +340,7 @@ class Resolver {
 
   static Future<List<Carousel>> parseCarousel(final Document document) async {
     final List<Element> eles = document.querySelectorAll(
-        "#myCarousel > div.carousel-inner > div.item.carousel-bg") ??
+            "#myCarousel > div.carousel-inner > div.item.carousel-bg") ??
         [];
     final List<Carousel> carousels = [];
     Carousel carousel;
@@ -360,7 +360,7 @@ class Resolver {
   static Future<List<YearSeason>> parseYearSeason(
       final Document document) async {
     final List<Element> eles = document.querySelectorAll(
-        "#sk-data-nav > div > ul.navbar-nav.date-select > li > ul > li") ??
+            "#sk-data-nav > div > ul.navbar-nav.date-select > li > ul > li") ??
         [];
     final String selected = document
         .querySelector("#sk-data-nav  .date-select  div.date-text")
@@ -416,18 +416,16 @@ class Resolver {
       for (final Element e in elements) {
         bangumi = Bangumi();
         bangumi.id = e.attributes['data-bangumiid'];
-        attributes = e
-            .querySelector("div.an-info-group > a")
-            .attributes;
+        attributes = e.querySelector("div.an-info-group > a").attributes;
         bangumi.name = attributes['title'];
         bangumi.subscribed = e.querySelector(".an-info-icon.active") != null;
         bangumi.cover = MikanUrl.BASE_URL +
-            e
-                .querySelector("span[data-bangumiid]")
-                ?.attributes
-                ?.getOrNull('data-src')
-                ?.split("?")
-                ?.elementAt(0) ??
+                e
+                    .querySelector("span[data-bangumiid]")
+                    ?.attributes
+                    ?.getOrNull('data-src')
+                    ?.split("?")
+                    ?.elementAt(0) ??
             "";
         bangumi.location = Location(i, (i / 3).ceil());
         i++;
@@ -449,29 +447,29 @@ class Resolver {
     return list;
   }
 
-  static Future<BangumiDetails> parseBangumi(final Document document) async {
-    final BangumiDetails bangumiDetails = BangumiDetails();
-    bangumiDetails.id = document
+  static Future<BangumiDetail> parseBangumi(final Document document) async {
+    final BangumiDetail bangumiDetail = BangumiDetail();
+    bangumiDetail.id = document
         .querySelector(
-        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title > a")
+            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title > a")
         ?.attributes
         ?.getOrNull("href")
         ?.split("=")
         ?.getOrNull(1);
-    bangumiDetails.cover = MikanUrl.BASE_URL +
-        document
-            .querySelector(
-            "#sk-container > div.pull-left.leftbar-container > div.bangumi-poster")
-            ?.attributes
-            ?.getOrNull("style")
-            ?.split("'")
-            ?.elementAt(1)
-            ?.split("?")
-            ?.elementAt(0) ??
+    bangumiDetail.cover = MikanUrl.BASE_URL +
+            document
+                .querySelector(
+                    "#sk-container > div.pull-left.leftbar-container > div.bangumi-poster")
+                ?.attributes
+                ?.getOrNull("style")
+                ?.split("'")
+                ?.elementAt(1)
+                ?.split("?")
+                ?.elementAt(0) ??
         '';
-    bangumiDetails.name = document
+    bangumiDetail.name = document
         .querySelector(
-        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
+            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
         ?.text
         ?.trim();
     String _intro = document
@@ -481,27 +479,27 @@ class Resolver {
     if (_intro.isNotBlank) {
       _intro = "\u3000\u3000" + _intro.replaceAll("\n", "\n\u3000\u3000");
     }
-    bangumiDetails.intro = _intro;
-    bangumiDetails.subscribed = document
-        .querySelector(".subscribed-badge")
-        ?.attributes
-        ?.getOrNull("style")
-        ?.isNullOrBlank ??
+    bangumiDetail.intro = _intro;
+    bangumiDetail.subscribed = document
+            .querySelector(".subscribed-badge")
+            ?.attributes
+            ?.getOrNull("style")
+            ?.isNullOrBlank ??
         false;
     final more = document
-        .querySelectorAll(
-        "#sk-container > div.pull-left.leftbar-container > p.bangumi-info")
-        ?.map((e) => e.text.split("：")) ??
+            .querySelectorAll(
+                "#sk-container > div.pull-left.leftbar-container > p.bangumi-info")
+            ?.map((e) => e.text.split("：")) ??
         [];
     final Map<String, String> map = {};
     more.forEach((element) {
       map[element[0].trim()] = element[1].trim();
     });
-    bangumiDetails.more = map;
+    bangumiDetail.more = map;
     final List<Element> tables = document
         .querySelectorAll("#sk-container > div.central-container > table");
     final List<Element> subs = document.querySelectorAll(".subgroup-text");
-    bangumiDetails.subgroupBangumis = [];
+    bangumiDetail.subgroupBangumis = [];
     SubgroupBangumi subgroupBangumi;
     Element element;
     List<Element> elements;
@@ -518,10 +516,7 @@ class Resolver {
         element = subs.elementAt(i);
         temp = element.children[0].attributes["href"];
         subgroupBangumi.dataId = element.attributes?.getOrNull("id");
-        temp = element.nodes
-            .getOrNull(0)
-            ?.text
-            ?.trim();
+        temp = element.nodes.getOrNull(0)?.text?.trim();
         if (temp.isNullOrBlank) {
           final Element child =
               element.querySelector(".dropdown span") ?? element.children[0];
@@ -530,19 +525,14 @@ class Resolver {
           subgroupBangumi.name = temp;
         }
         subgroupBangumi.subscribed =
-            element
-                .querySelector(".subscribed")
-                ?.text
-                ?.trim() == "已订阅";
+            element.querySelector(".subscribed")?.text?.trim() == "已订阅";
         subgroups = [];
         elements = element.querySelectorAll("ul > li > a");
         if (elements.isSafeNotEmpty) {
           for (final Element ele in elements) {
             subgroup = Subgroup();
             subgroup.name = ele.text;
-            subgroup.id = ele.attributes["href"]
-                .split("/")
-                .last;
+            subgroup.id = ele.attributes["href"].split("/").last;
             subgroups.add(subgroup);
           }
         }
@@ -553,9 +543,7 @@ class Resolver {
             if (temp?.startsWith("/Home/PublishGroup") == true) {
               subgroup = Subgroup();
               subgroup.name = element.text;
-              subgroup.id = temp
-                  .split("/")
-                  .last;
+              subgroup.id = temp.split("/").last;
               subgroups.add(subgroup);
             }
           }
@@ -580,8 +568,7 @@ class Resolver {
               }
             });
             record.title = temp;
-            record.tags = tags.toList()
-              ..sort((a, b) => b.compareTo(a));
+            record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
           }
           record.url = MikanUrl.BASE_URL + element.attributes["href"];
           record.size = ele.children[1].text.trim();
@@ -598,89 +585,89 @@ class Resolver {
           records.add(record);
         }
         subgroupBangumi.records = records;
-        bangumiDetails.subgroupBangumis.add(subgroupBangumi);
+        bangumiDetail.subgroupBangumis.add(subgroupBangumi);
       }
     }
-    return bangumiDetails;
+    return bangumiDetail;
   }
 
-  static Future<RecordDetails> parseDetails(final Document document) async {
-    final RecordDetails recordDetails = RecordDetails();
-    recordDetails.id = document
+  static Future<RecordDetail> parseRecordDetail(final Document document) async {
+    final RecordDetail recordDetail = RecordDetail();
+    recordDetail.id = document
         .querySelector(
-        "#sk-container > div.pull-left.leftbar-container > div.leftbar-nav > button")
+            "#sk-container > div.pull-left.leftbar-container > div.leftbar-nav > button")
         ?.attributes
         ?.getOrNull("data-bangumiid");
-    recordDetails.cover = MikanUrl.BASE_URL +
-        document
-            .querySelector(
-            "#sk-container > div.pull-left.leftbar-container > div.bangumi-poster")
-            ?.attributes
-            ?.getOrNull("style")
-            ?.split("'")
-            ?.elementAt(1)
-            ?.split("?")
-            ?.elementAt(0) ??
+    recordDetail.cover = MikanUrl.BASE_URL +
+            document
+                .querySelector(
+                    "#sk-container > div.pull-left.leftbar-container > div.bangumi-poster")
+                ?.attributes
+                ?.getOrNull("style")
+                ?.split("'")
+                ?.elementAt(1)
+                ?.split("?")
+                ?.elementAt(0) ??
         '';
-    recordDetails.name = document
+    recordDetail.name = document
         .querySelector(
-        "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
+            "#sk-container > div.pull-left.leftbar-container > p.bangumi-title")
         ?.text
         ?.trim();
     String title = document
         .querySelector(
-        "#sk-container > div.central-container > div.episode-header > p")
+            "#sk-container > div.central-container > div.episode-header > p")
         ?.text
         ?.trim();
     final Set<String> tags = LinkedHashSet();
     if (title.isNotBlank) {
       title = title.replaceAll("【", "[").replaceAll("】", "]");
-      recordDetails.title = title;
+      recordDetail.title = title;
       final String lowerCaseTitle = title.toLowerCase();
       keywords.forEach((key, value) {
         if (lowerCaseTitle.contains(key)) {
           tags.add(value);
         }
       });
-      recordDetails.tags = tags.toList()
-        ..sort((a, b) => b.compareTo(a));
+      recordDetail.tags = tags.toList()..sort((a, b) => b.compareTo(a));
     }
-    recordDetails.subscribed = document
-        .querySelector(".subscribed-badge")
-        ?.attributes
-        ?.getOrNull("style")
-        ?.isNullOrBlank ??
+    recordDetail.subscribed = document
+            .querySelector(".subscribed-badge")
+            ?.attributes
+            ?.getOrNull("style")
+            ?.isNullOrBlank ??
         false;
     final more = document
-        .querySelectorAll(
-        "#sk-container > div.pull-left.leftbar-container > p.bangumi-info")
-        ?.map((e) => e.text.split("：")) ??
+            .querySelectorAll(
+                "#sk-container > div.pull-left.leftbar-container > p.bangumi-info")
+            ?.map((e) => e.text.split("：")) ??
         [];
     final Map<String, String> map = {};
     more.forEach((element) {
       map[element[0].trim()] = element[1].trim();
     });
-    recordDetails.more = map;
+    recordDetail.more = map;
     String temp;
     List<Element> elements = document.querySelectorAll(
         "#sk-container > div.pull-left.leftbar-container > div.leftbar-nav > a");
     elements.forEach((element) {
       temp = element.text;
       if (temp == "下载种子") {
-        recordDetails.torrent = MikanUrl.BASE_URL + element.attributes["href"];
+        recordDetail.torrent = MikanUrl.BASE_URL + element.attributes["href"];
       } else if (temp == "磁力链接") {
-        recordDetails.magnet = element.attributes['href'];
+        recordDetail.magnet = element.attributes['href'];
       }
     });
     final Element element = document.querySelector(
         "#sk-container > div.central-container > div.episode-desc");
     element.children.forEach((ele) {
-      if (ele.attributes['style'].isNotBlank) {
+      final style = ele.attributes['style'];
+      if (style == "margin-top: -10px; margin-bottom: 10px;") {
         ele.remove();
       }
     });
-    recordDetails.intro = element.innerHtml.trim();
-    return recordDetails;
+    recordDetail.intro = element.innerHtml.trim();
+    return recordDetail;
   }
 
   static Future<List<RecordItem>> parseBangumiMore(Document document) async {
@@ -707,8 +694,7 @@ class Resolver {
           }
         });
         record.title = temp;
-        record.tags = tags.toList()
-          ..sort((a, b) => b.compareTo(a));
+        record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
       }
       record.url = MikanUrl.BASE_URL + element.attributes["href"];
       record.size = ele.children[1].text.trim();
@@ -735,25 +721,18 @@ class Resolver {
     List<Bangumi> bangumis = [];
     for (final Element ele in elements) {
       bangumi = Bangumi();
-      attributes = ele
-          .querySelector("span")
-          .attributes;
+      attributes = ele.querySelector("span").attributes;
       bangumi.id = attributes["data-bangumiid"];
       bangumi.cover = MikanUrl.BASE_URL + attributes["data-src"].split("?")[0];
       bangumi.grey = ele.querySelector("span.greyout") != null;
-      bangumi.updateAt = ele
-          .querySelector(".date-text")
-          .text
-          .trim();
+      bangumi.updateAt = ele.querySelector(".date-text").text.trim();
       attributes = (ele.querySelector(".an-text") ??
-          ele.querySelector(".date-text[title]"))
+              ele.querySelector(".date-text[title]"))
           .attributes;
       bangumi.name = attributes['title'];
       bangumi.subscribed = ele.querySelector(".active") != null;
       bangumi.num =
-          int.tryParse(ele
-              .querySelector(".num-node")
-              ?.text ?? "0") ?? 0;
+          int.tryParse(ele.querySelector(".num-node")?.text ?? "0") ?? 0;
       bangumi.location = Location(i, (i / 3).ceil());
       i++;
       bangumis.add(bangumi);

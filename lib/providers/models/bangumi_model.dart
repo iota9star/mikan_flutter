@@ -27,9 +27,9 @@ class BangumiModel extends CancelableBaseModel {
 
   bool get loading => _loading;
 
-  BangumiDetails _bangumiDetails;
+  BangumiDetail _bangumiDetail;
 
-  BangumiDetails get bangumiDetails => _bangumiDetails;
+  BangumiDetail get bangumiDetail => _bangumiDetail;
 
   Size coverSize;
 
@@ -49,7 +49,7 @@ class BangumiModel extends CancelableBaseModel {
   RefreshController get refreshController => _refreshController;
 
   BangumiModel(this.id, this.cover) {
-    this._loadBangumiDetails();
+    this._loadBangumiDetail();
     Future.delayed(Duration(milliseconds: 640))
         .whenComplete(() => this._loadCoverMainColor());
   }
@@ -62,7 +62,7 @@ class BangumiModel extends CancelableBaseModel {
     if (value == _subgroupBangumi?.dataId) {
       return;
     }
-    _subgroupBangumi = _bangumiDetails.subgroupBangumis.firstWhere(
+    _subgroupBangumi = _bangumiDetail.subgroupBangumis.firstWhere(
       (element) => element.dataId == value,
       orElse: () => null,
     );
@@ -119,13 +119,13 @@ class BangumiModel extends CancelableBaseModel {
     }
   }
 
-  _loadBangumiDetails() async {
+  _loadBangumiDetail() async {
     this._loading = true;
     notifyListeners();
     final resp = await (this + Repo.bangumi(this.id));
     this._loading = false;
     if (resp.success) {
-      _bangumiDetails = resp.data;
+      _bangumiDetail = resp.data;
     } else {
       resp.msg?.toast();
     }

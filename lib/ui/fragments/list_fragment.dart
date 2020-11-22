@@ -2,6 +2,7 @@ import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/screen.dart';
+import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/models/list_model.dart';
 import 'package:mikan_flutter/ui/components/complex_record_item.dart';
@@ -114,7 +115,13 @@ class ListFragment extends StatelessWidget {
                       fileTagStyle: fileTagStyle,
                       titleTagStyle: titleTagStyle,
                       transform: transform,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          Routes.recordDetail.name,
+                          arguments: Routes.recordDetail.d(url: record.url),
+                        );
+                      },
                       onTapStart: () {
                         context.read<ListModel>().tapRecordItemIndex = index;
                       },
