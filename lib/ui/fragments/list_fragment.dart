@@ -14,24 +14,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class ListFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color primaryColor = Theme.of(context).primaryColor;
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: accentTextColor,
-    );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color:
-          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-    );
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
+    final ThemeData theme = Theme.of(context);
     final ListModel listModel = Provider.of(context, listen: false);
     return Scaffold(
       body: NotificationListener(
@@ -41,20 +24,22 @@ class ListFragment extends StatelessWidget {
           } else if (notification is ScrollUpdateNotification) {
             if (notification.depth == 0) {
               final double offset = notification.metrics.pixels;
-              context.read<ListModel>().hasScrolled = offset > 0.0;
+              listModel.hasScrolled = offset > 0.0;
             }
           }
           return true;
         },
         child: SmartRefresher(
           header: WaterDropMaterialHeader(
-            backgroundColor: accentColor,
-            color: accentTextColor,
+            backgroundColor: theme.accentColor,
+            color: theme.accentColor.computeLuminance() < 0.5
+                ? Colors.white
+                : Colors.black,
             distance: Sz.statusBarHeight + 18.0,
           ),
           footer: Indicator.footer(
             context,
-            accentColor,
+            theme.accentColor,
             bottom: 16.0 + Sz.navBarHeight,
           ),
           enablePullDown: true,
@@ -64,15 +49,8 @@ class ListFragment extends StatelessWidget {
           onLoading: listModel.loadMore,
           child: CustomScrollView(
             slivers: [
-              _buildHeader(backgroundColor, scaffoldBackgroundColor),
-              _buildList(
-                listModel,
-                accentColor,
-                primaryColor,
-                backgroundColor,
-                fileTagStyle,
-                titleTagStyle,
-              ),
+              _buildHeader(theme),
+              _buildList(listModel),
             ],
           ),
         ),
@@ -80,14 +58,7 @@ class ListFragment extends StatelessWidget {
     );
   }
 
-  SliverPadding _buildList(
-    final ListModel listModel,
-    final Color accentColor,
-    final Color primaryColor,
-    final Color backgroundColor,
-    final TextStyle fileTagStyle,
-    final TextStyle titleTagStyle,
-  ) {
+  SliverPadding _buildList(final ListModel listModel) {
     return SliverPadding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       sliver: Selector<ListModel, int>(
@@ -109,11 +80,6 @@ class ListFragment extends StatelessWidget {
                     return ComplexRecordItem(
                       index: index,
                       record: record,
-                      accentColor: accentColor,
-                      primaryColor: primaryColor,
-                      backgroundColor: backgroundColor,
-                      fileTagStyle: fileTagStyle,
-                      titleTagStyle: titleTagStyle,
                       transform: transform,
                       onTap: () {
                         Navigator.pushNamed(
@@ -140,10 +106,7 @@ class ListFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
-  ) {
+  Widget _buildHeader(final ThemeData theme) {
     return SliverPinnedToBoxAdapter(
       child: Selector<ListModel, bool>(
         selector: (_, model) => model.hasScrolled,
@@ -151,7 +114,9 @@ class ListFragment extends StatelessWidget {
         builder: (_, hasScrolled, __) {
           return AnimatedContainer(
             decoration: BoxDecoration(
-              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              color: hasScrolled
+                  ? theme.backgroundColor
+                  : theme.scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
                       BoxShadow(

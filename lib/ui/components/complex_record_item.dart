@@ -11,11 +11,6 @@ class ComplexRecordItem extends StatelessWidget {
   final int index;
   final Matrix4 transform;
   final RecordItem record;
-  final Color accentColor;
-  final Color primaryColor;
-  final Color backgroundColor;
-  final TextStyle fileTagStyle;
-  final TextStyle titleTagStyle;
   final VoidCallback onTap;
   final VoidCallback onTapStart;
   final VoidCallback onTapEnd;
@@ -23,11 +18,6 @@ class ComplexRecordItem extends StatelessWidget {
   const ComplexRecordItem({
     @required this.index,
     @required this.record,
-    @required this.accentColor,
-    @required this.primaryColor,
-    @required this.backgroundColor,
-    @required this.fileTagStyle,
-    @required this.titleTagStyle,
     @required this.transform,
     @required this.onTap,
     @required this.onTapStart,
@@ -38,6 +28,7 @@ class ComplexRecordItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Subgroup> subgroups = record.groups;
     final List<String> tags = record.tags;
+    final ThemeData theme = Theme.of(context);
     return AnimatedTapContainer(
       onTap: onTap,
       onTapEnd: onTapEnd,
@@ -48,7 +39,7 @@ class ComplexRecordItem extends StatelessWidget {
         vertical: 8.0,
       ),
       decoration: BoxDecoration(
-        gradient: _createGradientByIndex(index, backgroundColor),
+        gradient: _createGradientByIndex(theme, index),
         borderRadius: BorderRadius.all(Radius.circular(16.0)),
       ),
       child: Column(
@@ -103,15 +94,21 @@ class ComplexRecordItem extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        accentColor,
-                        accentColor.withOpacity(0.56),
+                        theme.accentColor,
+                        theme.accentColor.withOpacity(0.56),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(2.0),
                   ),
                   child: Text(
                     record.size,
-                    style: fileTagStyle,
+                    style: TextStyle(
+                      fontSize: 10,
+                      height: 1.25,
+                      color: theme.accentColor.computeLuminance() < 0.5
+                          ? Colors.white
+                          : Colors.black,
+                    ),
                   ),
                 ),
                 if (!tags.isNullOrEmpty)
@@ -130,15 +127,21 @@ class ComplexRecordItem extends StatelessWidget {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            primaryColor,
-                            primaryColor.withOpacity(0.56),
+                            theme.primaryColor,
+                            theme.primaryColor.withOpacity(0.56),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(2.0),
                       ),
                       child: Text(
                         tags[index],
-                        style: titleTagStyle,
+                        style: TextStyle(
+                          fontSize: 10,
+                          height: 1.25,
+                          color: theme.primaryColor.computeLuminance() < 0.5
+                              ? Colors.white
+                              : Colors.black,
+                        ),
                       ),
                     );
                   }),
@@ -174,7 +177,10 @@ class ComplexRecordItem extends StatelessWidget {
                               subgroups[index].name[0],
                               style: TextStyle(
                                 fontSize: 12.0,
-                                color: titleTagStyle.color,
+                                color:
+                                    theme.primaryColor.computeLuminance() < 0.5
+                                        ? Colors.white
+                                        : Colors.black,
                               ),
                             ),
                           ),
@@ -185,8 +191,8 @@ class ComplexRecordItem extends StatelessWidget {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                primaryColor,
-                                primaryColor.withOpacity(0.56),
+                                theme.primaryColor,
+                                theme.primaryColor.withOpacity(0.56),
                               ],
                             ),
                           ),
@@ -199,7 +205,7 @@ class ComplexRecordItem extends StatelessWidget {
               IconButton(
                 icon: Icon(FluentIcons.cloud_download_24_regular),
                 tooltip: "复制并尝试打开种子链接",
-                color: accentColor,
+                color: theme.accentColor,
                 iconSize: 20.0,
                 onPressed: () {
                   record.torrent.launchApp();
@@ -208,7 +214,7 @@ class ComplexRecordItem extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(FluentIcons.clipboard_link_24_regular),
-                color: accentColor,
+                color: theme.accentColor,
                 tooltip: "复制并尝试打开磁力链接",
                 iconSize: 20.0,
                 onPressed: () {
@@ -218,7 +224,7 @@ class ComplexRecordItem extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(FluentIcons.share_24_regular),
-                color: accentColor,
+                color: theme.accentColor,
                 tooltip: "分享",
                 iconSize: 20.0,
                 onPressed: () {
@@ -240,52 +246,52 @@ class ComplexRecordItem extends StatelessWidget {
   }
 
   LinearGradient _createGradientByIndex(
+    final ThemeData theme,
     final int index,
-    final Color backgroundColor,
   ) {
-    final Color withOpacity = backgroundColor.withOpacity(0.48);
+    final Color withOpacity = theme.backgroundColor.withOpacity(0.48);
     switch (index % 6) {
       case 0:
         return LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [withOpacity, backgroundColor],
+          colors: [withOpacity, theme.backgroundColor],
         );
       case 1:
         return LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [withOpacity, backgroundColor],
+          colors: [withOpacity, theme.backgroundColor],
         );
       case 2:
         return LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [withOpacity, backgroundColor],
+          colors: [withOpacity, theme.backgroundColor],
         );
       case 3:
         return LinearGradient(
           begin: Alignment.bottomRight,
           end: Alignment.topLeft,
-          colors: [withOpacity, backgroundColor],
+          colors: [withOpacity, theme.backgroundColor],
         );
       case 4:
         return LinearGradient(
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
-          colors: [withOpacity, backgroundColor],
+          colors: [withOpacity, theme.backgroundColor],
         );
       case 5:
         return LinearGradient(
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
-          colors: [withOpacity, backgroundColor],
+          colors: [withOpacity, theme.backgroundColor],
         );
     }
     return LinearGradient(
       begin: Alignment.bottomRight,
       end: Alignment.topLeft,
-      colors: [withOpacity, backgroundColor],
+      colors: [withOpacity, theme.backgroundColor],
     );
   }
 }

@@ -33,13 +33,13 @@ class BangumiModel extends CancelableBaseModel {
 
   Size coverSize;
 
-  bool _hasScrolledSubgroupRecords = false;
+  bool _hasScrolled = false;
 
-  bool get hasScrolledSubgroupRecords => _hasScrolledSubgroupRecords;
+  bool get hasScrolled => _hasScrolled;
 
-  setScrolledSubgroupRecords(bool value) {
-    if (this._hasScrolledSubgroupRecords != value) {
-      _hasScrolledSubgroupRecords = value;
+  set hasScrolled(bool value) {
+    if (this._hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
@@ -66,7 +66,7 @@ class BangumiModel extends CancelableBaseModel {
       (element) => element.dataId == value,
       orElse: () => null,
     );
-    _hasScrolledSubgroupRecords = false;
+    _hasScrolled = false;
     if (_refreshController.headerStatus != RefreshStatus.completed) {
       _refreshController.loadComplete();
     }

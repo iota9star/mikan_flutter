@@ -20,13 +20,14 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 class SearchFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
+    final ThemeData theme = Theme.of(context);
     return Material(
-      color: scaffoldBackgroundColor,
+      color: theme.scaffoldBackgroundColor,
       child: ChangeNotifierProvider(
         create: (_) => SearchModel(),
         child: Builder(builder: (context) {
+          final SearchModel searchModel =
+              Provider.of<SearchModel>(context, listen: false);
           return NotificationListener(
             onNotification: (notification) {
               if (notification is OverscrollIndicatorNotification) {
@@ -34,12 +35,12 @@ class SearchFragment extends StatelessWidget {
               } else if (notification is ScrollUpdateNotification) {
                 if (notification.depth == 0) {
                   final double offset = notification.metrics.pixels;
-                  context.read<SearchModel>().hasScrolled = offset > 0.0;
+                  searchModel.hasScrolled = offset > 0.0;
                 }
               }
               return true;
             },
-            child: _buildCustomScrollView(context, scaffoldBackgroundColor),
+            child: _buildCustomScrollView(context, theme, searchModel),
           );
         }),
       ),
@@ -48,26 +49,29 @@ class SearchFragment extends StatelessWidget {
 
   Widget _buildCustomScrollView(
     final BuildContext context,
-    final Color scaffoldBackgroundColor,
+    final ThemeData theme,
+    final SearchModel searchModel,
   ) {
-    final Color cationColor = Theme.of(context).textTheme.caption.color;
     return CustomScrollView(
       controller: ModalScrollController.of(context),
       slivers: [
-        _buildHeader(context, scaffoldBackgroundColor),
-        _buildSubgroupSection(cationColor),
-        _buildSubgroupList(context, scaffoldBackgroundColor),
-        _buildRecommendSection(cationColor),
-        _buildRecommendList(),
-        _buildSearchResultSection(cationColor),
-        _buildSearchResultList(context),
+        _buildHeader(context, theme, searchModel),
+        _buildSubgroupSection(theme),
+        _buildSubgroupList(theme, searchModel),
+        _buildRecommendSection(theme),
+        _buildRecommendList(theme, searchModel),
+        _buildSearchResultSection(theme),
+        _buildSearchResultList(theme, searchModel),
       ],
     );
   }
 
-  Widget _buildSearchResultList(final BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color primaryColor = Theme.of(context).primaryColor;
+  Widget _buildSearchResultList(
+    final ThemeData theme,
+    final SearchModel searchModel,
+  ) {
+    final Color accentColor = theme.accentColor;
+    final Color primaryColor = theme.primaryColor;
     final TextStyle fileTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
@@ -79,7 +83,7 @@ class SearchFragment extends StatelessWidget {
       color:
           primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
-    final Color backgroundColor = Theme.of(context).backgroundColor;
+    final Color backgroundColor = theme.backgroundColor;
     return Selector<SearchModel, List<RecordItem>>(
       selector: (_, model) => model.searchResult?.records,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -117,10 +121,10 @@ class SearchFragment extends StatelessWidget {
                         );
                       },
                       onTapStart: () {
-                        context.read<SearchModel>().tapRecordItemIndex = index;
+                        searchModel.tapRecordItemIndex = index;
                       },
                       onTapEnd: () {
-                        context.read<SearchModel>().tapRecordItemIndex = -1;
+                        searchModel.tapRecordItemIndex = null;
                       },
                     );
                   },
@@ -134,7 +138,7 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchResultSection(final Color cationColor) {
+  Widget _buildSearchResultSection(final ThemeData theme) {
     return Selector<SearchModel, List<RecordItem>>(
       selector: (_, model) => model.searchResult?.records,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -155,7 +159,7 @@ class SearchFragment extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.0,
                 height: 1.25,
-                color: cationColor,
+                color: theme.textTheme.caption.color,
               ),
             ),
           ),
@@ -164,7 +168,10 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommendList() {
+  Widget _buildRecommendList(
+    final ThemeData theme,
+    final SearchModel searchModel,
+  ) {
     return Selector<SearchModel, List<Bangumi>>(
       selector: (_, model) => model.searchResult?.bangumis,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -188,55 +195,11 @@ class SearchFragment extends StatelessWidget {
                 final bangumi = bangumis[index];
                 final String currFlag =
                     "bangumi:${bangumi.id}:${bangumi.cover}";
-                return Selector<SearchModel, String>(
-                  selector: (_, model) => model.tapBangumiItemFlag,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (context, tapScaleFlag, child) {
-                    final Matrix4 transform = tapScaleFlag == currFlag
-                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                        : Matrix4.identity();
-                    Widget cover = _buildBangumiListItem(
-                      context,
-                      currFlag,
-                      bangumi,
-                    );
-                    return Tooltip(
-                      message: bangumi.name,
-                      child: AnimatedTapContainer(
-                        height: double.infinity,
-                        transform: transform,
-                        margin: EdgeInsets.symmetric(
-                          vertical: 16.0,
-                        ),
-                        onTapStart: () => context
-                            .read<SearchModel>()
-                            .tapBangumiItemFlag = currFlag,
-                        onTapEnd: () => context
-                            .read<SearchModel>()
-                            .tapBangumiItemFlag = null,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 8.0,
-                              color: Colors.black.withAlpha(24),
-                            )
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            Routes.bangumi.name,
-                            arguments: Routes.bangumi.d(
-                              heroTag: currFlag,
-                              bangumiId: bangumi.id,
-                              cover: bangumi.cover,
-                            ),
-                          );
-                        },
-                        child: cover,
-                      ),
-                    );
-                  },
+                return _buildRecommentListItem(
+                  theme,
+                  currFlag,
+                  bangumi,
+                  searchModel,
                 );
               },
               gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
@@ -252,7 +215,61 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommendSection(final Color cationColor) {
+  Widget _buildRecommentListItem(
+    final ThemeData theme,
+    final String currFlag,
+    final Bangumi bangumi,
+    final SearchModel searchModel,
+  ) {
+    return Selector<SearchModel, String>(
+      selector: (_, model) => model.tapBangumiItemFlag,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (context, tapScaleFlag, child) {
+        final Matrix4 transform = tapScaleFlag == currFlag
+            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+            : Matrix4.identity();
+        Widget cover = _buildBangumiListItem(
+          theme,
+          currFlag,
+          bangumi,
+        );
+        return Tooltip(
+          message: bangumi.name,
+          child: AnimatedTapContainer(
+            height: double.infinity,
+            transform: transform,
+            margin: EdgeInsets.symmetric(
+              vertical: 16.0,
+            ),
+            onTapStart: () => searchModel.tapBangumiItemFlag = currFlag,
+            onTapEnd: () => searchModel.tapBangumiItemFlag = null,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 8.0,
+                  color: Colors.black.withAlpha(24),
+                )
+              ],
+            ),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                Routes.bangumi.name,
+                arguments: Routes.bangumi.d(
+                  heroTag: currFlag,
+                  bangumiId: bangumi.id,
+                  cover: bangumi.cover,
+                ),
+              );
+            },
+            child: cover,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRecommendSection(final ThemeData theme) {
     return Selector<SearchModel, List<Bangumi>>(
       selector: (_, model) => model.searchResult?.bangumis,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -274,7 +291,7 @@ class SearchFragment extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.0,
             height: 1.25,
-            color: cationColor,
+            color: theme.textTheme.caption.color,
           ),
         ),
       ),
@@ -282,8 +299,8 @@ class SearchFragment extends StatelessWidget {
   }
 
   Widget _buildSubgroupList(
-    final BuildContext context,
-    final Color scaffoldBackgroundColor,
+    final ThemeData theme,
+    final SearchModel searchModel,
   ) {
     return Selector<SearchModel, List<Subgroup>>(
       selector: (_, model) => model.searchResult?.subgroups,
@@ -304,7 +321,7 @@ class SearchFragment extends StatelessWidget {
                   width: double.infinity,
                   height: less ? 72.0 : 112.0,
                   decoration: BoxDecoration(
-                    color: scaffoldBackgroundColor,
+                    color: theme.scaffoldBackgroundColor,
                     boxShadow: hasScrolled
                         ? [
                             BoxShadow(
@@ -344,38 +361,7 @@ class SearchFragment extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final subgroup = subgroups[index];
-                  return Selector<SearchModel, String>(
-                    selector: (_, model) => model.subgroupId,
-                    shouldRebuild: (pre, next) => pre != next,
-                    builder: (_, subgroupId, __) {
-                      final Color color = subgroup.id == subgroupId
-                          ? Theme.of(context).primaryColor
-                          : Theme.of(context).accentColor;
-                      return MaterialButton(
-                        minWidth: 0,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10.0),
-                          ),
-                        ),
-                        child: Text(
-                          subgroup.name,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            height: 1.25,
-                            fontWeight: FontWeight.w500,
-                            color: color,
-                          ),
-                        ),
-                        color: color.withOpacity(0.12),
-                        elevation: 0,
-                        onPressed: () {
-                          context.read<SearchModel>().subgroupId = subgroup.id;
-                        },
-                      );
-                    },
-                  );
+                  return _buildSubgroupListItem(theme, subgroup, searchModel);
                 },
               ),
             ),
@@ -385,7 +371,45 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSubgroupSection(final Color cationColor) {
+  Widget _buildSubgroupListItem(
+    final ThemeData theme,
+    final Subgroup subgroup,
+    final SearchModel searchModel,
+  ) {
+    return Selector<SearchModel, String>(
+      selector: (_, model) => model.subgroupId,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, subgroupId, __) {
+        final Color color =
+            subgroup.id == subgroupId ? theme.primaryColor : theme.accentColor;
+        return MaterialButton(
+          minWidth: 0,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+          ),
+          child: Text(
+            subgroup.name,
+            style: TextStyle(
+              fontSize: 14.0,
+              height: 1.25,
+              fontWeight: FontWeight.w500,
+              color: color,
+            ),
+          ),
+          color: color.withOpacity(0.12),
+          elevation: 0,
+          onPressed: () {
+            searchModel.subgroupId = subgroup.id;
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildSubgroupSection(final ThemeData theme) {
     return Selector<SearchModel, List<Subgroup>>(
       selector: (_, model) => model.searchResult?.subgroups,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -409,7 +433,7 @@ class SearchFragment extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.0,
             height: 1.25,
-            color: cationColor,
+            color: theme.textTheme.caption.color,
           ),
         ),
       ),
@@ -418,11 +442,12 @@ class SearchFragment extends StatelessWidget {
 
   Widget _buildHeader(
     final BuildContext context,
-    final Color scaffoldBackgroundColor,
+    final ThemeData theme,
+    final SearchModel searchModel,
   ) {
     return SliverPinnedToBoxAdapter(
       child: Container(
-        color: scaffoldBackgroundColor,
+        color: theme.scaffoldBackgroundColor,
         padding: EdgeInsets.only(
           left: 16.0,
           right: 16.0,
@@ -432,86 +457,88 @@ class SearchFragment extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    "Search",
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      height: 1.25,
-                    ),
-                  ),
-                ),
-                Selector<SearchModel, bool>(
-                  selector: (_, model) => model.loading,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (_, loading, __) {
-                    if (loading) {
-                      return CupertinoActivityIndicator(
-                        radius: 12.0,
-                      );
-                    }
-                    return Container();
-                  },
-                ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  tooltip: "关闭",
-                  icon: Icon(FluentIcons.dismiss_24_regular),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-            Builder(
-              builder: (context) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.1),
-                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                  ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      labelText: '请输入搜索关键字',
-                      prefixIcon: Icon(
-                        FluentIcons.search_24_regular,
-                        color: Theme.of(context).accentColor,
-                      ),
-                      contentPadding: EdgeInsets.only(top: -2),
-                      alignLabelWithHint: true,
-                    ),
-                    cursorColor: Theme.of(context).accentColor,
-                    textAlign: TextAlign.left,
-                    autofocus: true,
-                    maxLines: 1,
-                    style: TextStyle(
-                      height: 1.25,
-                    ),
-                    textInputAction: TextInputAction.search,
-                    controller: Provider.of<SearchModel>(context, listen: false)
-                        .keywordsController,
-                    keyboardType: TextInputType.text,
-                    onSubmitted: (keywords) {
-                      if (keywords.isNullOrBlank) return;
-                      context.read<SearchModel>().search(keywords);
-                    },
-                  ),
-                );
-              },
-            ),
+            _buildHeaderTitle(context),
+            _buildHeaderSearchField(theme, searchModel),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildHeaderSearchField(
+      final ThemeData theme, final SearchModel searchModel) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          labelText: '请输入搜索关键字',
+          prefixIcon: Icon(
+            FluentIcons.search_24_regular,
+            color: theme.accentColor,
+          ),
+          contentPadding: EdgeInsets.only(top: -2),
+          alignLabelWithHint: true,
+        ),
+        cursorColor: theme.accentColor,
+        textAlign: TextAlign.left,
+        autofocus: true,
+        maxLines: 1,
+        style: TextStyle(
+          height: 1.25,
+        ),
+        textInputAction: TextInputAction.search,
+        controller: searchModel.keywordsController,
+        keyboardType: TextInputType.text,
+        onSubmitted: (keywords) {
+          if (keywords.isNullOrBlank) return;
+          searchModel.search(keywords);
+        },
+      ),
+    );
+  }
+
+  Widget _buildHeaderTitle(final BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            "Search",
+            style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+              height: 1.25,
+            ),
+          ),
+        ),
+        Selector<SearchModel, bool>(
+          selector: (_, model) => model.loading,
+          shouldRebuild: (pre, next) => pre != next,
+          builder: (_, loading, __) {
+            if (loading) {
+              return CupertinoActivityIndicator(radius: 12.0);
+            }
+            return Container();
+          },
+        ),
+        IconButton(
+          padding: EdgeInsets.zero,
+          tooltip: "关闭",
+          icon: Icon(FluentIcons.dismiss_24_regular),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildBangumiListItem(
-    final BuildContext context,
+    final ThemeData theme,
     final String currFlag,
     final Bangumi bangumi,
   ) {
@@ -532,8 +559,8 @@ class SearchFragment extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Theme.of(context).accentColor,
-                    Theme.of(context).accentColor.withOpacity(0.1),
+                    theme.accentColor,
+                    theme.accentColor.withOpacity(0.1),
                   ],
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(2)),

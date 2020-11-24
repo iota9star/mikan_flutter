@@ -30,25 +30,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class IndexFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color primaryColor = Theme.of(context).primaryColor;
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: accentTextColor,
-    );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color:
-          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-    );
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
-    final Color subtitleColor = Theme.of(context).textTheme.subtitle1.color;
+    final ThemeData theme = Theme.of(context);
     final IndexModel indexModel =
         Provider.of<IndexModel>(context, listen: false);
     return Scaffold(
@@ -59,7 +41,7 @@ class IndexFragment extends StatelessWidget {
           } else if (notification is ScrollUpdateNotification) {
             if (notification.depth == 0) {
               final double offset = notification.metrics.pixels;
-              context.read<IndexModel>().hasScrolled = offset > 0.0;
+              indexModel.hasScrolled = offset > 0.0;
             }
           }
           return true;
@@ -73,37 +55,26 @@ class IndexFragment extends StatelessWidget {
               enablePullUp: false,
               enablePullDown: true,
               header: WaterDropMaterialHeader(
-                backgroundColor: accentColor,
-                color: accentTextColor,
+                backgroundColor: theme.accentColor,
+                color: theme.accentColor.computeLuminance() < 0.5
+                    ? Colors.white
+                    : Colors.black,
                 distance: Sz.statusBarHeight + 10.0,
               ),
               onRefresh: indexModel.refresh,
               child: CustomScrollView(
                 slivers: [
-                  _buildHeader(
-                    context,
-                    backgroundColor,
-                    scaffoldBackgroundColor,
-                  ),
-                  _buildCarousels(),
+                  _buildHeader(context, theme),
+                  _buildCarousels(theme, indexModel),
                   _buildOVASection(),
-                  _buildOVAList(
-                    accentColor,
-                    primaryColor,
-                    backgroundColor,
-                    fileTagStyle,
-                    titleTagStyle,
-                  ),
+                  _buildOVAList(theme),
                   ...List.generate(bangumiRows.length, (index) {
                     final BangumiRow bangumiRow = bangumiRows[index];
                     return [
-                      _buildWeekSection(
-                        scaffoldBackgroundColor,
-                        subtitleColor,
-                        bangumiRow,
-                      ),
+                      _buildWeekSection(theme, bangumiRow),
                       BangumiSliverGridFragment(
                         bangumis: bangumiRow.bangumis,
+                        handleSubscribe: (bangumi) {},
                       ),
                     ];
                   }).expand((element) => element),
@@ -117,8 +88,7 @@ class IndexFragment extends StatelessWidget {
   }
 
   Widget _buildWeekSection(
-    final Color scaffoldBackgroundColor,
-    final Color subtitleColor,
+    final ThemeData theme,
     final BangumiRow bangumiRow,
   ) {
     final simple = [
@@ -135,6 +105,7 @@ class IndexFragment extends StatelessWidget {
       if (bangumiRow.subscribedNum > 0) "订阅${bangumiRow.subscribedNum}部",
       "共${bangumiRow.num}部"
     ].join("，");
+
     return SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.only(
@@ -144,7 +115,7 @@ class IndexFragment extends StatelessWidget {
           bottom: 8.0,
         ),
         decoration: BoxDecoration(
-          color: scaffoldBackgroundColor,
+          color: theme.scaffoldBackgroundColor,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -165,7 +136,7 @@ class IndexFragment extends StatelessWidget {
               child: Text(
                 simple,
                 style: TextStyle(
-                  color: subtitleColor,
+                  color: theme.textTheme.subtitle1.color,
                   fontSize: 12.0,
                   height: 1.25,
                 ),
@@ -206,7 +177,7 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildCarousels() {
+  Widget _buildCarousels(final ThemeData theme, final IndexModel indexModel) {
     return Selector<IndexModel, List<Carousel>>(
       selector: (_, model) => model.carousels,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -218,54 +189,11 @@ class IndexFragment extends StatelessWidget {
                 final carousel = carousels[index];
                 final String currFlag =
                     "carousel:${carousel.id}:${carousel.cover}";
-                return Selector<IndexModel, String>(
-                  selector: (_, model) => model.tapBangumiCarouselItemFlag,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (context, tapScaleFlag, child) {
-                    final Matrix4 transform = tapScaleFlag == currFlag
-                        ? Matrix4.diagonal3Values(0.8, 0.8, 1)
-                        : Matrix4.identity();
-                    return Hero(
-                      tag: currFlag,
-                      child: AnimatedTapContainer(
-                        transform: transform,
-                        onTapStart: () => context
-                            .read<IndexModel>()
-                            .tapBangumiCarouselItemFlag = currFlag,
-                        onTapEnd: () => context
-                            .read<IndexModel>()
-                            .tapBangumiCarouselItemFlag = null,
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            Routes.bangumi.name,
-                            arguments: Routes.bangumi.d(
-                              heroTag: currFlag,
-                              bangumiId: carousel.id,
-                              cover: carousel.cover,
-                            ),
-                          );
-                        },
-                        margin: EdgeInsets.only(top: 16.0, bottom: 12.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                          color: Theme.of(context).backgroundColor,
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 8,
-                              color: Colors.black.withOpacity(0.08),
-                            )
-                          ],
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: ExtendedNetworkImageProvider(
-                              carousel.cover,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                return _buildCarouselsItem(
+                  theme,
+                  currFlag,
+                  carousel,
+                  indexModel,
                 );
               },
               itemCount: carousels.length,
@@ -283,11 +211,60 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(
-    final BuildContext context,
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
+  Widget _buildCarouselsItem(
+    final ThemeData theme,
+    final String currFlag,
+    final Carousel carousel,
+    final IndexModel indexModel,
   ) {
+    return Selector<IndexModel, String>(
+      selector: (_, model) => model.tapBangumiCarouselItemFlag,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (context, tapScaleFlag, child) {
+        final Matrix4 transform = tapScaleFlag == currFlag
+            ? Matrix4.diagonal3Values(0.8, 0.8, 1)
+            : Matrix4.identity();
+        return Hero(
+          tag: currFlag,
+          child: AnimatedTapContainer(
+            transform: transform,
+            onTapStart: () => indexModel.tapBangumiCarouselItemFlag = currFlag,
+            onTapEnd: () => indexModel.tapBangumiCarouselItemFlag = null,
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                Routes.bangumi.name,
+                arguments: Routes.bangumi.d(
+                  heroTag: currFlag,
+                  bangumiId: carousel.id,
+                  cover: carousel.cover,
+                ),
+              );
+            },
+            margin: EdgeInsets.only(top: 16.0, bottom: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              color: theme.backgroundColor,
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 8,
+                  color: Colors.black.withOpacity(0.08),
+                )
+              ],
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: ExtendedNetworkImageProvider(
+                  carousel.cover,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHeader(final BuildContext context, final ThemeData theme) {
     return SliverPinnedToBoxAdapter(
       child: Selector<IndexModel, bool>(
         selector: (_, model) => model.hasScrolled,
@@ -301,7 +278,9 @@ class IndexFragment extends StatelessWidget {
               bottom: 4.0,
             ),
             decoration: BoxDecoration(
-              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              color: hasScrolled
+                  ? theme.backgroundColor
+                  : theme.scaffoldBackgroundColor,
               borderRadius: hasScrolled
                   ? BorderRadius.only(
                       bottomLeft: Radius.circular(16.0),
@@ -321,7 +300,7 @@ class IndexFragment extends StatelessWidget {
             ),
             duration: Duration(milliseconds: 240),
             child: Row(
-              children: <Widget>[
+              children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -344,41 +323,7 @@ class IndexFragment extends StatelessWidget {
                           );
                         },
                       ),
-                      Row(
-                        children: [
-                          Selector<IndexModel, Season>(
-                            selector: (_, model) => model.selectedSeason,
-                            shouldRebuild: (pre, next) => pre != next,
-                            builder: (_, season, __) {
-                              return season == null
-                                  ? Container()
-                                  : Text(
-                                      season.title,
-                                      style: TextStyle(
-                                        fontSize: 24.0,
-                                        height: 1.25,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    );
-                            },
-                          ),
-                          MaterialButton(
-                            onPressed: () {
-                              _showYearSeasonBottomSheet(context);
-                            },
-                            child: Icon(
-                              FluentIcons.chevron_down_24_regular,
-                              size: 16.0,
-                            ),
-                            minWidth: 0,
-                            color: hasScrolled
-                                ? scaffoldBackgroundColor
-                                : backgroundColor,
-                            padding: EdgeInsets.all(5.0),
-                            shape: CircleBorder(),
-                          ),
-                        ],
-                      )
+                      _buildSeasonSelector(context, theme, hasScrolled)
                     ],
                   ),
                 ),
@@ -395,39 +340,7 @@ class IndexFragment extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pushNamed(Routes.login);
                   },
-                  child: Selector<IndexModel, User>(
-                    selector: (_, model) => model.user,
-                    shouldRebuild: (pre, next) => pre != next,
-                    builder: (_, user, __) {
-                      return user?.avatar?.isNotBlank == true
-                          ? ClipOval(
-                              child: ExtendedImage.network(
-                                user?.avatar,
-                                width: 36.0,
-                                height: 36.0,
-                                loadStateChanged: (state) {
-                                  switch (state.extendedImageLoadState) {
-                                    case LoadState.loading:
-                                    case LoadState.failed:
-                                      return ExtendedImage.asset(
-                                        "assets/mikan.png",
-                                        width: 36.0,
-                                        height: 36.0,
-                                      );
-                                    case LoadState.completed:
-                                      return null;
-                                  }
-                                  return null;
-                                },
-                              ),
-                            )
-                          : ExtendedImage.asset(
-                              "assets/mikan.png",
-                              width: 36.0,
-                              height: 36.0,
-                            );
-                    },
-                  ),
+                  child: _buildAvatar(),
                   minWidth: 0,
                   padding: EdgeInsets.all(10.0),
                   shape: CircleBorder(),
@@ -440,23 +353,109 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
+  Widget _buildSeasonSelector(
+    final BuildContext context,
+    final ThemeData theme,
+    final bool hasScrolled,
+  ) {
+    return Row(
+      children: [
+        Selector<IndexModel, Season>(
+          selector: (_, model) => model.selectedSeason,
+          shouldRebuild: (pre, next) => pre != next,
+          builder: (_, season, __) {
+            return season == null
+                ? Container()
+                : Text(
+                    season.title,
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      height: 1.25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+          },
+        ),
+        MaterialButton(
+          onPressed: () {
+            _showYearSeasonBottomSheet(context);
+          },
+          child: Icon(
+            FluentIcons.chevron_down_24_regular,
+            size: 16.0,
+          ),
+          minWidth: 0,
+          color: hasScrolled
+              ? theme.scaffoldBackgroundColor
+              : theme.backgroundColor,
+          padding: EdgeInsets.all(5.0),
+          shape: CircleBorder(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAvatar() {
+    return Selector<IndexModel, User>(
+      selector: (_, model) => model.user,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, user, __) {
+        return user?.avatar?.isNotBlank == true
+            ? ClipOval(
+                child: ExtendedImage.network(
+                  user?.avatar,
+                  width: 36.0,
+                  height: 36.0,
+                  loadStateChanged: (state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                      case LoadState.failed:
+                        return ExtendedImage.asset(
+                          "assets/mikan.png",
+                          width: 36.0,
+                          height: 36.0,
+                        );
+                      case LoadState.completed:
+                        return null;
+                    }
+                    return null;
+                  },
+                ),
+              )
+            : ExtendedImage.asset(
+                "assets/mikan.png",
+                width: 36.0,
+                height: 36.0,
+              );
+      },
+    );
+  }
+
   Future _showYearSeasonBottomSheet(final BuildContext context) {
     return showCupertinoModalBottomSheet(
       context: context,
       topRadius: Radius.circular(16.0),
-      builder: (context) {
+      builder: (_) {
         return SeasonModalFragment();
       },
     );
   }
 
-  Widget _buildOVAList(
-    final Color accentColor,
-    final Color primaryColor,
-    final Color backgroundColor,
-    final TextStyle fileTagStyle,
-    final TextStyle titleTagStyle,
-  ) {
+  Widget _buildOVAList(final ThemeData theme) {
+    final TextStyle fileTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: theme.accentColor.computeLuminance() < 0.5
+          ? Colors.white
+          : Colors.black,
+    );
+    final TextStyle titleTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: theme.primaryColor.computeLuminance() < 0.5
+          ? Colors.white
+          : Colors.black,
+    );
     return Selector<IndexModel, List<RecordItem>>(
       selector: (_, model) => model.ovas,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -482,9 +481,9 @@ class IndexFragment extends StatelessWidget {
                     return OVARecordItem(
                       index: index,
                       record: record,
-                      accentColor: accentColor,
-                      primaryColor: primaryColor,
-                      backgroundColor: backgroundColor,
+                      accentColor: theme.accentColor,
+                      primaryColor: theme.primaryColor,
+                      backgroundColor: theme.backgroundColor,
                       fileTagStyle: fileTagStyle,
                       titleTagStyle: titleTagStyle,
                       transform: transform,
@@ -520,7 +519,7 @@ class IndexFragment extends StatelessWidget {
       bounce: true,
       enableDrag: false,
       topRadius: Radius.circular(16.0),
-      builder: (context) {
+      builder: (_) {
         return SearchFragment();
       },
     );
