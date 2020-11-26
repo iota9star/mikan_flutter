@@ -15,7 +15,7 @@ class ListFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ListModel listModel = Provider.of(context, listen: false);
+    final ListModel listModel = Provider.of<ListModel>(context, listen: false);
     return Scaffold(
       body: NotificationListener(
         onNotification: (notification) {
@@ -50,7 +50,7 @@ class ListFragment extends StatelessWidget {
           child: CustomScrollView(
             slivers: [
               _buildHeader(theme),
-              _buildList(listModel),
+              _buildList(theme, listModel),
             ],
           ),
         ),
@@ -58,7 +58,7 @@ class ListFragment extends StatelessWidget {
     );
   }
 
-  SliverPadding _buildList(final ListModel listModel) {
+  SliverPadding _buildList(final ThemeData theme, final ListModel listModel) {
     return SliverPadding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       sliver: Selector<ListModel, int>(
@@ -89,11 +89,12 @@ class ListFragment extends StatelessWidget {
                         );
                       },
                       onTapStart: () {
-                        context.read<ListModel>().tapRecordItemIndex = index;
+                        listModel.tapRecordItemIndex = index;
                       },
                       onTapEnd: () {
-                        context.read<ListModel>().tapRecordItemIndex = -1;
+                        listModel.tapRecordItemIndex = -1;
                       },
+                      theme: theme,
                     );
                   },
                 );

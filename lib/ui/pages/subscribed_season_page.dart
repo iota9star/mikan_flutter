@@ -1,15 +1,20 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
+import 'package:mikan_flutter/model/bangumi.dart';
+import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/subscribed_season_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/season_modal_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -36,12 +41,7 @@ class SubscribedSeasonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
+    final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
@@ -69,13 +69,15 @@ class SubscribedSeasonPage extends StatelessWidget {
                   return SmartRefresher(
                     controller: seasonSubscribedModel.refreshController,
                     header: WaterDropMaterialHeader(
-                      backgroundColor: accentColor,
-                      color: accentTextColor,
+                      backgroundColor: theme.accentColor,
+                      color: theme.accentColor.computeLuminance() < 0.5
+                          ? Colors.white
+                          : Colors.black,
                       distance: Sz.statusBarHeight + 18.0,
                     ),
                     footer: Indicator.footer(
                       context,
-                      accentColor,
+                      theme.accentColor,
                       bottom: 16.0 + Sz.navBarHeight,
                     ),
                     enablePullDown: true,
@@ -83,8 +85,8 @@ class SubscribedSeasonPage extends StatelessWidget {
                     onRefresh: seasonSubscribedModel.refresh,
                     onLoading: seasonSubscribedModel.loadMore,
                     child: _buildContentWrapper(
-                      backgroundColor,
-                      scaffoldBackgroundColor,
+                      context,
+                      theme,
                       galleries,
                     ),
                   );
@@ -98,24 +100,24 @@ class SubscribedSeasonPage extends StatelessWidget {
   }
 
   Widget _buildContentWrapper(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
+    final BuildContext context,
+    final ThemeData theme,
     final List<SeasonGallery> galleries,
   ) {
     return CustomScrollView(
       slivers: [
-        _buildHeader(backgroundColor, scaffoldBackgroundColor),
+        _buildHeader(theme),
         if (galleries.isSafeNotEmpty)
           ...List.generate(galleries.length, (index) {
             final SeasonGallery gallery = galleries[index];
-            final String seasonTitle = gallery.season;
             return <Widget>[
-              _buildSeasonSection(seasonTitle),
+              _buildSeasonSection(context, theme, gallery),
               gallery.bangumis.isNullOrEmpty
-                  ? _buildEmptySubscribedContainer(backgroundColor)
+                  ? _buildEmptySubscribedContainer(theme)
                   : BangumiSliverGridFragment(
-                      flag: seasonTitle,
+                      flag: gallery.title,
                       bangumis: gallery.bangumis,
+                      handleSubscribe: (Bangumi bangumi) {},
                     ),
             ];
           }).expand((element) => element),
@@ -123,7 +125,7 @@ class SubscribedSeasonPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptySubscribedContainer(final Color backgroundColor) {
+  Widget _buildEmptySubscribedContainer(final ThemeData theme) {
     return SliverToBoxAdapter(
       child: Container(
         width: double.infinity,
@@ -145,8 +147,8 @@ class SubscribedSeasonPage extends StatelessWidget {
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
             colors: [
-              backgroundColor.withOpacity(0.72),
-              backgroundColor.withOpacity(0.9),
+              theme.backgroundColor.withOpacity(0.72),
+              theme.backgroundColor.withOpacity(0.9),
             ],
           ),
           borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -160,7 +162,11 @@ class SubscribedSeasonPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeasonSection(final String seasonTitle) {
+  Widget _buildSeasonSection(
+    final BuildContext context,
+    final ThemeData theme,
+    final SeasonGallery gallery,
+  ) {
     return SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.only(
@@ -169,22 +175,47 @@ class SubscribedSeasonPage extends StatelessWidget {
           right: 16.0,
           bottom: 8.0,
         ),
-        child: Text(
-          seasonTitle,
-          style: TextStyle(
-            fontSize: 18,
-            height: 1.25,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                gallery.title,
+                style: TextStyle(
+                  fontSize: 20,
+                  height: 1.25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                _showSeasonPanel(
+                  context,
+                  Season(
+                    year: gallery.year,
+                    season: gallery.season,
+                    title: gallery.title,
+                  ),
+                );
+              },
+              color: theme.backgroundColor,
+              minWidth: 0,
+              height: 0,
+              padding: EdgeInsets.all(5.0),
+              shape: CircleBorder(),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              child: Icon(
+                FluentIcons.chevron_right_24_regular,
+                size: 16.0,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
-  ) {
+  Widget _buildHeader(final ThemeData theme) {
     return Selector<SubscribedSeasonModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
@@ -192,7 +223,9 @@ class SubscribedSeasonPage extends StatelessWidget {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              color: hasScrolled
+                  ? theme.backgroundColor
+                  : theme.scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
                       BoxShadow(
@@ -231,6 +264,19 @@ class SubscribedSeasonPage extends StatelessWidget {
             ),
           ),
         );
+      },
+    );
+  }
+
+  _showSeasonPanel(
+    final BuildContext context,
+    final Season season,
+  ) {
+    showCupertinoModalBottomSheet(
+      context: context,
+      topRadius: Radius.circular(16.0),
+      builder: (_) {
+        return SeasonModalFragment(season: season);
       },
     );
   }

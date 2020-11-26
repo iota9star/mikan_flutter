@@ -11,11 +11,7 @@ class OVARecordItem extends StatelessWidget {
   final int index;
   final Matrix4 transform;
   final RecordItem record;
-  final Color accentColor;
-  final Color primaryColor;
-  final Color backgroundColor;
-  final TextStyle fileTagStyle;
-  final TextStyle titleTagStyle;
+  final ThemeData theme;
   final VoidCallback onTap;
   final VoidCallback onTapStart;
   final VoidCallback onTapEnd;
@@ -23,19 +19,29 @@ class OVARecordItem extends StatelessWidget {
   const OVARecordItem({
     @required this.index,
     @required this.record,
-    @required this.accentColor,
-    @required this.primaryColor,
-    @required this.backgroundColor,
-    @required this.fileTagStyle,
-    @required this.titleTagStyle,
     @required this.transform,
     @required this.onTap,
     @required this.onTapStart,
     @required this.onTapEnd,
+    @required this.theme,
   });
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle fileTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: theme.accentColor.computeLuminance() < 0.5
+          ? Colors.white
+          : Colors.black,
+    );
+    final TextStyle titleTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: theme.primaryColor.computeLuminance() < 0.5
+          ? Colors.white
+          : Colors.black,
+    );
     return AnimatedTapContainer(
       width: Sz.screenWidth * 0.9 - 32.0,
       onTap: onTap,
@@ -46,7 +52,7 @@ class OVARecordItem extends StatelessWidget {
         right: 16.0,
       ),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: theme.backgroundColor,
         borderRadius: BorderRadius.all(Radius.circular(16.0)),
       ),
       child: Column(
@@ -92,7 +98,10 @@ class OVARecordItem extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [backgroundColor.withOpacity(0), backgroundColor],
+                colors: [
+                  theme.backgroundColor.withOpacity(0),
+                  theme.backgroundColor
+                ],
                 stops: [0.8, 1],
               ),
             ),
@@ -114,8 +123,8 @@ class OVARecordItem extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          accentColor,
-                          accentColor.withOpacity(0.56),
+                          theme.accentColor,
+                          theme.accentColor.withOpacity(0.56),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(2.0),
@@ -140,8 +149,8 @@ class OVARecordItem extends StatelessWidget {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              primaryColor,
-                              primaryColor.withOpacity(0.56),
+                              theme.primaryColor,
+                              theme.primaryColor.withOpacity(0.56),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(2.0),
@@ -162,7 +171,7 @@ class OVARecordItem extends StatelessWidget {
               IconButton(
                 icon: Icon(FluentIcons.cloud_download_24_regular),
                 tooltip: "复制并尝试打开种子链接",
-                color: accentColor,
+                color: theme.accentColor,
                 iconSize: 20.0,
                 onPressed: () {
                   record.torrent.launchApp();
@@ -171,7 +180,7 @@ class OVARecordItem extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(FluentIcons.clipboard_link_24_regular),
-                color: accentColor,
+                color: theme.accentColor,
                 tooltip: "复制并尝试打开磁力链接",
                 iconSize: 20.0,
                 onPressed: () {
@@ -181,7 +190,7 @@ class OVARecordItem extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(FluentIcons.share_24_regular),
-                color: accentColor,
+                color: theme.accentColor,
                 tooltip: "分享",
                 iconSize: 20.0,
                 onPressed: () {

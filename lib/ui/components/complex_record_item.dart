@@ -14,6 +14,7 @@ class ComplexRecordItem extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onTapStart;
   final VoidCallback onTapEnd;
+  final ThemeData theme;
 
   const ComplexRecordItem({
     @required this.index,
@@ -22,13 +23,13 @@ class ComplexRecordItem extends StatelessWidget {
     @required this.onTap,
     @required this.onTapStart,
     @required this.onTapEnd,
+    @required this.theme,
   });
 
   @override
   Widget build(BuildContext context) {
     final List<Subgroup> subgroups = record.groups;
     final List<String> tags = record.tags;
-    final ThemeData theme = Theme.of(context);
     return AnimatedTapContainer(
       onTap: onTap,
       onTapEnd: onTapEnd,

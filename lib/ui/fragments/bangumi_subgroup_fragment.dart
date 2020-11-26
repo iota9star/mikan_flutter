@@ -31,7 +31,8 @@ class BangumiSubgroupFragment extends StatelessWidget {
       child: ChangeNotifierProvider.value(
         value: bangumiModel,
         child: Builder(builder: (context) {
-          final BangumiModel bangumiModel = Provider.of(context, listen: false);
+          final BangumiModel bangumiModel =
+              Provider.of<BangumiModel>(context, listen: false);
           return NotificationListener(
             onNotification: (notification) {
               if (notification is OverscrollIndicatorNotification) {
@@ -76,21 +77,6 @@ class BangumiSubgroupFragment extends StatelessWidget {
     final ThemeData theme,
     final SubgroupBangumi subgroupBangumi,
   ) {
-    final Color accentColor = theme.accentColor;
-    final Color primaryColor = theme.primaryColor;
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-    );
-    final Color primaryTextColor =
-        primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: primaryTextColor,
-    );
-    final Color backgroundColor = theme.backgroundColor;
     return Expanded(
       child: SmartRefresher(
         controller: bangumiModel.refreshController,
@@ -99,7 +85,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
         onLoading: bangumiModel.loadSubgroupList,
         footer: Indicator.footer(
           context,
-          accentColor,
+          theme.accentColor,
           bottom: 16.0 + Sz.navBarHeight,
         ),
         child: ListView.builder(
@@ -117,11 +103,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
                     : Matrix4.identity();
                 return SimpleRecordItem(
                   index: ind,
-                  accentColor: accentColor,
-                  fileTagStyle: fileTagStyle,
-                  primaryColor: primaryColor,
-                  backgroundColor: backgroundColor,
-                  titleTagStyle: titleTagStyle,
+                  theme: theme,
                   record: record,
                   transform: transform,
                   onTap: () {

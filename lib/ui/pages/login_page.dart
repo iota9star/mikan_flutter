@@ -23,10 +23,7 @@ import 'package:tuple/tuple.dart';
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color primaryColor = Theme.of(context).primaryColor;
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
+    final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProxyProvider<IndexModel, LoginModel>(
@@ -51,34 +48,19 @@ class LoginPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     _buildHeader(),
-                    SizedBox(
-                      height: 42.0,
-                    ),
+                    SizedBox(height: 42.0),
                     _buildAccountField(loginModel),
-                    SizedBox(
-                      height: 16.0,
-                    ),
+                    SizedBox(height: 16.0),
                     _buildPasswordField(loginModel),
-                    SizedBox(
-                      height: 16.0,
-                    ),
-                    _buildRememberRow(accentColor, loginModel),
-                    SizedBox(
-                      height: 16.0,
-                    ),
+                    SizedBox(height: 16.0),
+                    _buildRememberRow(theme, loginModel),
+                    SizedBox(height: 16.0),
                     FlatButton(
                       onPressed: () {},
                       child: Text("还没有账号？赶紧来注册一个吧~"),
                     ),
-                    SizedBox(
-                      height: 16.0,
-                    ),
-                    _buildLoginButton(
-                      context,
-                      primaryColor,
-                      accentColor,
-                      scaffoldBackgroundColor,
-                    ),
+                    SizedBox(height: 16.0),
+                    _buildLoginButton(theme),
                     SizedBox(
                       height: 56.0,
                     ),
@@ -92,20 +74,15 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton(
-    final BuildContext context,
-    final Color primaryColor,
-    final Color accentColor,
-    final Color scaffoldBackgroundColor,
-  ) {
+  Widget _buildLoginButton(final ThemeData theme) {
     return Selector<LoginModel, Tuple2<User, bool>>(
       selector: (_, model) => Tuple2(model.user, model.loading),
       shouldRebuild: (pre, next) => pre != next,
-      builder: (_, tuple, __) {
+      builder: (context, tuple, __) {
         final User user = tuple.item1;
         final bool loading = tuple.item2;
         final bool isNotOk = user == null || user?.token?.isNullOrBlank == true;
-        final Color btnColor = loading ? primaryColor : accentColor;
+        final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
         final Color iconColor =
             btnColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
         return RaisedButton(
@@ -125,7 +102,7 @@ class LoginPage extends StatelessWidget {
               Radius.circular(16.0),
             ),
           ),
-          color: scaffoldBackgroundColor.withOpacity(0),
+          color: theme.scaffoldBackgroundColor.withOpacity(0),
           padding: EdgeInsets.zero,
           child: Container(
             height: 48.0,
@@ -176,7 +153,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildRememberRow(
-    final Color accentColor,
+    final ThemeData theme,
     final LoginModel loginModel,
   ) {
     return Row(
@@ -188,7 +165,7 @@ class LoginPage extends StatelessWidget {
             return Checkbox(
               value: checked,
               visualDensity: VisualDensity(),
-              activeColor: accentColor,
+              activeColor: theme.accentColor,
               onChanged: (val) {
                 loginModel.rememberMe = val;
               },

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
+import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/models/subgroup_model.dart';
@@ -28,12 +29,7 @@ class SubgroupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
+    final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
@@ -61,16 +57,17 @@ class SubgroupPage extends StatelessWidget {
                   return SmartRefresher(
                     controller: subgroupModel.refreshController,
                     header: WaterDropMaterialHeader(
-                      backgroundColor: accentColor,
-                      color: accentTextColor,
+                      backgroundColor: theme.accentColor,
+                      color: theme.accentColor.computeLuminance() < 0.5
+                          ? Colors.white
+                          : Colors.black,
                       distance: Sz.statusBarHeight + 18.0,
                     ),
                     enablePullDown: true,
                     enablePullUp: false,
                     onRefresh: subgroupModel.refresh,
                     child: _buildContentWrapper(
-                      backgroundColor,
-                      scaffoldBackgroundColor,
+                      theme,
                       subgroupModel,
                       galleries,
                     ),
@@ -85,14 +82,13 @@ class SubgroupPage extends StatelessWidget {
   }
 
   Widget _buildContentWrapper(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
+    final ThemeData theme,
     final SubgroupModel subgroupModel,
     final List<SeasonGallery> galleries,
   ) {
     return CustomScrollView(
       slivers: [
-        _buildHeader(backgroundColor, scaffoldBackgroundColor),
+        _buildHeader(theme),
         if (subgroupModel.loading)
           SliverFillRemaining(
             child: Center(
@@ -102,12 +98,12 @@ class SubgroupPage extends StatelessWidget {
         if (galleries.isSafeNotEmpty)
           ...List.generate(galleries.length, (index) {
             final SeasonGallery gallery = galleries[index];
-            final String section = "${gallery.date} ${gallery.season}";
             return <Widget>[
-              _buildYearSeasonSection(section),
+              _buildYearSeasonSection(gallery.title),
               BangumiSliverGridFragment(
-                flag: section,
+                flag: gallery.title,
                 bangumis: gallery.bangumis,
+                handleSubscribe: (Bangumi bangumi) {},
               ),
             ];
           }).expand((element) => element),
@@ -136,10 +132,7 @@ class SubgroupPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
-  ) {
+  Widget _buildHeader(final ThemeData theme) {
     return Selector<SubgroupModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
@@ -147,7 +140,9 @@ class SubgroupPage extends StatelessWidget {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              color: hasScrolled
+                  ? theme.backgroundColor
+                  : theme.scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
                       BoxShadow(

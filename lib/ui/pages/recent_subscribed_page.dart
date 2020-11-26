@@ -29,24 +29,7 @@ class RecentSubscribedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color primaryColor = Theme.of(context).primaryColor;
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: accentTextColor,
-    );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color:
-          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-    );
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
+    final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
@@ -70,13 +53,15 @@ class RecentSubscribedPage extends StatelessWidget {
               child: SmartRefresher(
                 controller: recentSubscribedModel.refreshController,
                 header: WaterDropMaterialHeader(
-                  backgroundColor: accentColor,
-                  color: accentTextColor,
+                  backgroundColor: theme.accentColor,
+                  color: theme.accentColor.computeLuminance() < 0.5
+                      ? Colors.white
+                      : Colors.black,
                   distance: Sz.statusBarHeight + 18.0,
                 ),
                 footer: Indicator.footer(
                   context,
-                  accentColor,
+                  theme.accentColor,
                   bottom: 16.0 + Sz.navBarHeight,
                 ),
                 enablePullDown: true,
@@ -84,16 +69,7 @@ class RecentSubscribedPage extends StatelessWidget {
                 onRefresh: recentSubscribedModel.refresh,
                 onLoading: recentSubscribedModel.loadMoreRecentRecords,
                 child: CustomScrollView(
-                  slivers: [
-                    _buildHeader(backgroundColor, scaffoldBackgroundColor),
-                    _buildRecordsList(
-                      accentColor,
-                      primaryColor,
-                      backgroundColor,
-                      fileTagStyle,
-                      titleTagStyle,
-                    )
-                  ],
+                  slivers: [_buildHeader(theme), _buildRecordsList(theme)],
                 ),
               ),
             ),
@@ -103,13 +79,7 @@ class RecentSubscribedPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRecordsList(
-    final Color accentColor,
-    final Color primaryColor,
-    final Color backgroundColor,
-    final TextStyle fileTagStyle,
-    final TextStyle titleTagStyle,
-  ) {
+  Widget _buildRecordsList(final ThemeData theme) {
     return Selector<RecentSubscribedModel, List<RecordItem>>(
       selector: (_, model) => model.records,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -128,11 +98,7 @@ class RecentSubscribedPage extends StatelessWidget {
                   return RssRecordItem(
                     index: index,
                     record: record,
-                    accentColor: accentColor,
-                    primaryColor: primaryColor,
-                    backgroundColor: backgroundColor,
-                    fileTagStyle: fileTagStyle,
-                    titleTagStyle: titleTagStyle,
+                    theme: theme,
                     transform: transform,
                     onTap: () {
                       Navigator.pushNamed(
@@ -160,10 +126,7 @@ class RecentSubscribedPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
-  ) {
+  Widget _buildHeader(final ThemeData theme) {
     return Selector<RecentSubscribedModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
@@ -171,7 +134,9 @@ class RecentSubscribedPage extends StatelessWidget {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              color: hasScrolled
+                  ? theme.backgroundColor
+                  : theme.scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
                       BoxShadow(

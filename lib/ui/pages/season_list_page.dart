@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
+import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/season_bangumi_rows.dart';
 import 'package:mikan_flutter/model/year_season.dart';
@@ -31,13 +32,7 @@ class SeasonListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
-    final Color subtitleColor = Theme.of(context).textTheme.subtitle1.color;
+    final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
@@ -65,25 +60,22 @@ class SeasonListPage extends StatelessWidget {
                   return SmartRefresher(
                     controller: seasonListModel.refreshController,
                     header: WaterDropMaterialHeader(
-                      backgroundColor: accentColor,
-                      color: accentTextColor,
+                      backgroundColor: theme.accentColor,
+                      color: theme.accentColor.computeLuminance() < 0.5
+                          ? Colors.white
+                          : Colors.black,
                       distance: Sz.statusBarHeight + 18.0,
                     ),
                     footer: Indicator.footer(
                       context,
-                      accentColor,
+                      theme.accentColor,
                       bottom: 16.0 + Sz.navBarHeight,
                     ),
                     enablePullDown: true,
                     enablePullUp: true,
                     onRefresh: seasonListModel.refresh,
                     onLoading: seasonListModel.loadMore,
-                    child: _buildContentWrapper(
-                      backgroundColor,
-                      scaffoldBackgroundColor,
-                      subtitleColor,
-                      seasons,
-                    ),
+                    child: _buildContentWrapper(theme, seasons),
                   );
                 },
               ),
@@ -95,14 +87,12 @@ class SeasonListPage extends StatelessWidget {
   }
 
   Widget _buildContentWrapper(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
-    final Color subtitleColor,
+    final ThemeData theme,
     final List<SeasonBangumis> seasons,
   ) {
     return CustomScrollView(
       slivers: [
-        _buildHeader(backgroundColor, scaffoldBackgroundColor),
+        _buildHeader(theme),
         ...List.generate(seasons.length, (index) {
           final SeasonBangumis seasonBangumis = seasons[index];
           final String seasonTitle = seasonBangumis.season.title;
@@ -113,10 +103,11 @@ class SeasonListPage extends StatelessWidget {
               (ind) {
                 final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
                 return <Widget>[
-                  _buildBangumiRowSection(subtitleColor, bangumiRow),
+                  _buildBangumiRowSection(theme, bangumiRow),
                   BangumiSliverGridFragment(
                     flag: seasonTitle,
                     bangumis: bangumiRow.bangumis,
+                    handleSubscribe: (Bangumi bangumi) {},
                   ),
                 ];
               },
@@ -149,7 +140,7 @@ class SeasonListPage extends StatelessWidget {
   }
 
   Widget _buildBangumiRowSection(
-    final Color subtitleColor,
+    final ThemeData theme,
     final BangumiRow bangumiRow,
   ) {
     final simple = [
@@ -193,7 +184,7 @@ class SeasonListPage extends StatelessWidget {
               child: Text(
                 simple,
                 style: TextStyle(
-                  color: subtitleColor,
+                  color: theme.textTheme.subtitle1.color,
                   fontSize: 12.0,
                   height: 1.25,
                 ),
@@ -205,10 +196,7 @@ class SeasonListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
-  ) {
+  Widget _buildHeader(final ThemeData theme) {
     return Selector<SeasonListModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
@@ -216,7 +204,9 @@ class SeasonListPage extends StatelessWidget {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              color: hasScrolled
+                  ? theme.backgroundColor
+                  : theme.scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
                       BoxShadow(

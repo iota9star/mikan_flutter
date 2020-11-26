@@ -20,7 +20,7 @@ import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/ui/components/ova_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
-import 'package:mikan_flutter/ui/fragments/season_modal_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/select_season_modal_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -436,26 +436,12 @@ class IndexFragment extends StatelessWidget {
       context: context,
       topRadius: Radius.circular(16.0),
       builder: (_) {
-        return SeasonModalFragment();
+        return SelectSeasonModalFragment();
       },
     );
   }
 
   Widget _buildOVAList(final ThemeData theme) {
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: theme.accentColor.computeLuminance() < 0.5
-          ? Colors.white
-          : Colors.black,
-    );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: theme.primaryColor.computeLuminance() < 0.5
-          ? Colors.white
-          : Colors.black,
-    );
     return Selector<IndexModel, List<RecordItem>>(
       selector: (_, model) => model.ovas,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -481,11 +467,7 @@ class IndexFragment extends StatelessWidget {
                     return OVARecordItem(
                       index: index,
                       record: record,
-                      accentColor: theme.accentColor,
-                      primaryColor: theme.primaryColor,
-                      backgroundColor: theme.backgroundColor,
-                      fileTagStyle: fileTagStyle,
-                      titleTagStyle: titleTagStyle,
+                      theme: theme,
                       transform: transform,
                       onTap: () {
                         Navigator.pushNamed(

@@ -406,9 +406,8 @@ class Resolver {
     int i = 1;
     for (final Element ele in eles) {
       subgroupGallery = SeasonGallery();
-      subgroupGallery.date = ele.querySelector(".pubgroup-date").text.trim();
-      subgroupGallery.season =
-          ele.querySelector(".pubgroup-season").text.trim();
+      subgroupGallery.title =
+          "${ele.querySelector(".pubgroup-date").text.trim()} ${ele.querySelector(".pubgroup-season").text.trim()}";
       subgroupGallery.isCurrentSeason =
           ele.querySelector(".pubgroup-season.current-season") != null;
       elements = ele.querySelectorAll("li[data-bangumiid]") ?? [];

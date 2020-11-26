@@ -32,19 +32,7 @@ class RecordDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color subtitleColor = Theme.of(context).textTheme.subtitle1.color;
-    final Color primaryColor = Theme.of(context).primaryColor;
-    final Color primaryTextColor =
-        primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 12,
-      height: 1.25,
-      color: primaryTextColor,
-    );
+    final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
@@ -52,19 +40,10 @@ class RecordDetailPage extends StatelessWidget {
         child: Scaffold(
           body: Stack(
             children: [
-              _buildBackground(backgroundColor),
-              _buildLoading(backgroundColor),
-              _buildContentWrapper(
-                context,
-                primaryColor,
-                primaryTextColor,
-                accentColor,
-                accentTextColor,
-                subtitleColor,
-                backgroundColor,
-                titleTagStyle,
-              ),
-              _buildHeadBar(context, backgroundColor),
+              _buildBackground(theme),
+              _buildLoading(),
+              _buildContentWrapper(theme),
+              _buildHeadBar(context, theme),
             ],
           ),
         ),
@@ -72,7 +51,10 @@ class RecordDetailPage extends StatelessWidget {
     );
   }
 
-  Positioned _buildHeadBar(BuildContext context, Color backgroundColor) {
+  Widget _buildHeadBar(
+    final BuildContext context,
+    final ThemeData theme,
+  ) {
     return Positioned(
       top: 0,
       left: 0,
@@ -90,7 +72,7 @@ class RecordDetailPage extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Icon(FluentIcons.chevron_left_24_regular),
-              color: backgroundColor.withOpacity(0.87),
+              color: theme.backgroundColor.withOpacity(0.87),
               minWidth: 0,
               padding: EdgeInsets.all(10.0),
               shape: CircleBorder(),
@@ -101,7 +83,7 @@ class RecordDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBackground(final Color backgroundColor) {
+  Widget _buildBackground(final ThemeData theme) {
     return Positioned.fill(
       child: Selector<RecordDetailModel, RecordDetail>(
         selector: (_, model) => model.recordDetail,
@@ -119,7 +101,7 @@ class RecordDetailPage extends StatelessWidget {
               selector: (_, model) => model.coverMainColor,
               shouldRebuild: (pre, next) => pre != next,
               builder: (_, bgColor, __) {
-                final color = bgColor ?? backgroundColor;
+                final color = bgColor ?? theme.backgroundColor;
                 return BackdropFilter(
                   filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
                   child: AnimatedContainer(
@@ -141,23 +123,14 @@ class RecordDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContentWrapper(
-    final BuildContext context,
-    final Color primaryColor,
-    final Color primaryTextColor,
-    final Color accentColor,
-    final Color accentTextColor,
-    final Color subtitleColor,
-    final Color backgroundColor,
-    final TextStyle titleTagStyle,
-  ) {
+  Widget _buildContentWrapper(final ThemeData theme) {
     return Positioned.fill(
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Selector<RecordDetailModel, RecordDetail>(
-          selector: (_, model) => model.recordDetail,
+          selector: (context, model) => model.recordDetail,
           shouldRebuild: (pre, next) => pre != next,
-          builder: (_, recordDetail, __) {
+          builder: (context, recordDetail, __) {
             if (recordDetail == null) {
               return Container();
             }
@@ -166,26 +139,14 @@ class RecordDetailPage extends StatelessWidget {
                 SizedBox(height: 160.0 + Sz.statusBarHeight),
                 _buildRecordTop(
                   context,
-                  primaryColor,
-                  primaryTextColor,
-                  accentColor,
-                  accentTextColor,
-                  backgroundColor,
+                  theme,
                   recordDetail,
                 ),
                 _buildBangumiBase(
-                  primaryColor,
-                  accentColor,
-                  subtitleColor,
-                  backgroundColor,
-                  titleTagStyle,
+                  theme,
                   recordDetail,
                 ),
-                _buildRecordIntro(
-                  accentColor,
-                  backgroundColor,
-                  recordDetail,
-                ),
+                _buildRecordIntro(theme, recordDetail),
                 SizedBox(height: Sz.navBarHeight + 36.0),
               ],
             );
@@ -196,11 +157,7 @@ class RecordDetailPage extends StatelessWidget {
   }
 
   Widget _buildBangumiBase(
-    final Color primaryColor,
-    final Color accentColor,
-    final Color subtitleColor,
-    final Color backgroundColor,
-    final TextStyle titleTagStyle,
+    final ThemeData theme,
     final RecordDetail recordDetail,
   ) {
     final List<String> tags = recordDetail.tags;
@@ -223,8 +180,8 @@ class RecordDetailPage extends StatelessWidget {
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
           colors: [
-            backgroundColor.withOpacity(0.72),
-            backgroundColor.withOpacity(0.9),
+            theme.backgroundColor.withOpacity(0.72),
+            theme.backgroundColor.withOpacity(0.9),
           ],
         ),
         borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -236,7 +193,7 @@ class RecordDetailPage extends StatelessWidget {
             Text(
               recordDetail.name,
               style: TextStyle(
-                color: accentColor,
+                color: theme.accentColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 24.0,
               ),
@@ -258,7 +215,7 @@ class RecordDetailPage extends StatelessWidget {
                       height: 1.6,
                       fontSize: 15.0,
                       fontWeight: FontWeight.bold,
-                      color: subtitleColor,
+                      color: theme.textTheme.subtitle1.color,
                     ),
                   ))
               .toList(),
@@ -281,15 +238,21 @@ class RecordDetailPage extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          primaryColor,
-                          primaryColor.withOpacity(0.56),
+                          theme.primaryColor,
+                          theme.primaryColor.withOpacity(0.56),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(2.0),
                     ),
                     child: Text(
                       tags[index],
-                      style: titleTagStyle,
+                      style: TextStyle(
+                        fontSize: 10,
+                        height: 1.25,
+                        color: theme.primaryColor.computeLuminance() < 0.5
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                     ),
                   );
                 }),
@@ -300,7 +263,7 @@ class RecordDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoading(final Color backgroundColor) {
+  Widget _buildLoading() {
     return Positioned.fill(
       child: Selector<RecordDetailModel, bool>(
         selector: (_, model) => model.loading,
@@ -320,13 +283,15 @@ class RecordDetailPage extends StatelessWidget {
 
   Widget _buildRecordTop(
     final BuildContext context,
-    final Color primaryColor,
-    final Color primaryTextColor,
-    final Color accentColor,
-    final Color accentTextColor,
-    final Color backgroundColor,
+    final ThemeData theme,
     final RecordDetail recordDetail,
   ) {
+    final Color accentTextColor = theme.accentColor.computeLuminance() < 0.5
+        ? Colors.white
+        : Colors.black;
+    final Color primaryTextColor = theme.primaryColor.computeLuminance() < 0.5
+        ? Colors.white
+        : Colors.black;
     return Column(
       children: [
         Stack(
@@ -347,8 +312,8 @@ class RecordDetailPage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        backgroundColor.withOpacity(0.72),
-                        backgroundColor.withOpacity(0.9),
+                        theme.backgroundColor.withOpacity(0.72),
+                        theme.backgroundColor.withOpacity(0.9),
                       ],
                     ),
                     borderRadius: BorderRadius.all(
@@ -374,8 +339,8 @@ class RecordDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            accentColor.withOpacity(0.78),
-                            accentColor,
+                            theme.accentColor.withOpacity(0.78),
+                            theme.accentColor,
                           ],
                         ),
                         borderRadius: BorderRadius.circular(24.0),
@@ -403,8 +368,8 @@ class RecordDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            primaryColor.withOpacity(0.78),
-                            primaryColor,
+                            theme.primaryColor.withOpacity(0.78),
+                            theme.primaryColor,
                           ],
                         ),
                         borderRadius: BorderRadius.circular(24.0),
@@ -430,8 +395,7 @@ class RecordDetailPage extends StatelessWidget {
   }
 
   Widget _buildRecordIntro(
-    final Color accentColor,
-    final Color backgroundColor,
+    final ThemeData theme,
     final RecordDetail recordDetail,
   ) {
     return Container(
@@ -447,8 +411,8 @@ class RecordDetailPage extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            backgroundColor.withOpacity(0.72),
-            backgroundColor.withOpacity(0.9),
+            theme.backgroundColor.withOpacity(0.72),
+            theme.backgroundColor.withOpacity(0.9),
           ],
         ),
         borderRadius: BorderRadius.all(
@@ -484,7 +448,9 @@ class RecordDetailPage extends StatelessWidget {
   }
 
   Widget _buildBangumiCover(
-      final BuildContext context, final RecordDetail recordDetail) {
+    final BuildContext context,
+    final RecordDetail recordDetail,
+  ) {
     return ExtendedImage.network(
       recordDetail.cover,
       width: 136.0,

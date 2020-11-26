@@ -1,14 +1,16 @@
 import 'package:mikan_flutter/model/bangumi.dart';
 
 class SeasonGallery {
-  String date;
+  String year;
   String season;
+  String title;
   bool isCurrentSeason;
   List<Bangumi> bangumis;
 
   SeasonGallery({
-    this.date,
+    this.year,
     this.season,
+    this.title,
     this.isCurrentSeason,
     this.bangumis,
   });
@@ -18,15 +20,17 @@ class SeasonGallery {
       identical(this, other) ||
       other is SeasonGallery &&
           runtimeType == other.runtimeType &&
-          date == other.date &&
+          year == other.year &&
           season == other.season &&
+          title == other.title &&
           isCurrentSeason == other.isCurrentSeason &&
           bangumis == other.bangumis;
 
   @override
   int get hashCode =>
-      date.hashCode ^
+      year.hashCode ^
       season.hashCode ^
+      title.hashCode ^
       isCurrentSeason.hashCode ^
       bangumis.hashCode;
 }

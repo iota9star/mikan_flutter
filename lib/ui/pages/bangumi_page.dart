@@ -32,15 +32,14 @@ class BangumiPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color subtitleColor = Theme.of(context).textTheme.subtitle1.color;
+    final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider<BangumiModel>(
         create: (_) => BangumiModel(this.bangumiId, this.cover),
         child: Builder(builder: (context) {
-          final BangumiModel bangumiModel = Provider.of(context, listen: false);
+          final BangumiModel bangumiModel =
+              Provider.of<BangumiModel>(context, listen: false);
           return Scaffold(
             body: Stack(
               fit: StackFit.expand,
@@ -57,7 +56,7 @@ class BangumiPage extends StatelessWidget {
                       selector: (_, model) => model.coverMainColor,
                       shouldRebuild: (pre, next) => pre != next,
                       builder: (_, bgColor, __) {
-                        final color = bgColor ?? backgroundColor;
+                        final color = bgColor ?? theme.backgroundColor;
                         return BackdropFilter(
                           filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
                           child: AnimatedContainer(
@@ -94,7 +93,7 @@ class BangumiPage extends StatelessWidget {
                                 },
                                 child:
                                     Icon(FluentIcons.chevron_left_24_regular),
-                                color: backgroundColor.withOpacity(0.87),
+                                color: theme.backgroundColor.withOpacity(0.87),
                                 minWidth: 0,
                                 padding: EdgeInsets.all(10.0),
                                 shape: CircleBorder(),
@@ -109,28 +108,17 @@ class BangumiPage extends StatelessWidget {
                           children: [
                             SizedBox(height: 98.0),
                             _buildBangumiTop(
-                              context,
-                              accentColor,
-                              backgroundColor,
+                              theme,
                               this.cover,
                               bangumiModel,
                             ),
-                            _buildLoading(backgroundColor),
+                            _buildLoading(theme),
                             _buildBangumiBase(
-                              accentColor,
-                              subtitleColor,
-                              backgroundColor,
+                              theme,
                               this.cover,
                             ),
-                            _buildBangumiSubgroups(
-                              accentColor,
-                              backgroundColor,
-                              bangumiModel,
-                            ),
-                            _buildBangumiIntro(
-                              accentColor,
-                              backgroundColor,
-                            ),
+                            _buildBangumiSubgroups(theme, bangumiModel),
+                            _buildBangumiIntro(theme),
                             SizedBox(height: Sz.navBarHeight + 36.0)
                           ],
                         ),
@@ -146,7 +134,7 @@ class BangumiPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoading(final Color backgroundColor) {
+  Widget _buildLoading(final ThemeData theme) {
     return Selector<BangumiModel, bool>(
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
@@ -172,8 +160,8 @@ class BangumiPage extends StatelessWidget {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  backgroundColor.withOpacity(0.72),
-                  backgroundColor.withOpacity(0.9),
+                  theme.backgroundColor.withOpacity(0.72),
+                  theme.backgroundColor.withOpacity(0.9),
                 ],
               ),
               borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -186,10 +174,7 @@ class BangumiPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiIntro(
-    final Color accentColor,
-    final Color backgroundColor,
-  ) {
+  Widget _buildBangumiIntro(final ThemeData theme) {
     return Selector<BangumiModel, BangumiDetail>(
       selector: (_, model) => model.bangumiDetail,
       shouldRebuild: (pre, next) => pre != next,
@@ -210,8 +195,8 @@ class BangumiPage extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                backgroundColor.withOpacity(0.72),
-                backgroundColor.withOpacity(0.9),
+                theme.backgroundColor.withOpacity(0.72),
+                theme.backgroundColor.withOpacity(0.9),
               ],
             ),
             borderRadius: BorderRadius.all(
@@ -247,8 +232,7 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildBangumiSubgroups(
-    final Color accentColor,
-    final Color backgroundColor,
+    final ThemeData theme,
     final BangumiModel bangumiModel,
   ) {
     return Selector<BangumiModel, List<SubgroupBangumi>>(
@@ -267,8 +251,8 @@ class BangumiPage extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                backgroundColor.withOpacity(0.72),
-                backgroundColor.withOpacity(0.9),
+                theme.backgroundColor.withOpacity(0.72),
+                theme.backgroundColor.withOpacity(0.9),
               ],
             ),
             borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -297,10 +281,10 @@ class BangumiPage extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: accentColor,
+                        color: theme.accentColor,
                       ),
                     ),
-                    backgroundColor: accentColor.withOpacity(0.18),
+                    backgroundColor: theme.accentColor.withOpacity(0.18),
                     onPressed: () {
                       context.read<BangumiModel>().selectedSubgroupId =
                           subgroups[subgroupIndex].dataId;
@@ -317,9 +301,7 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildBangumiTop(
-    final BuildContext context,
-    final Color accentColor,
-    final Color backgroundColor,
+    final ThemeData theme,
     final String cover,
     final BangumiModel bangumiModel,
   ) {
@@ -343,8 +325,8 @@ class BangumiPage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        backgroundColor.withOpacity(0.72),
-                        backgroundColor.withOpacity(0.9),
+                        theme.backgroundColor.withOpacity(0.72),
+                        theme.backgroundColor.withOpacity(0.9),
                       ],
                     ),
                     borderRadius: BorderRadius.all(
@@ -387,9 +369,7 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildBangumiBase(
-    final Color accentColor,
-    final Color subtitleColor,
-    final Color backgroundColor,
+    final ThemeData theme,
     final String cover,
   ) {
     return Selector<BangumiModel, BangumiDetail>(
@@ -418,8 +398,8 @@ class BangumiPage extends StatelessWidget {
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
-                backgroundColor.withOpacity(0.72),
-                backgroundColor.withOpacity(0.9),
+                theme.backgroundColor.withOpacity(0.72),
+                theme.backgroundColor.withOpacity(0.9),
               ],
             ),
             borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -430,7 +410,7 @@ class BangumiPage extends StatelessWidget {
               Text(
                 bangumiDetail.name,
                 style: TextStyle(
-                  color: accentColor,
+                  color: theme.accentColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 24.0,
                 ),
@@ -444,7 +424,7 @@ class BangumiPage extends StatelessWidget {
                           height: 1.6,
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,
-                          color: subtitleColor,
+                          color: theme.textTheme.subtitle1.color,
                         ),
                       ))
                   .toList(),

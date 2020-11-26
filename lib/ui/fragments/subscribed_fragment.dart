@@ -26,24 +26,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class SubscribedFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Color accentColor = Theme.of(context).accentColor;
-    final Color primaryColor = Theme.of(context).primaryColor;
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: accentTextColor,
-    );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color:
-          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-    );
-    final Color backgroundColor = Theme.of(context).backgroundColor;
-    final Color scaffoldBackgroundColor =
-        Theme.of(context).scaffoldBackgroundColor;
+    final ThemeData theme = Theme.of(context);
     final SubscribedModel subscribedModel =
         Provider.of<SubscribedModel>(context, listen: false);
     return AnnotatedRegion(
@@ -63,8 +46,10 @@ class SubscribedFragment extends StatelessWidget {
           },
           child: SmartRefresher(
             header: WaterDropMaterialHeader(
-              backgroundColor: accentColor,
-              color: accentTextColor,
+              backgroundColor: theme.accentColor,
+              color: theme.accentColor.computeLuminance() < 0.5
+                  ? Colors.white
+                  : Colors.black,
               distance: Sz.statusBarHeight + 12.0,
             ),
             controller: subscribedModel.refreshController,
@@ -73,20 +58,13 @@ class SubscribedFragment extends StatelessWidget {
             onRefresh: subscribedModel.refresh,
             child: CustomScrollView(
               slivers: [
-                _buildHeader(backgroundColor, scaffoldBackgroundColor),
+                _buildHeader(theme),
                 _buildRssSection(),
-                _buildRssList(backgroundColor),
-                _buildSeasonRssSection(
-                    context, backgroundColor, subscribedModel),
-                _buildSeasonRssList(backgroundColor, subscribedModel),
+                _buildRssList(theme),
+                _buildSeasonRssSection(theme, subscribedModel),
+                _buildSeasonRssList(theme, subscribedModel),
                 _buildRssRecordsSection(),
-                _buildRssRecordsList(
-                  accentColor,
-                  primaryColor,
-                  backgroundColor,
-                  fileTagStyle,
-                  titleTagStyle,
-                ),
+                _buildRssRecordsList(theme),
               ],
             ),
           ),
@@ -95,10 +73,7 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(
-    final Color backgroundColor,
-    final Color scaffoldBackgroundColor,
-  ) {
+  Widget _buildHeader(final ThemeData theme) {
     return Selector<SubscribedModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
@@ -106,7 +81,9 @@ class SubscribedFragment extends StatelessWidget {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: hasScrolled ? backgroundColor : scaffoldBackgroundColor,
+              color: hasScrolled
+                  ? theme.backgroundColor
+                  : theme.scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
                       BoxShadow(
@@ -150,7 +127,7 @@ class SubscribedFragment extends StatelessWidget {
   }
 
   Widget _buildSeasonRssList(
-    final Color backgroundColor,
+    final ThemeData theme,
     final SubscribedModel subscribedModel,
   ) {
     return Selector<SubscribedModel, List<Bangumi>>(
@@ -179,8 +156,8 @@ class SubscribedFragment extends StatelessWidget {
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                   colors: [
-                    backgroundColor.withOpacity(0.72),
-                    backgroundColor.withOpacity(0.9),
+                    theme.backgroundColor.withOpacity(0.72),
+                    theme.backgroundColor.withOpacity(0.9),
                   ],
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -211,8 +188,8 @@ class SubscribedFragment extends StatelessWidget {
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                   colors: [
-                    backgroundColor.withOpacity(0.72),
-                    backgroundColor.withOpacity(0.9),
+                    theme.backgroundColor.withOpacity(0.72),
+                    theme.backgroundColor.withOpacity(0.9),
                   ],
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -224,14 +201,14 @@ class SubscribedFragment extends StatelessWidget {
         return BangumiSliverGridFragment(
           flag: "subscribed",
           bangumis: bangumis,
+          handleSubscribe: (Bangumi bangumi) {},
         );
       },
     );
   }
 
   Widget _buildSeasonRssSection(
-    final BuildContext context,
-    final Color backgroundColor,
+    final ThemeData theme,
     final SubscribedModel subscribedModel,
   ) {
     return SliverToBoxAdapter(
@@ -257,7 +234,7 @@ class SubscribedFragment extends StatelessWidget {
             Selector<SubscribedModel, List<YearSeason>>(
               selector: (_, model) => model.years,
               shouldRebuild: (pre, next) => pre.ne(next),
-              builder: (_, years, __) {
+              builder: (context, years, __) {
                 if (years.isNullOrEmpty) return Container();
                 return MaterialButton(
                   onPressed: () {
@@ -268,14 +245,16 @@ class SubscribedFragment extends StatelessWidget {
                         years: subscribedModel.years,
                         galleries: [
                           SeasonGallery(
-                            season: subscribedModel.season.title,
+                            year: subscribedModel.season.year,
+                            season: subscribedModel.season.season,
+                            title: subscribedModel.season.title,
                             bangumis: subscribedModel.bangumis,
                           )
                         ],
                       ),
                     );
                   },
-                  color: backgroundColor,
+                  color: theme.backgroundColor,
                   minWidth: 0,
                   padding: EdgeInsets.all(5.0),
                   shape: CircleBorder(),
@@ -313,7 +292,7 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRssList(final Color backgroundColor) {
+  Widget _buildRssList(final ThemeData theme) {
     return SliverToBoxAdapter(
       child: Selector<SubscribedModel, Map<String, List<RecordItem>>>(
         selector: (_, model) => model.rss,
@@ -355,8 +334,8 @@ class SubscribedFragment extends StatelessWidget {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  backgroundColor.withOpacity(0.72),
-                  backgroundColor.withOpacity(0.9),
+                  theme.backgroundColor.withOpacity(0.72),
+                  theme.backgroundColor.withOpacity(0.9),
                 ],
               ),
               borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -589,13 +568,7 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRssRecordsList(
-    final Color accentColor,
-    final Color primaryColor,
-    final Color backgroundColor,
-    final TextStyle fileTagStyle,
-    final TextStyle titleTagStyle,
-  ) {
+  Widget _buildRssRecordsList(final ThemeData theme) {
     return Selector<SubscribedModel, List<RecordItem>>(
       selector: (_, model) => model.records,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -636,11 +609,7 @@ class SubscribedFragment extends StatelessWidget {
                     return RssRecordItem(
                       index: index,
                       record: record,
-                      accentColor: accentColor,
-                      primaryColor: primaryColor,
-                      backgroundColor: backgroundColor,
-                      fileTagStyle: fileTagStyle,
-                      titleTagStyle: titleTagStyle,
+                      theme: theme,
                       transform: transform,
                       onTap: () {
                         Navigator.pushNamed(

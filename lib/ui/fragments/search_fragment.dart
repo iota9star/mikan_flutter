@@ -70,20 +70,6 @@ class SearchFragment extends StatelessWidget {
     final ThemeData theme,
     final SearchModel searchModel,
   ) {
-    final Color accentColor = theme.accentColor;
-    final Color primaryColor = theme.primaryColor;
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-    );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color:
-          primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-    );
-    final Color backgroundColor = theme.backgroundColor;
     return Selector<SearchModel, List<RecordItem>>(
       selector: (_, model) => model.searchResult?.records,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -107,11 +93,7 @@ class SearchFragment extends StatelessWidget {
                     return SimpleRecordItem(
                       index: index,
                       record: record,
-                      accentColor: accentColor,
-                      primaryColor: primaryColor,
-                      backgroundColor: backgroundColor,
-                      fileTagStyle: fileTagStyle,
-                      titleTagStyle: titleTagStyle,
+                      theme: theme,
                       transform: transform,
                       onTap: () {
                         Navigator.pushNamed(

@@ -66,7 +66,9 @@ class SubscribedSeasonModel extends CancelableBaseModel {
     this._loading = false;
     if (resp.success) {
       final SeasonGallery seasonGallery = SeasonGallery(
-        season: season.title,
+        year: season.year,
+        season: season.season,
+        title: season.title,
         bangumis: resp.data ?? [],
       );
       if (this._loadIndex == 0) {

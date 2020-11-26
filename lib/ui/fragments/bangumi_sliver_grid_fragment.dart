@@ -36,12 +36,15 @@ class BangumiSliverGridFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    return _buildBangumiList(theme, bangumis);
+    final IndexModel indexModel =
+        Provider.of<IndexModel>(context, listen: false);
+    return _buildBangumiList(theme, bangumis, indexModel);
   }
 
   Widget _buildBangumiList(
     final ThemeData theme,
     final List<Bangumi> bangumis,
+    final IndexModel indexModel,
   ) {
     return SliverPadding(
       padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
@@ -57,6 +60,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
               theme,
               index,
               bangumis[index],
+              indexModel,
             );
           },
           childCount: bangumis.length,
@@ -69,6 +73,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final ThemeData theme,
     final int index,
     final Bangumi bangumi,
+    final IndexModel indexModel,
   ) {
     final String currFlag =
         "$flag:bangumi:$index:${bangumi.id}:${bangumi.cover}";
@@ -92,10 +97,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
           children: <Widget>[
             AnimatedTapContainer(
               transform: transform,
-              onTapStart: () =>
-                  context.read<IndexModel>().tapBangumiListItemFlag = currFlag,
-              onTapEnd: () =>
-                  context.read<IndexModel>().tapBangumiListItemFlag = null,
+              onTapStart: () => indexModel.tapBangumiListItemFlag = currFlag,
+              onTapEnd: () => indexModel.tapBangumiListItemFlag = null,
               onTap: () {
                 if (bangumi.grey == true) {
                   "此番组下暂无作品".toast();
