@@ -99,16 +99,16 @@ class LoginPage extends StatelessWidget {
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(16.0),
+              Radius.circular(24.0),
             ),
           ),
-          color: theme.scaffoldBackgroundColor.withOpacity(0),
+          color: theme.backgroundColor,
           padding: EdgeInsets.zero,
           child: Container(
             height: 48.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(
-                Radius.circular(16.0),
+                Radius.circular(24.0),
               ),
               gradient: LinearGradient(
                 colors: [

@@ -459,6 +459,7 @@ class IndexFragment extends StatelessWidget {
           child: SizedBox(
             height: 160.0,
             child: ListView.builder(
+              physics: BouncingScrollPhysics(),
               itemCount: records.length,
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.only(left: 16.0),

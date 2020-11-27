@@ -59,11 +59,11 @@ class SubscribedFragment extends StatelessWidget {
             child: CustomScrollView(
               slivers: [
                 _buildHeader(theme),
-                _buildRssSection(),
+                _buildRssSection(context, theme, subscribedModel),
                 _buildRssList(theme),
                 _buildSeasonRssSection(theme, subscribedModel),
                 _buildSeasonRssList(theme, subscribedModel),
-                _buildRssRecordsSection(),
+                _buildRssRecordsSection(context, theme),
                 _buildRssRecordsList(theme),
               ],
             ),
@@ -215,8 +215,8 @@ class SubscribedFragment extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(
           left: 16.0,
-          right: 8.0,
-          top: 16.0,
+          right: 16.0,
+          top: 8.0,
           bottom: 8.0,
         ),
         child: Row(
@@ -257,6 +257,7 @@ class SubscribedFragment extends StatelessWidget {
                   color: theme.backgroundColor,
                   minWidth: 0,
                   padding: EdgeInsets.all(5.0),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: CircleBorder(),
                   child: Icon(
                     FluentIcons.chevron_right_24_regular,
@@ -271,7 +272,11 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRssSection() {
+  Widget _buildRssSection(
+    final BuildContext context,
+    final ThemeData theme,
+    final SubscribedModel subscribedModel,
+  ) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.only(
@@ -280,13 +285,33 @@ class SubscribedFragment extends StatelessWidget {
           top: 16.0,
           bottom: 8.0,
         ),
-        child: Text(
-          "最近更新",
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-            height: 1.25,
-          ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "最近更新",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  height: 1.25,
+                ),
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                _toRecentSubscribedPage(context);
+              },
+              color: theme.backgroundColor,
+              minWidth: 0,
+              padding: EdgeInsets.all(5.0),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: CircleBorder(),
+              child: Icon(
+                FluentIcons.chevron_right_24_regular,
+                size: 16.0,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -540,7 +565,10 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRssRecordsSection() {
+  Widget _buildRssRecordsSection(
+    final BuildContext context,
+    final ThemeData theme,
+  ) {
     return Selector<SubscribedModel, List<RecordItem>>(
       selector: (_, model) => model.records,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -554,13 +582,33 @@ class SubscribedFragment extends StatelessWidget {
               top: 16.0,
               bottom: 8.0,
             ),
-            child: Text(
-              "更新列表",
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                height: 1.25,
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "更新列表",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      height: 1.25,
+                    ),
+                  ),
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    _toRecentSubscribedPage(context);
+                  },
+                  color: theme.backgroundColor,
+                  minWidth: 0,
+                  padding: EdgeInsets.all(5.0),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: CircleBorder(),
+                  child: Icon(
+                    FluentIcons.chevron_right_24_regular,
+                    size: 16.0,
+                  ),
+                ),
+              ],
             ),
           ),
         );
