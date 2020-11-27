@@ -3,10 +3,10 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 
-class SubgroupModalFragment extends StatelessWidget {
+class SubgroupFragment extends StatelessWidget {
   final List<Subgroup> subgroups;
 
-  const SubgroupModalFragment({Key key, this.subgroups}) : super(key: key);
+  const SubgroupFragment({Key key, this.subgroups}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

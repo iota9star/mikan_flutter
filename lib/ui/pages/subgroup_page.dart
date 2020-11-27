@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/models/subgroup_model.dart';
@@ -100,11 +99,20 @@ class SubgroupPage extends StatelessWidget {
             final SeasonGallery gallery = galleries[index];
             return <Widget>[
               _buildYearSeasonSection(gallery.title),
-              BangumiSliverGridFragment(
-                flag: gallery.title,
-                bangumis: gallery.bangumis,
-                handleSubscribe: (Bangumi bangumi) {},
-              ),
+              galleries.length - 1 == index
+                  ? SliverPadding(
+                      padding: EdgeInsets.only(bottom: 16.0),
+                      sliver: BangumiSliverGridFragment(
+                        flag: gallery.title,
+                        bangumis: gallery.bangumis,
+                        handleSubscribe: (bangumi) {},
+                      ),
+                    )
+                  : BangumiSliverGridFragment(
+                      flag: gallery.title,
+                      bangumis: gallery.bangumis,
+                      handleSubscribe: (bangumi) {},
+                    ),
             ];
           }).expand((element) => element),
       ],

@@ -12,15 +12,14 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 @immutable
-class SelectSeasonModalFragment extends StatelessWidget {
+class SelectSeasonFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final IndexModel indexModel =
         Provider.of<IndexModel>(context, listen: false);
-    return Material(
-      color: theme.scaffoldBackgroundColor,
-      child: NotificationListener(
+    return Scaffold(
+      body: NotificationListener(
         onNotification: (notification) {
           if (notification is OverscrollIndicatorNotification) {
             notification.disallowGlow();

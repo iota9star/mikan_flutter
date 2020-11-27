@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/year_season.dart';
@@ -15,6 +16,7 @@ const List<String> routeNames = <String>[
   'login',
   'recent-subscribed',
   'record-detail',
+  'season',
   'season-list',
   'splash',
   'subgroup',
@@ -70,6 +72,17 @@ class Routes {
   ///
   /// RecordDetailPage : [Key key, String url]
   static const _RecordDetail recordDetail = _RecordDetail();
+
+  /// 'season'
+  ///
+  /// [name] : 'season'
+  ///
+  /// [routeName] : 'season'
+  ///
+  /// [constructors] :
+  ///
+  /// SingleSeasonPage : [Key key, Season season]
+  static const _Season season = _Season();
 
   /// 'season-list'
   ///
@@ -153,6 +166,20 @@ class _RecordDetail {
   Map<String, dynamic> d({Key key, String url}) => <String, dynamic>{
         'key': key,
         'url': url,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _Season {
+  const _Season();
+
+  String get name => 'season';
+
+  Map<String, dynamic> d({Key key, Season season}) => <String, dynamic>{
+        'key': key,
+        'season': season,
       };
 
   @override

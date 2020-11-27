@@ -7,15 +7,18 @@ import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/year_season.dart';
+
 import 'ui/pages/bangumi_page.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
 import 'ui/pages/recent_subscribed_page.dart';
 import 'ui/pages/record_detail_page.dart';
 import 'ui/pages/season_list_page.dart';
+import 'ui/pages/single_season_page.dart';
 import 'ui/pages/splash_page.dart';
 import 'ui/pages/subgroup_page.dart';
 import 'ui/pages/subscribed_season_page.dart';
@@ -63,6 +66,15 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           url: arguments['url'] as String,
         ),
         routeName: 'record-detail',
+      );
+    case 'season':
+      return RouteResult(
+        name: name,
+        widget: SingleSeasonPage(
+          key: arguments['key'] as Key,
+          season: arguments['season'] as Season,
+        ),
+        routeName: 'season',
       );
     case 'season-list':
       return RouteResult(

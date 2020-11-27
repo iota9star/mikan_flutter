@@ -20,7 +20,7 @@ import 'package:mikan_flutter/providers/models/index_model.dart';
 import 'package:mikan_flutter/ui/components/ova_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
-import 'package:mikan_flutter/ui/fragments/select_season_modal_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -72,10 +72,18 @@ class IndexFragment extends StatelessWidget {
                     final BangumiRow bangumiRow = bangumiRows[index];
                     return [
                       _buildWeekSection(theme, bangumiRow),
-                      BangumiSliverGridFragment(
-                        bangumis: bangumiRow.bangumis,
-                        handleSubscribe: (bangumi) {},
-                      ),
+                      bangumiRows.length - 1 == index
+                          ? SliverPadding(
+                              padding: EdgeInsets.only(bottom: 16.0),
+                              sliver: BangumiSliverGridFragment(
+                                bangumis: bangumiRow.bangumis,
+                                handleSubscribe: (bangumi) {},
+                              ),
+                            )
+                          : BangumiSliverGridFragment(
+                              bangumis: bangumiRow.bangumis,
+                              handleSubscribe: (bangumi) {},
+                            ),
                     ];
                   }).expand((element) => element),
                 ],
@@ -436,7 +444,7 @@ class IndexFragment extends StatelessWidget {
       context: context,
       topRadius: Radius.circular(16.0),
       builder: (_) {
-        return SelectSeasonModalFragment();
+        return SelectSeasonFragment();
       },
     );
   }

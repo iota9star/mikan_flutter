@@ -6,15 +6,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
+import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/models/subscribed_season_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/ui/fragments/season_modal_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -114,11 +112,20 @@ class SubscribedSeasonPage extends StatelessWidget {
               _buildSeasonSection(context, theme, gallery),
               gallery.bangumis.isNullOrEmpty
                   ? _buildEmptySubscribedContainer(theme)
-                  : BangumiSliverGridFragment(
-                      flag: gallery.title,
-                      bangumis: gallery.bangumis,
-                      handleSubscribe: (Bangumi bangumi) {},
-                    ),
+                  : galleries.length - 1 == index
+                      ? SliverPadding(
+                          padding: EdgeInsets.only(bottom: 16.0),
+                          sliver: BangumiSliverGridFragment(
+                            flag: gallery.title,
+                            bangumis: gallery.bangumis,
+                            handleSubscribe: (bangumi) {},
+                          ),
+                        )
+                      : BangumiSliverGridFragment(
+                          flag: gallery.title,
+                          bangumis: gallery.bangumis,
+                          handleSubscribe: (bangumi) {},
+                        ),
             ];
           }).expand((element) => element),
       ],
@@ -189,12 +196,15 @@ class SubscribedSeasonPage extends StatelessWidget {
             ),
             MaterialButton(
               onPressed: () {
-                _showSeasonPanel(
+                Navigator.pushNamed(
                   context,
-                  Season(
-                    year: gallery.year,
-                    season: gallery.season,
-                    title: gallery.title,
+                  Routes.season.name,
+                  arguments: Routes.season.d(
+                    season: Season(
+                      year: gallery.year,
+                      season: gallery.season,
+                      title: gallery.title,
+                    ),
                   ),
                 );
               },
@@ -264,19 +274,6 @@ class SubscribedSeasonPage extends StatelessWidget {
             ),
           ),
         );
-      },
-    );
-  }
-
-  _showSeasonPanel(
-    final BuildContext context,
-    final Season season,
-  ) {
-    showCupertinoModalBottomSheet(
-      context: context,
-      topRadius: Radius.circular(16.0),
-      builder: (_) {
-        return SeasonModalFragment(season: season);
       },
     );
   }

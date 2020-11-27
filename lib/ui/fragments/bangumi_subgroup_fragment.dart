@@ -8,7 +8,7 @@ import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/models/bangumi_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
-import 'package:mikan_flutter/ui/fragments/subgroup_modal_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -225,7 +225,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
       expand: false,
       topRadius: Radius.circular(16.0),
       builder: (context) {
-        return SubgroupModalFragment(subgroups: subgroups);
+        return SubgroupFragment(subgroups: subgroups);
       },
     );
   }

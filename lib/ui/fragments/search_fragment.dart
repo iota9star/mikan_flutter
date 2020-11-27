@@ -21,14 +21,13 @@ class SearchFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    return Material(
-      color: theme.scaffoldBackgroundColor,
-      child: ChangeNotifierProvider(
-        create: (_) => SearchModel(),
-        child: Builder(builder: (context) {
-          final SearchModel searchModel =
-              Provider.of<SearchModel>(context, listen: false);
-          return NotificationListener(
+    return ChangeNotifierProvider(
+      create: (_) => SearchModel(),
+      child: Builder(builder: (context) {
+        final SearchModel searchModel =
+            Provider.of<SearchModel>(context, listen: false);
+        return Scaffold(
+          body: NotificationListener(
             onNotification: (notification) {
               if (notification is OverscrollIndicatorNotification) {
                 notification.disallowGlow();
@@ -41,9 +40,9 @@ class SearchFragment extends StatelessWidget {
               return true;
             },
             child: _buildCustomScrollView(context, theme, searchModel),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 

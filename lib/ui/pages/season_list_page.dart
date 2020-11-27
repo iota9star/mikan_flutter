@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/season_bangumi_rows.dart';
 import 'package:mikan_flutter/model/year_season.dart';
@@ -104,11 +103,20 @@ class SeasonListPage extends StatelessWidget {
                 final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
                 return <Widget>[
                   _buildBangumiRowSection(theme, bangumiRow),
-                  BangumiSliverGridFragment(
-                    flag: seasonTitle,
-                    bangumis: bangumiRow.bangumis,
-                    handleSubscribe: (Bangumi bangumi) {},
-                  ),
+                  seasonBangumis.bangumiRows.length - 1 == index
+                      ? SliverPadding(
+                          padding: EdgeInsets.only(bottom: 16.0),
+                          sliver: BangumiSliverGridFragment(
+                            flag: seasonTitle,
+                            bangumis: bangumiRow.bangumis,
+                            handleSubscribe: (bangumi) {},
+                          ),
+                        )
+                      : BangumiSliverGridFragment(
+                          flag: seasonTitle,
+                          bangumis: bangumiRow.bangumis,
+                          handleSubscribe: (bangumi) {},
+                        ),
                 ];
               },
             ).expand((element) => element),

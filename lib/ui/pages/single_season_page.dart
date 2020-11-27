@@ -1,5 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -7,16 +7,23 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/providers/models/season_model.dart';
+import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'bangumi_sliver_grid_fragment.dart';
-
-class SeasonModalFragment extends StatelessWidget {
+@FFRoute(
+  name: "season",
+  routeName: "season",
+  argumentImports: [
+    "import 'package:mikan_flutter/model/season.dart';",
+    "import 'package:flutter/material.dart';",
+  ],
+)
+class SingleSeasonPage extends StatelessWidget {
   final Season season;
 
-  const SeasonModalFragment({Key key, this.season}) : super(key: key);
+  const SingleSeasonPage({Key key, this.season}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -109,34 +116,19 @@ class SeasonModalFragment extends StatelessWidget {
                   : null,
             ),
             padding: EdgeInsets.only(
-              top: 16.0,
+              top: 16.0 + Sz.statusBarHeight,
               left: 16.0,
               right: 16.0,
               bottom: 16.0,
             ),
             duration: Duration(milliseconds: 240),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    this.season.title,
-                    style: TextStyle(
-                      fontSize: 24,
-                      height: 1.25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                MaterialButton(
-                  padding: EdgeInsets.zero,
-                  child: Icon(FluentIcons.dismiss_24_regular),
-                  minWidth: 0,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+            child: Text(
+              this.season.title,
+              style: TextStyle(
+                fontSize: 24,
+                height: 1.25,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         );
