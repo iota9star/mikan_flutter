@@ -9,9 +9,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_details.dart';
-import 'package:mikan_flutter/providers/view_models/index_model.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/record_detail_model.dart';
 import 'package:provider/provider.dart';
 
@@ -532,10 +531,12 @@ class RecordDetailPage extends StatelessWidget {
                             color: Colors.redAccent,
                           ),
                           onPressed: () {
-                            context.read<IndexModel>().subscribeBangumi(Bangumi(
-                                  id: recordDetail.id,
-                                  subscribed: recordDetail.subscribed,
-                                ));
+                            context.read<OpModel>().subscribeBangumi(
+                                  recordDetail.id,
+                                  recordDetail.subscribed,
+                                  onSuccess: () {},
+                                  onError: () {},
+                                );
                           },
                         ),
                       )
@@ -555,10 +556,12 @@ class RecordDetailPage extends StatelessWidget {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            context.read<IndexModel>().subscribeBangumi(Bangumi(
-                                  id: recordDetail.id,
-                                  subscribed: recordDetail.subscribed,
-                                ));
+                            context.read<OpModel>().subscribeBangumi(
+                                  recordDetail.id,
+                                  recordDetail.subscribed,
+                                  onSuccess: () {},
+                                  onError: () {},
+                                );
                           },
                         ),
                       ),

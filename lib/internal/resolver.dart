@@ -33,7 +33,6 @@ class Resolver {
     List<Element> bangumiElements;
     Map<dynamic, String> attributes;
     String temp;
-    int i = 1;
     for (final Element rowEle in rowElements) {
       bangumiRow = BangumiRow();
       temp = rowEle.children[0].text.trim();
@@ -59,8 +58,6 @@ class Resolver {
             int.tryParse(ele.querySelector(".num-node")?.text ?? "0") ?? 0;
         bangumis.add(bangumi);
         bangumi.week = temp;
-        bangumi.location = Location(i, (i / 3).ceil());
-        i++;
       }
       bangumiRow.num = bangumis.length;
       bangumiRow.updatedNum =
@@ -403,7 +400,6 @@ class Resolver {
     List<Bangumi> bangumis;
     List<Element> elements;
     Map attributes;
-    int i = 1;
     for (final Element ele in eles) {
       subgroupGallery = SeasonGallery();
       subgroupGallery.title =
@@ -426,8 +422,6 @@ class Resolver {
                     ?.split("?")
                     ?.elementAt(0) ??
             "";
-        bangumi.location = Location(i, (i / 3).ceil());
-        i++;
         bangumis.add(bangumi);
       }
       bangumis = HashSet.from(bangumis).toList().cast<Bangumi>();
@@ -716,7 +710,6 @@ class Resolver {
     final List<Element> elements = document.querySelectorAll("li") ?? [];
     Bangumi bangumi;
     Map<dynamic, String> attributes;
-    int i = 1;
     List<Bangumi> bangumis = [];
     for (final Element ele in elements) {
       bangumi = Bangumi();
@@ -732,8 +725,6 @@ class Resolver {
       bangumi.subscribed = ele.querySelector(".active") != null;
       bangumi.num =
           int.tryParse(ele.querySelector(".num-node")?.text ?? "0") ?? 0;
-      bangumi.location = Location(i, (i / 3).ceil());
-      i++;
       bangumis.add(bangumi);
     }
     return bangumis;

@@ -24,15 +24,14 @@ class BangumiAdapter extends TypeAdapter<Bangumi> {
       cover: fields[4] as String,
       subscribed: fields[5] as bool,
       grey: fields[6] as bool,
-      week: fields[9] as String,
-      location: fields[7] as Location,
-    )..coverSize = fields[8] as Size;
+      week: fields[8] as String,
+    )..coverSize = fields[7] as Size;
   }
 
   @override
   void write(BinaryWriter writer, Bangumi obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -48,10 +47,8 @@ class BangumiAdapter extends TypeAdapter<Bangumi> {
       ..writeByte(6)
       ..write(obj.grey)
       ..writeByte(7)
-      ..write(obj.location)
-      ..writeByte(8)
       ..write(obj.coverSize)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.week);
   }
 

@@ -40,9 +40,6 @@ class SubscribedSeasonModel extends CancelableBaseModel {
   SubscribedSeasonModel(this._years, this._galleries) {
     this._seasons =
         this._years.map((e) => e.seasons).expand((element) => element).toList();
-    Future.delayed(Duration(milliseconds: 250), () {
-      this._refreshController.requestLoading(needMove: false);
-    });
   }
 
   final List<YearSeason> _years;
@@ -51,7 +48,8 @@ class SubscribedSeasonModel extends CancelableBaseModel {
 
   List<SeasonGallery> get galleries => _galleries;
 
-  final RefreshController _refreshController = RefreshController();
+  final RefreshController _refreshController =
+      RefreshController(initialLoadStatus: LoadStatus.canLoading);
 
   RefreshController get refreshController => _refreshController;
 

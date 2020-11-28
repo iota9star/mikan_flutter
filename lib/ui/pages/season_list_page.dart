@@ -8,6 +8,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/season_bangumi_rows.dart';
 import 'package:mikan_flutter/model/year_season.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/season_list_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
@@ -74,7 +75,7 @@ class SeasonListPage extends StatelessWidget {
                     enablePullUp: true,
                     onRefresh: seasonListModel.refresh,
                     onLoading: seasonListModel.loadMore,
-                    child: _buildContentWrapper(theme, seasons),
+                    child: _buildContentWrapper(context, theme, seasons),
                   );
                 },
               ),
@@ -86,6 +87,7 @@ class SeasonListPage extends StatelessWidget {
   }
 
   Widget _buildContentWrapper(
+    final BuildContext context,
     final ThemeData theme,
     final List<SeasonBangumis> seasons,
   ) {
@@ -111,13 +113,27 @@ class SeasonListPage extends StatelessWidget {
                           sliver: BangumiSliverGridFragment(
                             flag: seasonTitle,
                             bangumis: bangumiRow.bangumis,
-                            handleSubscribe: (bangumi) {},
+                            handleSubscribe: (bangumi) {
+                              context.read<OpModel>().subscribeBangumi(
+                                    bangumi.id,
+                                    bangumi.subscribed,
+                                    onSuccess: () {},
+                                    onError: () {},
+                                  );
+                            },
                           ),
                         )
                       : BangumiSliverGridFragment(
                           flag: seasonTitle,
                           bangumis: bangumiRow.bangumis,
-                          handleSubscribe: (bangumi) {},
+                          handleSubscribe: (bangumi) {
+                            context.read<OpModel>().subscribeBangumi(
+                                  bangumi.id,
+                                  bangumi.subscribed,
+                                  onSuccess: () {},
+                                  onError: () {},
+                                );
+                          },
                         ),
                 ];
               },

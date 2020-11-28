@@ -7,6 +7,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/subgroup_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:provider/provider.dart';
@@ -66,6 +67,7 @@ class SubgroupPage extends StatelessWidget {
                     enablePullUp: false,
                     onRefresh: subgroupModel.refresh,
                     child: _buildContentWrapper(
+                      context,
                       theme,
                       subgroupModel,
                       galleries,
@@ -81,6 +83,7 @@ class SubgroupPage extends StatelessWidget {
   }
 
   Widget _buildContentWrapper(
+    final BuildContext context,
     final ThemeData theme,
     final SubgroupModel subgroupModel,
     final List<SeasonGallery> galleries,
@@ -107,13 +110,27 @@ class SubgroupPage extends StatelessWidget {
                       sliver: BangumiSliverGridFragment(
                         flag: gallery.title,
                         bangumis: gallery.bangumis,
-                        handleSubscribe: (bangumi) {},
+                        handleSubscribe: (bangumi) {
+                          context.read<OpModel>().subscribeBangumi(
+                                bangumi.id,
+                                bangumi.subscribed,
+                                onSuccess: () {},
+                                onError: () {},
+                              );
+                        },
                       ),
                     )
                   : BangumiSliverGridFragment(
                       flag: gallery.title,
                       bangumis: gallery.bangumis,
-                      handleSubscribe: (bangumi) {},
+                      handleSubscribe: (bangumi) {
+                        context.read<OpModel>().subscribeBangumi(
+                              bangumi.id,
+                              bangumi.subscribed,
+                              onSuccess: () {},
+                              onError: () {},
+                            );
+                      },
                     ),
             ];
           }).expand((element) => element),

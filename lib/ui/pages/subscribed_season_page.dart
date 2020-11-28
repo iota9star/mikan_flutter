@@ -10,6 +10,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/subscribed_season_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
@@ -120,13 +121,27 @@ class SubscribedSeasonPage extends StatelessWidget {
                           sliver: BangumiSliverGridFragment(
                             flag: gallery.title,
                             bangumis: gallery.bangumis,
-                            handleSubscribe: (bangumi) {},
+                            handleSubscribe: (bangumi) {
+                              context.read<OpModel>().subscribeBangumi(
+                                    bangumi.id,
+                                    bangumi.subscribed,
+                                    onSuccess: () {},
+                                    onError: () {},
+                                  );
+                            },
                           ),
                         )
                       : BangumiSliverGridFragment(
                           flag: gallery.title,
                           bangumis: gallery.bangumis,
-                          handleSubscribe: (bangumi) {},
+                          handleSubscribe: (bangumi) {
+                            context.read<OpModel>().subscribeBangumi(
+                                  bangumi.id,
+                                  bangumi.subscribed,
+                                  onSuccess: () {},
+                                  onError: () {},
+                                );
+                          },
                         ),
             ];
           }).expand((element) => element),

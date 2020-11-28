@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:mikan_flutter/internal/data.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -13,7 +14,6 @@ import 'package:mikan_flutter/providers/view_models/index_model.dart';
 import 'package:mikan_flutter/providers/view_models/login_model.dart';
 import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 @FFRoute(
   name: "login",
@@ -75,12 +75,12 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildLoginButton(final ThemeData theme) {
-    return Selector<LoginModel, Tuple2<User, bool>>(
-      selector: (_, model) => Tuple2(model.user, model.loading),
+    return Selector<LoginModel, Pair<User, bool>>(
+      selector: (_, model) => Pair(model.user, model.loading),
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, tuple, __) {
-        final User user = tuple.item1;
-        final bool loading = tuple.item2;
+        final User user = tuple.first;
+        final bool loading = tuple.second;
         final bool isNotOk = user == null || user?.token?.isNullOrBlank == true;
         final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
         final Color iconColor =

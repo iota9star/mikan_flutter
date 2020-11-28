@@ -36,12 +36,9 @@ class Bangumi extends HiveObject {
   bool grey;
 
   @HiveField(7)
-  Location location;
-
-  @HiveField(8)
   Size coverSize;
 
-  @HiveField(9)
+  @HiveField(8)
   String week;
 
   Bangumi({
@@ -53,7 +50,6 @@ class Bangumi extends HiveObject {
     this.subscribed,
     this.grey,
     this.week,
-    this.location,
   });
 
   @override
@@ -66,22 +62,4 @@ class Bangumi extends HiveObject {
 
   @override
   int get hashCode => id.hashCode ^ name.hashCode;
-}
-
-class Location {
-  final int srow;
-  final int row;
-
-  const Location(this.srow, this.row);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Location &&
-          runtimeType == other.runtimeType &&
-          srow == other.srow &&
-          row == other.row;
-
-  @override
-  int get hashCode => srow.hashCode ^ row.hashCode;
 }

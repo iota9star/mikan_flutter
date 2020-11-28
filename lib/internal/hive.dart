@@ -29,6 +29,7 @@ class MyHive {
   static const int MIAKN_SEASON = 8;
   static const int MIAKN_YEARSEASON = 9;
   static const int MIAKN_RECORD_ITEM = 10;
+  static const int MIAKN_ITEM_LOCATION = 11;
 
   static Box<ThemeItem> themeItemBox;
   static Box<Index> indexBox;
@@ -57,7 +58,7 @@ class MyHive {
         accentColor: HexColor.fromHex("#fe9b36").value,
         lightBackgroundColor: Colors.white.value,
         darkBackgroundColor: HexColor.fromHex("#293444").value,
-        lightScaffoldBackgroundColor: HexColor.fromHex("#eef0f6").value,
+        lightScaffoldBackgroundColor: HexColor.fromHex("#f1f2f7").value,
         darkScaffoldBackgroundColor: HexColor.fromHex("#1c262f").value,
       );
       themeItemBox.add(defaultTheme);

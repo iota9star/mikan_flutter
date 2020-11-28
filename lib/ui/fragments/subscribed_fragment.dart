@@ -15,6 +15,7 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/view_models/index_model.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
@@ -201,7 +202,14 @@ class SubscribedFragment extends StatelessWidget {
         return BangumiSliverGridFragment(
           flag: "subscribed",
           bangumis: bangumis,
-          handleSubscribe: (Bangumi bangumi) {},
+          handleSubscribe: (Bangumi bangumi) {
+            context.read<OpModel>().subscribeBangumi(
+                  bangumi.id,
+                  bangumi.subscribed,
+                  onSuccess: () {},
+                  onError: () {},
+                );
+          },
         );
       },
     );

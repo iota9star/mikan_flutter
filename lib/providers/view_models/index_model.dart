@@ -2,7 +2,6 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/index.dart';
@@ -128,6 +127,7 @@ class IndexModel extends CancelableBaseModel {
     this._seasonLoading = false;
     if (resp.success) {
       final Index index = resp.data;
+      MyHive.db.put(HiveDBKey.MIKAN_INDEX, index);
       _bindIndexData(index);
       "加载完成...".toast();
     } else {
@@ -174,25 +174,6 @@ class IndexModel extends CancelableBaseModel {
       }
     }
     notifyListeners();
-  }
-
-  subscribeBangumi(final Bangumi bangumi) async {
-    final Resp resp =
-        await (this + Repo.subscribeBangumi(bangumi.subscribed, bangumi.id));
-    if (resp.success) {
-      this.tapBangumiListItemFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
-      notifyListeners();
-      Future.delayed(
-        Duration(milliseconds: 360),
-        () {
-          bangumi.subscribed = !bangumi.subscribed;
-          this.tapBangumiListItemFlag = null;
-          notifyListeners();
-        },
-      );
-    } else {
-      "操作失败：${resp.msg}".toast();
-    }
   }
 }
 

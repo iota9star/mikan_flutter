@@ -190,13 +190,14 @@ class _Fetcher {
           proto._sendPort.send(Resp(true, data: resp.data));
         } else {
           proto._sendPort.send(
-            Resp(false,
-                msg: "Request error! Http status："
-                    "${resp.statusCode} => ${resp.statusMessage}"),
+            Resp(
+              false,
+              msg: "${resp.statusCode}: ${resp.statusMessage}",
+            ),
           );
         }
       } catch (e) {
-        logd(e);
+        logd("请求出错：$e");
         if (e is DioError &&
             e.response.statusCode == 302 &&
             e.request.path == MikanUrl.LOGIN) {

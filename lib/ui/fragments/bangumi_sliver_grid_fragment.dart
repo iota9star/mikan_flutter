@@ -6,7 +6,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/providers/view_models/index_model.dart';
@@ -28,10 +27,6 @@ class BangumiSliverGridFragment extends StatelessWidget {
     @required this.bangumis,
     @required this.handleSubscribe,
   }) : super(key: key);
-
-  final double wrapperHeight = Sz.screenHeight / 2;
-  final double sectionHeight = 57;
-  final double itemHeight = (Sz.screenWidth - 32 - 32) / 3 + 40 + 16;
 
   @override
   Widget build(BuildContext context) {

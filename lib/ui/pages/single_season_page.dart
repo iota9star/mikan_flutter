@@ -6,6 +6,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/season.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/season_model.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -77,12 +78,26 @@ class SingleSeasonPage extends StatelessWidget {
                                   ),
                                   sliver: BangumiSliverGridFragment(
                                     bangumis: bangumiRow.bangumis,
-                                    handleSubscribe: (bangumi) {},
+                                    handleSubscribe: (bangumi) {
+                                      context.read<OpModel>().subscribeBangumi(
+                                            bangumi.id,
+                                            bangumi.subscribed,
+                                            onSuccess: () {},
+                                            onError: () {},
+                                          );
+                                    },
                                   ),
                                 )
                               : BangumiSliverGridFragment(
                                   bangumis: bangumiRow.bangumis,
-                                  handleSubscribe: (bangumi) {},
+                                  handleSubscribe: (bangumi) {
+                                    context.read<OpModel>().subscribeBangumi(
+                                          bangumi.id,
+                                          bangumi.subscribed,
+                                          onSuccess: () {},
+                                          onError: () {},
+                                        );
+                                  },
                                 ),
                         ];
                       }).expand((element) => element),
