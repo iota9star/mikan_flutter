@@ -11,8 +11,8 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_details.dart';
-import 'package:mikan_flutter/providers/models/index_model.dart';
-import 'package:mikan_flutter/providers/models/record_detail_model.dart';
+import 'package:mikan_flutter/providers/view_models/index_model.dart';
+import 'package:mikan_flutter/providers/view_models/record_detail_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(

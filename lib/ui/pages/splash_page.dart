@@ -8,7 +8,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
-import 'package:mikan_flutter/providers/models/index_model.dart';
+import 'package:mikan_flutter/providers/view_models/index_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(

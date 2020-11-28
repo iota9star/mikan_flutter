@@ -3,7 +3,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/providers/models/home_model.dart';
+import 'package:mikan_flutter/providers/view_models/home_model.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/list_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/subscribed_fragment.dart';

@@ -6,7 +6,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
-import 'package:mikan_flutter/providers/models/bangumi_model.dart';
+import 'package:mikan_flutter/providers/view_models/bangumi_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';

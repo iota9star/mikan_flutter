@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Theme;
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
-import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:mikan_flutter/providers/view_models/base_model.dart';
 
 class ThemeModel extends BaseModel {
   ThemeItem _themeItem;

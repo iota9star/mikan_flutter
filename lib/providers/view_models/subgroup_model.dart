@@ -3,7 +3,7 @@ import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
-import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:mikan_flutter/providers/view_models/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SubgroupModel extends CancelableBaseModel {

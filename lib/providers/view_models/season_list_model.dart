@@ -2,12 +2,12 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/season.dart';
-import 'package:mikan_flutter/model/season_gallery.dart';
+import 'package:mikan_flutter/model/season_bangumi_rows.dart';
 import 'package:mikan_flutter/model/year_season.dart';
-import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:mikan_flutter/providers/view_models/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class SubscribedSeasonModel extends CancelableBaseModel {
+class SeasonListModel extends CancelableBaseModel {
   bool _hasScrolled = false;
 
   bool get hasScrolled => _hasScrolled;
@@ -35,21 +35,20 @@ class SubscribedSeasonModel extends CancelableBaseModel {
 
   List<Season> get seasons => _seasons;
 
-  int _loadIndex = 1;
+  int _loadIndex = 0;
 
-  SubscribedSeasonModel(this._years, this._galleries) {
+  SeasonListModel(this._years) {
     this._seasons =
         this._years.map((e) => e.seasons).expand((element) => element).toList();
     Future.delayed(Duration(milliseconds: 250), () {
-      this._refreshController.requestLoading(needMove: false);
+      this._refreshController.requestRefresh();
     });
   }
 
   final List<YearSeason> _years;
+  List<SeasonBangumis> _seasonBangumis = [];
 
-  List<SeasonGallery> _galleries;
-
-  List<SeasonGallery> get galleries => _galleries;
+  List<SeasonBangumis> get seasonBangumis => _seasonBangumis;
 
   final RefreshController _refreshController = RefreshController();
 
@@ -61,27 +60,24 @@ class SubscribedSeasonModel extends CancelableBaseModel {
     }
     this._loading = true;
     final Season season = this._seasons[this._loadIndex];
-    final Resp resp = await (this +
-        Repo.mySubscribedSeasonBangumi(season.year, season.season));
+    final Resp resp = await (this + Repo.season(season.year, season.season));
     this._loading = false;
     if (resp.success) {
-      final SeasonGallery seasonGallery = SeasonGallery(
-        year: season.year,
-        season: season.season,
-        title: season.title,
-        bangumis: resp.data ?? [],
+      final SeasonBangumis seasonBangumis = SeasonBangumis(
+        season: season,
+        bangumiRows: resp.data ?? [],
       );
       if (this._loadIndex == 0) {
-        this._galleries = [seasonGallery];
+        this._seasonBangumis = [seasonBangumis];
       } else {
-        this._galleries = [...this._galleries, seasonGallery];
+        this._seasonBangumis = [...this._seasonBangumis, seasonBangumis];
       }
       this._loadIndex++;
       this._refreshController.completed();
       notifyListeners();
     } else {
       this._refreshController.failed();
-      "获取${season.title}订阅失败：${resp.msg}".toast();
+      "获取${season.title}失败：${resp.msg}".toast();
     }
   }
 

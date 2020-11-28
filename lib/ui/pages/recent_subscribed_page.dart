@@ -7,7 +7,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/providers/models/recent_subscribed_model.dart';
+import 'package:mikan_flutter/providers/view_models/recent_subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';

@@ -3,7 +3,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/user.dart';
-import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:mikan_flutter/providers/view_models/base_model.dart';
 
 class LoginModel extends CancelableBaseModel {
   final TextEditingController _accountController = TextEditingController();

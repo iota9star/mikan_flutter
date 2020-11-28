@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/search.dart';
-import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:mikan_flutter/providers/view_models/base_model.dart';
 
 class SearchModel extends CancelableBaseModel {
   final TextEditingController _keywordsController = TextEditingController();

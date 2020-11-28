@@ -7,7 +7,7 @@ import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
-import 'package:mikan_flutter/providers/models/base_model.dart';
+import 'package:mikan_flutter/providers/view_models/base_model.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
