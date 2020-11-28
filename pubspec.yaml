@@ -4,7 +4,7 @@ description: mikanani.me
 version: 0.0.7-alpha+7
 
 environment:
-  sdk: ">=2.8.4 <3.0.0"
+  sdk: ">=2.10.4 <3.0.0"
   flutter: ">=1.22.4 <2.0.0"
 
 dependencies:
@@ -38,6 +38,7 @@ dependencies:
   modal_bottom_sheet: ^1.0.0+1
   jiffy: ^3.0.1
   tuple: ^1.0.3
+  intent: ^1.4.0
 
 dev_dependencies:
   build_runner: ^1.10.6

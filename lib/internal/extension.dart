@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:clipboard/clipboard.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Intent, Action;
 import 'package:flutter/services.dart';
+import 'package:intent/action.dart';
+import 'package:intent/flag.dart';
+import 'package:intent/intent.dart';
+import 'package:mikan_flutter/internal/logger.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
@@ -82,23 +88,41 @@ extension StringExt on String {
     }
   }
 
-  launchApp() async {
-    if (this.isNullOrBlank) return "当前地址为空，忽略".toast();
-    if (await canLaunch(this)) {
-      await launch(this);
+  launchAppAndCopy() async {
+    Future _doOtherAction() async {
+      if (await canLaunch(this)) {
+        await launch(this);
+      } else {
+        "未找到可打开应用".toast();
+      }
+    }
+
+    if (this.isNullOrBlank) return "内容为空，取消操作".toast();
+    await FlutterClipboard.copy(this);
+    if (Platform.isAndroid) {
+      Intent()
+        ..setAction(Action.ACTION_VIEW)
+        ..setData(Uri.parse(this))
+        ..addFlag(Flag.FLAG_ACTIVITY_NEW_TASK |
+            Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+        ..startActivity().catchError((e) async {
+          logd(e);
+          await _doOtherAction();
+        });
     } else {
-      "无法找到可打开应用".toast();
+      await _doOtherAction();
     }
   }
 
   copy() {
-    if (this.isNullOrBlank) return "当前值为空，无内容可以复制".toast();
-    FlutterClipboard.copy(this).then((_) => "复制成功".toast());
+    if (this.isNullOrBlank) return "内容为空，取消操作".toast();
+    FlutterClipboard.copy(this).then((_) => "成功复制到剪切板".toast());
   }
 
   share() {
-    if (this.isNullOrBlank) return "没有内容供分享".toast();
+    if (this.isNullOrBlank) return "内容为空，取消操作".toast();
     Share.share(this);
+    FlutterClipboard.copy(this).then((_) => "尝试分享，并复制到剪切板".toast());
   }
 }
 

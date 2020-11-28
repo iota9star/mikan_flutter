@@ -229,7 +229,7 @@ class RssRecordItem extends StatelessWidget {
                       color: theme.accentColor,
                       iconSize: 20.0,
                       onPressed: () {
-                        record.torrent.launchApp();
+                        record.torrent.launchAppAndCopy();
                         record.torrent.copy();
                       },
                     ),
@@ -239,7 +239,7 @@ class RssRecordItem extends StatelessWidget {
                       tooltip: "复制并尝试打开磁力链接",
                       iconSize: 20.0,
                       onPressed: () {
-                        record.magnet.launchApp();
+                        record.magnet.launchAppAndCopy();
                         record.magnet.copy();
                       },
                     ),
@@ -249,7 +249,7 @@ class RssRecordItem extends StatelessWidget {
                       tooltip: "分享",
                       iconSize: 20.0,
                       onPressed: () {
-                        record.magnet.share();
+                        record.shareString().share();
                       },
                     ),
                     // IconButton(

@@ -1,3 +1,5 @@
+import 'package:mikan_flutter/internal/consts.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 
 class RecordItem {
@@ -39,4 +41,50 @@ class RecordItem {
 
   @override
   int get hashCode => url.hashCode;
+
+  String shareString() {
+    final StringBuffer sb = StringBuffer();
+    if (name.isNotBlank) {
+      sb..write("番组名称：")..write(name)..write("\n");
+    }
+    if (id.isNotBlank) {
+      sb
+        ..write("番组地址：")
+        ..write(MikanUrl.BASE_URL)
+        ..write(MikanUrl.BANGUMI)
+        ..write(id)
+        ..write("\n");
+    }
+    if (title.isNotBlank) {
+      sb..write("标题：")..write(title)..write("\n");
+    }
+    if (url.isNotBlank) {
+      sb..write("详情地址：")..write(url)..write("\n");
+    }
+    if (publishAt.isNotBlank) {
+      sb..write("发布时间：")..write(publishAt)..write("\n");
+    }
+    if (size.isNotBlank) {
+      sb..write("文件大小：")..write(size)..write("\n");
+    }
+    if (groups.isSafeNotEmpty) {
+      sb
+        ..write("字幕组：")
+        ..write(groups.map((e) => e.name).join("，"))
+        ..write("\n");
+    }
+    if (tags.isSafeNotEmpty) {
+      sb..write("标签：")..write(tags.join("，"))..write("\n");
+    }
+    if (cover.isNotBlank) {
+      sb..write("封面地址：")..write(cover)..write("\n");
+    }
+    if (magnet.isNotBlank) {
+      sb..write("磁链地址：")..write(magnet)..write("\n");
+    }
+    if (torrent.isNotBlank) {
+      sb..write("种子地址：")..write(torrent)..write("\n");
+    }
+    return sb.toString();
+  }
 }

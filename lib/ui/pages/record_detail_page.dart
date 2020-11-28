@@ -359,7 +359,7 @@ class RecordDetailPage extends StatelessWidget {
                   SizedBox(width: 16.0),
                   MaterialButton(
                     onPressed: () {
-                      recordDetail.magnet.launchApp();
+                      recordDetail.magnet.launchAppAndCopy();
                       recordDetail.magnet.copy();
                     },
                     child: Container(
