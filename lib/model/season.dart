@@ -1,7 +1,20 @@
-class Season {
+import 'package:hive/hive.dart';
+import 'package:mikan_flutter/internal/hive.dart';
+
+part 'season.g.dart';
+
+@HiveType(typeId: MyHive.MIAKN_SEASON)
+class Season extends HiveObject {
+  @HiveField(0)
   String year;
+
+  @HiveField(1)
   String season;
+
+  @HiveField(2)
   String title;
+
+  @HiveField(3)
   bool active;
 
   Season({

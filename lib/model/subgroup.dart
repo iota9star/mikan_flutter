@@ -1,5 +1,14 @@
-class Subgroup {
+import 'package:hive/hive.dart';
+import 'package:mikan_flutter/internal/hive.dart';
+
+part 'subgroup.g.dart';
+
+@HiveType(typeId: MyHive.MIAKN_SUBGROUP)
+class Subgroup extends HiveObject {
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
 
   Subgroup({

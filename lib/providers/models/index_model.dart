@@ -1,4 +1,5 @@
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
@@ -96,6 +97,8 @@ class IndexModel extends CancelableBaseModel {
   }
 
   IndexModel() {
+    final Index index = MyHive.db.get(HiveDBKey.MIKAN_INDEX);
+    this._bindIndexData(index);
     refresh();
   }
 
@@ -125,23 +128,23 @@ class IndexModel extends CancelableBaseModel {
     this._seasonLoading = false;
     if (resp.success) {
       final Index index = resp.data;
-      if (index == null) return;
-      this._years = index.years;
-      this._selectedSeason = this._years?.getOrNull(0)?.seasons?.getOrNull(0);
-      _subscribedModel.years = this._years;
-      this._bangumiRows = index.bangumiRows;
-      this._selectedBangumiRow = this._bangumiRows[0];
-      this._carousels = index.carousels;
-      this._user = index.user;
+      _bindIndexData(index);
       "加载完成...".toast();
     } else {
-      if (resp.msg.isNotBlank) {
-        resp.msg.toast();
-      } else {
-        "加载失败...".toast();
-      }
+      "获取首页数据失败：${resp.msg}".toast();
     }
     notifyListeners();
+  }
+
+  void _bindIndexData(Index index) {
+    if (index == null) return;
+    this._years = index.years;
+    this._selectedSeason = this._years?.getOrNull(0)?.seasons?.getOrNull(0);
+    _subscribedModel.years = this._years;
+    this._bangumiRows = index.bangumiRows;
+    this._selectedBangumiRow = this._bangumiRows[0];
+    this._carousels = index.carousels;
+    this._user = index.user;
   }
 
   List<BangumiRow> get bangumiRows => _bangumiRows;

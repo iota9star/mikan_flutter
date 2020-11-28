@@ -1,32 +1,41 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/model/hive_ids.dart';
+import 'package:mikan_flutter/internal/hive.dart';
 
-part 'theme.g.dart';
+part 'theme_item.g.dart';
 
-@HiveType(typeId: HiveIds.THEME_ID)
-class Theme extends HiveObject {
+@HiveType(typeId: MyHive.THEME_ITEM)
+class ThemeItem extends HiveObject {
   @HiveField(0)
   int id;
+
   @HiveField(1)
   bool canDelete;
+
   @HiveField(2)
   bool autoMode;
+
   @HiveField(3)
   int primaryColor;
+
   @HiveField(4)
   int accentColor;
+
   @HiveField(5)
   int lightBackgroundColor;
+
   @HiveField(6)
   int darkBackgroundColor;
+
   @HiveField(7)
   int lightScaffoldBackgroundColor;
+
   @HiveField(8)
   int darkScaffoldBackgroundColor;
+
   @HiveField(9)
   String fontFamily;
 
-  Theme({
+  ThemeItem({
     this.id,
     this.canDelete,
     this.autoMode,
@@ -42,7 +51,7 @@ class Theme extends HiveObject {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Theme &&
+      other is ThemeItem &&
           runtimeType == other.runtimeType &&
           id == other.id &&
           canDelete == other.canDelete &&

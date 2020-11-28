@@ -1,35 +1,51 @@
+import 'package:hive/hive.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 
-class RecordItem {
-  String cover;
+part 'record_item.g.dart';
 
+@HiveType(typeId: MyHive.MIAKN_RECORD_ITEM)
+class RecordItem {
+  @HiveField(0)
   String id;
 
+  @HiveField(1)
+  String name;
+
+  @HiveField(2)
+  String cover;
+
+  // 标题
+  @HiveField(3)
+  String title;
+
   // 发布时间
+  @HiveField(4)
   String publishAt;
 
   // 字幕组
+  @HiveField(5)
   List<Subgroup> groups;
 
   // 详情地址
+  @HiveField(6)
   String url;
 
-  // 标题
-  String title;
-
   // 磁链地址
+  @HiveField(7)
   String magnet;
 
   // 文件大小
+  @HiveField(8)
   String size;
 
   // 种子下载地址
+  @HiveField(9)
   String torrent;
 
-  String name;
-
+  @HiveField(10)
   List<String> tags;
 
   @override

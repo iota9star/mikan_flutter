@@ -9,11 +9,11 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:isolate/isolate_runner.dart';
 import 'package:isolate/load_balancer.dart';
-import 'package:mikan_flutter/base/store.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/logger.dart';
 import 'package:mikan_flutter/internal/resolver.dart';
+import 'package:mikan_flutter/internal/store.dart';
 
 class _BaseInterceptor extends InterceptorsWrapper {
   @override

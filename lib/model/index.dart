@@ -1,14 +1,28 @@
+import 'package:hive/hive.dart';
+import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 
-class Index {
+part 'index.g.dart';
+
+@HiveType(typeId: MyHive.MIAKN_INDEX)
+class Index extends HiveObject {
+  @HiveField(0)
   List<YearSeason> years;
+
+  @HiveField(1)
   List<BangumiRow> bangumiRows;
+
+  @HiveField(2)
   Map<String, List<RecordItem>> rss;
+
+  @HiveField(3)
   List<Carousel> carousels;
+
+  @HiveField(4)
   User user;
 
   Index({

@@ -329,13 +329,10 @@ class SubscribedFragment extends StatelessWidget {
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return _buildMoreRssItemBtn(context, rss);
-                  }
-                  final entry = rss.entries.elementAt(index - 1);
+                  final entry = rss.entries.elementAt(index);
                   return _buildRssListItemCover(entry);
                 },
-                itemCount: rss.length + 1,
+                itemCount: rss.length,
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
               ),
@@ -372,73 +369,7 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildMoreRssItemBtn(
-    final BuildContext context,
-    final Map<String, List<RecordItem>> rss,
-  ) {
-    return Selector<IndexModel, String>(
-      selector: (_, model) => model.tapBangumiRssItemFlag,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (_, tapScaleFlag, child) {
-        final String currFlag = "rss:more-rss";
-        final Matrix4 transform = tapScaleFlag == currFlag
-            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-            : Matrix4.identity();
-        return AnimatedTapContainer(
-          transform: transform,
-          onTapStart: () =>
-              context.read<IndexModel>().tapBangumiRssItemFlag = currFlag,
-          onTapEnd: () =>
-              context.read<IndexModel>().tapBangumiRssItemFlag = null,
-          onTap: () {
-            _toRecentSubscribedPage(context);
-          },
-          width: 64.0,
-          margin: EdgeInsets.symmetric(
-            horizontal: 6.0,
-            vertical: 8.0,
-          ),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: ExtendedNetworkImageProvider(
-                rss.entries.elementAt(0).value[0].cover,
-              ),
-            ),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 8.0,
-                color: Colors.black.withOpacity(0.1),
-              ),
-            ],
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: child,
-        );
-      },
-      child: Transform.scale(
-        scale: 1.08,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
-            child: Center(
-              child: Text(
-                "更多\n更新",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).accentColor,
-                  height: 1.25,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _toRecentSubscribedPage(BuildContext context) {
+  void _toRecentSubscribedPage(final BuildContext context) {
     Navigator.pushNamed(
       context,
       Routes.recentSubscribed.name,

@@ -1,5 +1,14 @@
-class Carousel {
+import 'package:hive/hive.dart';
+import 'package:mikan_flutter/internal/hive.dart';
+
+part 'carousel.g.dart';
+
+@HiveType(typeId: MyHive.MIAKN_CAROUSEL)
+class Carousel extends HiveObject {
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String cover;
 
   Carousel({

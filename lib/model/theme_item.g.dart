@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'theme.dart';
+part of 'theme_item.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ThemeAdapter extends TypeAdapter<Theme> {
+class ThemeItemAdapter extends TypeAdapter<ThemeItem> {
   @override
   final int typeId = 1;
 
   @override
-  Theme read(BinaryReader reader) {
+  ThemeItem read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Theme(
+    return ThemeItem(
       id: fields[0] as int,
       canDelete: fields[1] as bool,
       autoMode: fields[2] as bool,
@@ -31,7 +31,7 @@ class ThemeAdapter extends TypeAdapter<Theme> {
   }
 
   @override
-  void write(BinaryWriter writer, Theme obj) {
+  void write(BinaryWriter writer, ThemeItem obj) {
     writer
       ..writeByte(10)
       ..writeByte(0)
@@ -62,7 +62,7 @@ class ThemeAdapter extends TypeAdapter<Theme> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ThemeAdapter &&
+      other is ThemeItemAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
