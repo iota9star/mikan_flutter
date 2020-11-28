@@ -105,7 +105,9 @@ class SeasonListPage extends StatelessWidget {
                   _buildBangumiRowSection(theme, bangumiRow),
                   seasonBangumis.bangumiRows.length - 1 == index
                       ? SliverPadding(
-                          padding: EdgeInsets.only(bottom: 16.0),
+                          padding: EdgeInsets.only(
+                            bottom: 16.0 + Sz.navBarHeight,
+                          ),
                           sliver: BangumiSliverGridFragment(
                             flag: seasonTitle,
                             bangumis: bangumiRow.bangumis,

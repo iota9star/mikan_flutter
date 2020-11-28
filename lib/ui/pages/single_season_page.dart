@@ -70,10 +70,20 @@ class SingleSeasonPage extends StatelessWidget {
                         final BangumiRow bangumiRow = bangumiRows[index];
                         return [
                           _buildWeekSection(theme, bangumiRow),
-                          BangumiSliverGridFragment(
-                            bangumis: bangumiRow.bangumis,
-                            handleSubscribe: (bangumi) {},
-                          ),
+                          bangumiRows.length - 1 == index
+                              ? SliverPadding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 16.0 + Sz.navBarHeight,
+                                  ),
+                                  sliver: BangumiSliverGridFragment(
+                                    bangumis: bangumiRow.bangumis,
+                                    handleSubscribe: (bangumi) {},
+                                  ),
+                                )
+                              : BangumiSliverGridFragment(
+                                  bangumis: bangumiRow.bangumis,
+                                  handleSubscribe: (bangumi) {},
+                                ),
                         ];
                       }).expand((element) => element),
                     ],

@@ -165,6 +165,7 @@ class OVARecordItem extends StatelessWidget {
               ),
             ),
           ),
+          Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[

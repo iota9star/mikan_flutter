@@ -74,7 +74,9 @@ class IndexFragment extends StatelessWidget {
                       _buildWeekSection(theme, bangumiRow),
                       bangumiRows.length - 1 == index
                           ? SliverPadding(
-                              padding: EdgeInsets.only(bottom: 16.0),
+                              padding: EdgeInsets.only(
+                                bottom: 16.0 + Sz.navBarHeight,
+                              ),
                               sliver: BangumiSliverGridFragment(
                                 bangumis: bangumiRow.bangumis,
                                 handleSubscribe: (bangumi) {},
