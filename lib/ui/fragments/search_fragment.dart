@@ -367,9 +367,7 @@ class SearchFragment extends StatelessWidget {
           minWidth: 0,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
-            ),
+            borderRadius: BorderRadius.circular(10.0),
           ),
           child: Text(
             subgroup.name,
@@ -451,7 +449,7 @@ class SearchFragment extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.1),
-        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        borderRadius: BorderRadius.circular(12.0),
       ),
       child: TextField(
         decoration: InputDecoration(
@@ -544,7 +542,7 @@ class SearchFragment extends StatelessWidget {
                     theme.accentColor.withOpacity(0.1),
                   ],
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(2)),
+                borderRadius: BorderRadius.circular(2.0),
               ),
             ),
             SizedBox(width: 4.0),
@@ -568,7 +566,7 @@ class SearchFragment extends StatelessWidget {
           cover = Container(
             padding: EdgeInsets.all(28.0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderRadius: BorderRadius.circular(10.0),
             ),
             child: Center(
               child: SpinKitPumpingHeart(
@@ -583,7 +581,7 @@ class SearchFragment extends StatelessWidget {
         if (value.extendedImageLoadState == LoadState.failed) {
           cover = Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderRadius: BorderRadius.circular(10.0),
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
                 fit: BoxFit.cover,
@@ -598,7 +596,7 @@ class SearchFragment extends StatelessWidget {
           );
           cover = Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderRadius: BorderRadius.circular(10.0),
               image: DecorationImage(
                 image: value.imageProvider,
                 fit: BoxFit.cover,

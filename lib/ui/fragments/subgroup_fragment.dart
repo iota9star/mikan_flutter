@@ -61,9 +61,7 @@ class SubgroupFragment extends StatelessWidget {
                           ),
                         ),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(12.0),
-                          ),
+                          borderRadius: BorderRadius.circular(12.0),
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,

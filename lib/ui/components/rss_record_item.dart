@@ -55,9 +55,9 @@ class RssRecordItem extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: theme.backgroundColor,
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+        borderRadius: BorderRadius.circular(16.0),
       ),
-      height: 204.0,
+      height: 196.0,
       width: double.infinity,
       child: Row(
         children: [
@@ -73,17 +73,18 @@ class RssRecordItem extends StatelessWidget {
                 ),
               );
             },
-            child: Hero(
-              tag: heroTag,
-              child: Container(
-                width: 142.0,
-                height: 204.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.grey.withOpacity(0.2),
-                  image: DecorationImage(
-                    image: ExtendedNetworkImageProvider(record.cover),
-                    fit: BoxFit.cover,
+            child: AspectRatio(
+              aspectRatio: 2 / 3,
+              child: Hero(
+                tag: heroTag,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.0),
+                    color: Colors.grey.withOpacity(0.2),
+                    image: DecorationImage(
+                      image: ExtendedNetworkImageProvider(record.cover),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -99,7 +100,7 @@ class RssRecordItem extends StatelessWidget {
                     left: 12.0,
                     right: 16.0,
                     top: 16.0,
-                    bottom: 8.0,
+                    bottom: 6.0,
                   ),
                   child: Text(
                     record.name,

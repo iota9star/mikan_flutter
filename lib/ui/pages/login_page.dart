@@ -98,18 +98,14 @@ class LoginPage extends StatelessWidget {
             });
           },
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(24.0),
-            ),
+            borderRadius: BorderRadius.circular(24.0),
           ),
           color: theme.backgroundColor,
           padding: EdgeInsets.zero,
           child: Container(
             height: 48.0,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(24.0),
-              ),
+              borderRadius: BorderRadius.circular(24.0),
               gradient: LinearGradient(
                 colors: [
                   btnColor,
@@ -185,7 +181,7 @@ class LoginPage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.1),
-        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+        borderRadius: BorderRadius.circular(16.0),
       ),
       child: TextField(
         controller: loginModel.accountController,
@@ -206,7 +202,7 @@ class LoginPage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.1),
-        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+        borderRadius: BorderRadius.circular(16.0),
       ),
       child: TextField(
         obscureText: true,

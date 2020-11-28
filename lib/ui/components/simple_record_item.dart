@@ -51,7 +51,7 @@ class SimpleRecordItem extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         gradient: _createGradientByIndex(index, theme.backgroundColor),
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+        borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

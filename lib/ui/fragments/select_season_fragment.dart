@@ -128,9 +128,7 @@ class SelectSeasonFragment extends StatelessWidget {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   padding: EdgeInsets.all(0.0),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Text(
                     season.season,

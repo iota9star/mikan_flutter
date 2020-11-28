@@ -87,16 +87,22 @@ class BangumiSliverGridFragment extends StatelessWidget {
         final Matrix4 transform = tapScaleFlag == currFlag
             ? Matrix4.diagonal3Values(0.9, 0.9, 1)
             : Matrix4.identity();
-        final Widget cover = _buildBangumiItemCover(
-          theme,
-          currFlag,
-          bangumi,
-        );
+        final Widget cover = _buildBangumiItemCover(currFlag, bangumi);
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             AnimatedTapContainer(
               transform: transform,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 8.0,
+                    color: Colors.black.withOpacity(0.08),
+                  )
+                ],
+                color: theme.backgroundColor,
+              ),
               onTapStart: () => indexModel.tapBangumiListItemFlag = currFlag,
               onTapEnd: () => indexModel.tapBangumiListItemFlag = null,
               onTap: () {
@@ -115,9 +121,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                 }
               },
               child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10.0),
-                ),
+                borderRadius: BorderRadius.circular(8.0),
                 child: Stack(
                   overflow: Overflow.clip,
                   children: [
@@ -159,7 +163,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 10.0,
+              height: 12.0,
             ),
             Tooltip(
               padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
@@ -183,7 +187,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                           theme.accentColor.withOpacity(0.1),
                         ],
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(2)),
+                      borderRadius: BorderRadius.circular(2.0),
                     ),
                   ),
                   SizedBox(width: 4.0),
@@ -239,7 +243,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
               width: 24.0,
               height: 24.0,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(8.0),
                 color: Colors.black38,
               ),
               child: IconButton(
@@ -259,34 +263,30 @@ class BangumiSliverGridFragment extends StatelessWidget {
   }
 
   Widget _buildBangumiItemCover(
-    final ThemeData theme,
     final String currFlag,
     final Bangumi bangumi,
   ) {
     return ExtendedImage.network(
       bangumi.cover,
-      shape: BoxShape.rectangle,
-      borderRadius: BorderRadius.all(Radius.circular(10.0)),
       clearMemoryCacheWhenDispose: true,
       loadStateChanged: (state) {
         Widget child;
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
-            child = _buildBangumiItemPlaceholder(theme);
+            child = _buildBangumiItemPlaceholder();
             break;
           case LoadState.completed:
             child = _buildScrollableBackgroundCover(
-              theme,
               bangumi,
               state.imageProvider,
             );
             break;
           case LoadState.failed:
-            child = _buildBangumiItemError(theme);
+            child = _buildBangumiItemError();
             break;
         }
         return AspectRatio(
-          aspectRatio: 1.0,
+          aspectRatio: 3 / 4,
           child: Hero(
             tag: currFlag,
             child: child,
@@ -296,18 +296,9 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiItemPlaceholder(final ThemeData theme) {
+  Widget _buildBangumiItemPlaceholder() {
     return Container(
       padding: EdgeInsets.all(28.0),
-      decoration: BoxDecoration(
-        color: theme.backgroundColor,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 8.0,
-            color: Colors.black.withAlpha(24),
-          ),
-        ],
-      ),
       child: Center(
         child: ExtendedImage.asset(
           "assets/mikan.png",
@@ -316,16 +307,9 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiItemError(final ThemeData theme) {
+  Widget _buildBangumiItemError() {
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 8.0,
-            color: Colors.black.withAlpha(24),
-          )
-        ],
-        color: theme.backgroundColor,
         image: DecorationImage(
           image: ExtendedAssetImageProvider("assets/mikan.png"),
           fit: BoxFit.cover,
@@ -336,19 +320,11 @@ class BangumiSliverGridFragment extends StatelessWidget {
   }
 
   Widget _buildScrollableBackgroundCover(
-    final ThemeData theme,
     final Bangumi bangumi,
     final ImageProvider imageProvider,
   ) {
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 8.0,
-            color: Colors.black.withAlpha(24),
-          )
-        ],
-        color: theme.backgroundColor,
         image: DecorationImage(
           image: imageProvider,
           fit: BoxFit.cover,

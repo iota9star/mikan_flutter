@@ -160,7 +160,7 @@ class SubscribedSeasonPage extends StatelessWidget {
               theme.backgroundColor.withOpacity(0.9),
             ],
           ),
-          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         child: Center(
           child: Text(

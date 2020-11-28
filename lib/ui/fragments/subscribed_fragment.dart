@@ -160,7 +160,7 @@ class SubscribedFragment extends StatelessWidget {
                     theme.backgroundColor.withOpacity(0.9),
                   ],
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                borderRadius: BorderRadius.circular(16.0),
               ),
               child: Center(child: CupertinoActivityIndicator()),
             ),
@@ -192,7 +192,7 @@ class SubscribedFragment extends StatelessWidget {
                     theme.backgroundColor.withOpacity(0.9),
                   ],
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                borderRadius: BorderRadius.circular(16.0),
               ),
               child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
             ),
@@ -325,7 +325,7 @@ class SubscribedFragment extends StatelessWidget {
         builder: (_, rss, __) {
           if (rss.isSafeNotEmpty)
             return SizedBox(
-              height: 64.0 + 24.0,
+              height: 64.0 + 16.0,
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 itemBuilder: (context, index) {
@@ -363,7 +363,7 @@ class SubscribedFragment extends StatelessWidget {
                   theme.backgroundColor.withOpacity(0.9),
                 ],
               ),
-              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              borderRadius: BorderRadius.circular(16.0),
             ),
             child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
           );
@@ -396,7 +396,7 @@ class SubscribedFragment extends StatelessWidget {
           width: 64.0,
           margin: EdgeInsets.symmetric(
             horizontal: 6.0,
-            vertical: 12.0,
+            vertical: 8.0,
           ),
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -411,7 +411,7 @@ class SubscribedFragment extends StatelessWidget {
                 color: Colors.black.withOpacity(0.1),
               ),
             ],
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            borderRadius: BorderRadius.circular(10.0),
           ),
           child: child,
         );
@@ -419,7 +419,7 @@ class SubscribedFragment extends StatelessWidget {
       child: Transform.scale(
         scale: 1.08,
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderRadius: BorderRadius.circular(10.0),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
             child: Center(
@@ -472,7 +472,7 @@ class SubscribedFragment extends StatelessWidget {
           width: 64.0,
           margin: EdgeInsets.symmetric(
             horizontal: 6.0,
-            vertical: 12.0,
+            vertical: 8.0,
           ),
           decoration: BoxDecoration(
             boxShadow: [
@@ -497,7 +497,7 @@ class SubscribedFragment extends StatelessWidget {
         );
       },
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderRadius: BorderRadius.circular(10.0),
         child: Stack(
           fit: StackFit.loose,
           overflow: Overflow.clip,

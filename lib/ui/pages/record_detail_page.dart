@@ -184,7 +184,7 @@ class RecordDetailPage extends StatelessWidget {
             theme.backgroundColor.withOpacity(0.9),
           ],
         ),
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+        borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,9 +316,7 @@ class RecordDetailPage extends StatelessWidget {
                         theme.backgroundColor.withOpacity(0.9),
                       ],
                     ),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(16.0),
-                    ),
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
                 ),
               ),
@@ -415,9 +413,7 @@ class RecordDetailPage extends StatelessWidget {
             theme.backgroundColor.withOpacity(0.9),
           ],
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(16.0),
-        ),
+        borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -467,7 +463,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withOpacity(0.6),
                 ),
               ],
-              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              borderRadius: BorderRadius.circular(16.0),
             ),
             child: Center(
               child: SpinKitPumpingHeart(
@@ -487,7 +483,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
-              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              borderRadius: BorderRadius.circular(16.0),
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
                 fit: BoxFit.cover,
@@ -508,7 +504,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
-              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              borderRadius: BorderRadius.circular(16.0),
               image: DecorationImage(
                 image: state.imageProvider,
                 fit: BoxFit.cover,

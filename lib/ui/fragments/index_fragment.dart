@@ -253,7 +253,7 @@ class IndexFragment extends StatelessWidget {
             },
             margin: EdgeInsets.only(top: 16.0, bottom: 12.0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              borderRadius: BorderRadius.circular(16.0),
               color: theme.backgroundColor,
               boxShadow: [
                 BoxShadow(

@@ -41,7 +41,7 @@ class ComplexRecordItem extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         gradient: _createGradientByIndex(theme, index),
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+        borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -186,8 +186,7 @@ class ComplexRecordItem extends StatelessWidget {
                             ),
                           ),
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0)),
+                            borderRadius: BorderRadius.circular(12.0),
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
