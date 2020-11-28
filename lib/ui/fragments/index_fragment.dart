@@ -322,9 +322,7 @@ class IndexFragment extends StatelessWidget {
                           final withoutName =
                               user == null || user.name.isNullOrBlank;
                           return Text(
-                            withoutName
-                                ? "Welcome to Mikan"
-                                : "Hi, ${user.name}",
+                            withoutName ? "Mikan Project" : "Hi, ${user.name}",
                             style: TextStyle(
                               fontSize: 14,
                               height: 1.25,

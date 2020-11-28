@@ -235,7 +235,7 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              "Welcome to Mikan",
+              "Mikan Project",
               style: TextStyle(fontSize: 14.0),
             ),
             Text(
