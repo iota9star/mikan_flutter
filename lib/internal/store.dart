@@ -13,6 +13,5 @@ class Store {
     cacheDir = await getTemporaryDirectory();
     docDir = await getApplicationDocumentsDirectory();
     filesDir = await getApplicationSupportDirectory();
-    print('cache: ${cacheDir.path}');
   }
 }

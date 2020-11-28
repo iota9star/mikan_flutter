@@ -89,13 +89,12 @@ class IndexModel extends CancelableBaseModel {
 
   bool get ovaLoading => _ovaLoading;
 
-  SubscribedModel _subscribedModel;
+  final SubscribedModel _subscribedModel;
 
-  set subscribedModel(SubscribedModel value) {
-    _subscribedModel = value;
-  }
-
-  IndexModel() {
+  IndexModel(this._subscribedModel) {
+    this._ovas = (MyHive.db
+            .get(HiveDBKey.MIKAN_OVA, defaultValue: <RecordItem>[]) as List)
+        .cast<RecordItem>();
     final Index index = MyHive.db.get(HiveDBKey.MIKAN_INDEX);
     this._bindIndexData(index);
     refresh();
@@ -114,6 +113,7 @@ class IndexModel extends CancelableBaseModel {
     this._ovaLoading = false;
     if (resp.success) {
       this._ovas = resp.data;
+      MyHive.db.put(HiveDBKey.MIKAN_OVA, this._ovas);
     } else {
       "获取OVA失败：${resp.msg}".toast();
     }
@@ -136,11 +136,11 @@ class IndexModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  void _bindIndexData(Index index) {
+  void _bindIndexData(final Index index) {
     if (index == null) return;
     this._years = index.years;
+    this._subscribedModel.years = this._years;
     this._selectedSeason = this._years?.getOrNull(0)?.seasons?.getOrNull(0);
-    _subscribedModel.years = this._years;
     this._bangumiRows = index.bangumiRows;
     this._selectedBangumiRow = this._bangumiRows[0];
     this._carousels = index.carousels;

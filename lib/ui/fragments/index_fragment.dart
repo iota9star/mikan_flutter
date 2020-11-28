@@ -51,6 +51,11 @@ class IndexFragment extends StatelessWidget {
           selector: (_, model) => model.bangumiRows,
           shouldRebuild: (pre, next) => pre.ne(next),
           builder: (_, bangumiRows, __) {
+            if (bangumiRows.isNullOrEmpty && indexModel.seasonLoading) {
+              return Center(
+                child: CupertinoActivityIndicator(),
+              );
+            }
             return SmartRefresher(
               controller: indexModel.refreshController,
               enablePullUp: false,
@@ -60,7 +65,7 @@ class IndexFragment extends StatelessWidget {
                 color: theme.accentColor.computeLuminance() < 0.5
                     ? Colors.white
                     : Colors.black,
-                distance: Sz.statusBarHeight + 10.0,
+                distance: Sz.statusBarHeight + 42.0,
               ),
               onRefresh: indexModel.refresh,
               child: CustomScrollView(

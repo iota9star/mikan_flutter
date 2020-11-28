@@ -10,8 +10,8 @@ import 'package:mikan_flutter/providers/view_models/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SubscribedModel extends CancelableBaseModel {
-  bool _seasonLoading = false;
-  bool _recordsLoading = false;
+  bool _seasonLoading = true;
+  bool _recordsLoading = true;
   Season _season;
   List<Bangumi> _bangumis;
   Map<String, List<RecordItem>> _rss;
@@ -27,7 +27,7 @@ class SubscribedModel extends CancelableBaseModel {
   set years(List<YearSeason> years) {
     this._years = years;
     if (years.isSafeNotEmpty) {
-      this.loadMySubscribedSeasonBangumi(years[0].seasons.first);
+      this._loadMySubscribedSeasonBangumi(years[0].seasons.first);
     }
   }
 
@@ -64,20 +64,19 @@ class SubscribedModel extends CancelableBaseModel {
   RefreshController get refreshController => _refreshController;
 
   SubscribedModel() {
-    this.loadRecentRecords();
+    this._loadRecentRecords();
   }
 
   refresh() async {
-    await this.loadRecentRecords();
-    await this.loadMySubscribedSeasonBangumi(this._season);
+    await this._loadRecentRecords();
+    await this._loadMySubscribedSeasonBangumi(this._season);
     _refreshController.refreshCompleted();
   }
 
-  loadMySubscribedSeasonBangumi(final Season season) async {
+  _loadMySubscribedSeasonBangumi(final Season season) async {
     if (season == null) return;
     this._season = season;
     this._seasonLoading = true;
-    notifyListeners();
     final Resp resp = await (this +
         Repo.mySubscribedSeasonBangumi(season.year, season.season));
     this._seasonLoading = false;
@@ -89,15 +88,16 @@ class SubscribedModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  loadRecentRecords() async {
+  _loadRecentRecords() async {
     this._recordsLoading = true;
-    notifyListeners();
     final Resp resp = await (this + Repo.day(2, 1));
+    this._recordsLoading = false;
     if (resp.success) {
       this._records = resp.data ?? [];
       this._rss = groupBy(resp.data ?? [], (it) => it.id);
     } else {
       "获取最近更新失败：${resp.msg}".toast();
     }
+    notifyListeners();
   }
 }

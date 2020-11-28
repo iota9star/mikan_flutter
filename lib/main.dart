@@ -95,10 +95,8 @@ class MikanApp extends StatelessWidget {
           ChangeNotifierProvider<OpModel>(
             create: (context) => OpModel(),
           ),
-          ChangeNotifierProxyProvider<SubscribedModel, IndexModel>(
-            create: (context) => IndexModel(),
-            update: (_, subscribed, index) =>
-                index..subscribedModel = subscribed,
+          ChangeNotifierProvider<IndexModel>(
+            create: (context) => IndexModel(context.read<SubscribedModel>()),
             lazy: false,
           ),
           ChangeNotifierProvider<ListModel>(

@@ -60,7 +60,7 @@ class SingleSeasonPage extends StatelessWidget {
                     color: theme.accentColor.computeLuminance() < 0.5
                         ? Colors.white
                         : Colors.black,
-                    distance: Sz.statusBarHeight + 10.0,
+                    distance: Sz.statusBarHeight + 42.0,
                   ),
                   onRefresh: seasonModel.refresh,
                   child: CustomScrollView(

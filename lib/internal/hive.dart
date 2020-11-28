@@ -70,4 +70,5 @@ class MyHive {
 class HiveDBKey {
   static const String THEME_ID = "THEME_ID";
   static const String MIKAN_INDEX = "MIKAN_INDEX";
+  static const String MIKAN_OVA = "MIKAN_OVA";
 }

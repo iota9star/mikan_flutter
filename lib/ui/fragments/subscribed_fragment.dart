@@ -51,7 +51,7 @@ class SubscribedFragment extends StatelessWidget {
               color: theme.accentColor.computeLuminance() < 0.5
                   ? Colors.white
                   : Colors.black,
-              distance: Sz.statusBarHeight + 12.0,
+              distance: Sz.statusBarHeight + 42.0,
             ),
             controller: subscribedModel.refreshController,
             enablePullDown: true,
@@ -61,7 +61,7 @@ class SubscribedFragment extends StatelessWidget {
               slivers: [
                 _buildHeader(theme),
                 _buildRssSection(context, theme, subscribedModel),
-                _buildRssList(theme),
+                _buildRssList(theme, subscribedModel),
                 _buildSeasonRssSection(theme, subscribedModel),
                 _buildSeasonRssList(theme, subscribedModel),
                 _buildRssRecordsSection(context, theme),
@@ -325,12 +325,45 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRssList(final ThemeData theme) {
+  Widget _buildRssList(
+    final ThemeData theme,
+    final SubscribedModel subscribedModel,
+  ) {
     return SliverToBoxAdapter(
       child: Selector<SubscribedModel, Map<String, List<RecordItem>>>(
         selector: (_, model) => model.rss,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, rss, __) {
+          if (subscribedModel.recordsLoading) {
+            return Container(
+              width: double.infinity,
+              height: 120.0,
+              margin: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                bottom: 8.0,
+                top: 8.0,
+              ),
+              padding: EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                bottom: 24.0,
+                top: 24.0,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    theme.backgroundColor.withOpacity(0.72),
+                    theme.backgroundColor.withOpacity(0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Center(child: CupertinoActivityIndicator()),
+            );
+          }
           if (rss.isSafeNotEmpty)
             return SizedBox(
               height: 64.0 + 16.0,
