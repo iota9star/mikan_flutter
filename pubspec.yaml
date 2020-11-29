@@ -38,6 +38,7 @@ dependencies:
   jiffy: ^3.0.1
   intent: ^1.4.0
   flutter_colorpicker: ^0.3.4
+  horizontal_card_pager: ^1.0.3
 
 dev_dependencies:
   build_runner: ^1.10.6

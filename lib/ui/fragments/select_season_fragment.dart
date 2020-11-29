@@ -74,7 +74,7 @@ class SelectSeasonFragment extends StatelessWidget {
               child: Text(
                 "年度番组",
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   height: 1.25,
                   fontWeight: FontWeight.bold,
                 ),
@@ -91,9 +91,10 @@ class SelectSeasonFragment extends StatelessWidget {
                 );
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: EdgeInsets.all(8.0),
               child: Icon(
                 FluentIcons.chevron_right_24_regular,
-                size: 24.0,
+                size: 16.0,
               ),
               minWidth: 0,
               color: theme.scaffoldBackgroundColor,

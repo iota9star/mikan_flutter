@@ -21,6 +21,8 @@ const List<String> routeNames = <String>[
   'splash',
   'subgroup',
   'subscribed-season',
+  'theme-factory',
+  'theme-list',
 ];
 
 class Routes {
@@ -123,6 +125,20 @@ class Routes {
   ///
   /// SubscribedSeasonPage : [Key key, List<YearSeason> years, List<SeasonGallery> galleries]
   static const _SubscribedSeason subscribedSeason = _SubscribedSeason();
+
+  /// 'theme-factory'
+  ///
+  /// [name] : 'theme-factory'
+  ///
+  /// [routeName] : 'theme-factory'
+  static const String themeFactory = 'theme-factory';
+
+  /// 'theme-list'
+  ///
+  /// [name] : 'theme-list'
+  ///
+  /// [routeName] : 'theme-list'
+  static const String themeList = 'theme-list';
 }
 
 class _Bangumi {

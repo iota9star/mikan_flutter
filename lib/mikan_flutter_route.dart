@@ -11,7 +11,6 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/year_season.dart';
-
 import 'ui/pages/bangumi_page.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
@@ -22,6 +21,8 @@ import 'ui/pages/single_season_page.dart';
 import 'ui/pages/splash_page.dart';
 import 'ui/pages/subgroup_page.dart';
 import 'ui/pages/subscribed_season_page.dart';
+import 'ui/pages/theme_factory_page.dart';
+import 'ui/pages/theme_list_page.dart';
 
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   arguments = arguments ?? const <String, dynamic>{};
@@ -109,6 +110,18 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           galleries: arguments['galleries'] as List<SeasonGallery>,
         ),
         routeName: 'subscribed-season',
+      );
+    case 'theme-factory':
+      return RouteResult(
+        name: name,
+        widget: ThemeFactoryPage(),
+        routeName: 'theme-factory',
+      );
+    case 'theme-list':
+      return RouteResult(
+        name: name,
+        widget: ThemeListPage(),
+        routeName: 'theme-list',
       );
     default:
       return const RouteResult(name: 'flutterCandies://notfound');
