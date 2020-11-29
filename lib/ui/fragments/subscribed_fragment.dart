@@ -224,8 +224,7 @@ class SubscribedFragment extends StatelessWidget {
         padding: const EdgeInsets.only(
           left: 16.0,
           right: 16.0,
-          top: 8.0,
-          bottom: 8.0,
+          top: 24.0,
         ),
         child: Row(
           children: [

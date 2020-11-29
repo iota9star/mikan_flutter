@@ -71,34 +71,25 @@ class SingleSeasonPage extends StatelessWidget {
                         final BangumiRow bangumiRow = bangumiRows[index];
                         return [
                           _buildWeekSection(theme, bangumiRow),
-                          bangumiRows.length - 1 == index
-                              ? SliverPadding(
-                                  padding: EdgeInsets.only(
+                          BangumiSliverGridFragment(
+                            padding: bangumiRows.length - 1 == index
+                                ? EdgeInsets.only(
+                                    left: 16.0,
+                                    right: 16.0,
+                                    top: 16.0,
                                     bottom: 16.0 + Sz.navBarHeight,
-                                  ),
-                                  sliver: BangumiSliverGridFragment(
-                                    bangumis: bangumiRow.bangumis,
-                                    handleSubscribe: (bangumi) {
-                                      context.read<OpModel>().subscribeBangumi(
-                                            bangumi.id,
-                                            bangumi.subscribed,
-                                            onSuccess: () {},
-                                            onError: () {},
-                                          );
-                                    },
-                                  ),
-                                )
-                              : BangumiSliverGridFragment(
-                                  bangumis: bangumiRow.bangumis,
-                                  handleSubscribe: (bangumi) {
-                                    context.read<OpModel>().subscribeBangumi(
-                                          bangumi.id,
-                                          bangumi.subscribed,
-                                          onSuccess: () {},
-                                          onError: () {},
-                                        );
-                                  },
-                                ),
+                                  )
+                                : EdgeInsets.all(16.0),
+                            bangumis: bangumiRow.bangumis,
+                            handleSubscribe: (bangumi) {
+                              context.read<OpModel>().subscribeBangumi(
+                                    bangumi.id,
+                                    bangumi.subscribed,
+                                    onSuccess: () {},
+                                    onError: () {},
+                                  );
+                            },
+                          ),
                         ];
                       }).expand((element) => element),
                     ],
@@ -186,7 +177,6 @@ class SingleSeasonPage extends StatelessWidget {
           top: 16.0,
           left: 16.0,
           right: 16.0,
-          bottom: 8.0,
         ),
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,

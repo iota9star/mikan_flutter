@@ -19,6 +19,7 @@ typedef HandleSubscribe = void Function(Bangumi bangumi);
 class BangumiSliverGridFragment extends StatelessWidget {
   final String flag;
   final List<Bangumi> bangumis;
+  final EdgeInsetsGeometry padding;
   final HandleSubscribe handleSubscribe;
 
   BangumiSliverGridFragment({
@@ -26,6 +27,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     this.flag,
     @required this.bangumis,
     @required this.handleSubscribe,
+    this.padding = const EdgeInsets.all(16.0),
   }) : super(key: key);
 
   @override
@@ -42,7 +44,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final IndexModel indexModel,
   ) {
     return SliverPadding(
-      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+      padding: this.padding,
       sliver: SliverWaterfallFlow(
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
           crossAxisSpacing: 16,

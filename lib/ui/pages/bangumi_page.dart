@@ -187,7 +187,7 @@ class BangumiPage extends StatelessWidget {
           margin: EdgeInsets.only(
             left: 16.0,
             right: 16.0,
-            bottom: 8.0,
+            bottom: 12.0,
           ),
           padding: EdgeInsets.all(24.0),
           decoration: BoxDecoration(
@@ -211,7 +211,7 @@ class BangumiPage extends StatelessWidget {
                   fontSize: 20.0,
                 ),
               ),
-              SizedBox(height: 8.0),
+              SizedBox(height: 12.0),
               Text(
                 bangumiDetail.intro,
                 textAlign: TextAlign.justify,
@@ -242,8 +242,8 @@ class BangumiPage extends StatelessWidget {
         }
         return Container(
           width: double.infinity,
-          margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-          padding: EdgeInsets.all(24),
+          margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
+          padding: EdgeInsets.all(24.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -267,8 +267,8 @@ class BangumiPage extends StatelessWidget {
               ),
               SizedBox(height: 12.0),
               Wrap(
-                spacing: 14.0,
-                runSpacing: 14.0,
+                spacing: 8.0,
+                runSpacing: 8.0,
                 children: List.generate(subgroups.length, (subgroupIndex) {
                   final String groupName = subgroups[subgroupIndex].name;
                   return ActionChip(
@@ -380,8 +380,8 @@ class BangumiPage extends StatelessWidget {
           margin: EdgeInsets.only(
             left: 16.0,
             right: 16.0,
-            bottom: 8.0,
-            top: 8.0,
+            bottom: 12.0,
+            top: 12.0,
           ),
           padding: EdgeInsets.only(
             left: 24.0,
@@ -411,7 +411,7 @@ class BangumiPage extends StatelessWidget {
                   fontSize: 24.0,
                 ),
               ),
-              SizedBox(height: 8.0),
+              SizedBox(height: 12.0),
               ...bangumiDetail.more.entries
                   .map((e) => Text(
                         "${e.key}: ${e.value}",

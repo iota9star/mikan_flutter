@@ -64,7 +64,7 @@ class ListFragment extends StatelessWidget {
       sliver: Selector<ListModel, int>(
         selector: (_, model) => model.recordsLength,
         shouldRebuild: (pre, next) => pre != next,
-        builder: (_, length, ___) {
+        builder: (_, length, __) {
           final List<RecordItem> records = listModel.records;
           return SliverList(
             delegate: SliverChildBuilderDelegate(

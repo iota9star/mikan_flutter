@@ -105,36 +105,26 @@ class SeasonListPage extends StatelessWidget {
                 final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
                 return <Widget>[
                   _buildBangumiRowSection(theme, bangumiRow),
-                  seasonBangumis.bangumiRows.length - 1 == index
-                      ? SliverPadding(
-                          padding: EdgeInsets.only(
+                  BangumiSliverGridFragment(
+                    flag: seasonTitle,
+                    padding: seasonBangumis.bangumiRows.length - 1 == index
+                        ? EdgeInsets.only(
+                            left: 16.0,
+                            right: 16.0,
+                            top: 16.0,
                             bottom: 16.0 + Sz.navBarHeight,
-                          ),
-                          sliver: BangumiSliverGridFragment(
-                            flag: seasonTitle,
-                            bangumis: bangumiRow.bangumis,
-                            handleSubscribe: (bangumi) {
-                              context.read<OpModel>().subscribeBangumi(
-                                    bangumi.id,
-                                    bangumi.subscribed,
-                                    onSuccess: () {},
-                                    onError: () {},
-                                  );
-                            },
-                          ),
-                        )
-                      : BangumiSliverGridFragment(
-                          flag: seasonTitle,
-                          bangumis: bangumiRow.bangumis,
-                          handleSubscribe: (bangumi) {
-                            context.read<OpModel>().subscribeBangumi(
-                                  bangumi.id,
-                                  bangumi.subscribed,
-                                  onSuccess: () {},
-                                  onError: () {},
-                                );
-                          },
-                        ),
+                          )
+                        : EdgeInsets.all(16.0),
+                    bangumis: bangumiRow.bangumis,
+                    handleSubscribe: (bangumi) {
+                      context.read<OpModel>().subscribeBangumi(
+                            bangumi.id,
+                            bangumi.subscribed,
+                            onSuccess: () {},
+                            onError: () {},
+                          );
+                    },
+                  ),
                 ];
               },
             ).expand((element) => element),
@@ -151,7 +141,6 @@ class SeasonListPage extends StatelessWidget {
           top: 16.0,
           left: 16.0,
           right: 16.0,
-          bottom: 8.0,
         ),
         child: Text(
           seasonTitle,
@@ -189,7 +178,6 @@ class SeasonListPage extends StatelessWidget {
           top: 16.0,
           left: 16.0,
           right: 16.0,
-          bottom: 8.0,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.max,

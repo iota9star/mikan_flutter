@@ -78,34 +78,25 @@ class IndexFragment extends StatelessWidget {
                     final BangumiRow bangumiRow = bangumiRows[index];
                     return [
                       _buildWeekSection(theme, bangumiRow),
-                      bangumiRows.length - 1 == index
-                          ? SliverPadding(
-                              padding: EdgeInsets.only(
+                      BangumiSliverGridFragment(
+                        padding: bangumiRows.length - 1 == index
+                            ? EdgeInsets.only(
+                                left: 16.0,
+                                right: 16.0,
+                                top: 16.0,
                                 bottom: 16.0 + Sz.navBarHeight,
-                              ),
-                              sliver: BangumiSliverGridFragment(
-                                bangumis: bangumiRow.bangumis,
-                                handleSubscribe: (bangumi) {
-                                  context.read<OpModel>().subscribeBangumi(
-                                        bangumi.id,
-                                        bangumi.subscribed,
-                                        onSuccess: () {},
-                                        onError: () {},
-                                      );
-                                },
-                              ),
-                            )
-                          : BangumiSliverGridFragment(
-                              bangumis: bangumiRow.bangumis,
-                              handleSubscribe: (bangumi) {
-                                context.read<OpModel>().subscribeBangumi(
-                                      bangumi.id,
-                                      bangumi.subscribed,
-                                      onSuccess: () {},
-                                      onError: () {},
-                                    );
-                              },
-                            ),
+                              )
+                            : EdgeInsets.all(16.0),
+                        bangumis: bangumiRow.bangumis,
+                        handleSubscribe: (bangumi) {
+                          context.read<OpModel>().subscribeBangumi(
+                                bangumi.id,
+                                bangumi.subscribed,
+                                onSuccess: () {},
+                                onError: () {},
+                              );
+                        },
+                      ),
                     ];
                   }).expand((element) => element),
                 ],
@@ -139,10 +130,9 @@ class IndexFragment extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         padding: EdgeInsets.only(
-          top: 16.0,
+          top: 8.0,
           left: 16.0,
           right: 16.0,
-          bottom: 8.0,
         ),
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,
@@ -191,8 +181,7 @@ class IndexFragment extends StatelessWidget {
           padding: const EdgeInsets.only(
             left: 16.0,
             right: 16.0,
-            top: 16.0,
-            bottom: 8.0,
+            top: 8.0,
           ),
           child: Text(
             "OVA/剧场版 (beta)",
@@ -476,8 +465,9 @@ class IndexFragment extends StatelessWidget {
       builder: (context, records, __) {
         if (records.isNullOrEmpty) return SliverToBoxAdapter();
         return SliverToBoxAdapter(
-          child: SizedBox(
-            height: 160.0,
+          child: Container(
+            height: 192.0,
+            padding: EdgeInsets.only(bottom: 16.0, top: 16.0),
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
               itemCount: records.length,

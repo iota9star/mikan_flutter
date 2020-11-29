@@ -102,36 +102,26 @@ class SubgroupPage extends StatelessWidget {
             final SeasonGallery gallery = galleries[index];
             return <Widget>[
               _buildYearSeasonSection(gallery.title),
-              galleries.length - 1 == index
-                  ? SliverPadding(
-                      padding: EdgeInsets.only(
+              BangumiSliverGridFragment(
+                flag: gallery.title,
+                padding: galleries.length - 1 == index
+                    ? EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        top: 16.0,
                         bottom: 16.0 + Sz.navBarHeight,
-                      ),
-                      sliver: BangumiSliverGridFragment(
-                        flag: gallery.title,
-                        bangumis: gallery.bangumis,
-                        handleSubscribe: (bangumi) {
-                          context.read<OpModel>().subscribeBangumi(
-                                bangumi.id,
-                                bangumi.subscribed,
-                                onSuccess: () {},
-                                onError: () {},
-                              );
-                        },
-                      ),
-                    )
-                  : BangumiSliverGridFragment(
-                      flag: gallery.title,
-                      bangumis: gallery.bangumis,
-                      handleSubscribe: (bangumi) {
-                        context.read<OpModel>().subscribeBangumi(
-                              bangumi.id,
-                              bangumi.subscribed,
-                              onSuccess: () {},
-                              onError: () {},
-                            );
-                      },
-                    ),
+                      )
+                    : EdgeInsets.all(16.0),
+                bangumis: gallery.bangumis,
+                handleSubscribe: (bangumi) {
+                  context.read<OpModel>().subscribeBangumi(
+                        bangumi.id,
+                        bangumi.subscribed,
+                        onSuccess: () {},
+                        onError: () {},
+                      );
+                },
+              ),
             ];
           }).expand((element) => element),
       ],

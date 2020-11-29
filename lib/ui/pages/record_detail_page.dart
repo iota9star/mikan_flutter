@@ -165,8 +165,8 @@ class RecordDetailPage extends StatelessWidget {
       margin: EdgeInsets.only(
         left: 16.0,
         right: 16.0,
-        bottom: 8.0,
-        top: 8.0,
+        bottom: 12.0,
+        top: 12.0,
       ),
       padding: EdgeInsets.only(
         left: 24.0,
@@ -218,7 +218,7 @@ class RecordDetailPage extends StatelessWidget {
                     ),
                   ))
               .toList(),
-          SizedBox(height: 8.0),
+          SizedBox(height: 12.0),
           if (!tags.isNullOrEmpty)
             Wrap(
               children: [
@@ -400,7 +400,7 @@ class RecordDetailPage extends StatelessWidget {
       margin: EdgeInsets.only(
         left: 16.0,
         right: 16.0,
-        bottom: 8.0,
+        bottom: 12.0,
       ),
       padding: EdgeInsets.all(24.0),
       decoration: BoxDecoration(
@@ -424,7 +424,7 @@ class RecordDetailPage extends StatelessWidget {
               fontSize: 20.0,
             ),
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 12.0),
           HtmlWidget(
             recordDetail.intro,
             customWidgetBuilder: (element) {

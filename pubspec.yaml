@@ -67,10 +67,13 @@ flutter_icons:
 scripts:
   # derry build
   build:
-    - pub run build_runner build --delete-conflicting-outputs
+    - flutter pub run build_runner build --delete-conflicting-outputs
+  # derry watch_build
+  watch_build:
+    - flutter pub run build_runner watch --delete-conflicting-outputs
   # derry ff_route_first
   ff_route_first:
-    - pub global activate ff_annotation_route
+    - flutter pub global activate ff_annotation_route
     - ff_route -s --route-constants --route-helper --route-names --no-is-initial-route --supper-arguments
   # derry ff_route
   ff_route: ff_route

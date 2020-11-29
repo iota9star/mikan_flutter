@@ -18,8 +18,9 @@ class SelectSeasonFragment extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final IndexModel indexModel =
         Provider.of<IndexModel>(context, listen: false);
-    return Scaffold(
-      body: NotificationListener(
+    return Material(
+      color: theme.scaffoldBackgroundColor,
+      child: NotificationListener(
         onNotification: (notification) {
           if (notification is OverscrollIndicatorNotification) {
             notification.disallowGlow();
