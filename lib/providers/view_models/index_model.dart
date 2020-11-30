@@ -97,7 +97,6 @@ class IndexModel extends CancelableBaseModel {
         .cast<RecordItem>();
     final Index index = MyHive.db.get(HiveDBKey.MIKAN_INDEX);
     this._bindIndexData(index);
-    refresh();
   }
 
   refresh() async {
