@@ -1,4 +1,5 @@
 # 蜜柑计划
+
 [![Gitter](https://badges.gitter.im/iota9star/mikan.svg)](https://gitter.im/iota9star/mikan?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) ![Apache License 2.0](https://img.shields.io/github/license/iota9star/mikan_flutter) ![下载量](https://img.shields.io/github/downloads/iota9star/mikan_flutter/total) ![最新release](https://img.shields.io/github/v/release/iota9star/mikan_flutter) ![open issues](https://img.shields.io/github/issues/iota9star/mikan_flutter) ![fork](https://img.shields.io/github/forks/iota9star/mikan_flutter?style=social) ![代码行数](https://img.shields.io/tokei/lines/github/iota9star/mikan_flutter) ![build](https://img.shields.io/github/workflow/status/iota9star/mikan_flutter/daily%20build%20apk) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f969750dc4aa424ead664219ddcf321d)](https://app.codacy.com/gh/iota9star/mikan_flutter?utm_source=github.com&utm_medium=referral&utm_content=iota9star/mikan_flutter&utm_campaign=Badge_Grade)
 ![蜜柑计划](static/art/banner.png)
 
@@ -10,14 +11,14 @@ This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)  
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)  
+- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
 For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[online documentation](https://flutter.dev/docs), which offers tutorials, samples, guidance on mobile development, and a
+full API reference.
 
-## Screenshot 
+## Screenshot
 
 | :heart: | :fire: | :sparkles: | :ok_hand: |
 | -----| ---- | ---- | ---- |
@@ -28,8 +29,17 @@ samples, guidance on mobile development, and a full API reference.
 | ![](static/screenshot/Screenshot_20201122-182537.jpg) | ![](static/screenshot/Screenshot_20201122-182545.jpg) | ![](static/screenshot/Screenshot_20201122-182556.jpg) | ![](static/screenshot/Screenshot_20201122-182658.jpg) |
 | ![](static/screenshot/Screenshot_20201122-182740.jpg) | ![](static/screenshot/Screenshot_20201122-182751.jpg) | ![](static/screenshot/Screenshot_20201122-182758.jpg) | ![](static/screenshot/Screenshot_20201122-182811.jpg) |
 
+## Thanks
+
+特别感谢[JetBrains](https://www.jetbrains.com/?from=mikan_flutter) 提供的[IntelliJ IDEA](https://www.jetbrains.com/idea)
+等全家桶对开源项目的支持.
+
+[![](static/jetbrains/jetbrains.png)](https://www.jetbrains.com/?from=mikan_flutter)
+
 ## Licenses
+
 该项目使用 `Apache License 2.0` 协议，仅供学习交流，使用应遵循当地法律法规，请勿用于违法用途。
+
 ``` text
    Copyright 2020. iota9star@nichijou.io
 
