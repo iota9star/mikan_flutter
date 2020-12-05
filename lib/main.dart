@@ -1,10 +1,12 @@
 import 'dart:isolate';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/logger.dart';
 import 'package:mikan_flutter/internal/store.dart';
@@ -73,6 +75,7 @@ Future _initDependencies() async {
 class MikanApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    _subscribeConnectivityChange();
     return RefreshConfiguration(
       autoLoad: true,
       headerTriggerDistance: 80.0,
@@ -119,6 +122,22 @@ class MikanApp extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _subscribeConnectivityChange() {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      switch (result) {
+        case ConnectivityResult.wifi:
+          "您正在使用WiFi网络...".toast();
+          break;
+        case ConnectivityResult.mobile:
+          "您正在使用移动网络...".toast();
+          break;
+        case ConnectivityResult.none:
+          "您已断开网络...".toast();
+          break;
+      }
+    });
   }
 
   Widget _buildMaterialApp(

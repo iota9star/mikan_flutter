@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^0.5.2+1
-  firebase_analytics: ^6.2.0
-  firebase_crashlytics: ^0.2.3+1
+  firebase_core: ^0.5.3
+  firebase_analytics: ^6.3.0
+  firebase_crashlytics: ^0.2.4
   path_provider: ^1.6.24
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
@@ -21,17 +21,18 @@ dependencies:
   oktoast: ^2.3.2
   pull_to_refresh: ^1.6.3
   hive: ^1.4.4+1
+  hive_flutter: ^0.3.1
   palette_generator: ^0.2.3
   flutter_spinkit: ^4.1.2+1
   async: ^2.4.2
   isolate: ^2.0.3
-  fluentui_system_icons: ^1.1.85
+  fluentui_system_icons: ^1.1.88
   clipboard: ^0.1.2+8
   url_launcher: ^5.7.10
   share: ^0.6.5+4
   carousel_slider: ^2.3.1
   flutter_widget_from_html: ^0.5.1+5
-  extended_sliver: ^1.0.1
+  extended_sliver: ^1.1.0
   extended_image: ^1.3.0
   waterfall_flow: ^2.0.5
   modal_bottom_sheet: ^1.0.0+1
@@ -39,18 +40,19 @@ dependencies:
   intent: ^1.4.0
   flutter_colorpicker: ^0.3.4
   horizontal_card_pager: ^1.0.3
+  quick_actions: ^0.4.0+10
+  connectivity: ^2.0.2
 
 dev_dependencies:
-  build_runner: ^1.10.6
-  json_serializable: ^3.5.0
+  build_runner: ^1.10.7
+  json_serializable: ^3.5.1
   hive_generator: ^0.8.2
-  ff_annotation_route: ^4.2.1
+  ff_annotation_route: ^4.2.2
   flutter_launcher_icons: ^0.8.1
   derry: ^1.1.1
 
 dependency_overrides:
   analyzer: any
-
 flutter:
   uses-material-design: true
   assets:
