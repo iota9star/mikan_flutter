@@ -6,6 +6,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/providers/view_models/home_model.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/list_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/subscribed_fragment.dart';
 import 'package:mikan_flutter/widget/bottom_bar_view.dart';
 import 'package:provider/provider.dart';
@@ -22,47 +23,64 @@ class HomePage extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
-        bottomNavigationBar: Selector<HomeModel, int>(
-          selector: (_, model) => model.selectedIndex,
-          shouldRebuild: (pre, next) => pre != next,
-          builder: (_, selectIndex, __) {
-            return BottomBarView(
-              items: [
-                BarItem(
-                  icon: FluentIcons.home_24_regular,
-                  selectedIconPath: "assets/mikan.png",
-                  isSelected: selectIndex == 0,
-                ),
-                BarItem(
-                  icon: FluentIcons.list_24_regular,
-                  selectedIcon: FluentIcons.list_24_filled,
-                  isSelected: selectIndex == 1,
-                ),
-                BarItem(
-                  icon: FluentIcons.collections_24_regular,
-                  selectedIcon: FluentIcons.collections_24_filled,
-                  isSelected: selectIndex == 2,
-                ),
-              ],
-              onItemClick: (index) {
-                context.read<HomeModel>().selectedIndex = index;
-              },
-            );
-          },
-        ),
-        body: Selector<HomeModel, int>(
-          selector: (_, model) => model.selectedIndex,
-          shouldRebuild: (pre, next) => pre != next,
-          builder: (_, selectIndex, __) {
-            return IndexedStack(
-              children: [
-                IndexFragment(),
-                ListFragment(),
-                SubscribedFragment(),
-              ],
-              index: selectIndex,
-            );
-          },
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Selector<HomeModel, int>(
+                selector: (_, model) => model.selectedIndex,
+                shouldRebuild: (pre, next) => pre != next,
+                builder: (_, selectIndex, __) {
+                  return IndexedStack(
+                    children: [
+                      IndexFragment(),
+                      ListFragment(),
+                      SubscribedFragment(),
+                      SettingsFragment(),
+                    ],
+                    index: selectIndex,
+                  );
+                },
+              ),
+            ),
+            Positioned(
+              child: Selector<HomeModel, int>(
+                selector: (_, model) => model.selectedIndex,
+                shouldRebuild: (pre, next) => pre != next,
+                builder: (_, selectIndex, __) {
+                  return BottomBarView(
+                    items: [
+                      BarItem(
+                        icon: FluentIcons.home_24_regular,
+                        selectedIconPath: "assets/mikan.png",
+                        isSelected: selectIndex == 0,
+                      ),
+                      BarItem(
+                        icon: FluentIcons.list_24_regular,
+                        selectedIcon: FluentIcons.list_24_filled,
+                        isSelected: selectIndex == 1,
+                      ),
+                      BarItem(
+                        icon: FluentIcons.collections_24_regular,
+                        selectedIcon: FluentIcons.collections_24_filled,
+                        isSelected: selectIndex == 2,
+                      ),
+                      BarItem(
+                        icon: FluentIcons.settings_24_regular,
+                        selectedIcon: FluentIcons.settings_24_filled,
+                        isSelected: selectIndex == 3,
+                      ),
+                    ],
+                    onItemClick: (index) {
+                      context.read<HomeModel>().selectedIndex = index;
+                    },
+                  );
+                },
+              ),
+              bottom: 0,
+              left: 0,
+              right: 0,
+            )
+          ],
         ),
       ),
     );

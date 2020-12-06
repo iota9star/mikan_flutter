@@ -20,6 +20,7 @@ import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:mikan_flutter/widget/common_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -66,6 +67,7 @@ class SubscribedFragment extends StatelessWidget {
                 _buildSeasonRssList(theme, subscribedModel),
                 _buildRssRecordsSection(context, theme),
                 _buildRssRecordsList(theme),
+                CommonWidgets.sliverBottomSpace,
               ],
             ),
           ),

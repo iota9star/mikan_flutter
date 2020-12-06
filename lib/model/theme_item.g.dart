@@ -20,40 +20,46 @@ class ThemeItemAdapter extends TypeAdapter<ThemeItem> {
       id: fields[0] as int,
       canDelete: fields[1] as bool,
       autoMode: fields[2] as bool,
-      primaryColor: fields[3] as int,
-      accentColor: fields[4] as int,
-      lightBackgroundColor: fields[5] as int,
-      darkBackgroundColor: fields[6] as int,
-      lightScaffoldBackgroundColor: fields[7] as int,
-      darkScaffoldBackgroundColor: fields[8] as int,
-      fontFamily: fields[9] as String,
+      isDark: fields[4] as bool,
+      primaryColor: fields[5] as int,
+      accentColor: fields[6] as int,
+      lightBackgroundColor: fields[7] as int,
+      darkBackgroundColor: fields[8] as int,
+      lightScaffoldBackgroundColor: fields[9] as int,
+      darkScaffoldBackgroundColor: fields[10] as int,
+      fontFamily: fields[11] as String,
+      version: fields[255] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ThemeItem obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.canDelete)
       ..writeByte(2)
       ..write(obj.autoMode)
-      ..writeByte(3)
-      ..write(obj.primaryColor)
       ..writeByte(4)
-      ..write(obj.accentColor)
+      ..write(obj.isDark)
       ..writeByte(5)
-      ..write(obj.lightBackgroundColor)
+      ..write(obj.primaryColor)
       ..writeByte(6)
-      ..write(obj.darkBackgroundColor)
+      ..write(obj.accentColor)
       ..writeByte(7)
-      ..write(obj.lightScaffoldBackgroundColor)
+      ..write(obj.lightBackgroundColor)
       ..writeByte(8)
-      ..write(obj.darkScaffoldBackgroundColor)
+      ..write(obj.darkBackgroundColor)
       ..writeByte(9)
-      ..write(obj.fontFamily);
+      ..write(obj.lightScaffoldBackgroundColor)
+      ..writeByte(10)
+      ..write(obj.darkScaffoldBackgroundColor)
+      ..writeByte(11)
+      ..write(obj.fontFamily)
+      ..writeByte(255)
+      ..write(obj.version);
   }
 
   @override

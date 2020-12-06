@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -60,26 +61,31 @@ class _BottomBarViewState extends State<BottomBarView>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: widget.height + Sz.navBarHeight,
-      padding: EdgeInsets.only(bottom: Sz.navBarHeight),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16.0),
-          topLeft: Radius.circular(16.0),
-        ),
-        color: Theme.of(context).backgroundColor,
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(16.0),
+        topLeft: Radius.circular(16.0),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: _buildBarItemView(),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
+        child: Container(
+          height: widget.height + Sz.navBarHeight,
+          padding: EdgeInsets.only(bottom: Sz.navBarHeight),
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor.withOpacity(0.72),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: _buildBarItems(),
+          ),
+        ),
       ),
     );
   }
 
-  List<Widget> _buildBarItemView() {
+  List<Widget> _buildBarItems() {
     List<Widget> bars = List(widget.items.length);
     for (int i = 0; i < widget.items.length; i++) {
       widget.items[i]._index = i;
@@ -121,7 +127,7 @@ class _BottomBarItemView extends StatefulWidget {
 
 class _BottomBarItemViewState extends State<_BottomBarItemView>
     with TickerProviderStateMixin {
-  List<Widget> _points;
+  List<_Point> _points;
   AnimationController _animationController;
 
   @override
@@ -147,35 +153,34 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     if (barItem.isSelected) {
       return barItem.selectedIcon == null
           ? ExtendedImage.asset(
-        barItem.selectedIconPath,
-        width: barItem._size + 4,
-        height: barItem._size + 4,
-      )
+              barItem.selectedIconPath,
+              width: barItem._size + 4,
+              height: barItem._size + 4,
+            )
           : Icon(
-        barItem.selectedIcon,
-        size: barItem._size + 4,
-        color: Theme
-            .of(context)
-            .accentColor,
-      );
+              barItem.selectedIcon,
+              size: barItem._size + 4,
+              color: Theme.of(context).accentColor,
+            );
     }
     return barItem.icon == null
         ? ExtendedImage.asset(
-      barItem.iconPath,
-      width: barItem._size,
-      height: barItem._size,
-    )
+            barItem.iconPath,
+            width: barItem._size,
+            height: barItem._size,
+          )
         : Icon(
-      barItem.icon,
-      size: barItem._size,
-    );
+            barItem.icon,
+            size: barItem._size,
+          );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_points == null) {
-      _points = _buildPoints(context);
+    if (this._points == null) {
+      this._points = _buildPoints();
     }
+    final ThemeData theme = Theme.of(context);
     return Container(
       child: AspectRatio(
         aspectRatio: 1,
@@ -212,7 +217,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
                     ),
                     child: _toBarIcon(widget.barItem),
                   ),
-                  ..._points,
+                  ..._buildPointWidgets(theme),
                 ],
               ),
             ),
@@ -223,51 +228,34 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     );
   }
 
-  Positioned _buildPoint(BuildContext context,
-      final double size,
-      final double angle,
-      final Color color,
-      final List<double> interval,) {
-    final radius = (64 - 16) / 2;
-    final x = radius * math.cos(angle);
-    final y = radius * math.sin(angle);
-    double left;
-    double right;
-    double top;
-    double bottom;
-    if (0 <= angle && 90 > angle) {
-      right = radius - x.abs();
-      top = radius - y.abs();
-    } else if (90 <= angle && 180 > angle) {
-      left = radius - x.abs();
-      top = radius - y.abs();
-    } else if (180 <= angle && 270 > angle) {
-      left = radius - x.abs();
-      bottom = radius - y.abs();
-    } else {
-      right = radius - x.abs();
-      bottom = radius - y.abs();
-    }
+  List<Widget> _buildPointWidgets(final ThemeData theme) {
+    return List.generate(
+      this._points.length,
+      (index) => _buildPointWidget(this._points[index], theme.accentColor),
+    );
+  }
+
+  Widget _buildPointWidget(final _Point point, final Color color) {
     return Positioned(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
+      top: point.top,
+      bottom: point.bottom,
+      left: point.left,
+      right: point.right,
       child: ScaleTransition(
         alignment: Alignment.center,
         scale: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Interval(
-              interval[0],
-              interval[1],
+              point.interval[0],
+              point.interval[1],
               curve: Curves.bounceInOut,
             ),
           ),
         ),
         child: Container(
-          width: size,
-          height: size,
+          width: point.size,
+          height: point.size,
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,
@@ -277,28 +265,75 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     );
   }
 
-  List<Widget> _buildPoints(BuildContext context) {
+  List<_Point> _buildPoints() {
     final random = math.Random();
     final int count = random.nextInt(2) + 3;
-    List<Widget> points = List(count);
+    List<_Point> points = List(count);
     final double offset = 360 / count;
     final out = (offset / 4).floor();
     final always = offset - out;
     final Color color = Theme.of(context).accentColor;
+    color.withOpacity((random.nextDouble() + 0.1).clamp(0.1, 1.0));
     double angle;
+    double size;
+    double radius;
+    double x;
+    double y;
+    List<double> interval;
     for (int i = 0; i < count; i++) {
       angle = offset * i + random.nextInt(out) + always;
-      points[i] = _buildPoint(
-        context,
-        random.nextDouble() * 5 + 3,
-        angle,
-        color.withOpacity((random.nextDouble() + 0.1).clamp(0.1, 1.0)),
-        [
-          (random.nextDouble()).clamp(0, 0.7),
-          (random.nextDouble()).clamp(0.8, 1)
-        ],
+      size = random.nextDouble() * 5 + 3;
+      interval = [
+        (random.nextDouble()).clamp(0, 0.7),
+        (random.nextDouble()).clamp(0.8, 1)
+      ];
+      radius = (64 - 16) / 2;
+      x = radius * math.cos(angle);
+      y = radius * math.sin(angle);
+      double left;
+      double right;
+      double top;
+      double bottom;
+      if (0 <= angle && 90 > angle) {
+        right = radius - x.abs();
+        top = radius - y.abs();
+      } else if (90 <= angle && 180 > angle) {
+        left = radius - x.abs();
+        top = radius - y.abs();
+      } else if (180 <= angle && 270 > angle) {
+        left = radius - x.abs();
+        bottom = radius - y.abs();
+      } else {
+        right = radius - x.abs();
+        bottom = radius - y.abs();
+      }
+      points[i] = _Point(
+        top: top,
+        left: left,
+        right: right,
+        bottom: bottom,
+        size: size,
+        interval: interval,
       );
     }
     return points;
   }
+}
+
+class _Point {
+  final double top;
+  final double bottom;
+  final double left;
+  final double right;
+  final List<double> interval;
+  final double size;
+
+  _Point({
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    this.interval,
+    this.size,
+  });
 }

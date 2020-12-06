@@ -25,7 +25,7 @@ class ThemeModel extends BaseModel {
   }
 
   theme({bool darkTheme = false}) {
-    final bool isDark = _themeItem.autoMode ? darkTheme : false;
+    final bool isDark = _themeItem.autoMode ? darkTheme : _themeItem.isDark;
     final Brightness brightness = isDark ? Brightness.dark : Brightness.light;
     final primaryColor = Color(_themeItem.primaryColor);
     final primaryColorBrightness = primaryColor.computeLuminance() < 0.5
@@ -40,9 +40,9 @@ class ThemeModel extends BaseModel {
           ? _themeItem.darkScaffoldBackgroundColor
           : _themeItem.lightScaffoldBackgroundColor,
     );
-    final backgroundColor = Color(isDark
-        ? _themeItem.darkBackgroundColor
-        : _themeItem.lightBackgroundColor);
+    final backgroundColor = Color(
+      isDark ? _themeItem.darkBackgroundColor : _themeItem.lightBackgroundColor,
+    );
     final fontFamily = _themeItem.fontFamily;
     ThemeData themeData = ThemeData(
       brightness: brightness,

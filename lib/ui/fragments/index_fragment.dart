@@ -23,6 +23,7 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:mikan_flutter/widget/common_widgets.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -79,14 +80,7 @@ class IndexFragment extends StatelessWidget {
                     return [
                       _buildWeekSection(theme, bangumiRow),
                       BangumiSliverGridFragment(
-                        padding: bangumiRows.length - 1 == index
-                            ? EdgeInsets.only(
-                                left: 16.0,
-                                right: 16.0,
-                                top: 16.0,
-                                bottom: 16.0 + Sz.navBarHeight,
-                              )
-                            : EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(16.0),
                         bangumis: bangumiRow.bangumis,
                         handleSubscribe: (bangumi) {
                           context.read<OpModel>().subscribeBangumi(
@@ -99,6 +93,7 @@ class IndexFragment extends StatelessWidget {
                       ),
                     ];
                   }).expand((element) => element),
+                  CommonWidgets.sliverBottomSpace,
                 ],
               ),
             );

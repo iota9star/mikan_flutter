@@ -48,12 +48,13 @@ class MyHive {
     Hive.registerAdapter(YearSeasonAdapter());
     Hive.registerAdapter(RecordItemAdapter());
 
-    themeItemBox = await Hive.openBox<ThemeItem>("themes");
+    themeItemBox = await Hive.openBox<ThemeItem>(HiveBoxKey.THEMES);
     if (themeItemBox.isEmpty) {
-      final ThemeItem defaultTheme = ThemeItem(
+      final ThemeItem defaultTheme = ThemeItem.create(
         id: 1,
         canDelete: false,
         autoMode: true,
+        isDark: false,
         primaryColor: HexColor.fromHex("#3bc0c3").value,
         accentColor: HexColor.fromHex("#fe9b36").value,
         lightBackgroundColor: Colors.white.value,
@@ -71,4 +72,8 @@ class HiveDBKey {
   static const String THEME_ID = "THEME_ID";
   static const String MIKAN_INDEX = "MIKAN_INDEX";
   static const String MIKAN_OVA = "MIKAN_OVA";
+}
+
+class HiveBoxKey {
+  static const String THEMES = "KEY_THEMES";
 }

@@ -20,6 +20,11 @@ class AnimatedTapContainer extends ImplicitlyAnimatedWidget {
     this.onTap,
     this.onTapStart,
     this.onTapEnd,
+    this.onLongPress,
+    this.onLongPressStart,
+    this.onLongPressMoveUpdate,
+    this.onLongPressUp,
+    this.onLongPressEnd,
     this.child,
     Curve curve = Curves.easeInOut,
     Duration duration,
@@ -40,8 +45,8 @@ class AnimatedTapContainer extends ImplicitlyAnimatedWidget {
         transform = transform ?? Matrix4.identity(),
         super(
             key: key,
-          curve: curve,
-          duration: duration ?? Duration(milliseconds: 200));
+            curve: curve,
+            duration: duration ?? Duration(milliseconds: 200));
 
   final Widget child;
   final AlignmentGeometry childAlignment;
@@ -56,6 +61,11 @@ class AnimatedTapContainer extends ImplicitlyAnimatedWidget {
   final VoidCallback onTap;
   final VoidCallback onTapStart;
   final VoidCallback onTapEnd;
+  final GestureLongPressCallback onLongPress;
+  final GestureLongPressStartCallback onLongPressStart;
+  final GestureLongPressMoveUpdateCallback onLongPressMoveUpdate;
+  final GestureLongPressUpCallback onLongPressUp;
+  final GestureLongPressEndCallback onLongPressEnd;
 
   @override
   _AnimatedTapContainerState createState() => _AnimatedTapContainerState();
@@ -77,27 +87,27 @@ class _AnimatedTapContainerState
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
     _childAlignment = visitor(_childAlignment, widget.childAlignment,
-            (dynamic value) => AlignmentGeometryTween(begin: value));
+        (dynamic value) => AlignmentGeometryTween(begin: value));
     _transformAlignment = visitor(
         _transformAlignment,
         widget.transformAlignment,
-            (dynamic value) => AlignmentGeometryTween(begin: value));
+        (dynamic value) => AlignmentGeometryTween(begin: value));
     _decoration = visitor(_decoration, widget.decoration,
-            (dynamic value) => DecorationTween(begin: value));
+        (dynamic value) => DecorationTween(begin: value));
     _foregroundDecoration = visitor(
         _foregroundDecoration,
         widget.foregroundDecoration,
-            (dynamic value) => DecorationTween(begin: value));
+        (dynamic value) => DecorationTween(begin: value));
     _constraints = visitor(_constraints, widget.constraints,
-            (dynamic value) => BoxConstraintsTween(begin: value));
+        (dynamic value) => BoxConstraintsTween(begin: value));
     _margin = visitor(_margin, widget.margin,
-            (dynamic value) => EdgeInsetsGeometryTween(begin: value));
+        (dynamic value) => EdgeInsetsGeometryTween(begin: value));
     _padding = visitor(_padding, widget.padding,
-            (dynamic value) => EdgeInsetsGeometryTween(begin: value));
+        (dynamic value) => EdgeInsetsGeometryTween(begin: value));
     _transform = visitor(_transform, widget.transform,
-            (dynamic value) => Matrix4Tween(begin: value));
+        (dynamic value) => Matrix4Tween(begin: value));
     _borderRadius = visitor(_borderRadius, widget.borderRadius,
-            (dynamic value) => BorderRadiusTween(begin: value));
+        (dynamic value) => BorderRadiusTween(begin: value));
   }
 
   @override
@@ -121,6 +131,11 @@ class _AnimatedTapContainerState
           onTapUp: (_) async {
             await _callTapEnd();
           },
+          onLongPress: widget.onLongPress,
+          onLongPressEnd: widget.onLongPressEnd,
+          onLongPressStart: widget.onLongPressStart,
+          onLongPressUp: widget.onLongPressUp,
+          onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
           child: widget.child,
         ),
         alignment: _childAlignment?.evaluate(animation),
