@@ -34,7 +34,7 @@ full API reference.
 特别感谢[JetBrains](https://www.jetbrains.com/?from=mikan_flutter) 提供的[IntelliJ IDEA](https://www.jetbrains.com/idea)
 等全家桶对开源项目的支持.
 
-[![](static/jetbrains/jetbrains.png)](https://www.jetbrains.com/?from=mikan_flutter)
+[<img src="static/jetbrains/jetbrains.png" width="200"/>](https://www.jetbrains.com/?from=mikan_flutter)
 
 ## Licenses
 
