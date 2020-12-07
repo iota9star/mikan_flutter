@@ -118,7 +118,7 @@ class SubgroupPage extends StatelessWidget {
                         bangumi.id,
                         bangumi.subscribed,
                         onSuccess: () {},
-                        onError: () {},
+                        onError: (msg) {},
                       );
                 },
               ),

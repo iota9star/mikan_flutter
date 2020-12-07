@@ -84,13 +84,13 @@ class SubscribedSeasonModel extends CancelableBaseModel {
   }
 
   refresh() async {
-    if (this._loading) return "加载中，请等待加载完成...";
+    if (this._loading) return "加载中，请等待加载完成";
     this._loadIndex = 0;
     await _loadSeasonBangumis();
   }
 
   loadMore() async {
-    if (this._loading) return "加载中，请等待加载完成...";
+    if (this._loading) return "加载中，请等待加载完成";
     await _loadSeasonBangumis();
   }
 }

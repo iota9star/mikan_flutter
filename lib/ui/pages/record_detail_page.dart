@@ -535,7 +535,7 @@ class RecordDetailPage extends StatelessWidget {
                                   recordDetail.id,
                                   recordDetail.subscribed,
                                   onSuccess: () {},
-                                  onError: () {},
+                                  onError: (msg) {},
                                 );
                           },
                         ),
@@ -560,7 +560,7 @@ class RecordDetailPage extends StatelessWidget {
                                   recordDetail.id,
                                   recordDetail.subscribed,
                                   onSuccess: () {},
-                                  onError: () {},
+                                  onError: (msg) {},
                                 );
                           },
                         ),

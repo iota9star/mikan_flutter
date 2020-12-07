@@ -128,7 +128,7 @@ class IndexModel extends CancelableBaseModel {
       final Index index = resp.data;
       MyHive.db.put(HiveDBKey.MIKAN_INDEX, index);
       _bindIndexData(index);
-      "加载完成...".toast();
+      "加载完成".toast();
     } else {
       "获取首页数据失败：${resp.msg}".toast();
     }
@@ -155,7 +155,7 @@ class IndexModel extends CancelableBaseModel {
   User get user => _user;
 
   loadSeason(final Season season) async {
-    if (this._seasonLoading) return "加载中，请稍候...".toast();
+    if (this._seasonLoading) return "加载中，请稍候".toast();
     this._selectedSeason = season;
     notifyListeners();
     this._seasonLoading = true;
@@ -164,12 +164,12 @@ class IndexModel extends CancelableBaseModel {
     this._seasonLoading = false;
     if (resp.success) {
       this._bangumiRows = resp.data;
-      "加载完成...".toast();
+      "加载完成".toast();
     } else {
       if (resp.msg.isNotBlank) {
         resp.msg.toast();
       } else {
-        "加载失败...".toast();
+        "加载失败".toast();
       }
     }
     notifyListeners();

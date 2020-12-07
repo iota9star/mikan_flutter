@@ -5,6 +5,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:isolate/isolate_runner.dart';
@@ -26,7 +27,6 @@ class _BaseInterceptor extends InterceptorsWrapper {
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/86.0.4240.75 Safari/537.36 "
         "MikanFlutter/unlimited";
-    options.headers['upgrade-insecure-requests'] = 1;
     options.headers['client'] = "mikan_flutter";
     options.headers['os'] = Platform.operatingSystem;
     options.headers['os-version'] = Platform.operatingSystemVersion;
@@ -91,14 +91,16 @@ class _Http extends DioForNative {
     String appVersion,
     BaseOptions options,
   }) : super(options) {
-    // this.httpClientAdapter = Http2Adapter(ConnectionManager());
+    this.httpClientAdapter = Http2Adapter(ConnectionManager());
     this.interceptors
       ..add(_BaseInterceptor())
       ..add(
         LogInterceptor(
-          requestHeader: false,
-          responseHeader: false,
-          request: false,
+          requestHeader: true,
+          responseHeader: true,
+          request: true,
+          requestBody: true,
+          responseBody: true,
           error: true,
           logPrint: (obj) => logd(obj),
         ),
@@ -175,10 +177,17 @@ class _Fetcher {
             queryParameters: proto.queryParameters,
             options: proto.options,
           );
-        } else if (proto.method == _RequestMethod.POST) {
+        } else if (proto.method == _RequestMethod.POST_WITH_FORM) {
           resp = await http.post(
             proto.url,
             data: FormData.fromMap(proto.data),
+            queryParameters: proto.queryParameters,
+            options: proto.options,
+          );
+        } else if (proto.method == _RequestMethod.POST_WITH_JSON) {
+          resp = await http.post(
+            proto.url,
+            data: proto.data,
             queryParameters: proto.queryParameters,
             options: proto.options,
           );
@@ -228,7 +237,7 @@ class Http {
     return await _Fetcher._asyncInIsolate(proto);
   }
 
-  static Future<Resp> post(
+  static Future<Resp> postForm(
     final String url, {
     final data,
     final Map<String, dynamic> queryParameters,
@@ -236,7 +245,24 @@ class Http {
   }) async {
     final _Protocol proto = _Protocol(
       url,
-      _RequestMethod.POST,
+      _RequestMethod.POST_WITH_FORM,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cacheDir: Store.cacheDir.path,
+    );
+    return await _Fetcher._asyncInIsolate(proto);
+  }
+
+  static Future<Resp> postJSON(
+    final String url, {
+    final data,
+    final Map<String, dynamic> queryParameters,
+    final Options options,
+  }) async {
+    final _Protocol proto = _Protocol(
+      url,
+      _RequestMethod.POST_WITH_JSON,
       data: data,
       queryParameters: queryParameters,
       options: options,
@@ -246,7 +272,7 @@ class Http {
   }
 }
 
-enum _RequestMethod { POST, GET }
+enum _RequestMethod { POST_WITH_FORM, POST_WITH_JSON, GET }
 
 class _Protocol {
   final String url;

@@ -16,8 +16,9 @@ dependencies:
   path_provider: ^1.6.24
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
+  dio_http2_adapter: ^1.0.1
   html: ^0.14.0+4
-  provider: ^4.3.2+2
+  provider: ^4.3.2+3
   oktoast: ^2.3.2
   pull_to_refresh: ^1.6.3
   hive: ^1.4.4+1

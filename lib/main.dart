@@ -128,13 +128,13 @@ class MikanApp extends StatelessWidget {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       switch (result) {
         case ConnectivityResult.wifi:
-          "您正在使用WiFi网络...".toast();
+          "您正在使用WiFi网络".toast();
           break;
         case ConnectivityResult.mobile:
-          "您正在使用移动网络...".toast();
+          "您正在使用移动网络".toast();
           break;
         case ConnectivityResult.none:
-          "您已断开网络...".toast();
+          "您已断开网络".toast();
           break;
       }
     });

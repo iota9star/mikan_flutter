@@ -52,7 +52,7 @@ class ListModel extends CancelableBaseModel {
       this._refreshController.completed();
       final List<RecordItem> records = resp.data;
       if (records.isNullOrEmpty) {
-        return "未获取到数据...".toast();
+        return "未获取到数据".toast();
       }
       if (this._page == 0 && this._records.isNotEmpty) {
         final Set<RecordItem> newList = [...this._records, ...records].toSet();

@@ -126,7 +126,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 SizedBox(width: 12.0),
                 Text(
-                  loading ? "登录中..." : "登录",
+                  loading ? "登录中" : "登录",
                   style: TextStyle(
                     color: iconColor,
                     fontSize: 16.0,

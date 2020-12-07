@@ -15,7 +15,7 @@ class BaseModel extends ChangeNotifier {
       logd("disposed, return.", this.runtimeType);
       return;
     }
-    logd("notify...", this.runtimeType);
+    logd("notify", this.runtimeType);
     super.notifyListeners();
   }
 
@@ -45,7 +45,7 @@ class CancelableBaseModel extends BaseModel {
 
   Future operator +(Future future) {
     CancelableCompleter completer = CancelableCompleter(onCancel: () {
-      logd("取消了一个任务...", this.runtimeType);
+      logd("取消了一个任务", this.runtimeType);
     });
     _jobs.add(completer);
     completer.complete(future);
@@ -53,7 +53,7 @@ class CancelableBaseModel extends BaseModel {
       logd("$runtimeType: $e");
     }).whenComplete(() {
       _jobs.remove(completer);
-      logd("$runtimeType 执行完了一个任务...");
+      logd("$runtimeType 执行完了一个任务");
     });
     return completer.operation.value;
   }
