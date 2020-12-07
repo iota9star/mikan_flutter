@@ -6,7 +6,6 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/view_models/list_model.dart';
 import 'package:mikan_flutter/ui/components/complex_record_item.dart';
-import 'package:mikan_flutter/widget/common_widgets.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -41,7 +40,7 @@ class ListFragment extends StatelessWidget {
           footer: Indicator.footer(
             context,
             theme.accentColor,
-            bottom: 16.0 + Sz.navBarHeight,
+            bottom: 80.0 + Sz.navBarHeight,
           ),
           enablePullDown: true,
           enablePullUp: true,
@@ -52,7 +51,6 @@ class ListFragment extends StatelessWidget {
             slivers: [
               _buildHeader(theme),
               _buildList(theme, listModel),
-              CommonWidgets.sliverBottomSpace,
             ],
           ),
         ),
