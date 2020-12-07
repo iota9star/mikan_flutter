@@ -61,13 +61,13 @@ class ThemePanelFragment extends StatelessWidget {
               final List<Color> outerColors = [
                 Color(themeItem.primaryColor),
                 Color(themeItem.accentColor),
-                if (themeItem.lightScaffoldBackgroundColor != null)
+                if (themeItem.autoMode || !themeItem.isDark)
                   Color(themeItem.lightScaffoldBackgroundColor),
-                if (themeItem.darkScaffoldBackgroundColor != null)
+                if (themeItem.autoMode || themeItem.isDark)
                   Color(themeItem.darkScaffoldBackgroundColor),
-                if (themeItem.lightBackgroundColor != null)
+                if (themeItem.autoMode || !themeItem.isDark)
                   Color(themeItem.lightBackgroundColor),
-                if (themeItem.darkBackgroundColor != null)
+                if (themeItem.autoMode || themeItem.isDark)
                   Color(themeItem.darkBackgroundColor),
               ];
               final List<Color> innerColors = themeItem.autoMode
