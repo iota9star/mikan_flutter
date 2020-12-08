@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
+import 'package:mikan_flutter/internal/store.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/view_models/base_model.dart';
 
@@ -13,11 +14,18 @@ class LoginModel extends CancelableBaseModel {
 
   TextEditingController get passwordController => _passwordController;
 
+  LoginModel() {
+    final login = Store.getLogin();
+    _accountController.text = login.getOrNull("UserName");
+    _passwordController.text = login.getOrNull("Password");
+    this._rememberMe = login.getOrNull("RememberMe") ?? false;
+  }
+
   User _user;
 
   User get user => _user;
 
-  bool _rememberMe = true;
+  bool _rememberMe;
 
   bool get rememberMe => _rememberMe;
 
@@ -30,24 +38,28 @@ class LoginModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  set user(User value) {
-    _user = value;
-    notifyListeners();
-  }
-
   submit(VoidCallback loginSuccess) async {
-    final Map<String, dynamic> loginPrams = {
+    this._loading = true;
+    notifyListeners();
+    final Resp tokenResp = await (this + Repo.refreshToken());
+    if (!tokenResp.success) {
+      return "获取登录参数失败".toast();
+    }
+    final String token = tokenResp.data;
+    if (token.isNullOrBlank) {
+      return "获取登录参数为空，请稍候重试".toast();
+    }
+    final Map<String, dynamic> loginParams = {
       "UserName": _accountController.text,
       "Password": _passwordController.text,
       "RememberMe": _rememberMe,
-      "__RequestVerificationToken": _user.token
+      "__RequestVerificationToken": token
     };
-    this._loading = true;
-    notifyListeners();
-    final Resp resp = await (this + Repo.submit(loginPrams));
+    final Resp resp = await (this + Repo.login(loginParams));
     this._loading = false;
     notifyListeners();
     if (resp.success) {
+      Store.setLogin(loginParams);
       "登录成功".toast();
       loginSuccess.call();
     } else {

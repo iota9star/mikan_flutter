@@ -14,6 +14,7 @@ class MikanFunc {
   static const String SUBSCRIBE_BANGUMI = "SUBSCRIBE_BANGUMI";
   static const String UNSUBSCRIBE_BANGUMI = "UNSUBSCRIBE_BANGUMI";
   static const String SUBSCRIBED_SEASON = "SUBSCRIBED_SEASON";
+  static const String REFRESH_TOKEN = "REFRESH_TOKEN";
 }
 
 class MikanUrl {
@@ -53,4 +54,7 @@ class MikanUrl {
 
   /// [季度订阅](https://mikanani.me/Home/BangumiCoverFlow?year=2020&seasonStr=%E7%A7%8B)
   static const String SUBSCRIBED_SEASON = "/Home/BangumiCoverFlow";
+
+  /// [我的订阅页 用于刷新token](https://mikanani.me/Home/MyBangumi)
+  static const String MY_SUBSCRIBED = "/Home/MyBangumi";
 }

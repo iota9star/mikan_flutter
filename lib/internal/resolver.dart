@@ -171,6 +171,15 @@ class Resolver {
     );
   }
 
+  static Future<String> parseRefreshToken(final Document document) async {
+    final String token = document
+        .querySelector("#login input[name=__RequestVerificationToken]")
+        ?.attributes
+        ?.getOrNull("value")
+        ?.trim();
+    return token;
+  }
+
   static Future<SearchResult> parseSearch(final Document document) async {
     List<Element> eles = document.querySelectorAll(
             "div.leftbar-container .leftbar-item .subgroup-longname") ??

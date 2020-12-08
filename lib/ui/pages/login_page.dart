@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mikan_flutter/internal/data.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
-import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/view_models/index_model.dart';
 import 'package:mikan_flutter/providers/view_models/login_model.dart';
 import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
@@ -26,12 +24,8 @@ class LoginPage extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: ChangeNotifierProxyProvider<IndexModel, LoginModel>(
+      child: ChangeNotifierProvider<LoginModel>(
         create: (_) => LoginModel(),
-        update: (_, indexModel, loginModel) {
-          loginModel.user = indexModel.user;
-          return loginModel;
-        },
         child: Builder(builder: (context) {
           final LoginModel loginModel =
               Provider.of<LoginModel>(context, listen: false);
@@ -75,19 +69,16 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildLoginButton(final ThemeData theme) {
-    return Selector<LoginModel, Pair<User, bool>>(
-      selector: (_, model) => Pair(model.user, model.loading),
+    return Selector<LoginModel, bool>(
+      selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (context, tuple, __) {
-        final User user = tuple.first;
-        final bool loading = tuple.second;
-        final bool isNotOk = user == null || user?.token?.isNullOrBlank == true;
+      builder: (context, loading, __) {
         final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
         final Color iconColor =
             btnColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
         return RaisedButton(
           onPressed: () {
-            if (isNotOk || loading) return;
+            if (loading) return;
             context.read<LoginModel>().submit(() {
               context.read<IndexModel>().refresh();
               context.read<SubscribedModel>().refresh();

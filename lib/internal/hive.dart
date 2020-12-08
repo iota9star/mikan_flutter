@@ -76,4 +76,5 @@ class HiveDBKey {
 
 class HiveBoxKey {
   static const String THEMES = "KEY_THEMES";
+  static const String LOGIN = "KEY_LOGIN";
 }

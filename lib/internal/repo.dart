@@ -99,12 +99,6 @@ class Repo {
     final String subgroupId,
   }) async {
     final Options options = Options(
-      headers: {
-        "origin": "https://mikanani.me",
-        "referer": "https://mikanani.me/",
-        "cache-control": "no-cache",
-        "x-requested-with": "XMLHttpRequest",
-      },
       contentType: "application/json; charset=UTF-8",
       responseType: ResponseType.json,
     );
@@ -120,11 +114,12 @@ class Repo {
 
   static Future<Resp> mySubscribedSeasonBangumi(
       final String year, final String season) async {
-    final Options options = Options(headers: {
-      "referer": "https://mikanani.me/Home/MyBangumi",
-    }, extra: {
-      "$MikanFunc": MikanFunc.SUBSCRIBED_SEASON
-    });
+    final Options options = Options(
+      headers: {
+        "referer": "https://mikanani.me/Home/MyBangumi",
+      },
+      extra: {"$MikanFunc": MikanFunc.SUBSCRIBED_SEASON},
+    );
     return await Http.get(
       MikanUrl.SUBSCRIBED_SEASON,
       queryParameters: <String, dynamic>{
@@ -135,19 +130,25 @@ class Repo {
     );
   }
 
-  static Future<Resp> submit(final Map<String, dynamic> loginParams) async {
+  static Future<Resp> login(final Map<String, dynamic> loginParams) async {
     final Options options = Options(
-      headers: {
-        "origin": "https://mikanani.me",
-        "referer": "https://mikanani.me/",
-        "cache-control": "no-cache",
-      },
       contentType: "application/x-www-form-urlencoded",
+      responseType: ResponseType.plain,
     );
     return await Http.postForm(
       MikanUrl.LOGIN,
       queryParameters: {"ReturnUrl": "/"},
       data: loginParams,
+      options: options,
+    );
+  }
+
+  static Future<Resp> refreshToken() async {
+    final Options options = Options(
+      extra: {"$MikanFunc": MikanFunc.REFRESH_TOKEN},
+    );
+    return await Http.get(
+      MikanUrl.MY_SUBSCRIBED,
       options: options,
     );
   }

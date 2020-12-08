@@ -5,7 +5,6 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:isolate/isolate_runner.dart';
@@ -26,10 +25,10 @@ class _BaseInterceptor extends InterceptorsWrapper {
     options.headers["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/86.0.4240.75 Safari/537.36 "
-        "MikanFlutter/unlimited";
+        "MikanFlutter/0.0.1";
     options.headers['client'] = "mikan_flutter";
     options.headers['os'] = Platform.operatingSystem;
-    options.headers['os-version'] = Platform.operatingSystemVersion;
+    options.headers['osv'] = Platform.operatingSystemVersion;
     return options;
   }
 }
@@ -47,37 +46,28 @@ class MikanTransformer extends DefaultTransformer {
       switch (func) {
         case MikanFunc.SEASON:
           return await Resolver.parseSeason(document);
-          break;
         case MikanFunc.DAY:
           return await Resolver.parseDay(document);
-          break;
         case MikanFunc.SEARCH:
           return await Resolver.parseSearch(document);
-          break;
         case MikanFunc.USER:
           return await Resolver.parseUser(document);
-          break;
         case MikanFunc.LIST:
           return await Resolver.parseList(document);
-          break;
         case MikanFunc.INDEX:
           return await Resolver.parseIndex(document);
-          break;
         case MikanFunc.SUBGROUP:
           return await Resolver.parseSubgroup(document);
-          break;
         case MikanFunc.BANGUMI:
           return await Resolver.parseBangumi(document);
-          break;
         case MikanFunc.BANGUMI_MORE:
           return await Resolver.parseBangumiMore(document);
-          break;
         case MikanFunc.DETAILS:
           return await Resolver.parseRecordDetail(document);
-          break;
         case MikanFunc.SUBSCRIBED_SEASON:
           return await Resolver.parseMySubscribed(document);
-          break;
+        case MikanFunc.REFRESH_TOKEN:
+          return await Resolver.parseRefreshToken(document);
       }
     }
     return transformResponse;
@@ -91,16 +81,16 @@ class _Http extends DioForNative {
     String appVersion,
     BaseOptions options,
   }) : super(options) {
-    this.httpClientAdapter = Http2Adapter(ConnectionManager());
+    // this.httpClientAdapter = Http2Adapter(ConnectionManager());
     this.interceptors
       ..add(_BaseInterceptor())
       ..add(
         LogInterceptor(
-          requestHeader: true,
-          responseHeader: true,
-          request: true,
-          requestBody: true,
-          responseBody: true,
+          requestHeader: false,
+          responseHeader: false,
+          request: false,
+          requestBody: false,
+          responseBody: false,
           error: true,
           logPrint: (obj) => logd(obj),
         ),
