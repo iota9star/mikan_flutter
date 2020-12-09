@@ -14,7 +14,6 @@ import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
-import 'package:mikan_flutter/providers/view_models/index_model.dart';
 import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
@@ -204,13 +203,18 @@ class SubscribedFragment extends StatelessWidget {
         return BangumiSliverGridFragment(
           flag: "subscribed",
           bangumis: bangumis,
-          handleSubscribe: (Bangumi bangumi) {
+          handleSubscribe: (bangumi, flag) {
             context.read<OpModel>().subscribeBangumi(
-                  bangumi.id,
-                  bangumi.subscribed,
-                  onSuccess: () {},
-                  onError: (msg) {},
-                );
+              bangumi.id,
+              bangumi.subscribed,
+              onSuccess: () {
+                bangumi.subscribed = !bangumi.subscribed;
+                context.read<OpModel>().performTap(flag);
+              },
+              onError: (msg) {
+                "订阅失败：$msg".toast();
+              },
+            );
           },
         );
       },
@@ -429,19 +433,17 @@ class SubscribedFragment extends StatelessWidget {
     final String bangumiId = entry.key;
     final String badge = recordsLength > 99 ? "99+" : "+$recordsLength";
     final String currFlag = "rss:$bangumiId:$bangumiCover";
-    return Selector<IndexModel, String>(
-      selector: (_, model) => model.tapBangumiRssItemFlag,
+    return Selector<OpModel, String>(
+      selector: (_, model) => model.rebuildFlag,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (context, tapScaleFlag, child) {
-        final Matrix4 transform = tapScaleFlag == currFlag
+      builder: (context, tapFlag, child) {
+        final Matrix4 transform = tapFlag == currFlag
             ? Matrix4.diagonal3Values(0.9, 0.9, 1)
             : Matrix4.identity();
         return AnimatedTapContainer(
           transform: transform,
-          onTapStart: () =>
-              context.read<IndexModel>().tapBangumiRssItemFlag = currFlag,
-          onTapEnd: () =>
-              context.read<IndexModel>().tapBangumiRssItemFlag = null,
+          onTapStart: () => context.read<OpModel>().rebuildFlag = currFlag,
+          onTapEnd: () => context.read<OpModel>().rebuildFlag = null,
           width: 64.0,
           margin: EdgeInsets.symmetric(
             horizontal: 6.0,
@@ -620,11 +622,12 @@ class SubscribedFragment extends StatelessWidget {
                   );
                 }
                 final RecordItem record = records[index];
-                return Selector<SubscribedModel, int>(
-                  selector: (_, model) => model.tapRecordItemIndex,
+                final String currFlag = "subscribed:$index:${record.url}";
+                return Selector<OpModel, String>(
+                  selector: (_, model) => model.rebuildFlag,
                   shouldRebuild: (pre, next) => pre != next,
                   builder: (context, scaleIndex, __) {
-                    final Matrix4 transform = scaleIndex == index
+                    final Matrix4 transform = scaleIndex == currFlag
                         ? Matrix4.diagonal3Values(0.9, 0.9, 1)
                         : Matrix4.identity();
                     return RssRecordItem(
@@ -640,12 +643,10 @@ class SubscribedFragment extends StatelessWidget {
                         );
                       },
                       onTapStart: () {
-                        context.read<SubscribedModel>().tapRecordItemIndex =
-                            index;
+                        context.read<OpModel>().rebuildFlag = currFlag;
                       },
                       onTapEnd: () {
-                        context.read<SubscribedModel>().tapRecordItemIndex =
-                            null;
+                        context.read<OpModel>().rebuildFlag = null;
                       },
                     );
                   },

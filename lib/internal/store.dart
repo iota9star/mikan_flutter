@@ -10,10 +10,13 @@ class Store {
   static Directory docDir;
   static Directory filesDir;
 
+  static String cookiesPath;
+
   static init() async {
     cacheDir = await getTemporaryDirectory();
     docDir = await getApplicationDocumentsDirectory();
     filesDir = await getApplicationSupportDirectory();
+    cookiesPath = cacheDir.path + "/cookies";
   }
 
   static setLogin(final Map<String, dynamic> login) {
@@ -23,5 +26,12 @@ class Store {
   static Map<String, dynamic> getLogin() {
     return MyHive.db.get(HiveBoxKey.LOGIN,
         defaultValue: <String, dynamic>{}).cast<String, dynamic>();
+  }
+
+  static removeCookies() async {
+    final Directory dir = Directory(cookiesPath);
+    if (await dir.exists()) {
+      await dir.delete(recursive: true);
+    }
   }
 }

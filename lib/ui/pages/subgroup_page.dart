@@ -113,13 +113,18 @@ class SubgroupPage extends StatelessWidget {
                       )
                     : EdgeInsets.all(16.0),
                 bangumis: gallery.bangumis,
-                handleSubscribe: (bangumi) {
+                handleSubscribe: (bangumi, flag) {
                   context.read<OpModel>().subscribeBangumi(
-                        bangumi.id,
-                        bangumi.subscribed,
-                        onSuccess: () {},
-                        onError: (msg) {},
-                      );
+                    bangumi.id,
+                    bangumi.subscribed,
+                    onSuccess: () {
+                      bangumi.subscribed = !bangumi.subscribed;
+                      context.read<OpModel>().performTap(flag);
+                    },
+                    onError: (msg) {
+                      "订阅失败：$msg".toast();
+                    },
+                  );
                 },
               ),
             ];

@@ -8,12 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
-import 'package:mikan_flutter/providers/view_models/index_model.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
-typedef HandleSubscribe = void Function(Bangumi bangumi);
+typedef HandleSubscribe = void Function(Bangumi bangumi, String flag);
 
 @immutable
 class BangumiSliverGridFragment extends StatelessWidget {
@@ -33,15 +33,14 @@ class BangumiSliverGridFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final IndexModel indexModel =
-        Provider.of<IndexModel>(context, listen: false);
-    return _buildBangumiList(theme, bangumis, indexModel);
+    final OpModel opModel = Provider.of<OpModel>(context, listen: false);
+    return _buildBangumiList(theme, bangumis, opModel);
   }
 
   Widget _buildBangumiList(
     final ThemeData theme,
     final List<Bangumi> bangumis,
-    final IndexModel indexModel,
+    final OpModel opModel,
   ) {
     return SliverPadding(
       padding: this.padding,
@@ -57,7 +56,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
               theme,
               index,
               bangumis[index],
-              indexModel,
+              opModel,
             );
           },
           childCount: bangumis.length,
@@ -70,18 +69,18 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final ThemeData theme,
     final int index,
     final Bangumi bangumi,
-    final IndexModel indexModel,
+    final OpModel opModel,
   ) {
     final String currFlag =
         "$flag:bangumi:$index:${bangumi.id}:${bangumi.cover}";
     final String msg = [bangumi.name, bangumi.updateAt]
         .where((element) => element.isNotBlank)
         .join("\n");
-    return Selector<IndexModel, String>(
-      selector: (_, model) => model.tapBangumiListItemFlag,
+    return Selector<OpModel, String>(
+      selector: (_, model) => model.rebuildFlag,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (context, tapScaleFlag, child) {
-        final Matrix4 transform = tapScaleFlag == currFlag
+      builder: (context, tapFlag, child) {
+        final Matrix4 transform = tapFlag == currFlag
             ? Matrix4.diagonal3Values(0.9, 0.9, 1)
             : Matrix4.identity();
         final Widget cover = _buildBangumiItemCover(currFlag, bangumi);
@@ -100,8 +99,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
                 ],
                 color: theme.backgroundColor,
               ),
-              onTapStart: () => indexModel.tapBangumiListItemFlag = currFlag,
-              onTapEnd: () => indexModel.tapBangumiListItemFlag = null,
+              onTapStart: () => opModel.rebuildFlag = currFlag,
+              onTapEnd: () => opModel.rebuildFlag = null,
               onTap: () {
                 if (bangumi.grey == true) {
                   "此番组下暂无作品".toast();
@@ -154,7 +153,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                           ),
                         ),
                       ),
-                    _buildSubscribeButton(bangumi),
+                    _buildSubscribeButton(bangumi, currFlag),
                   ],
                 ),
               ),
@@ -218,7 +217,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSubscribeButton(final Bangumi bangumi) {
+  Widget _buildSubscribeButton(final Bangumi bangumi, final String currFlag) {
     return Positioned(
       child: bangumi.subscribed
           ? SizedBox(
@@ -232,7 +231,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                   color: Colors.redAccent,
                 ),
                 onPressed: () {
-                  this.handleSubscribe?.call(bangumi);
+                  this.handleSubscribe?.call(bangumi, currFlag);
                 },
               ),
             )
@@ -252,7 +251,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  this.handleSubscribe?.call(bangumi);
+                  this.handleSubscribe?.call(bangumi, currFlag);
                 },
               ),
             ),

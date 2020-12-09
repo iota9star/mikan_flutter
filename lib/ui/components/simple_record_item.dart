@@ -177,7 +177,7 @@ class SimpleRecordItem extends StatelessWidget {
                 tooltip: "分享",
                 iconSize: 20.0,
                 onPressed: () {
-                  record.shareString().share();
+                  record.shareString.share();
                 },
               ),
             ],

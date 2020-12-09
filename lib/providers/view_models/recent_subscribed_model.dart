@@ -8,16 +8,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class RecentSubscribedModel extends CancelableBaseModel {
   bool _recordsLoading = false;
   List<RecordItem> _records;
-  int _tapRecordItemIndex;
 
-  int get tapRecordItemIndex => _tapRecordItemIndex;
   int _dayOffset = 2;
   int _step = 0;
-
-  set tapRecordItemIndex(int value) {
-    _tapRecordItemIndex = value;
-    notifyListeners();
-  }
 
   List<RecordItem> get records => _records;
 

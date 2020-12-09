@@ -76,30 +76,40 @@ class MikanTransformer extends DefaultTransformer {
 
 class _Http extends DioForNative {
   _Http({
-    String cacheDir,
+    String cookiesDir,
     String deviceModel,
     String appVersion,
     BaseOptions options,
   }) : super(options) {
     // this.httpClientAdapter = Http2Adapter(ConnectionManager());
+    // (this.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    //     (client) {
+    //   // config the http client
+    //   client.findProxy = (url) {
+    //     return HttpClient.findProxyFromEnvironment(url, environment: {
+    //       "http_proxy": "http://192.168.101.6:8888",
+    //       "https_proxy": "https://192.168.101.6:8888"
+    //     });
+    //   };
+    //   client.badCertificateCallback =
+    //       (X509Certificate cert, String host, int port) => true;
+    //   // you can also create a HttpClient to dio
+    //   // return HttpClient();
+    // };
     this.interceptors
       ..add(_BaseInterceptor())
       ..add(
         LogInterceptor(
-          requestHeader: false,
-          responseHeader: false,
-          request: false,
-          requestBody: false,
-          responseBody: false,
+          requestHeader: true,
+          responseHeader: true,
+          request: true,
+          requestBody: true,
+          responseBody: true,
           error: true,
           logPrint: (obj) => logd(obj),
         ),
       )
-      ..add(
-        CookieManager(
-          PersistCookieJar(dir: cacheDir + "/cookies"),
-        ),
-      );
+      ..add(CookieManager(PersistCookieJar(dir: cookiesDir)));
 
     this.transformer = MikanTransformer();
   }
@@ -113,13 +123,13 @@ class _Fetcher {
   static _Fetcher _fetcher;
 
   factory _Fetcher({
-    String cacheDir,
+    String cookiesDir,
     String deviceModel,
     String appVersion,
   }) {
     if (_fetcher == null) {
       _fetcher = _Fetcher._(
-        cacheDir: cacheDir,
+        cookiesDir: cookiesDir,
         deviceModel: deviceModel,
         appVersion: appVersion,
       );
@@ -128,12 +138,12 @@ class _Fetcher {
   }
 
   _Fetcher._({
-    final String cacheDir,
+    final String cookiesDir,
     final String deviceModel,
     final String appVersion,
   }) {
     _http = _Http(
-      cacheDir: cacheDir,
+      cookiesDir: cookiesDir,
       deviceModel: deviceModel,
       appVersion: appVersion,
     );
@@ -156,7 +166,7 @@ class _Fetcher {
     receivePort.listen((final proto) async {
       try {
         final _Http http = _Fetcher(
-          cacheDir: proto.cacheDir,
+          cookiesDir: proto.cookiesDir,
           deviceModel: proto.deviceModel,
           appVersion: proto.appVersion,
         )._http;
@@ -222,7 +232,7 @@ class Http {
       _RequestMethod.GET,
       queryParameters: queryParameters,
       options: options,
-      cacheDir: Store.cacheDir.path,
+      cookiesDir: Store.cookiesPath,
     );
     return await _Fetcher._asyncInIsolate(proto);
   }
@@ -239,7 +249,7 @@ class Http {
       data: data,
       queryParameters: queryParameters,
       options: options,
-      cacheDir: Store.cacheDir.path,
+      cookiesDir: Store.cookiesPath,
     );
     return await _Fetcher._asyncInIsolate(proto);
   }
@@ -256,7 +266,7 @@ class Http {
       data: data,
       queryParameters: queryParameters,
       options: options,
-      cacheDir: Store.cacheDir.path,
+      cookiesDir: Store.cookiesPath,
     );
     return await _Fetcher._asyncInIsolate(proto);
   }
@@ -271,7 +281,7 @@ class _Protocol {
   final Map<String, dynamic> queryParameters;
   final Options options;
 
-  final String cacheDir;
+  final String cookiesDir;
   final String deviceModel;
   final String appVersion;
   SendPort _sendPort;
@@ -282,7 +292,7 @@ class _Protocol {
     this.data,
     this.queryParameters,
     this.options,
-    this.cacheDir,
+    this.cookiesDir,
     this.deviceModel,
     this.appVersion,
   });

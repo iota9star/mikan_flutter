@@ -94,9 +94,9 @@ class Repo {
   }
 
   static Future<Resp> subscribeBangumi(
-    final String bangumiId,
+    final int bangumiId,
     final bool subscribe, {
-    final String subgroupId,
+    final int subgroupId,
   }) async {
     final Options options = Options(
       contentType: "application/json; charset=UTF-8",

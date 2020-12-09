@@ -72,7 +72,7 @@ class IndexFragment extends StatelessWidget {
               child: CustomScrollView(
                 slivers: [
                   _buildHeader(context, theme),
-                  _buildCarousels(theme, indexModel),
+                  _buildCarousels(theme),
                   _buildOVASection(),
                   _buildOVAList(theme),
                   ...List.generate(bangumiRows.length, (index) {
@@ -82,13 +82,18 @@ class IndexFragment extends StatelessWidget {
                       BangumiSliverGridFragment(
                         padding: EdgeInsets.all(16.0),
                         bangumis: bangumiRow.bangumis,
-                        handleSubscribe: (bangumi) {
+                        handleSubscribe: (bangumi, flag) {
                           context.read<OpModel>().subscribeBangumi(
-                                bangumi.id,
-                                bangumi.subscribed,
-                                onSuccess: () {},
-                                onError: (msg) {},
-                              );
+                            bangumi.id,
+                            bangumi.subscribed,
+                            onSuccess: () {
+                              bangumi.subscribed = !bangumi.subscribed;
+                              context.read<OpModel>().performTap(flag);
+                            },
+                            onError: (msg) {
+                              "订阅失败：$msg".toast();
+                            },
+                          );
                         },
                       ),
                     ];
@@ -191,7 +196,7 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildCarousels(final ThemeData theme, final IndexModel indexModel) {
+  Widget _buildCarousels(final ThemeData theme) {
     return Selector<IndexModel, List<Carousel>>(
       selector: (_, model) => model.carousels,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -207,7 +212,6 @@ class IndexFragment extends StatelessWidget {
                   theme,
                   currFlag,
                   carousel,
-                  indexModel,
                 );
               },
               itemCount: carousels.length,
@@ -229,10 +233,9 @@ class IndexFragment extends StatelessWidget {
     final ThemeData theme,
     final String currFlag,
     final Carousel carousel,
-    final IndexModel indexModel,
   ) {
-    return Selector<IndexModel, String>(
-      selector: (_, model) => model.tapBangumiCarouselItemFlag,
+    return Selector<OpModel, String>(
+      selector: (_, model) => model.rebuildFlag,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, tapScaleFlag, child) {
         final Matrix4 transform = tapScaleFlag == currFlag
@@ -242,8 +245,8 @@ class IndexFragment extends StatelessWidget {
           tag: currFlag,
           child: AnimatedTapContainer(
             transform: transform,
-            onTapStart: () => indexModel.tapBangumiCarouselItemFlag = currFlag,
-            onTapEnd: () => indexModel.tapBangumiCarouselItemFlag = null,
+            onTapStart: () => context.read<OpModel>().rebuildFlag = currFlag,
+            onTapEnd: () => context.read<OpModel>().rebuildFlag = null,
             onTap: () {
               Navigator.pushNamed(
                 context,
@@ -471,11 +474,11 @@ class IndexFragment extends StatelessWidget {
               itemBuilder: (context, index) {
                 final RecordItem record = records[index];
                 final String currFlag = "ova:$index";
-                return Selector<IndexModel, String>(
-                  selector: (_, model) => model.tapBangumiOVAItemFlag,
+                return Selector<OpModel, String>(
+                  selector: (_, model) => model.rebuildFlag,
                   shouldRebuild: (pre, next) => pre != next,
-                  builder: (_, tapScaleFlag, __) {
-                    final Matrix4 transform = tapScaleFlag == currFlag
+                  builder: (_, tapFlag, __) {
+                    final Matrix4 transform = tapFlag == currFlag
                         ? Matrix4.diagonal3Values(0.9, 0.9, 1)
                         : Matrix4.identity();
                     return OVARecordItem(
@@ -491,11 +494,10 @@ class IndexFragment extends StatelessWidget {
                         );
                       },
                       onTapStart: () {
-                        context.read<IndexModel>().tapBangumiOVAItemFlag =
-                            currFlag;
+                        context.read<OpModel>().rebuildFlag = currFlag;
                       },
                       onTapEnd: () {
-                        context.read<IndexModel>().tapBangumiOVAItemFlag = null;
+                        context.read<OpModel>().rebuildFlag = null;
                       },
                     );
                   },

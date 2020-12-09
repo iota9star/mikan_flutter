@@ -18,14 +18,6 @@ class SubgroupModel extends CancelableBaseModel {
     }
   }
 
-  int _tapBangumiItemIndex = -1;
-
-  set tapBangumiItemIndex(int value) {
-    _tapBangumiItemIndex = value;
-    notifyListeners();
-  }
-
-  int get tapBangumiItemIndex => _tapBangumiItemIndex;
   final Subgroup subgroup;
   bool _loading = false;
 

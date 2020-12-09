@@ -19,14 +19,6 @@ class SubscribedSeasonModel extends CancelableBaseModel {
     }
   }
 
-  int _tapBangumiItemIndex = -1;
-
-  set tapBangumiItemIndex(int value) {
-    _tapBangumiItemIndex = value;
-    notifyListeners();
-  }
-
-  int get tapBangumiItemIndex => _tapBangumiItemIndex;
   bool _loading = false;
 
   bool get loading => _loading;

@@ -6,18 +6,18 @@ import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/providers/view_models/base_model.dart';
 
 class OpModel extends CancelableBaseModel {
-  String _tapFlag;
+  String _rebuildFlag;
 
-  String get tapFlag => _tapFlag;
+  String get rebuildFlag => _rebuildFlag;
 
-  set tapFlag(String value) {
-    _tapFlag = value;
+  set rebuildFlag(String value) {
+    _rebuildFlag = value;
     notifyListeners();
   }
 
-  performTap(final String flag) async {
-    this._tapFlag = flag;
-    Future.delayed(Duration(milliseconds: 640), () => this._tapFlag = null);
+  performTap(final String flag) {
+    this.rebuildFlag = flag;
+    Future.delayed(Duration(milliseconds: 960), () => this.rebuildFlag = null);
   }
 
   subscribeBangumi(

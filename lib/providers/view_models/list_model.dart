@@ -8,14 +8,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class ListModel extends CancelableBaseModel {
   int _page = 0;
   List<RecordItem> _records = [];
-  int _tapRecordItemIndex = -1;
-
-  set tapRecordItemIndex(int value) {
-    _tapRecordItemIndex = value;
-    notifyListeners();
-  }
-
-  int get tapRecordItemIndex => _tapRecordItemIndex;
 
   int get recordsLength => _records.length;
 

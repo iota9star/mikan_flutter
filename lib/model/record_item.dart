@@ -58,7 +58,7 @@ class RecordItem {
   @override
   int get hashCode => url.hashCode;
 
-  String shareString() {
+  String get shareString {
     final StringBuffer sb = StringBuffer();
     if (name.isNotBlank) {
       sb..write("番组名称：")..write(name)..write("\n");

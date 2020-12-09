@@ -20,10 +20,6 @@ class IndexModel extends CancelableBaseModel {
   List<Carousel> _carousels = [];
   Season _selectedSeason;
   User _user;
-  String _tapBangumiListItemFlag;
-  String _tapBangumiRssItemFlag;
-  String _tapBangumiCarouselItemFlag;
-  String _tapBangumiOVAItemFlag;
   BangumiRow _selectedBangumiRow;
 
   bool _hasScrolled = false;
@@ -41,34 +37,6 @@ class IndexModel extends CancelableBaseModel {
 
   set selectedBangumiRow(BangumiRow value) {
     _selectedBangumiRow = value;
-    notifyListeners();
-  }
-
-  String get tapBangumiCarouselItemFlag => _tapBangumiCarouselItemFlag;
-
-  set tapBangumiCarouselItemFlag(String value) {
-    _tapBangumiCarouselItemFlag = value;
-    notifyListeners();
-  }
-
-  String get tapBangumiRssItemFlag => _tapBangumiRssItemFlag;
-
-  set tapBangumiRssItemFlag(String value) {
-    _tapBangumiRssItemFlag = value;
-    notifyListeners();
-  }
-
-  String get tapBangumiListItemFlag => _tapBangumiListItemFlag;
-
-  set tapBangumiListItemFlag(String value) {
-    _tapBangumiListItemFlag = value;
-    notifyListeners();
-  }
-
-  String get tapBangumiOVAItemFlag => _tapBangumiOVAItemFlag;
-
-  set tapBangumiOVAItemFlag(String value) {
-    _tapBangumiOVAItemFlag = value;
     notifyListeners();
   }
 

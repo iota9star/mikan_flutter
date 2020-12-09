@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
+import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/view_models/bangumi_model.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
@@ -93,12 +95,13 @@ class BangumiSubgroupFragment extends StatelessWidget {
           controller: ModalScrollController.of(context),
           itemCount: subgroupBangumi.records.length,
           itemBuilder: (context, ind) {
-            final record = subgroupBangumi.records[ind];
-            return Selector<BangumiModel, int>(
-              selector: (_, model) => model.tapRecordItemFlag,
+            final RecordItem record = subgroupBangumi.records[ind];
+            final String currFlag = "bs:$ind:${record.url}";
+            return Selector<OpModel, String>(
+              selector: (_, model) => model.rebuildFlag,
               shouldRebuild: (pre, next) => pre != next,
               builder: (_, tapFlag, __) {
-                final Matrix4 transform = tapFlag == ind
+                final Matrix4 transform = tapFlag == currFlag
                     ? Matrix4.diagonal3Values(0.9, 0.9, 1)
                     : Matrix4.identity();
                 return SimpleRecordItem(
@@ -114,10 +117,10 @@ class BangumiSubgroupFragment extends StatelessWidget {
                     );
                   },
                   onTapStart: () {
-                    bangumiModel.tapRecordItemFlag = ind;
+                    context.read<OpModel>().rebuildFlag = currFlag;
                   },
                   onTapEnd: () {
-                    bangumiModel.tapRecordItemFlag = -1;
+                    context.read<OpModel>().rebuildFlag = null;
                   },
                 );
               },

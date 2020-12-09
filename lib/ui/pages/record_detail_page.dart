@@ -328,7 +328,7 @@ class RecordDetailPage extends StatelessWidget {
                   Spacer(),
                   MaterialButton(
                     onPressed: () {
-                      recordDetail.magnet.share();
+                      recordDetail.shareString.share();
                     },
                     child: Container(
                       width: 42.0,
@@ -357,7 +357,6 @@ class RecordDetailPage extends StatelessWidget {
                   MaterialButton(
                     onPressed: () {
                       recordDetail.magnet.launchAppAndCopy();
-                      recordDetail.magnet.copy();
                     },
                     child: Container(
                       width: 48.0,
@@ -519,52 +518,72 @@ class RecordDetailPage extends StatelessWidget {
             children: [
               Positioned.fill(child: child),
               Positioned(
-                child: recordDetail.subscribed
-                    ? SizedBox(
-                        width: 24.0,
-                        height: 24.0,
-                        child: IconButton(
-                          tooltip: "取消订阅",
-                          padding: EdgeInsets.all(2.0),
-                          icon: Icon(
-                            FluentIcons.heart_24_filled,
-                            color: Colors.redAccent,
-                          ),
-                          onPressed: () {
-                            context.read<OpModel>().subscribeBangumi(
+                child: Selector<RecordDetailModel, bool>(
+                  selector: (_, model) => model.recordDetail?.subscribed,
+                  shouldRebuild: (pre, next) => pre != next,
+                  builder: (_, subscribed, __) {
+                    return subscribed
+                        ? SizedBox(
+                            width: 24.0,
+                            height: 24.0,
+                            child: IconButton(
+                              tooltip: "取消订阅",
+                              padding: EdgeInsets.all(2.0),
+                              icon: Icon(
+                                FluentIcons.heart_24_filled,
+                                color: Colors.redAccent,
+                              ),
+                              onPressed: () {
+                                context.read<OpModel>().subscribeBangumi(
                                   recordDetail.id,
                                   recordDetail.subscribed,
-                                  onSuccess: () {},
-                                  onError: (msg) {},
+                                  onSuccess: () {
+                                    recordDetail.subscribed =
+                                        !recordDetail.subscribed;
+                                    context
+                                        .read<RecordDetailModel>()
+                                        .notifyListeners();
+                                  },
+                                  onError: (msg) {
+                                    "订阅失败：$msg".toast();
+                                  },
                                 );
-                          },
-                        ),
-                      )
-                    : Container(
-                        width: 24.0,
-                        height: 24.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.black38,
-                        ),
-                        child: IconButton(
-                          tooltip: "订阅",
-                          padding: EdgeInsets.all(2.0),
-                          iconSize: 16.0,
-                          icon: Icon(
-                            FluentIcons.heart_24_regular,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            context.read<OpModel>().subscribeBangumi(
+                              },
+                            ),
+                          )
+                        : Container(
+                            width: 24.0,
+                            height: 24.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: Colors.black38,
+                            ),
+                            child: IconButton(
+                              tooltip: "订阅",
+                              padding: EdgeInsets.all(2.0),
+                              iconSize: 16.0,
+                              icon: Icon(
+                                FluentIcons.heart_24_regular,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                context.read<OpModel>().subscribeBangumi(
                                   recordDetail.id,
                                   recordDetail.subscribed,
-                                  onSuccess: () {},
-                                  onError: (msg) {},
+                                  onSuccess: () {
+                                    context
+                                        .read<RecordDetailModel>()
+                                        .notifyListeners();
+                                  },
+                                  onError: (msg) {
+                                    "订阅失败：$msg".toast();
+                                  },
                                 );
-                          },
-                        ),
-                      ),
+                              },
+                            ),
+                          );
+                  },
+                ),
               ),
             ],
           ),

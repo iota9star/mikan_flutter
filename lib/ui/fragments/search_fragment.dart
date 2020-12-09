@@ -9,6 +9,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/search_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
@@ -58,7 +59,7 @@ class SearchFragment extends StatelessWidget {
         _buildSubgroupSection(theme),
         _buildSubgroupList(theme, searchModel),
         _buildRecommendSection(theme),
-        _buildRecommendList(theme, searchModel),
+        _buildRecommendList(theme),
         _buildSearchResultSection(theme),
         _buildSearchResultList(theme, searchModel),
       ],
@@ -149,10 +150,7 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommendList(
-    final ThemeData theme,
-    final SearchModel searchModel,
-  ) {
+  Widget _buildRecommendList(final ThemeData theme) {
     return Selector<SearchModel, List<Bangumi>>(
       selector: (_, model) => model.searchResult?.bangumis,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -180,7 +178,6 @@ class SearchFragment extends StatelessWidget {
                   theme,
                   currFlag,
                   bangumi,
-                  searchModel,
                 );
               },
               gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
@@ -200,13 +197,12 @@ class SearchFragment extends StatelessWidget {
     final ThemeData theme,
     final String currFlag,
     final Bangumi bangumi,
-    final SearchModel searchModel,
   ) {
-    return Selector<SearchModel, String>(
-      selector: (_, model) => model.tapBangumiItemFlag,
+    return Selector<OpModel, String>(
+      selector: (_, model) => model.rebuildFlag,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (context, tapScaleFlag, child) {
-        final Matrix4 transform = tapScaleFlag == currFlag
+      builder: (context, tapFlag, child) {
+        final Matrix4 transform = tapFlag == currFlag
             ? Matrix4.diagonal3Values(0.9, 0.9, 1)
             : Matrix4.identity();
         Widget cover = _buildBangumiListItem(
@@ -222,8 +218,8 @@ class SearchFragment extends StatelessWidget {
             margin: EdgeInsets.symmetric(
               vertical: 16.0,
             ),
-            onTapStart: () => searchModel.tapBangumiItemFlag = currFlag,
-            onTapEnd: () => searchModel.tapBangumiItemFlag = null,
+            onTapStart: () => context.read<OpModel>().rebuildFlag = currFlag,
+            onTapEnd: () => context.read<OpModel>().rebuildFlag = null,
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(

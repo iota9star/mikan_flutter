@@ -17,15 +17,6 @@ class SearchModel extends CancelableBaseModel {
 
   bool _loading = false;
 
-  String _tapBangumiItemFlag;
-
-  String get tapBangumiItemFlag => _tapBangumiItemFlag;
-
-  set tapBangumiItemFlag(String value) {
-    _tapBangumiItemFlag = value;
-    notifyListeners();
-  }
-
   String get keywords => _keywords;
 
   SearchResult get searchResult => _searchResult;

@@ -7,6 +7,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/recent_subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
@@ -88,11 +89,12 @@ class RecentSubscribedPage extends StatelessWidget {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final RecordItem record = records[index];
-              return Selector<RecentSubscribedModel, int>(
-                selector: (_, model) => model.tapRecordItemIndex,
+              final String currFlag = "rs:$index:${record.url}";
+              return Selector<OpModel, String>(
+                selector: (_, model) => model.rebuildFlag,
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (context, scaleIndex, child) {
-                  final Matrix4 transform = scaleIndex == index
+                  final Matrix4 transform = scaleIndex == currFlag
                       ? Matrix4.diagonal3Values(0.9, 0.9, 1)
                       : Matrix4.identity();
                   return RssRecordItem(
@@ -108,12 +110,10 @@ class RecentSubscribedPage extends StatelessWidget {
                       );
                     },
                     onTapStart: () {
-                      context.read<RecentSubscribedModel>().tapRecordItemIndex =
-                          index;
+                      context.read<OpModel>().rebuildFlag = currFlag;
                     },
                     onTapEnd: () {
-                      context.read<RecentSubscribedModel>().tapRecordItemIndex =
-                          -1;
+                      context.read<OpModel>().rebuildFlag = null;
                     },
                   );
                 },

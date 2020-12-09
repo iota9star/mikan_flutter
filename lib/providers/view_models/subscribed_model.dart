@@ -16,9 +16,6 @@ class SubscribedModel extends CancelableBaseModel {
   List<Bangumi> _bangumis;
   Map<String, List<RecordItem>> _rss;
   List<RecordItem> _records;
-  int _tapRecordItemIndex;
-
-  int get tapRecordItemIndex => _tapRecordItemIndex;
 
   List<YearSeason> _years;
 
@@ -29,11 +26,6 @@ class SubscribedModel extends CancelableBaseModel {
     if (years.isSafeNotEmpty) {
       this._loadMySubscribedSeasonBangumi(years[0].seasons.first);
     }
-  }
-
-  set tapRecordItemIndex(int value) {
-    _tapRecordItemIndex = value;
-    notifyListeners();
   }
 
   Map<String, List<RecordItem>> get rss => _rss;
