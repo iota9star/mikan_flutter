@@ -12,7 +12,8 @@ class ThemeModel extends BaseModel {
   ThemeItem get themeItem => _themeItem;
 
   set themeItem(ThemeItem value) {
-    _themeItem = value;
+    this._themeItem = value;
+    MyHive.db.put(HiveDBKey.THEME_ID, this._themeItem.id);
     notifyListeners();
   }
 
