@@ -1,7 +1,7 @@
 name: mikan_flutter
 description: mikanani.me
 
-version: 0.0.15-alpha+15
+version: 0.0.16-alpha+16
 
 environment:
   sdk: ">=2.10.4 <3.0.0"
