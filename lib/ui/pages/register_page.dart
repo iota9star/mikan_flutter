@@ -9,16 +9,16 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/providers/view_models/index_model.dart';
-import 'package:mikan_flutter/providers/view_models/login_model.dart';
+import 'package:mikan_flutter/providers/view_models/register_model.dart';
 import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "login",
-  routeName: "login",
+  name: "register",
+  routeName: "register",
 )
 @immutable
-class LoginPage extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -26,11 +26,11 @@ class LoginPage extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: ChangeNotifierProvider<LoginModel>(
-        create: (_) => LoginModel(),
+      child: ChangeNotifierProvider<RegisterModel>(
+        create: (_) => RegisterModel(),
         child: Builder(builder: (context) {
-          final LoginModel loginModel =
-              Provider.of<LoginModel>(context, listen: false);
+          final RegisterModel registerModel =
+              Provider.of<RegisterModel>(context, listen: false);
           return Scaffold(
             body: SingleChildScrollView(
               child: Padding(
@@ -47,23 +47,18 @@ class LoginPage extends StatelessWidget {
                     children: <Widget>[
                       _buildHeader(),
                       SizedBox(height: 42.0),
-                      _buildUserNameField(theme, loginModel),
+                      _buildUserNameField(theme, registerModel),
                       SizedBox(height: 16.0),
-                      _buildPasswordField(theme, loginModel),
+                      _buildPasswordField(theme, registerModel),
                       SizedBox(height: 16.0),
-                      _buildRememberRow(theme, loginModel),
+                      _buildConfirmPasswordField(theme, registerModel),
                       SizedBox(height: 16.0),
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, Routes.register);
-                        },
-                        child: Text("还没有账号？赶紧来注册一个吧~"),
-                      ),
+                      _buildEmailField(theme, registerModel),
                       SizedBox(height: 16.0),
+                      _buildQQField(theme, registerModel),
+                      SizedBox(height: 56.0),
                       _buildLoginButton(theme),
-                      SizedBox(
-                        height: 56.0,
-                      ),
+                      SizedBox(height: 56.0),
                     ],
                   ),
                 ),
@@ -76,7 +71,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildLoginButton(final ThemeData theme) {
-    return Selector<LoginModel, bool>(
+    return Selector<RegisterModel, bool>(
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, loading, __) {
@@ -87,7 +82,7 @@ class LoginPage extends StatelessWidget {
           onPressed: () {
             if (loading) return;
             if (_formKey.currentState.validate()) {
-              context.read<LoginModel>().submit(() {
+              context.read<RegisterModel>().submit(() {
                 context.read<IndexModel>().refresh();
                 context.read<SubscribedModel>().refresh();
                 Navigator.popUntil(
@@ -126,7 +121,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 SizedBox(width: 12.0),
                 Text(
-                  loading ? "登录中" : "登录",
+                  loading ? "注册中" : "注册",
                   style: TextStyle(
                     color: iconColor,
                     fontSize: 16.0,
@@ -148,38 +143,9 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRememberRow(
-    final ThemeData theme,
-    final LoginModel loginModel,
-  ) {
-    return Row(
-      children: <Widget>[
-        Selector<LoginModel, bool>(
-          selector: (_, model) => model.rememberMe,
-          shouldRebuild: (pre, next) => pre != next,
-          builder: (_, checked, __) {
-            return Checkbox(
-              value: checked,
-              visualDensity: VisualDensity(),
-              activeColor: theme.accentColor,
-              onChanged: (val) {
-                loginModel.rememberMe = val;
-              },
-            );
-          },
-        ),
-        Expanded(child: Text("记住密码")),
-        FlatButton(
-          onPressed: () {},
-          child: Text("忘记密码"),
-        )
-      ],
-    );
-  }
-
   Widget _buildUserNameField(
     final ThemeData theme,
-    final LoginModel loginModel,
+    final RegisterModel registerModel,
   ) {
     return Container(
       decoration: BoxDecoration(
@@ -187,7 +153,7 @@ class LoginPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: TextFormField(
-        controller: loginModel.accountController,
+        controller: registerModel.userNameController,
         cursorColor: theme.accentColor,
         decoration: InputDecoration(
           isDense: true,
@@ -208,16 +174,84 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPasswordField(
+  Widget _buildEmailField(
     final ThemeData theme,
-    final LoginModel loginModel,
+    final RegisterModel registerModel,
   ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16.0),
       ),
-      child: Selector<LoginModel, bool>(
+      child: TextFormField(
+        controller: registerModel.emailController,
+        cursorColor: theme.accentColor,
+        decoration: InputDecoration(
+          isDense: true,
+          border: InputBorder.none,
+          labelText: '邮箱',
+          hintText: '请输入邮箱',
+          hintStyle: TextStyle(fontSize: 14.0),
+          prefixIcon: Icon(FluentIcons.mail_24_regular),
+        ),
+        validator: (value) {
+          if (value.isNullOrBlank) return "邮箱不能为空";
+          if (!RegExp(r".+@.+\..+").hasMatch(value)) return "邮箱格式不正确";
+          return null;
+        },
+        textInputAction: TextInputAction.next,
+        keyboardType: TextInputType.emailAddress,
+      ),
+    );
+  }
+
+  Widget _buildQQField(
+    final ThemeData theme,
+    final RegisterModel registerModel,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: TextFormField(
+        controller: registerModel.qqController,
+        cursorColor: theme.accentColor,
+        decoration: InputDecoration(
+          isDense: true,
+          border: InputBorder.none,
+          labelText: 'QQ',
+          hintText: '请输入QQ号码',
+          hintStyle: TextStyle(fontSize: 14.0),
+          prefixIcon: Icon(
+            FluentIcons.emoji_surprise_24_regular,
+          ),
+        ),
+        validator: (value) {
+          if (value.isNotBlank) {
+            if (!RegExp(r"\d+").hasMatch(value)) return "QQ号码应为数字";
+            if (value.length < 5) {
+              return "QQ号码最少为5位";
+            }
+          }
+          return null;
+        },
+        textInputAction: TextInputAction.done,
+        keyboardType: TextInputType.number,
+      ),
+    );
+  }
+
+  Widget _buildPasswordField(
+    final ThemeData theme,
+    final RegisterModel registerModel,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Selector<RegisterModel, bool>(
         selector: (_, model) => model.showPassword,
         shouldRebuild: (pre, next) => pre != next,
         builder: (_, showPassword, __) {
@@ -226,7 +260,7 @@ class LoginPage extends StatelessWidget {
             obscuringCharacter: "*",
             style: TextStyle(letterSpacing: 6.0),
             cursorColor: theme.accentColor,
-            controller: loginModel.passwordController,
+            controller: registerModel.passwordController,
             decoration: InputDecoration(
               isDense: true,
               border: InputBorder.none,
@@ -239,7 +273,7 @@ class LoginPage extends StatelessWidget {
                     ? Icon(FluentIcons.eye_show_24_regular)
                     : Icon(FluentIcons.eye_show_24_filled),
                 onPressed: () {
-                  loginModel.showPassword = !showPassword;
+                  registerModel.showPassword = !showPassword;
                 },
               ),
             ),
@@ -248,7 +282,56 @@ class LoginPage extends StatelessWidget {
               if (value.length < 6) return "密码最少6位";
               return null;
             },
-            textInputAction: TextInputAction.done,
+            textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.visiblePassword,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildConfirmPasswordField(
+    final ThemeData theme,
+    final RegisterModel registerModel,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Selector<RegisterModel, bool>(
+        selector: (_, model) => model.showPassword,
+        shouldRebuild: (pre, next) => pre != next,
+        builder: (_, showPassword, __) {
+          return TextFormField(
+            obscureText: !showPassword,
+            obscuringCharacter: "*",
+            style: TextStyle(letterSpacing: 6.0),
+            cursorColor: theme.accentColor,
+            controller: registerModel.confirmPasswordController,
+            decoration: InputDecoration(
+              isDense: true,
+              border: InputBorder.none,
+              labelText: '确认密码',
+              hintText: '请输入确认密码',
+              hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
+              prefixIcon: Icon(FluentIcons.key_multiple_20_regular),
+              suffixIcon: IconButton(
+                icon: showPassword
+                    ? Icon(FluentIcons.eye_show_24_regular)
+                    : Icon(FluentIcons.eye_show_24_filled),
+                onPressed: () {
+                  registerModel.showPassword = !showPassword;
+                },
+              ),
+            ),
+            validator: (value) {
+              if (value.isNullOrBlank) return "确认密码不能为空";
+              if (value != registerModel.passwordController.text)
+                return "确认密码与密码不一致，请重新输入";
+              return null;
+            },
+            textInputAction: TextInputAction.next,
             keyboardType: TextInputType.visiblePassword,
           );
         },

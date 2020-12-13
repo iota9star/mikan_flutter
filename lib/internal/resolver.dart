@@ -171,7 +171,18 @@ class Resolver {
     );
   }
 
-  static Future<String> parseRefreshToken(final Document document) async {
+  static Future<String> parseRefreshRegisterToken(
+    final Document document,
+  ) async {
+    final String token = document
+        .querySelector("#registerForm input[name=__RequestVerificationToken]")
+        ?.attributes
+        ?.getOrNull("value")
+        ?.trim();
+    return token;
+  }
+
+  static Future<String> parseRefreshLoginToken(final Document document) async {
     final String token = document
         .querySelector("#login input[name=__RequestVerificationToken]")
         ?.attributes

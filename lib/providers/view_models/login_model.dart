@@ -45,12 +45,16 @@ class LoginModel extends CancelableBaseModel {
   submit(VoidCallback loginSuccess) async {
     this._loading = true;
     notifyListeners();
-    final Resp tokenResp = await (this + Repo.refreshToken());
+    final Resp tokenResp = await (this + Repo.refreshLoginToken());
     if (!tokenResp.success) {
+      this._loading = false;
+      notifyListeners();
       return "获取登录参数失败".toast();
     }
     final String token = tokenResp.data;
     if (token.isNullOrBlank) {
+      this._loading = false;
+      notifyListeners();
       return "获取登录参数为空，请稍候重试".toast();
     }
     final Map<String, dynamic> loginParams = {

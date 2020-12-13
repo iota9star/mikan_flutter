@@ -16,6 +16,7 @@ import 'ui/pages/home_page.dart';
 import 'ui/pages/login_page.dart';
 import 'ui/pages/recent_subscribed_page.dart';
 import 'ui/pages/record_detail_page.dart';
+import 'ui/pages/register_page.dart';
 import 'ui/pages/season_list_page.dart';
 import 'ui/pages/single_season_page.dart';
 import 'ui/pages/splash_page.dart';
@@ -65,6 +66,12 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           url: arguments['url'] as String,
         ),
         routeName: 'record-detail',
+      );
+    case 'register':
+      return RouteResult(
+        name: name,
+        widget: RegisterPage(),
+        routeName: 'register',
       );
     case 'season':
       return RouteResult(

@@ -66,8 +66,10 @@ class MikanTransformer extends DefaultTransformer {
           return await Resolver.parseRecordDetail(document);
         case MikanFunc.SUBSCRIBED_SEASON:
           return await Resolver.parseMySubscribed(document);
-        case MikanFunc.REFRESH_TOKEN:
-          return await Resolver.parseRefreshToken(document);
+        case MikanFunc.REFRESH_LOGIN_TOKEN:
+          return await Resolver.parseRefreshLoginToken(document);
+        case MikanFunc.REFRESH_REGISTER_TOKEN:
+          return await Resolver.parseRefreshRegisterToken(document);
       }
     }
     return transformResponse;
@@ -206,12 +208,14 @@ class _Fetcher {
           );
         }
       } catch (e) {
-        logd("请求出错：$e");
         if (e is DioError &&
             e.response.statusCode == 302 &&
-            e.request.path == MikanUrl.LOGIN) {
+            proto.method == _RequestMethod.POST_WITH_FORM &&
+            (e.request.path == MikanUrl.LOGIN ||
+                e.request.path == MikanUrl.REGISTER)) {
           proto._sendPort.send(Resp(true));
         } else {
+          logd("请求出错：$e");
           proto._sendPort.send(Resp(false, msg: e?.message));
         }
       }

@@ -16,6 +16,7 @@ const List<String> routeNames = <String>[
   'login',
   'recent-subscribed',
   'record-detail',
+  'register',
   'season',
   'season-list',
   'splash',
@@ -72,6 +73,13 @@ class Routes {
   ///
   /// RecordDetailPage : [Key key, String url]
   static const _RecordDetail recordDetail = _RecordDetail();
+
+  /// 'register'
+  ///
+  /// [name] : 'register'
+  ///
+  /// [routeName] : 'register'
+  static const String register = 'register';
 
   /// 'season'
   ///

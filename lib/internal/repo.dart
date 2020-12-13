@@ -115,9 +115,6 @@ class Repo {
   static Future<Resp> mySubscribedSeasonBangumi(
       final String year, final String season) async {
     final Options options = Options(
-      headers: {
-        "referer": "https://mikanani.me/Home/MyBangumi",
-      },
       extra: {"$MikanFunc": MikanFunc.SUBSCRIBED_SEASON},
     );
     return await Http.get(
@@ -143,12 +140,36 @@ class Repo {
     );
   }
 
-  static Future<Resp> refreshToken() async {
+  static Future<Resp> register(
+    final Map<String, dynamic> registerParams,
+  ) async {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.REFRESH_TOKEN},
+      contentType: "application/x-www-form-urlencoded",
+      responseType: ResponseType.plain,
+    );
+    return await Http.postForm(
+      MikanUrl.REGISTER,
+      data: registerParams,
+      options: options,
+    );
+  }
+
+  static Future<Resp> refreshLoginToken() async {
+    final Options options = Options(
+      extra: {"$MikanFunc": MikanFunc.REFRESH_LOGIN_TOKEN},
     );
     return await Http.get(
       MikanUrl.MY_SUBSCRIBED,
+      options: options,
+    );
+  }
+
+  static Future<Resp> refreshRegisterToken() async {
+    final Options options = Options(
+      extra: {"$MikanFunc": MikanFunc.REFRESH_REGISTER_TOKEN},
+    );
+    return await Http.get(
+      MikanUrl.REGISTER,
       options: options,
     );
   }
