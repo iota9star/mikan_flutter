@@ -50,7 +50,9 @@ class LoginPage extends StatelessWidget {
                     _buildRememberRow(theme, loginModel),
                     SizedBox(height: 16.0),
                     FlatButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.register);
+                      },
                       child: Text("还没有账号？赶紧来注册一个吧~"),
                     ),
                     SizedBox(height: 16.0),
@@ -195,16 +197,30 @@ class LoginPage extends StatelessWidget {
         color: Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16.0),
       ),
-      child: TextField(
-        obscureText: true,
-        controller: loginModel.passwordController,
-        decoration: InputDecoration(
-          isDense: true,
-          border: InputBorder.none,
-          labelText: '密码',
-          prefixIcon: Icon(FluentIcons.password_24_regular),
-        ),
-        keyboardType: TextInputType.visiblePassword,
+      child: Selector<LoginModel, bool>(
+        selector: (_, model) => model.showPassword,
+        shouldRebuild: (pre, next) => pre != next,
+        builder: (_, showPassword, __) {
+          return TextField(
+            obscureText: !showPassword,
+            controller: loginModel.passwordController,
+            decoration: InputDecoration(
+              isDense: true,
+              border: InputBorder.none,
+              labelText: '密码',
+              prefixIcon: Icon(FluentIcons.password_24_regular),
+              suffixIcon: IconButton(
+                icon: showPassword
+                    ? Icon(FluentIcons.eye_show_24_regular)
+                    : Icon(FluentIcons.eye_hide_24_regular),
+                onPressed: () {
+                  loginModel.showPassword = !showPassword;
+                },
+              ),
+            ),
+            keyboardType: TextInputType.visiblePassword,
+          );
+        },
       ),
     );
   }
