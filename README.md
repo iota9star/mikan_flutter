@@ -3,7 +3,7 @@
 [![Gitter](https://badges.gitter.im/iota9star/mikan.svg)](https://gitter.im/iota9star/mikan?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) ![Apache License 2.0](https://img.shields.io/github/license/iota9star/mikan_flutter) ![下载量](https://img.shields.io/github/downloads/iota9star/mikan_flutter/total) ![最新release](https://img.shields.io/github/v/release/iota9star/mikan_flutter) ![open issues](https://img.shields.io/github/issues/iota9star/mikan_flutter) ![fork](https://img.shields.io/github/forks/iota9star/mikan_flutter?style=social) ![代码行数](https://img.shields.io/tokei/lines/github/iota9star/mikan_flutter) ![build](https://img.shields.io/github/workflow/status/iota9star/mikan_flutter/daily%20build%20apk) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f969750dc4aa424ead664219ddcf321d)](https://app.codacy.com/gh/iota9star/mikan_flutter?utm_source=github.com&utm_medium=referral&utm_content=iota9star/mikan_flutter&utm_campaign=Badge_Grade)
 ![蜜柑计划](static/art/banner.png)
 
-https:&#x2F;&#x2F;mikanani.me
+[mikanani.me](https://mikanani.me)
 
 ## Getting Started
 
@@ -31,7 +31,7 @@ full API reference.
 
 ## Thanks
 
-特别感谢[JetBrains](https://www.jetbrains.com/?from=mikan_flutter) 提供的[IntelliJ IDEA](https://www.jetbrains.com/idea)
+特别感谢 [JetBrains](https://www.jetbrains.com/?from=mikan_flutter) 提供的 [IntelliJ IDEA](https://www.jetbrains.com/idea)
 等全家桶对开源项目的支持.
 
 [<img src="static/jetbrains/jetbrains.png" width="200"/>](https://www.jetbrains.com/?from=mikan_flutter)
