@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 
 part 'user.g.dart';
@@ -13,6 +14,8 @@ class User extends HiveObject {
 
   @HiveField(2)
   String token;
+
+  bool get hasLogin => name.isNotBlank && avatar.isNotBlank;
 
   User({
     this.name,

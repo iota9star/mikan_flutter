@@ -22,6 +22,7 @@ import 'package:mikan_flutter/ui/components/ova_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
 import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:mikan_flutter/widget/common_widgets.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -353,7 +354,7 @@ class IndexFragment extends StatelessWidget {
                 ),
                 MaterialButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed(Routes.login);
+                    _showSettingsPanel(context);
                   },
                   child: _buildAvatar(),
                   minWidth: 0,
@@ -415,7 +416,7 @@ class IndexFragment extends StatelessWidget {
       selector: (_, model) => model.user,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, user, __) {
-        return user?.avatar?.isNotBlank == true
+        return user?.hasLogin == true
             ? ClipOval(
                 child: ExtendedImage.network(
                   user?.avatar,
@@ -519,6 +520,16 @@ class IndexFragment extends StatelessWidget {
       topRadius: Radius.circular(16.0),
       builder: (_) {
         return SearchFragment();
+      },
+    );
+  }
+
+  void _showSettingsPanel(final BuildContext context) {
+    showCupertinoModalBottomSheet(
+      context: context,
+      topRadius: Radius.circular(16.0),
+      builder: (_) {
+        return SettingsFragment();
       },
     );
   }

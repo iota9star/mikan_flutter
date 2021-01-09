@@ -106,7 +106,7 @@ class _Http extends DioForNative {
           responseHeader: true,
           request: true,
           requestBody: true,
-          responseBody: true,
+          responseBody: false,
           error: true,
           logPrint: (obj) => logd(obj),
         ),
