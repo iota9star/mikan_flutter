@@ -186,7 +186,6 @@ class OVARecordItem extends StatelessWidget {
                 iconSize: 20.0,
                 onPressed: () {
                   record.magnet.launchAppAndCopy();
-                  record.magnet.copy();
                 },
               ),
               IconButton(

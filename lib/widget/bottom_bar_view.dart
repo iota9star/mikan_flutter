@@ -32,7 +32,7 @@ class BottomBarView extends StatefulWidget {
     this.items,
     this.onItemClick,
     this.height = 64,
-    this.iconSize = 28,
+    this.iconSize = 30,
   })  : assert(height > iconSize),
         super(key: key);
 
@@ -149,17 +149,17 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     _animationController?.forward();
   }
 
-  Widget _toBarIcon(final BarItem barItem) {
+  Widget _toBarIcon(final Color accentColor, final BarItem barItem) {
     if (barItem.isSelected) {
       return barItem.selectedIcon == null
           ? ExtendedImage.asset(
               barItem.selectedIconPath,
-              width: barItem._size + 4,
-              height: barItem._size + 4,
+              width: barItem._size + 10,
+              height: barItem._size + 10,
             )
           : Icon(
               barItem.selectedIcon,
-              size: barItem._size + 4,
+              size: barItem._size + 10,
               color: Theme.of(context).accentColor,
             );
     }
@@ -211,11 +211,11 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
                         curve: Interval(
                           0.1,
                           1.0,
-                          curve: Curves.fastOutSlowIn,
+                          curve: Curves.linear,
                         ),
                       ),
                     ),
-                    child: _toBarIcon(widget.barItem),
+                    child: _toBarIcon(theme.accentColor, widget.barItem),
                   ),
                   ..._buildPointWidgets(theme),
                 ],

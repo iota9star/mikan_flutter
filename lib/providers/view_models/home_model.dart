@@ -1,7 +1,8 @@
 import 'package:mikan_flutter/providers/view_models/base_model.dart';
 
 class HomeModel extends BaseModel {
-  int _selectedIndex = 0;
+  /// default select home page.
+  int _selectedIndex = 1;
 
   int get selectedIndex => _selectedIndex;
 

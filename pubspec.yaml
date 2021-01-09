@@ -13,7 +13,7 @@ dependencies:
   firebase_core: ^0.5.3
   firebase_analytics: ^6.3.0
   firebase_crashlytics: ^0.2.4
-  path_provider: ^1.6.24
+  path_provider: ^1.6.27
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
   dio_http2_adapter: ^1.0.1
@@ -27,7 +27,7 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   async: ^2.4.2
   isolate: ^2.0.3
-  fluentui_system_icons: ^1.1.89
+  fluentui_system_icons: ^1.1.90
   clipboard: ^0.1.2+8
   url_launcher: ^5.7.10
   share: ^0.6.5+4
@@ -45,12 +45,12 @@ dependencies:
   connectivity: ^2.0.2
 
 dev_dependencies:
-  build_runner: ^1.10.11
+  build_runner: ^1.10.12
   json_serializable: ^3.5.1
   hive_generator: ^0.8.2
   ff_annotation_route: ^4.2.3
   flutter_launcher_icons: ^0.8.1
-  derry: ^1.2.0
+  derry: ^1.2.1
 
 dependency_overrides:
   analyzer: any

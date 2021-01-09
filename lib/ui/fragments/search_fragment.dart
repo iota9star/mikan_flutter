@@ -433,6 +433,7 @@ class SearchFragment extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeaderTitle(context),
+            SizedBox(height: 12.0),
             _buildHeaderSearchField(theme, searchModel),
           ],
         ),
@@ -500,10 +501,11 @@ class SearchFragment extends StatelessWidget {
             return Container();
           },
         ),
-        IconButton(
+        MaterialButton(
           padding: EdgeInsets.zero,
-          tooltip: "关闭",
-          icon: Icon(FluentIcons.dismiss_24_regular),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          minWidth: 0.0,
+          child: Icon(FluentIcons.dismiss_24_regular),
           onPressed: () {
             Navigator.pop(context);
           },

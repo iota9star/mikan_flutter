@@ -6,7 +6,6 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/providers/view_models/home_model.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/list_fragment.dart';
-import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/subscribed_fragment.dart';
 import 'package:mikan_flutter/widget/bottom_bar_view.dart';
 import 'package:provider/provider.dart';
@@ -32,10 +31,9 @@ class HomePage extends StatelessWidget {
                 builder: (_, selectIndex, __) {
                   return IndexedStack(
                     children: [
-                      IndexFragment(),
                       ListFragment(),
+                      IndexFragment(),
                       SubscribedFragment(),
-                      SettingsFragment(),
                     ],
                     index: selectIndex,
                   );
@@ -50,24 +48,19 @@ class HomePage extends StatelessWidget {
                   return BottomBarView(
                     items: [
                       BarItem(
-                        icon: FluentIcons.home_24_regular,
-                        selectedIconPath: "assets/mikan.png",
+                        icon: FluentIcons.rocket_24_regular,
+                        selectedIcon: FluentIcons.rocket_24_filled,
                         isSelected: selectIndex == 0,
                       ),
                       BarItem(
-                        icon: FluentIcons.list_24_regular,
-                        selectedIcon: FluentIcons.list_24_filled,
+                        icon: FluentIcons.sticker_24_regular,
+                        selectedIconPath: "assets/mikan.png",
                         isSelected: selectIndex == 1,
                       ),
                       BarItem(
-                        icon: FluentIcons.collections_24_regular,
-                        selectedIcon: FluentIcons.collections_24_filled,
+                        icon: FluentIcons.leaf_two_24_regular,
+                        selectedIcon: FluentIcons.leaf_three_24_filled,
                         isSelected: selectIndex == 2,
-                      ),
-                      BarItem(
-                        icon: FluentIcons.settings_24_regular,
-                        selectedIcon: FluentIcons.settings_24_filled,
-                        isSelected: selectIndex == 3,
                       ),
                     ],
                     onItemClick: (index) {
