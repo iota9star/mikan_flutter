@@ -10,15 +10,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^0.5.3
-  firebase_analytics: ^6.3.0
-  firebase_crashlytics: ^0.2.4
+  firebase_core: ^0.7.0
+  firebase_analytics: ^7.0.1
+  firebase_crashlytics: ^0.4.0+1
   path_provider: ^1.6.27
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
   dio_http2_adapter: ^1.0.1
   html: ^0.14.0+4
-  provider: ^4.3.2+3
+  provider: ^4.3.3
   oktoast: ^2.3.2
   pull_to_refresh: ^1.6.3
   hive: ^1.4.4+1
@@ -27,7 +27,7 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   async: ^2.4.2
   isolate: ^2.0.3
-  fluentui_system_icons: ^1.1.90
+  fluentui_system_icons: ^1.1.92
   clipboard: ^0.1.2+8
   url_launcher: ^5.7.10
   share: ^0.6.5+4
@@ -43,9 +43,11 @@ dependencies:
   horizontal_card_pager: ^1.0.3
   quick_actions: ^0.4.0+10
   connectivity: ^2.0.2
+  cached_network_image: ^2.5.0
+  flutter_cache_manager: ^2.1.1
 
 dev_dependencies:
-  build_runner: ^1.10.12
+  build_runner: ^1.10.13
   json_serializable: ^3.5.1
   hive_generator: ^0.8.2
   ff_annotation_route: ^4.2.3
