@@ -27,7 +27,7 @@ class SearchFragment extends StatelessWidget {
       create: (_) => SearchModel(),
       child: Builder(builder: (context) {
         final SearchModel searchModel =
-        Provider.of<SearchModel>(context, listen: false);
+            Provider.of<SearchModel>(context, listen: false);
         return Scaffold(
           body: NotificationListener(
             onNotification: (notification) {
@@ -48,9 +48,11 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomScrollView(final BuildContext context,
-      final ThemeData theme,
-      final SearchModel searchModel,) {
+  Widget _buildCustomScrollView(
+    final BuildContext context,
+    final ThemeData theme,
+    final SearchModel searchModel,
+  ) {
     return CustomScrollView(
       controller: ModalScrollController.of(context),
       slivers: [
@@ -65,8 +67,10 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchResultList(final ThemeData theme,
-      final SearchModel searchModel,) {
+  Widget _buildSearchResultList(
+    final ThemeData theme,
+    final SearchModel searchModel,
+  ) {
     return Selector<SearchModel, List<RecordItem>>(
       selector: (_, model) => model.searchResult?.records,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -78,7 +82,7 @@ class SearchFragment extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 8.0),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (_, index) {
+              (_, index) {
                 final RecordItem record = records[index];
                 return Selector<SearchModel, int>(
                   selector: (_, model) => model.tapRecordItemIndex,
@@ -190,9 +194,11 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommentListItem(final ThemeData theme,
-      final String currFlag,
-      final Bangumi bangumi,) {
+  Widget _buildRecommentListItem(
+    final ThemeData theme,
+    final String currFlag,
+    final Bangumi bangumi,
+  ) {
     return Selector<OpModel, String>(
       selector: (_, model) => model.rebuildFlag,
       shouldRebuild: (pre, next) => pre != next,
@@ -270,8 +276,10 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSubgroupList(final ThemeData theme,
-      final SearchModel searchModel,) {
+  Widget _buildSubgroupList(
+    final ThemeData theme,
+    final SearchModel searchModel,
+  ) {
     return Selector<SearchModel, List<Subgroup>>(
       selector: (_, model) => model.searchResult?.subgroups,
       shouldRebuild: (pre, next) => pre.ne(next),
@@ -294,13 +302,13 @@ class SearchFragment extends StatelessWidget {
                     color: theme.scaffoldBackgroundColor,
                     boxShadow: hasScrolled
                         ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.024),
+                              offset: Offset(0, 1),
+                              blurRadius: 3.0,
+                              spreadRadius: 3.0,
+                            ),
+                          ]
                         : null,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(16.0),
@@ -322,12 +330,12 @@ class SearchFragment extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: subgroups.length,
                 gridDelegate:
-                SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
                   crossAxisCount: less ? 1 : 2,
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
                   lastChildLayoutTypeBuilder: (index) =>
-                  LastChildLayoutType.none,
+                      LastChildLayoutType.none,
                 ),
                 itemBuilder: (context, index) {
                   final subgroup = subgroups[index];
@@ -341,15 +349,17 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSubgroupListItem(final ThemeData theme,
-      final Subgroup subgroup,
-      final SearchModel searchModel,) {
+  Widget _buildSubgroupListItem(
+    final ThemeData theme,
+    final Subgroup subgroup,
+    final SearchModel searchModel,
+  ) {
     return Selector<SearchModel, String>(
       selector: (_, model) => model.subgroupId,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, subgroupId, __) {
         final Color color =
-        subgroup.id == subgroupId ? theme.primaryColor : theme.accentColor;
+            subgroup.id == subgroupId ? theme.primaryColor : theme.accentColor;
         return MaterialButton(
           minWidth: 0,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -406,9 +416,11 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final BuildContext context,
-      final ThemeData theme,
-      final SearchModel searchModel,) {
+  Widget _buildHeader(
+    final BuildContext context,
+    final ThemeData theme,
+    final SearchModel searchModel,
+  ) {
     return SliverPinnedToBoxAdapter(
       child: Container(
         color: theme.scaffoldBackgroundColor,
@@ -430,7 +442,8 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderSearchField(final ThemeData theme, final SearchModel searchModel) {
+  Widget _buildHeaderSearchField(
+      final ThemeData theme, final SearchModel searchModel) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.1),
@@ -502,9 +515,11 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiListItem(final ThemeData theme,
-      final String currFlag,
-      final Bangumi bangumi,) {
+  Widget _buildBangumiListItem(
+    final ThemeData theme,
+    final String currFlag,
+    final Bangumi bangumi,
+  ) {
     return ExtendedImage(
       image: CachedNetworkImageProvider(bangumi.cover),
       shape: BoxShape.rectangle,
