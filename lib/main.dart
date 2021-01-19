@@ -144,19 +144,9 @@ class MikanApp extends StatelessWidget {
     final ThemeModel themeModel,
     final FirebaseModel firebaseModel,
   ) {
-    final Color accentColor = Color(themeModel.themeItem.accentColor);
-    final Color accentTextColor =
-        accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
     return OKToast(
-      position: ToastPosition.bottom,
-      radius: 640,
-      backgroundColor: accentColor.withOpacity(0.87),
-      textStyle: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: accentTextColor,
-      ),
-      textPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+      position: ToastPosition(align: Alignment.bottomCenter, offset: -72.0),
+      duration: Duration(milliseconds: 3600),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: themeModel.theme(),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/material.dart';
@@ -95,13 +96,13 @@ class SettingsFragment extends StatelessWidget {
                   : theme.scaffoldBackgroundColor,
               boxShadow: hasScrolled
                   ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.024),
+                  offset: Offset(0, 1),
+                  blurRadius: 3.0,
+                  spreadRadius: 3.0,
+                ),
+              ]
                   : null,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(16.0),
@@ -162,8 +163,8 @@ class SettingsFragment extends StatelessWidget {
   Widget _buildAvatar(User user) {
     return user?.hasLogin == true
         ? ClipOval(
-            child: ExtendedImage.network(
-              user?.avatar,
+            child: ExtendedImage(
+              image: CachedNetworkImageProvider(user.avatar),
               width: 36.0,
               height: 36.0,
               loadStateChanged: (state) {
@@ -175,17 +176,17 @@ class SettingsFragment extends StatelessWidget {
                       width: 36.0,
                       height: 36.0,
                     );
-                  case LoadState.completed:
-                    return null;
-                }
-                return null;
-              },
-            ),
-          )
+            case LoadState.completed:
+              return null;
+          }
+          return null;
+        },
+      ),
+    )
         : ExtendedImage.asset(
-            "assets/mikan.png",
-            width: 36.0,
-            height: 36.0,
-          );
+      "assets/mikan.png",
+      width: 36.0,
+      height: 36.0,
+    );
   }
 }

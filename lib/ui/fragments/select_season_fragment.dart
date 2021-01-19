@@ -178,15 +178,19 @@ class SelectSeasonFragment extends StatelessWidget {
                 return Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Text(
-                      year.year,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        height: 1.25,
-                        fontWeight: FontWeight.bold,
+                    Flexible(
+                      child: FractionallySizedBox(
+                        widthFactor: 1,
+                        child: Text(
+                          year.year,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            height: 1.25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
-                    SizedBox(width: 12.0),
                     ...List.generate(
                       4,
                       (index) {

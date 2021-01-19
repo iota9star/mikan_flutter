@@ -1,6 +1,7 @@
 import 'dart:math' as Math;
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
@@ -262,9 +263,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final String currFlag,
     final Bangumi bangumi,
   ) {
-    return ExtendedImage.network(
-      bangumi.cover,
-      clearMemoryCacheWhenDispose: true,
+    return ExtendedImage(
+      image: CachedNetworkImageProvider(bangumi.cover),
       loadStateChanged: (state) {
         Widget child;
         switch (state.extendedImageLoadState) {

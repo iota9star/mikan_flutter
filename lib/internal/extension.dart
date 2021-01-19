@@ -84,7 +84,38 @@ extension StringExt on String {
 
   toast() async {
     if (this.isNotBlank) {
-      showToast(this);
+      showToastWidget(
+        Builder(
+          builder: (context) {
+            final Color bgc = Theme.of(context).accentColor.withOpacity(0.96);
+            return Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              decoration: BoxDecoration(
+                  color: bgc,
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.024),
+                      offset: Offset(0, 1),
+                      blurRadius: 3.0,
+                      spreadRadius: 3.0,
+                    ),
+                  ]),
+              child: Text(
+                this,
+                style: TextStyle(
+                  color: bgc.computeLuminance() < 0.5
+                      ? Colors.white
+                      : Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
+          },
+        ),
+      );
     }
   }
 

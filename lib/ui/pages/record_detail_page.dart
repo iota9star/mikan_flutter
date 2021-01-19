@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -445,8 +446,8 @@ class RecordDetailPage extends StatelessWidget {
     final BuildContext context,
     final RecordDetail recordDetail,
   ) {
-    return ExtendedImage.network(
-      recordDetail.cover,
+    return ExtendedImage(
+      image: CachedNetworkImageProvider(recordDetail.cover),
       width: 136.0,
       shape: BoxShape.rectangle,
       loadStateChanged: (state) {
@@ -593,9 +594,8 @@ class RecordDetailPage extends StatelessWidget {
   }
 
   Widget _buildImageWidget(final String url) {
-    return ExtendedImage.network(
-      url,
-      clearMemoryCacheWhenDispose: true,
+    return ExtendedImage(
+      image: CachedNetworkImageProvider(url),
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:

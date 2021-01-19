@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
@@ -418,8 +419,8 @@ class IndexFragment extends StatelessWidget {
       builder: (_, user, __) {
         return user?.hasLogin == true
             ? ClipOval(
-                child: ExtendedImage.network(
-                  user?.avatar,
+                child: ExtendedImage(
+                  image: CachedNetworkImageProvider(user.avatar),
                   width: 36.0,
                   height: 36.0,
                   loadStateChanged: (state) {

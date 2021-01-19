@@ -1,6 +1,7 @@
 import 'dart:math' as Math;
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -480,8 +481,8 @@ class SubscribedFragment extends StatelessWidget {
             Positioned.fill(
               child: Hero(
                 tag: currFlag,
-                child: ExtendedImage.network(
-                  bangumiCover,
+                child: ExtendedImage(
+                  image: CachedNetworkImageProvider(bangumiCover),
                   fit: BoxFit.cover,
                   loadStateChanged: (state) {
                     switch (state.extendedImageLoadState) {

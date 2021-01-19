@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
@@ -435,8 +436,8 @@ class BangumiPage extends StatelessWidget {
     final String cover,
     final BangumiModel bangumiModel,
   ) {
-    return ExtendedImage.network(
-      cover,
+    return ExtendedImage(
+      image: CachedNetworkImageProvider(cover),
       width: 136.0,
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {
