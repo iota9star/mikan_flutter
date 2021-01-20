@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
@@ -31,7 +31,7 @@ class RecordDetailModel extends CancelableBaseModel {
   _loadCoverMainColor() {
     if (this._recordDetail?.cover?.isNullOrBlank == true) return;
     PaletteGenerator.fromImageProvider(
-      ExtendedNetworkImageProvider(this._recordDetail.cover),
+      CachedNetworkImageProvider(this._recordDetail.cover),
       maximumColorCount: 3,
       targets: [
         PaletteTarget.lightVibrant,

@@ -144,25 +144,30 @@ class MikanApp extends StatelessWidget {
     final ThemeModel themeModel,
     final FirebaseModel firebaseModel,
   ) {
-    return OKToast(
-      position: ToastPosition(align: Alignment.bottomCenter, offset: -72.0),
-      duration: Duration(milliseconds: 3600),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: themeModel.theme(),
-        darkTheme: themeModel.theme(darkTheme: true),
-        initialRoute: Routes.home,
-        onGenerateRoute: (settings) => onGenerateRouteHelper(settings),
-        navigatorObservers: [
-          firebaseModel.observer,
-          FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
-            //you can track page here
-            final RouteSettings oldSettings = oldRoute?.settings;
-            final RouteSettings newSettings = newRoute?.settings;
-            logd("route change: "
-                "${oldSettings?.name} => ${newSettings?.name}");
-          }),
-        ],
+    final ThemeData theme = themeModel.theme();
+    return Theme(
+      data: theme,
+      isMaterialAppTheme: true,
+      child: OKToast(
+        position: ToastPosition(align: Alignment.bottomCenter, offset: -72.0),
+        duration: Duration(milliseconds: 3600),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: theme,
+          darkTheme: themeModel.theme(darkTheme: true),
+          initialRoute: Routes.home,
+          onGenerateRoute: (settings) => onGenerateRouteHelper(settings),
+          navigatorObservers: [
+            firebaseModel.observer,
+            FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
+              //you can track page here
+              final RouteSettings oldSettings = oldRoute?.settings;
+              final RouteSettings newSettings = newRoute?.settings;
+              logd("route change: "
+                  "${oldSettings?.name} => ${newSettings?.name}");
+            }),
+          ],
+        ),
       ),
     );
   }

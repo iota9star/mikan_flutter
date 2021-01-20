@@ -1,5 +1,6 @@
 import 'dart:math' as Math;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/foundation.dart';
@@ -97,7 +98,7 @@ class SplashPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: ExtendedNetworkImageProvider(cover),
+                    image: CachedNetworkImageProvider(cover),
                   ),
                 ),
               ),

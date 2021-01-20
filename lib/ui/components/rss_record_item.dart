@@ -1,4 +1,4 @@
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -82,7 +82,7 @@ class RssRecordItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16.0),
                     color: Colors.grey.withOpacity(0.2),
                     image: DecorationImage(
-                      image: ExtendedNetworkImageProvider(record.cover),
+                      image: CachedNetworkImageProvider(record.cover),
                       fit: BoxFit.cover,
                     ),
                   ),

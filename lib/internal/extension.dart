@@ -87,13 +87,17 @@ extension StringExt on String {
       showToastWidget(
         Builder(
           builder: (context) {
-            final Color bgc = Theme.of(context).accentColor.withOpacity(0.96);
+            final Color bgc = Theme.of(context).accentColor;
             return Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               margin: EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
-                  color: bgc,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [bgc, bgc.withOpacity(0.87)],
+                  ),
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(

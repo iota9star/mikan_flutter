@@ -58,8 +58,24 @@ class Bangumi extends HiveObject {
       other is Bangumi &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          name == other.name;
+          updateAt == other.updateAt &&
+          num == other.num &&
+          name == other.name &&
+          cover == other.cover &&
+          subscribed == other.subscribed &&
+          grey == other.grey &&
+          coverSize == other.coverSize &&
+          week == other.week;
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode;
+  int get hashCode =>
+      id.hashCode ^
+      updateAt.hashCode ^
+      num.hashCode ^
+      name.hashCode ^
+      cover.hashCode ^
+      subscribed.hashCode ^
+      grey.hashCode ^
+      coverSize.hashCode ^
+      week.hashCode;
 }

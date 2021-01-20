@@ -565,7 +565,7 @@ class SearchFragment extends StatelessWidget {
           cover = Container(
             padding: EdgeInsets.all(28.0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(8.0),
             ),
             child: Center(
               child: SpinKitPumpingHeart(
@@ -580,7 +580,7 @@ class SearchFragment extends StatelessWidget {
         if (value.extendedImageLoadState == LoadState.failed) {
           cover = Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
                 fit: BoxFit.cover,
@@ -595,7 +595,7 @@ class SearchFragment extends StatelessWidget {
           );
           cover = Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(
                 image: value.imageProvider,
                 fit: BoxFit.cover,
@@ -623,7 +623,7 @@ class SearchFragment extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [Colors.transparent, Colors.black45],
                       ),
-                      borderRadius: BorderRadius.circular(10.0)),
+                      borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
               Positioned(bottom: 8.0, right: 8.0, left: 8.0, child: child)

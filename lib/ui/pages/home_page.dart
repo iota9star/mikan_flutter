@@ -48,8 +48,8 @@ class HomePage extends StatelessWidget {
                   return BottomBarView(
                     items: [
                       BarItem(
-                        icon: FluentIcons.rocket_24_regular,
-                        selectedIcon: FluentIcons.rocket_24_filled,
+                        icon: FluentIcons.layer_24_regular,
+                        selectedIcon: FluentIcons.shape_intersect_24_regular,
                         isSelected: selectIndex == 0,
                       ),
                       BarItem(

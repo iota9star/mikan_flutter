@@ -133,21 +133,22 @@ class BangumiSliverGridFragment extends StatelessWidget {
                     ),
                     if (bangumi.num != null && bangumi.num > 0)
                       Positioned(
-                        right: -20.0,
-                        top: -8,
+                        right: -10,
+                        top: 4,
                         child: Transform.rotate(
                           angle: Math.pi / 4.0,
                           child: Container(
-                            width: 48.0,
-                            padding: EdgeInsets.only(top: 12.0),
+                            width: 42.0,
                             color: Colors.redAccent,
                             child: Text(
                               bangumi.num > 99 ? "99+" : "+${bangumi.num}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 12.0,
+                                fontSize: 10.0,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0,
+                                wordSpacing: 1.0,
                                 height: 1.25,
                               ),
                             ),
@@ -219,43 +220,41 @@ class BangumiSliverGridFragment extends StatelessWidget {
   }
 
   Widget _buildSubscribeButton(final Bangumi bangumi, final String currFlag) {
-    return Positioned(
-      child: bangumi.subscribed
-          ? SizedBox(
-              width: 24.0,
-              height: 24.0,
-              child: IconButton(
-                tooltip: "取消订阅",
-                padding: EdgeInsets.all(2.0),
-                icon: Icon(
-                  FluentIcons.heart_24_filled,
-                  color: Colors.redAccent,
-                ),
-                onPressed: () {
-                  this.handleSubscribe?.call(bangumi, currFlag);
-                },
+    final Widget child = bangumi.subscribed
+        ? SizedBox(
+            width: 28.0,
+            height: 28.0,
+            child: IconButton(
+              tooltip: "取消订阅",
+              padding: EdgeInsets.all(4.0),
+              iconSize: 20.0,
+              icon: Icon(
+                FluentIcons.heart_24_filled,
+                color: Colors.redAccent,
               ),
-            )
-          : Container(
-              width: 24.0,
-              height: 24.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                color: Colors.black38,
-              ),
-              child: IconButton(
-                tooltip: "订阅",
-                padding: EdgeInsets.all(2.0),
-                iconSize: 16.0,
-                icon: Icon(
-                  FluentIcons.heart_24_regular,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  this.handleSubscribe?.call(bangumi, currFlag);
-                },
-              ),
+              onPressed: () {
+                this.handleSubscribe?.call(bangumi, currFlag);
+              },
             ),
+          )
+        : SizedBox(
+            width: 28.0,
+            height: 28.0,
+            child: IconButton(
+              tooltip: "订阅",
+              padding: EdgeInsets.all(4.0),
+              iconSize: 20.0,
+              icon: Icon(
+                FluentIcons.heart_24_regular,
+                color: Colors.blueGrey,
+              ),
+              onPressed: () {
+                this.handleSubscribe?.call(bangumi, currFlag);
+              },
+            ),
+          );
+    return Positioned(
+      child: child,
     );
   }
 

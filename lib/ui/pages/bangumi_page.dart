@@ -50,17 +50,17 @@ class BangumiPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: ExtendedNetworkImageProvider(this.cover),
+                        image: CachedNetworkImageProvider(this.cover),
                       ),
                     ),
-                    child: Selector<BangumiModel, Color>(
-                      selector: (_, model) => model.coverMainColor,
-                      shouldRebuild: (pre, next) => pre != next,
-                      builder: (_, bgColor, __) {
-                        final color = bgColor ?? theme.backgroundColor;
-                        return BackdropFilter(
-                          filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
-                          child: AnimatedContainer(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
+                      child: Selector<BangumiModel, Color>(
+                        selector: (_, model) => model.coverMainColor,
+                        shouldRebuild: (pre, next) => pre != next,
+                        builder: (_, bgColor, __) {
+                          final color = bgColor ?? theme.backgroundColor;
+                          return AnimatedContainer(
                             duration: Duration(milliseconds: 640),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -69,9 +69,9 @@ class BangumiPage extends StatelessWidget {
                                 colors: [Colors.transparent, color],
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -452,7 +452,7 @@ class BangumiPage extends StatelessWidget {
                   color: Colors.black.withOpacity(0.6),
                 ),
               ],
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(8.0),
             ),
             child: Center(
               child: SpinKitPumpingHeart(
@@ -473,7 +473,7 @@ class BangumiPage extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
                 fit: BoxFit.cover,
@@ -494,7 +494,7 @@ class BangumiPage extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(
                 image: value.imageProvider,
                 fit: BoxFit.cover,

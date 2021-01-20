@@ -272,7 +272,7 @@ class IndexFragment extends StatelessWidget {
               ],
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: ExtendedNetworkImageProvider(
+                image: CachedNetworkImageProvider(
                   carousel.cover,
                 ),
               ),

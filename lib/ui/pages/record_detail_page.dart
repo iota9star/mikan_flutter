@@ -94,17 +94,17 @@ class RecordDetailPage extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: ExtendedNetworkImageProvider(recordDetail.cover),
+                image: CachedNetworkImageProvider(recordDetail.cover),
               ),
             ),
-            child: Selector<RecordDetailModel, Color>(
-              selector: (_, model) => model.coverMainColor,
-              shouldRebuild: (pre, next) => pre != next,
-              builder: (_, bgColor, __) {
-                final color = bgColor ?? theme.backgroundColor;
-                return BackdropFilter(
-                  filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
-                  child: AnimatedContainer(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
+              child: Selector<RecordDetailModel, Color>(
+                selector: (_, model) => model.coverMainColor,
+                shouldRebuild: (pre, next) => pre != next,
+                builder: (_, bgColor, __) {
+                  final color = bgColor ?? theme.backgroundColor;
+                  return AnimatedContainer(
                     duration: Duration(milliseconds: 640),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -113,9 +113,9 @@ class RecordDetailPage extends StatelessWidget {
                         colors: [Colors.transparent, color],
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           );
         },
@@ -462,7 +462,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withOpacity(0.6),
                 ),
               ],
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(8.0),
             ),
             child: Center(
               child: SpinKitPumpingHeart(
@@ -482,7 +482,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
                 fit: BoxFit.cover,
@@ -503,7 +503,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(
                 image: state.imageProvider,
                 fit: BoxFit.cover,
@@ -519,75 +519,69 @@ class RecordDetailPage extends StatelessWidget {
             children: [
               Positioned.fill(child: child),
               Positioned(
-                child: Selector<RecordDetailModel, bool>(
-                  selector: (_, model) => model.recordDetail?.subscribed,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (_, subscribed, __) {
-                    return subscribed
-                        ? SizedBox(
-                            width: 24.0,
-                            height: 24.0,
-                            child: IconButton(
-                              tooltip: "取消订阅",
-                              padding: EdgeInsets.all(2.0),
-                              icon: Icon(
-                                FluentIcons.heart_24_filled,
-                                color: Colors.redAccent,
-                              ),
-                              onPressed: () {
-                                context.read<OpModel>().subscribeBangumi(
-                                  recordDetail.id,
-                                  recordDetail.subscribed,
-                                  onSuccess: () {
-                                    recordDetail.subscribed =
-                                        !recordDetail.subscribed;
-                                    context
-                                        .read<RecordDetailModel>()
-                                        .notifyListeners();
-                                  },
-                                  onError: (msg) {
-                                    "订阅失败：$msg".toast();
-                                  },
-                                );
-                              },
-                            ),
-                          )
-                        : Container(
-                            width: 24.0,
-                            height: 24.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.black38,
-                            ),
-                            child: IconButton(
-                              tooltip: "订阅",
-                              padding: EdgeInsets.all(2.0),
-                              iconSize: 16.0,
-                              icon: Icon(
-                                FluentIcons.heart_24_regular,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                context.read<OpModel>().subscribeBangumi(
-                                  recordDetail.id,
-                                  recordDetail.subscribed,
-                                  onSuccess: () {
-                                    context
-                                        .read<RecordDetailModel>()
-                                        .notifyListeners();
-                                  },
-                                  onError: (msg) {
-                                    "订阅失败：$msg".toast();
-                                  },
-                                );
-                              },
-                            ),
-                          );
-                  },
-                ),
+                child: _buildSubscribeBtn(context, recordDetail),
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSubscribeBtn(BuildContext context, RecordDetail recordDetail) {
+    return Selector<RecordDetailModel, bool>(
+      selector: (_, model) => model.recordDetail?.subscribed,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, subscribed, __) {
+        final Widget child = subscribed
+            ? IconButton(
+                tooltip: "取消订阅",
+                padding: EdgeInsets.all(4.0),
+                iconSize: 20.0,
+                icon: Icon(
+                  FluentIcons.heart_24_filled,
+                  color: Colors.redAccent,
+                ),
+                onPressed: () {
+                  context.read<OpModel>().subscribeBangumi(
+                    recordDetail.id,
+                    recordDetail.subscribed,
+                    onSuccess: () {
+                      recordDetail.subscribed = !recordDetail.subscribed;
+                      context.read<RecordDetailModel>().notifyListeners();
+                    },
+                    onError: (msg) {
+                      "订阅失败：$msg".toast();
+                    },
+                  );
+                },
+              )
+            : IconButton(
+                tooltip: "订阅",
+                padding: EdgeInsets.all(4.0),
+                iconSize: 20.0,
+                icon: Icon(
+                  FluentIcons.heart_24_regular,
+                  color: Colors.blueGrey,
+                ),
+                onPressed: () {
+                  context.read<OpModel>().subscribeBangumi(
+                    recordDetail.id,
+                    recordDetail.subscribed,
+                    onSuccess: () {
+                      recordDetail.subscribed = !recordDetail.subscribed;
+                      context.read<RecordDetailModel>().notifyListeners();
+                    },
+                    onError: (msg) {
+                      "订阅失败：$msg".toast();
+                    },
+                  );
+                },
+              );
+        return SizedBox(
+          width: 28.0,
+          height: 28.0,
+          child: child,
         );
       },
     );

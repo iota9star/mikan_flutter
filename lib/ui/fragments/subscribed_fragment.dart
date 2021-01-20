@@ -473,7 +473,7 @@ class SubscribedFragment extends StatelessWidget {
         );
       },
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(8.0),
         child: Stack(
           fit: StackFit.loose,
           overflow: Overflow.clip,
@@ -515,13 +515,12 @@ class SubscribedFragment extends StatelessWidget {
               ),
             ),
             Positioned(
-              right: -20.0,
-              top: -8,
+              right: -10,
+              top: 4,
               child: Transform.rotate(
                 angle: Math.pi / 4.0,
                 child: Container(
-                  width: 48.0,
-                  padding: EdgeInsets.only(top: 12.0),
+                  width: 42.0,
                   color: Colors.redAccent,
                   child: Text(
                     badge,
@@ -529,6 +528,9 @@ class SubscribedFragment extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10.0,
                       color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                      wordSpacing: 1.0,
                       height: 1.25,
                     ),
                   ),

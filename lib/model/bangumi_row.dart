@@ -49,8 +49,21 @@ class BangumiRow extends HiveObject {
       identical(this, other) ||
       other is BangumiRow &&
           runtimeType == other.runtimeType &&
-          name == other.name;
+          name == other.name &&
+          sname == other.sname &&
+          num == other.num &&
+          updatedNum == other.updatedNum &&
+          subscribedNum == other.subscribedNum &&
+          subscribedUpdatedNum == other.subscribedUpdatedNum &&
+          bangumis == other.bangumis;
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode =>
+      name.hashCode ^
+      sname.hashCode ^
+      num.hashCode ^
+      updatedNum.hashCode ^
+      subscribedNum.hashCode ^
+      subscribedUpdatedNum.hashCode ^
+      bangumis.hashCode;
 }
