@@ -20,7 +20,7 @@ dependencies:
   html: ^0.14.0+4
   provider: ^4.3.3
   oktoast: ^2.3.2
-  pull_to_refresh: ^1.6.3
+  pull_to_refresh: 1.6.3
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
   palette_generator: ^0.2.3
