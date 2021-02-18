@@ -206,7 +206,7 @@ class IndexFragment extends StatelessWidget {
         if (carousels.isNotEmpty)
           return SliverToBoxAdapter(
             child: CarouselSlider.builder(
-              itemBuilder: (context, index) {
+              itemBuilder: (context, index, _) {
                 final carousel = carousels[index];
                 final String currFlag =
                     "carousel:${carousel.id}:${carousel.cover}";
