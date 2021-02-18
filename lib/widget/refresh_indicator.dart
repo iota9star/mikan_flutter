@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -61,7 +62,22 @@ class Indicator {
     final double bottom = 0,
   }) {
     return _build(
-        SpinKitFadingCube(size: 18, color: color), "加载中", height, top, bottom);
+      SpinKitPumpingHeart(
+        size: 18,
+        itemBuilder: (_, __) {
+          return ExtendedImage.asset(
+            "assets/mikan.png",
+            width: 32.0,
+            height: 32.0,
+          );
+        },
+        duration: Duration(milliseconds: 800),
+      ),
+      "加载中，请稍候",
+      height,
+      top,
+      bottom,
+    );
   }
 
   static Widget completed(
