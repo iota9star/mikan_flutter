@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -62,7 +63,6 @@ class BangumiSubgroupFragment extends StatelessWidget {
                     _buildContentWrapper(
                       context,
                       theme,
-                      subgroupBangumi,
                     ),
                   ],
                 );
@@ -77,56 +77,61 @@ class BangumiSubgroupFragment extends StatelessWidget {
   Widget _buildContentWrapper(
     final BuildContext context,
     final ThemeData theme,
-    final SubgroupBangumi subgroupBangumi,
   ) {
     return Expanded(
-      child: SmartRefresher(
-        controller: bangumiModel.refreshController,
-        enablePullDown: false,
-        enablePullUp: true,
-        onLoading: bangumiModel.loadSubgroupList,
-        footer: Indicator.footer(
-          context,
-          theme.accentColor,
-          bottom: 16.0 + Sz.navBarHeight,
-        ),
-        child: ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
-          controller: ModalScrollController.of(context),
-          itemCount: subgroupBangumi.records.length,
-          itemBuilder: (context, ind) {
-            final RecordItem record = subgroupBangumi.records[ind];
-            final String currFlag = "bs:$ind:${record.url}";
-            return Selector<OpModel, String>(
-              selector: (_, model) => model.rebuildFlag,
-              shouldRebuild: (pre, next) => pre != next,
-              builder: (_, tapFlag, __) {
-                final Matrix4 transform = tapFlag == currFlag
-                    ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                    : Matrix4.identity();
-                return SimpleRecordItem(
-                  index: ind,
-                  theme: theme,
-                  record: record,
-                  transform: transform,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.recordDetail.name,
-                      arguments: Routes.recordDetail.d(url: record.url),
+      child: Selector<BangumiModel, List<RecordItem>>(
+        selector: (_, model) => model.subgroupBangumi.records,
+        shouldRebuild: (pre, next) => pre.ne(next),
+        builder: (_, records, __) {
+          return SmartRefresher(
+            controller: bangumiModel.refreshController,
+            enablePullDown: false,
+            enablePullUp: true,
+            onLoading: bangumiModel.loadSubgroupList,
+            footer: Indicator.footer(
+              context,
+              theme.accentColor,
+              bottom: 16.0 + Sz.navBarHeight,
+            ),
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              controller: ModalScrollController.of(context),
+              itemCount: records.length,
+              itemBuilder: (context, ind) {
+                final RecordItem record = records[ind];
+                final String currFlag = "bs:$ind:${record.url}";
+                return Selector<OpModel, String>(
+                  selector: (_, model) => model.rebuildFlag,
+                  shouldRebuild: (pre, next) => pre != next,
+                  builder: (_, tapFlag, __) {
+                    final Matrix4 transform = tapFlag == currFlag
+                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
+                        : Matrix4.identity();
+                    return SimpleRecordItem(
+                      index: ind,
+                      theme: theme,
+                      record: record,
+                      transform: transform,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          Routes.recordDetail.name,
+                          arguments: Routes.recordDetail.d(url: record.url),
+                        );
+                      },
+                      onTapStart: () {
+                        context.read<OpModel>().rebuildFlag = currFlag;
+                      },
+                      onTapEnd: () {
+                        context.read<OpModel>().rebuildFlag = null;
+                      },
                     );
-                  },
-                  onTapStart: () {
-                    context.read<OpModel>().rebuildFlag = currFlag;
-                  },
-                  onTapEnd: () {
-                    context.read<OpModel>().rebuildFlag = null;
                   },
                 );
               },
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
