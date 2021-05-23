@@ -12,21 +12,21 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-extension IterableExt<T> on Iterable<T> {
-  bool get isNullOrEmpty => this == null || this.isEmpty;
+extension IterableExt<T> on Iterable<T>? {
+  bool get isNullOrEmpty => this == null || this!.isEmpty;
 
   bool get isSafeNotEmpty => !this.isNullOrEmpty;
 
-  T getOrNull(final int index) {
+  T? getOrNull(final int index) {
     if (this.isNullOrEmpty) return null;
-    return this.elementAt(index);
+    return this!.elementAt(index);
   }
 
-  bool eq(Iterable<T> other) {
+  bool eq(Iterable<T>? other) {
     if (this == null) return other == null;
-    if (other == null || this.length != other.length) return false;
-    for (int index = 0; index < this.length; index += 1) {
-      if (this.elementAt(index) != other.elementAt(index)) return false;
+    if (other == null || this!.length != other.length) return false;
+    for (int index = 0; index < this!.length; index += 1) {
+      if (this!.elementAt(index) != other.elementAt(index)) return false;
     }
     return true;
   }
@@ -34,51 +34,49 @@ extension IterableExt<T> on Iterable<T> {
   bool ne(Iterable<T> other) => !this.eq(other);
 }
 
-extension ListExt<T> on List<T> {
-  bool get isNullOrEmpty => this == null || this.isEmpty;
+extension ListExt<T> on List<T>? {
+  bool get isNullOrEmpty => this == null || this!.isEmpty;
 
   bool get isSafeNotEmpty => !this.isNullOrEmpty;
 
-  T getOrNull(final int index) {
+  T? getOrNull(final int index) {
     if (this.isNullOrEmpty) return null;
-    return this[index];
+    return this![index];
   }
 
-  bool eq(List<T> other) {
+  bool eq(List<T>? other) {
     if (this == null) return other == null;
-    if (other == null || this.length != other.length) return false;
-    for (int index = 0; index < this.length; index += 1) {
-      if (this[index] != other[index]) return false;
+    if (other == null || this!.length != other.length) return false;
+    for (int index = 0; index < this!.length; index += 1) {
+      if (this![index] != other[index]) return false;
     }
     return true;
   }
 
-  bool ne(List<T> other) => !this.eq(other);
+  bool ne(List<T>? other) => !this.eq(other);
 }
 
-extension MapExt<K, V> on Map<K, V> {
-  bool get isNullOrEmpty => this == null || this.isEmpty;
+extension MapExt<K, V> on Map<K, V>? {
+  bool get isNullOrEmpty => this == null || this!.isEmpty;
 
   bool get isSafeNotEmpty => !this.isNullOrEmpty;
 
-  V getOrNull(K key) => this == null ? null : this[key];
-
-  bool eq(Map<K, V> other) {
+  bool eq(Map<K, V>? other) {
     if (this == null) return other == null;
-    if (other == null || this.length != other.length) return false;
-    for (final K key in this.keys) {
-      if (!other.containsKey(key) || other[key] != this[key]) {
+    if (other == null || this!.length != other.length) return false;
+    for (final K key in this!.keys) {
+      if (!other.containsKey(key) || other[key] != this![key]) {
         return false;
       }
     }
     return true;
   }
 
-  bool ne(Map<K, V> other) => !this.eq(other);
+  bool ne(Map<K, V>? other) => !this.eq(other);
 }
 
-extension StringExt on String {
-  bool get isNullOrBlank => this == null || this.isEmpty;
+extension StringExt on String? {
+  bool get isNullOrBlank => this == null || this!.isEmpty;
 
   bool get isNotBlank => !this.isNullOrBlank;
 
@@ -89,7 +87,7 @@ extension StringExt on String {
           builder: (context) {
             final Color bgc = Theme.of(context).accentColor;
             return Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   padding:
@@ -112,7 +110,7 @@ extension StringExt on String {
                     ],
                   ),
                   child: Text(
-                    this,
+                    this!,
                     style: TextStyle(
                       color: bgc.computeLuminance() < 0.5
                           ? Colors.white
@@ -130,20 +128,20 @@ extension StringExt on String {
   }
 
   launchAppAndCopy() async {
+    if (this.isNullOrBlank) return "内容为空，取消操作".toast();
     Future _doOtherAction() async {
-      if (await canLaunch(this)) {
-        await launch(this);
+      if (await canLaunch(this!)) {
+        await launch(this!);
       } else {
         "未找到可打开应用".toast();
       }
     }
 
-    if (this.isNullOrBlank) return "内容为空，取消操作".toast();
-    await FlutterClipboard.copy(this);
+    await FlutterClipboard.copy(this!);
     if (Platform.isAndroid) {
       Intent()
         ..setAction(Action.ACTION_VIEW)
-        ..setData(Uri.parse(this))
+        ..setData(Uri.parse(this!))
         ..addFlag(Flag.FLAG_ACTIVITY_NEW_TASK |
             Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
         ..startActivity().catchError((e) async {
@@ -157,13 +155,13 @@ extension StringExt on String {
 
   copy() {
     if (this.isNullOrBlank) return "内容为空，取消操作".toast();
-    FlutterClipboard.copy(this).then((_) => "成功复制到剪切板".toast());
+    FlutterClipboard.copy(this!).then((_) => "成功复制到剪切板".toast());
   }
 
   share() {
     if (this.isNullOrBlank) return "内容为空，取消操作".toast();
-    Share.share(this);
-    FlutterClipboard.copy(this).then((_) => "尝试分享，并复制到剪切板".toast());
+    Share.share(this!);
+    FlutterClipboard.copy(this!).then((_) => "尝试分享，并复制到剪切板".toast());
   }
 }
 

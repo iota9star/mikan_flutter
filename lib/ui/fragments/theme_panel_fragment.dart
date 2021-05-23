@@ -10,7 +10,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/view_models/theme_model.dart';
 import 'package:mikan_flutter/ui/fragments/theme_edit_fragment.dart';
-import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -32,8 +32,8 @@ class ThemePanelFragment extends StatelessWidget {
       ),
       child: ValueListenableBuilder(
         valueListenable: Hive.box<ThemeItem>(HiveBoxKey.THEMES).listenable(),
-        builder: (context, box, widget) {
-          final int themeNum = box.length;
+        builder: (context, Box<ThemeItem> box, widget) {
+          final int themeNum = box.values.length;
           return GridView.builder(
             padding: EdgeInsets.only(
               top: 8.0,
@@ -62,7 +62,7 @@ class ThemePanelFragment extends StatelessWidget {
                   ),
                 );
               }
-              final ThemeItem themeItem = box.getAt(index);
+              final ThemeItem themeItem = box.getAt(index)!;
               final List<Color> outerColors = [
                 Color(themeItem.primaryColor),
                 Color(themeItem.accentColor),
@@ -81,7 +81,7 @@ class ThemePanelFragment extends StatelessWidget {
                       ? [Colors.black]
                       : [Colors.white];
               return themeModel.themeItem.id == themeItem.id
-                  ? AnimatedTapContainer(
+                  ? TapScaleContainer(
                       onTap: () {
                         if (themeItem.id == 1) return "默认主题不可修改".toast();
                         this._showEditThemePanel(context, themeItem: themeItem);
@@ -109,7 +109,7 @@ class ThemePanelFragment extends StatelessWidget {
                         ),
                       ),
                     )
-                  : AnimatedTapContainer(
+                  : TapScaleContainer(
                       onTap: () {
                         themeModel.themeItem = themeItem;
                       },
@@ -148,7 +148,7 @@ class ThemePanelFragment extends StatelessWidget {
 
   _showEditThemePanel(
     final BuildContext context, {
-    final ThemeItem themeItem,
+    final ThemeItem? themeItem,
   }) {
     showCupertinoModalBottomSheet(
       context: context,
@@ -167,8 +167,8 @@ class ColorPiePainter extends CustomPainter {
   final List<Color> innerColors;
 
   ColorPiePainter({
-    this.outerColors,
-    this.innerColors,
+    required this.outerColors,
+    required this.innerColors,
   });
 
   @override

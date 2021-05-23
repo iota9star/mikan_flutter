@@ -10,7 +10,6 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/view_models/base_model.dart';
-import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class IndexModel extends CancelableBaseModel {
@@ -18,9 +17,9 @@ class IndexModel extends CancelableBaseModel {
   List<BangumiRow> _bangumiRows = [];
   List<RecordItem> _ovas = [];
   List<Carousel> _carousels = [];
-  Season _selectedSeason;
-  User _user;
-  BangumiRow _selectedBangumiRow;
+  Season? _selectedSeason;
+  User? _user;
+  BangumiRow? _selectedBangumiRow;
 
   bool _hasScrolled = false;
 
@@ -33,9 +32,9 @@ class IndexModel extends CancelableBaseModel {
     }
   }
 
-  BangumiRow get selectedBangumiRow => _selectedBangumiRow;
+  BangumiRow? get selectedBangumiRow => _selectedBangumiRow;
 
-  set selectedBangumiRow(BangumiRow value) {
+  set selectedBangumiRow(BangumiRow? value) {
     _selectedBangumiRow = value;
     notifyListeners();
   }
@@ -44,7 +43,7 @@ class IndexModel extends CancelableBaseModel {
 
   bool get seasonLoading => _seasonLoading;
 
-  Season get selectedSeason => _selectedSeason;
+  Season? get selectedSeason => _selectedSeason;
 
   List<RecordItem> get ovas => _ovas;
 
@@ -57,13 +56,11 @@ class IndexModel extends CancelableBaseModel {
 
   bool get ovaLoading => _ovaLoading;
 
-  final SubscribedModel _subscribedModel;
-
-  IndexModel(this._subscribedModel) {
+  IndexModel() {
     this._ovas = (MyHive.db
             .get(HiveDBKey.MIKAN_OVA, defaultValue: <RecordItem>[]) as List)
         .cast<RecordItem>();
-    final Index index = MyHive.db.get(HiveDBKey.MIKAN_INDEX);
+    final Index? index = MyHive.db.get(HiveDBKey.MIKAN_INDEX);
     this._bindIndexData(index);
   }
 
@@ -103,11 +100,10 @@ class IndexModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  void _bindIndexData(final Index index) {
+  void _bindIndexData(final Index? index) {
     if (index == null) return;
     this._years = index.years;
-    this._subscribedModel.years = this._years;
-    this._selectedSeason = this._years?.getOrNull(0)?.seasons?.getOrNull(0);
+    this._selectedSeason = this._years.getOrNull(0)?.seasons.getOrNull(0);
     this._bangumiRows = index.bangumiRows;
     this._selectedBangumiRow = this._bangumiRows[0];
     this._carousels = index.carousels;
@@ -120,7 +116,7 @@ class IndexModel extends CancelableBaseModel {
 
   List<YearSeason> get years => _years;
 
-  User get user => _user;
+  User? get user => _user;
 
   loadSeason(final Season season) async {
     if (this._seasonLoading) return "加载中，请稍候".toast();
@@ -128,7 +124,7 @@ class IndexModel extends CancelableBaseModel {
     notifyListeners();
     this._seasonLoading = true;
     final Resp resp = await (this +
-        Repo.season(this._selectedSeason.year, this._selectedSeason.season));
+        Repo.season(this._selectedSeason!.year, this._selectedSeason!.season));
     this._seasonLoading = false;
     if (resp.success) {
       this._bangumiRows = resp.data;

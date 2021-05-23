@@ -1,9 +1,8 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -28,8 +27,12 @@ class BangumiPage extends StatelessWidget {
   final String bangumiId;
   final String cover;
 
-  const BangumiPage({Key key, this.bangumiId, this.cover, this.heroTag})
-      : super(key: key);
+  const BangumiPage({
+    Key? key,
+    required this.bangumiId,
+    required this.cover,
+    required this.heroTag,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +53,12 @@ class BangumiPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(this.cover),
+                        image: ExtendedNetworkImageProvider(this.cover),
                       ),
                     ),
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
-                      child: Selector<BangumiModel, Color>(
+                      child: Selector<BangumiModel, Color?>(
                         selector: (_, model) => model.coverMainColor,
                         shouldRebuild: (pre, next) => pre != next,
                         builder: (_, bgColor, __) {
@@ -176,21 +179,21 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildBangumiIntro(final ThemeData theme) {
-    return Selector<BangumiModel, BangumiDetail>(
+    return Selector<BangumiModel, BangumiDetail?>(
       selector: (_, model) => model.bangumiDetail,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, bangumiDetail, _) {
         if (bangumiDetail == null || bangumiDetail.intro.isNullOrBlank) {
-          return Container();
+          return const SizedBox();
         }
         return Container(
           width: double.infinity,
-          margin: EdgeInsets.only(
+          margin: const EdgeInsets.only(
             left: 16.0,
             right: 16.0,
             bottom: 12.0,
           ),
-          padding: EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(24.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -214,7 +217,7 @@ class BangumiPage extends StatelessWidget {
               ),
               SizedBox(height: 12.0),
               Text(
-                bangumiDetail.intro,
+                bangumiDetail.intro ?? "",
                 textAlign: TextAlign.justify,
                 softWrap: true,
                 style: TextStyle(
@@ -234,17 +237,17 @@ class BangumiPage extends StatelessWidget {
     final ThemeData theme,
     final BangumiModel bangumiModel,
   ) {
-    return Selector<BangumiModel, List<SubgroupBangumi>>(
+    return Selector<BangumiModel, List<SubgroupBangumi>?>(
       selector: (_, model) => model.bangumiDetail?.subgroupBangumis,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, subgroups, __) {
         if (subgroups.isNullOrEmpty) {
-          return Container();
+          return const SizedBox();
         }
         return Container(
           width: double.infinity,
-          margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
-          padding: EdgeInsets.all(24.0),
+          margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
+          padding: const EdgeInsets.all(24.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -270,7 +273,7 @@ class BangumiPage extends StatelessWidget {
               Wrap(
                 spacing: 8.0,
                 runSpacing: 8.0,
-                children: List.generate(subgroups.length, (subgroupIndex) {
+                children: List.generate(subgroups!.length, (subgroupIndex) {
                   final String groupName = subgroups[subgroupIndex].name;
                   return ActionChip(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -369,22 +372,22 @@ class BangumiPage extends StatelessWidget {
     final ThemeData theme,
     final String cover,
   ) {
-    return Selector<BangumiModel, BangumiDetail>(
+    return Selector<BangumiModel, BangumiDetail?>(
       selector: (_, model) => model.bangumiDetail,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, bangumiDetail, _) {
         if (bangumiDetail == null) {
-          return Container();
+          return const SizedBox();
         }
         return Container(
           width: double.infinity,
-          margin: EdgeInsets.only(
+          margin: const EdgeInsets.only(
             left: 16.0,
             right: 16.0,
             bottom: 12.0,
             top: 12.0,
           ),
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             left: 24.0,
             right: 24.0,
             bottom: 24.0,
@@ -421,7 +424,7 @@ class BangumiPage extends StatelessWidget {
                           height: 1.6,
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,
-                          color: theme.textTheme.subtitle1.color,
+                          color: theme.textTheme.subtitle1?.color,
                         ),
                       ))
                   .toList(),
@@ -437,7 +440,7 @@ class BangumiPage extends StatelessWidget {
     final BangumiModel bangumiModel,
   ) {
     return ExtendedImage(
-      image: CachedNetworkImageProvider(cover),
+      image: ExtendedNetworkImageProvider(cover),
       width: 136.0,
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {
@@ -481,10 +484,10 @@ class BangumiPage extends StatelessWidget {
               ),
             ),
           );
-        } else if (value.extendedImageLoadState == LoadState.completed) {
+        } else {
           bangumiModel.coverSize = Size(
-            value.extendedImageInfo.image.width.toDouble(),
-            value.extendedImageInfo.image.height.toDouble(),
+            value.extendedImageInfo!.image.width.toDouble(),
+            value.extendedImageInfo!.image.height.toDouble(),
           );
           child = Container(
             decoration: BoxDecoration(
@@ -505,7 +508,7 @@ class BangumiPage extends StatelessWidget {
         return AspectRatio(
           aspectRatio: bangumiModel.coverSize == null
               ? 1
-              : bangumiModel.coverSize.width / bangumiModel.coverSize.height,
+              : bangumiModel.coverSize!.width / bangumiModel.coverSize!.height,
           child: Hero(
             tag: this.heroTag,
             child: child,

@@ -31,9 +31,9 @@ class MyHive {
   static const int MIAKN_RECORD_ITEM = 10;
   static const int MIAKN_ITEM_LOCATION = 11;
 
-  static Box<ThemeItem> themeItemBox;
-  static Box<Index> indexBox;
-  static Box db;
+  static late Box<ThemeItem> themeItemBox;
+  static late Box<Index> indexBox;
+  static late Box db;
 
   static init() async {
     Hive.init("${Store.filesDir.path}${Platform.pathSeparator}hivedb");
@@ -50,18 +50,17 @@ class MyHive {
 
     themeItemBox = await Hive.openBox<ThemeItem>(HiveBoxKey.THEMES);
     if (themeItemBox.isEmpty) {
-      final ThemeItem defaultTheme = ThemeItem.create(
-        id: 1,
-        canDelete: false,
-        autoMode: true,
-        isDark: false,
-        primaryColor: HexColor.fromHex("#3bc0c3").value,
-        accentColor: HexColor.fromHex("#fe9b36").value,
-        lightBackgroundColor: Colors.white.value,
-        darkBackgroundColor: HexColor.fromHex("#293444").value,
-        lightScaffoldBackgroundColor: HexColor.fromHex("#f1f2f7").value,
-        darkScaffoldBackgroundColor: HexColor.fromHex("#1c262f").value,
-      );
+      final ThemeItem defaultTheme = ThemeItem()
+        ..id = 1
+        ..canDelete = false
+        ..autoMode = true
+        ..isDark = false
+        ..primaryColor = HexColor.fromHex("#3bc0c3").value
+        ..accentColor = HexColor.fromHex("#fe9b36").value
+        ..lightBackgroundColor = Colors.white.value
+        ..darkBackgroundColor = HexColor.fromHex("#293444").value
+        ..lightScaffoldBackgroundColor = HexColor.fromHex("#f1f2f7").value
+        ..darkScaffoldBackgroundColor = HexColor.fromHex("#1c262f").value;
       themeItemBox.add(defaultTheme);
     }
     db = await Hive.openBox("DB");

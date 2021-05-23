@@ -12,33 +12,33 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class SubscribedModel extends CancelableBaseModel {
   bool _seasonLoading = true;
   bool _recordsLoading = true;
-  Season _season;
-  List<Bangumi> _bangumis;
-  Map<String, List<RecordItem>> _rss;
-  List<RecordItem> _records;
+  Season? _season;
+  List<Bangumi>? _bangumis;
+  Map<String, List<RecordItem>>? _rss;
+  List<RecordItem>? _records;
 
-  List<YearSeason> _years;
+  List<YearSeason>? _years;
 
-  List<YearSeason> get years => _years;
+  List<YearSeason>? get years => _years;
 
-  set years(List<YearSeason> years) {
+  set years(List<YearSeason>? years) {
     this._years = years;
     if (years.isSafeNotEmpty) {
-      this._loadMySubscribedSeasonBangumi(years[0].seasons.first);
+      this._loadMySubscribedSeasonBangumi(years![0].seasons.first);
     }
   }
 
-  Map<String, List<RecordItem>> get rss => _rss;
+  Map<String, List<RecordItem>>? get rss => _rss;
 
-  List<RecordItem> get records => _records;
+  List<RecordItem>? get records => _records;
 
   bool get seasonLoading => _seasonLoading;
 
   bool get recordsLoading => _recordsLoading;
 
-  Season get season => _season;
+  Season? get season => _season;
 
-  List<Bangumi> get bangumis => _bangumis;
+  List<Bangumi>? get bangumis => _bangumis;
 
   bool _hasScrolled = false;
 
@@ -65,7 +65,7 @@ class SubscribedModel extends CancelableBaseModel {
     _refreshController.refreshCompleted();
   }
 
-  _loadMySubscribedSeasonBangumi(final Season season) async {
+  _loadMySubscribedSeasonBangumi(final Season? season) async {
     if (season == null) return;
     this._season = season;
     this._seasonLoading = true;
@@ -86,7 +86,7 @@ class SubscribedModel extends CancelableBaseModel {
     this._recordsLoading = false;
     if (resp.success) {
       this._records = resp.data ?? [];
-      this._rss = groupBy(resp.data ?? [], (it) => it.id);
+      this._rss = groupBy(resp.data ?? [], (it) => it.id!);
     } else {
       "获取最近更新失败：${resp.msg}".toast();
     }

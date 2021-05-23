@@ -6,14 +6,14 @@ part 'subgroup.g.dart';
 @HiveType(typeId: MyHive.MIAKN_SUBGROUP)
 class Subgroup extends HiveObject {
   @HiveField(0)
-  String id;
+  String? id;
 
   @HiveField(1)
   String name;
 
   Subgroup({
     this.id,
-    this.name,
+    required this.name,
   });
 
   @override

@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
@@ -24,11 +23,12 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
-import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:mikan_flutter/widget/common_widgets.dart';
+import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 @immutable
 class IndexFragment extends StatelessWidget {
@@ -77,29 +77,38 @@ class IndexFragment extends StatelessWidget {
                   _buildCarousels(theme),
                   _buildOVASection(),
                   _buildOVAList(theme),
-                  ...List.generate(bangumiRows.length, (index) {
-                    final BangumiRow bangumiRow = bangumiRows[index];
-                    return [
-                      _buildWeekSection(theme, bangumiRow),
-                      BangumiSliverGridFragment(
-                        padding: EdgeInsets.all(16.0),
-                        bangumis: bangumiRow.bangumis,
-                        handleSubscribe: (bangumi, flag) {
-                          context.read<OpModel>().subscribeBangumi(
-                            bangumi.id,
-                            bangumi.subscribed,
-                            onSuccess: () {
-                              bangumi.subscribed = !bangumi.subscribed;
-                              context.read<OpModel>().performTap(flag);
+                  ...List.generate(
+                    bangumiRows.length,
+                    (index) {
+                      final BangumiRow bangumiRow = bangumiRows[index];
+                      return MultiSliver(
+                        pushPinnedChildren: true,
+                        children: [
+                          _buildWeekSection(theme, bangumiRow),
+                          BangumiSliverGridFragment(
+                            padding: EdgeInsets.only(
+                              left: 16.0,
+                              right: 16.0,
+                              bottom: 16.0,
+                            ),
+                            bangumis: bangumiRow.bangumis,
+                            handleSubscribe: (bangumi, flag) {
+                              context.read<OpModel>().subscribeBangumi(
+                                bangumi.id,
+                                bangumi.subscribed,
+                                onSuccess: () {
+                                  bangumi.subscribed = !bangumi.subscribed;
+                                },
+                                onError: (msg) {
+                                  "订阅失败：$msg".toast();
+                                },
+                              );
                             },
-                            onError: (msg) {
-                              "订阅失败：$msg".toast();
-                            },
-                          );
-                        },
-                      ),
-                    ];
-                  }).expand((element) => element),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                   CommonWidgets.sliverBottomSpace,
                 ],
               ),
@@ -129,12 +138,11 @@ class IndexFragment extends StatelessWidget {
       "共${bangumiRow.num}部"
     ].join("，");
 
-    return SliverToBoxAdapter(
+    return SliverPinnedToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.only(
-          top: 8.0,
-          left: 16.0,
-          right: 16.0,
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 8.0,
         ),
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,
@@ -158,7 +166,7 @@ class IndexFragment extends StatelessWidget {
               child: Text(
                 simple,
                 style: TextStyle(
-                  color: theme.textTheme.subtitle1.color,
+                  color: theme.textTheme.subtitle1?.color,
                   fontSize: 12.0,
                   height: 1.25,
                 ),
@@ -175,7 +183,7 @@ class IndexFragment extends StatelessWidget {
       selector: (_, model) => model.ovas,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, ovas, child) {
-        if (ovas.isSafeNotEmpty) return child;
+        if (ovas.isSafeNotEmpty) return child!;
         return SliverToBoxAdapter();
       },
       child: SliverToBoxAdapter(
@@ -211,6 +219,7 @@ class IndexFragment extends StatelessWidget {
                 final String currFlag =
                     "carousel:${carousel.id}:${carousel.cover}";
                 return _buildCarouselsItem(
+                  context,
                   theme,
                   currFlag,
                   carousel,
@@ -232,54 +241,41 @@ class IndexFragment extends StatelessWidget {
   }
 
   Widget _buildCarouselsItem(
+    final BuildContext context,
     final ThemeData theme,
     final String currFlag,
     final Carousel carousel,
   ) {
-    return Selector<OpModel, String>(
-      selector: (_, model) => model.rebuildFlag,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, tapScaleFlag, child) {
-        final Matrix4 transform = tapScaleFlag == currFlag
-            ? Matrix4.diagonal3Values(0.8, 0.8, 1)
-            : Matrix4.identity();
-        return Hero(
-          tag: currFlag,
-          child: AnimatedTapContainer(
-            transform: transform,
-            onTapStart: () => context.read<OpModel>().rebuildFlag = currFlag,
-            onTapEnd: () => context.read<OpModel>().rebuildFlag = null,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                Routes.bangumi.name,
-                arguments: Routes.bangumi.d(
-                  heroTag: currFlag,
-                  bangumiId: carousel.id,
-                  cover: carousel.cover,
-                ),
-              );
-            },
-            margin: EdgeInsets.only(top: 16.0, bottom: 12.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-              color: theme.backgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8,
-                  color: Colors.black.withOpacity(0.08),
-                )
-              ],
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(
-                  carousel.cover,
-                ),
-              ),
+    return Hero(
+      tag: currFlag,
+      child: TapScaleContainer(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            Routes.bangumi.name,
+            arguments: Routes.bangumi.d(
+              heroTag: currFlag,
+              bangumiId: carousel.id,
+              cover: carousel.cover,
             ),
+          );
+        },
+        margin: EdgeInsets.only(top: 16.0, bottom: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.0),
+          color: theme.backgroundColor,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 8,
+              color: Colors.black.withOpacity(0.08),
+            )
+          ],
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: ExtendedNetworkImageProvider(carousel.cover),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -324,14 +320,14 @@ class IndexFragment extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Selector<IndexModel, User>(
+                      Selector<IndexModel, User?>(
                         selector: (_, model) => model.user,
                         shouldRebuild: (pre, next) => pre != next,
                         builder: (_, user, __) {
                           final withoutName =
                               user == null || user.name.isNullOrBlank;
                           return Text(
-                            withoutName ? "Mikan Project" : "Hi, ${user.name}",
+                            withoutName ? "Mikan Project" : "Hi, ${user!.name}",
                             style: TextStyle(
                               fontSize: 14,
                               height: 1.25,
@@ -377,12 +373,12 @@ class IndexFragment extends StatelessWidget {
   ) {
     return Row(
       children: [
-        Selector<IndexModel, Season>(
+        Selector<IndexModel, Season?>(
           selector: (_, model) => model.selectedSeason,
           shouldRebuild: (pre, next) => pre != next,
           builder: (_, season, __) {
             return season == null
-                ? Container()
+                ? SizedBox()
                 : Text(
                     season.title,
                     style: TextStyle(
@@ -413,14 +409,14 @@ class IndexFragment extends StatelessWidget {
   }
 
   Widget _buildAvatar() {
-    return Selector<IndexModel, User>(
+    return Selector<IndexModel, User?>(
       selector: (_, model) => model.user,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, user, __) {
         return user?.hasLogin == true
             ? ClipOval(
                 child: ExtendedImage(
-                  image: CachedNetworkImageProvider(user.avatar),
+                  image: ExtendedNetworkImageProvider(user!.avatar ?? ""),
                   width: 36.0,
                   height: 36.0,
                   loadStateChanged: (state) {
@@ -435,7 +431,6 @@ class IndexFragment extends StatelessWidget {
                       case LoadState.completed:
                         return null;
                     }
-                    return null;
                   },
                 ),
               )
@@ -475,32 +470,15 @@ class IndexFragment extends StatelessWidget {
               padding: EdgeInsets.only(left: 16.0),
               itemBuilder: (context, index) {
                 final RecordItem record = records[index];
-                final String currFlag = "ova:$index";
-                return Selector<OpModel, String>(
-                  selector: (_, model) => model.rebuildFlag,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (_, tapFlag, __) {
-                    final Matrix4 transform = tapFlag == currFlag
-                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                        : Matrix4.identity();
-                    return OVARecordItem(
-                      index: index,
-                      record: record,
-                      theme: theme,
-                      transform: transform,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          Routes.recordDetail.name,
-                          arguments: Routes.recordDetail.d(url: record.url),
-                        );
-                      },
-                      onTapStart: () {
-                        context.read<OpModel>().rebuildFlag = currFlag;
-                      },
-                      onTapEnd: () {
-                        context.read<OpModel>().rebuildFlag = null;
-                      },
+                return OVARecordItem(
+                  index: index,
+                  record: record,
+                  theme: theme,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.recordDetail.name,
+                      arguments: Routes.recordDetail.d(url: record.url),
                     );
                   },
                 );

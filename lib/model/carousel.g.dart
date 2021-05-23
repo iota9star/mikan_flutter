@@ -16,10 +16,9 @@ class CarouselAdapter extends TypeAdapter<Carousel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Carousel(
-      id: fields[0] as String,
-      cover: fields[1] as String,
-    );
+    return Carousel()
+      ..id = fields[0] as String
+      ..cover = fields[1] as String;
   }
 
   @override

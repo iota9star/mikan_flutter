@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +122,7 @@ class SettingsFragment extends StatelessWidget {
   }
 
   Widget _buildHeadSection() {
-    return Selector<IndexModel, User>(
+    return Selector<IndexModel, User?>(
       selector: (_, model) => model.user,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, user, __) {
@@ -145,7 +144,7 @@ class SettingsFragment extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  "Hi, ${user?.hasLogin == true ? user.name : "👉 请登录 👈"}",
+                  "Hi, ${user?.hasLogin == true ? user!.name : "👉 请登录 👈"}",
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
@@ -160,11 +159,11 @@ class SettingsFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(User user) {
+  Widget _buildAvatar(User? user) {
     return user?.hasLogin == true
         ? ClipOval(
             child: ExtendedImage(
-              image: CachedNetworkImageProvider(user.avatar),
+              image: ExtendedNetworkImageProvider(user!.avatar ?? ""),
               width: 36.0,
               height: 36.0,
               loadStateChanged: (state) {
@@ -179,7 +178,6 @@ class SettingsFragment extends StatelessWidget {
                   case LoadState.completed:
                     return null;
                 }
-                return null;
               },
             ),
           )

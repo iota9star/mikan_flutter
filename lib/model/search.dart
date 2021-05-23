@@ -3,14 +3,14 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 
 class SearchResult {
-  List<Bangumi> bangumis;
-  List<Subgroup> subgroups;
-  List<RecordItem> records;
+  final List<Bangumi> bangumis;
+  final List<Subgroup> subgroups;
+  final List<RecordItem> records;
 
   SearchResult({
-    this.bangumis,
-    this.subgroups,
-    this.records,
+    required this.bangumis,
+    required this.subgroups,
+    required this.records,
   });
 
   @override

@@ -15,12 +15,12 @@ class LoginModel extends CancelableBaseModel {
 
   LoginModel() {
     final login = Store.getLogin();
-    _accountController.text = login.getOrNull("UserName");
-    _passwordController.text = login.getOrNull("Password");
-    this._rememberMe = login.getOrNull("RememberMe") ?? false;
+    _accountController.text = login["UserName"];
+    _passwordController.text = login["Password"];
+    this._rememberMe = login["RememberMe"] ?? false;
   }
 
-  bool _rememberMe;
+  bool _rememberMe = false;
 
   bool get rememberMe => _rememberMe;
 
@@ -74,6 +74,8 @@ class LoginModel extends CancelableBaseModel {
       "登录失败，请稍候重试：${resp.msg}".toast();
     }
   }
+
+  ValueNotifier<bool> can = ValueNotifier(false);
 
   @override
   void dispose() {

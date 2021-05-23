@@ -6,11 +6,11 @@ import 'package:path_provider/path_provider.dart';
 class Store {
   Store._();
 
-  static Directory cacheDir;
-  static Directory docDir;
-  static Directory filesDir;
+  static late Directory cacheDir;
+  static late Directory docDir;
+  static late Directory filesDir;
 
-  static String cookiesPath;
+  static late String cookiesPath;
 
   static init() async {
     cacheDir = await getTemporaryDirectory();

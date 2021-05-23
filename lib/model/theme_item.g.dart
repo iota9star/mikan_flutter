@@ -16,26 +16,24 @@ class ThemeItemAdapter extends TypeAdapter<ThemeItem> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ThemeItem(
-      id: fields[0] as int,
-      canDelete: fields[1] as bool,
-      autoMode: fields[2] as bool,
-      isDark: fields[4] as bool,
-      primaryColor: fields[5] as int,
-      accentColor: fields[6] as int,
-      lightBackgroundColor: fields[7] as int,
-      darkBackgroundColor: fields[8] as int,
-      lightScaffoldBackgroundColor: fields[9] as int,
-      darkScaffoldBackgroundColor: fields[10] as int,
-      fontFamily: fields[11] as String,
-      version: fields[255] as String,
-    );
+    return ThemeItem()
+      ..id = fields[0] as int
+      ..canDelete = fields[1] as bool
+      ..autoMode = fields[2] as bool
+      ..isDark = fields[4] as bool
+      ..primaryColor = fields[5] as int
+      ..accentColor = fields[6] as int
+      ..lightBackgroundColor = fields[7] as int
+      ..darkBackgroundColor = fields[8] as int
+      ..lightScaffoldBackgroundColor = fields[9] as int
+      ..darkScaffoldBackgroundColor = fields[10] as int
+      ..fontFamily = fields[11] as String?;
   }
 
   @override
   void write(BinaryWriter writer, ThemeItem obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -57,9 +55,7 @@ class ThemeItemAdapter extends TypeAdapter<ThemeItem> {
       ..writeByte(10)
       ..write(obj.darkScaffoldBackgroundColor)
       ..writeByte(11)
-      ..write(obj.fontFamily)
-      ..writeByte(255)
-      ..write(obj.version);
+      ..write(obj.fontFamily);
   }
 
   @override

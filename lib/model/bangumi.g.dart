@@ -16,16 +16,16 @@ class BangumiAdapter extends TypeAdapter<Bangumi> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Bangumi(
-      id: fields[0] as String,
-      updateAt: fields[1] as String,
-      num: fields[2] as int,
-      name: fields[3] as String,
-      cover: fields[4] as String,
-      subscribed: fields[5] as bool,
-      grey: fields[6] as bool,
-      week: fields[8] as String,
-    )..coverSize = fields[7] as Size;
+    return Bangumi()
+      ..id = fields[0] as String
+      ..updateAt = fields[1] as String
+      ..num = fields[2] as int?
+      ..name = fields[3] as String
+      ..cover = fields[4] as String
+      ..subscribed = fields[5] as bool
+      ..grey = fields[6] as bool
+      ..coverSize = fields[7] as Size?
+      ..week = fields[8] as String;
   }
 
   @override

@@ -2,11 +2,11 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 
 class SubgroupBangumi {
-  String name;
-  String dataId;
-  List<Subgroup> subgroups;
-  bool subscribed;
-  List<RecordItem> records;
+  late String name;
+  late String dataId;
+  late List<Subgroup> subgroups;
+  late bool subscribed;
+  late List<RecordItem> records;
 
   @override
   bool operator ==(Object other) =>

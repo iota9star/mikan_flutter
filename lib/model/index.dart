@@ -11,25 +11,25 @@ part 'index.g.dart';
 @HiveType(typeId: MyHive.MIAKN_INDEX)
 class Index extends HiveObject {
   @HiveField(0)
-  List<YearSeason> years;
+  final List<YearSeason> years;
 
   @HiveField(1)
-  List<BangumiRow> bangumiRows;
+  final List<BangumiRow> bangumiRows;
 
   @HiveField(2)
-  Map<String, List<RecordItem>> rss;
+  final Map<String, List<RecordItem>> rss;
 
   @HiveField(3)
-  List<Carousel> carousels;
+  final List<Carousel> carousels;
 
   @HiveField(4)
-  User user;
+  final User? user;
 
   Index({
-    this.years,
-    this.bangumiRows,
-    this.rss,
-    this.carousels,
+    required this.years,
+    required this.bangumiRows,
+    required this.rss,
+    required this.carousels,
     this.user,
   });
 

@@ -16,10 +16,9 @@ class YearSeasonAdapter extends TypeAdapter<YearSeason> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return YearSeason(
-      year: fields[0] as String,
-      seasons: (fields[1] as List)?.cast<Season>(),
-    );
+    return YearSeason()
+      ..year = fields[0] as String
+      ..seasons = (fields[1] as List).cast<Season>();
   }
 
   @override

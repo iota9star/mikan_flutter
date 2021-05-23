@@ -1,13 +1,14 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+@FFArgumentImport()
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
+@FFArgumentImport()
 import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/recent_subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
@@ -17,16 +18,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 @FFRoute(
   name: "recent-subscribed",
   routeName: "recent-subscribed",
-  argumentImports: [
-    "import 'package:mikan_flutter/model/record_item.dart';",
-    "import 'package:flutter/material.dart';",
-  ],
 )
 @immutable
 class RecentSubscribedPage extends StatelessWidget {
   final List<RecordItem> loaded;
 
-  const RecentSubscribedPage({Key key, this.loaded}) : super(key: key);
+  const RecentSubscribedPage({Key? key, required this.loaded})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -89,32 +87,15 @@ class RecentSubscribedPage extends StatelessWidget {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final RecordItem record = records[index];
-              final String currFlag = "rs:$index:${record.url}";
-              return Selector<OpModel, String>(
-                selector: (_, model) => model.rebuildFlag,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (context, scaleIndex, child) {
-                  final Matrix4 transform = scaleIndex == currFlag
-                      ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                      : Matrix4.identity();
-                  return RssRecordItem(
-                    index: index,
-                    record: record,
-                    theme: theme,
-                    transform: transform,
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        Routes.recordDetail.name,
-                        arguments: Routes.recordDetail.d(url: record.url),
-                      );
-                    },
-                    onTapStart: () {
-                      context.read<OpModel>().rebuildFlag = currFlag;
-                    },
-                    onTapEnd: () {
-                      context.read<OpModel>().rebuildFlag = null;
-                    },
+              return RssRecordItem(
+                index: index,
+                record: record,
+                theme: theme,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.recordDetail.name,
+                    arguments: Routes.recordDetail.d(url: record.url),
                   );
                 },
               );

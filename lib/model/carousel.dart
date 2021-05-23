@@ -6,15 +6,10 @@ part 'carousel.g.dart';
 @HiveType(typeId: MyHive.MIAKN_CAROUSEL)
 class Carousel extends HiveObject {
   @HiveField(0)
-  String id;
+  late String id;
 
   @HiveField(1)
-  String cover;
-
-  Carousel({
-    this.id,
-    this.cover,
-  });
+  late String cover;
 
   @override
   bool operator ==(Object other) =>

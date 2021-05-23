@@ -9,30 +9,21 @@ class SearchModel extends CancelableBaseModel {
 
   TextEditingController get keywordsController => _keywordsController;
 
-  String _keywords;
+  String? _keywords;
 
-  String _subgroupId;
+  String? _subgroupId;
 
-  SearchResult _searchResult;
+  SearchResult? _searchResult;
 
   bool _loading = false;
 
-  String get keywords => _keywords;
+  String? get keywords => _keywords;
 
-  SearchResult get searchResult => _searchResult;
+  SearchResult? get searchResult => _searchResult;
 
-  String get subgroupId => _subgroupId;
+  String? get subgroupId => _subgroupId;
 
   bool get loading => _loading;
-
-  int _tapRecordItemIndex = -1;
-
-  int get tapRecordItemIndex => this._tapRecordItemIndex;
-
-  set tapRecordItemIndex(int value) {
-    this._tapRecordItemIndex = value;
-    notifyListeners();
-  }
 
   bool _hasScrolled = false;
 
@@ -45,10 +36,8 @@ class SearchModel extends CancelableBaseModel {
     }
   }
 
-  set subgroupId(final String value) {
+  set subgroupId(final String? value) {
     this._subgroupId = this._subgroupId == value ? null : value;
-    this._searchResult?.bangumis = null;
-    this._searchResult?.records = null;
     this._searching(keywords, subgroupId: this._subgroupId);
   }
 
@@ -57,7 +46,7 @@ class SearchModel extends CancelableBaseModel {
     this._searching(keywords);
   }
 
-  _searching(final String keywords, {final String subgroupId}) async {
+  _searching(final String? keywords, {final String? subgroupId}) async {
     this._keywords = keywords;
     this._loading = true;
     notifyListeners();

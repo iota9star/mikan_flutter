@@ -1,29 +1,23 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
 class RssRecordItem extends StatelessWidget {
   final int index;
-  final Matrix4 transform;
   final RecordItem record;
   final ThemeData theme;
   final VoidCallback onTap;
-  final VoidCallback onTapStart;
-  final VoidCallback onTapEnd;
 
   const RssRecordItem({
-    @required this.index,
-    @required this.record,
-    @required this.transform,
-    @required this.onTap,
-    @required this.onTapStart,
-    @required this.onTapEnd,
-    @required this.theme,
+    required this.index,
+    required this.record,
+    required this.onTap,
+    required this.theme,
   });
 
   @override
@@ -44,11 +38,8 @@ class RssRecordItem extends StatelessWidget {
     );
     final List<String> tags = record.tags;
     final heroTag = "rss:${record.id}:${record.cover}:${record.torrent}";
-    return AnimatedTapContainer(
+    return TapScaleContainer(
       onTap: onTap,
-      onTapEnd: onTapEnd,
-      onTapStart: onTapStart,
-      transform: transform,
       margin: EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 8.0,
@@ -67,7 +58,7 @@ class RssRecordItem extends StatelessWidget {
                 context,
                 Routes.bangumi.name,
                 arguments: Routes.bangumi.d(
-                  bangumiId: record.id,
+                  bangumiId: record.id!,
                   cover: record.cover,
                   heroTag: heroTag,
                 ),
@@ -82,7 +73,7 @@ class RssRecordItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16.0),
                     color: Colors.grey.withOpacity(0.2),
                     image: DecorationImage(
-                      image: CachedNetworkImageProvider(record.cover),
+                      image: ExtendedNetworkImageProvider(record.cover),
                       fit: BoxFit.cover,
                     ),
                   ),

@@ -25,10 +25,7 @@ class WeekSection {
     ova,
   ];
 
-  static WeekSection getByName(final String name) {
-    return values.firstWhere(
-      (element) => element.name == name,
-      orElse: () => null,
-    );
+  static WeekSection? getByName(final String name) {
+    return values.firstWhere((element) => element.name == name);
   }
 }

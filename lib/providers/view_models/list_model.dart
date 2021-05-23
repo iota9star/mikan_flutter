@@ -68,8 +68,7 @@ class ListModel extends CancelableBaseModel {
 
   @override
   void dispose() {
-    _records = null; // 数据量大手动清掉
-    _refreshController?.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 }

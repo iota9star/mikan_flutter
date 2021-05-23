@@ -6,23 +6,25 @@ part 'season.g.dart';
 @HiveType(typeId: MyHive.MIAKN_SEASON)
 class Season extends HiveObject {
   @HiveField(0)
-  String year;
+  late String year;
 
   @HiveField(1)
-  String season;
+  late String season;
 
   @HiveField(2)
-  String title;
+  late String title;
 
   @HiveField(3)
-  bool active;
+  bool active = false;
 
   Season({
-    this.year,
-    this.season,
-    this.title,
-    this.active,
+    required this.year,
+    required this.season,
+    required this.title,
+    required this.active,
   });
+
+  Season.empty();
 
   @override
   bool operator ==(Object other) =>

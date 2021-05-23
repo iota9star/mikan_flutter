@@ -28,7 +28,7 @@ class SubgroupModel extends CancelableBaseModel {
     this._loadBangumis();
   }
 
-  List<SeasonGallery> _galleries;
+  List<SeasonGallery> _galleries = [];
 
   List<SeasonGallery> get galleries => _galleries;
 

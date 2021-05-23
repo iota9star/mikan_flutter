@@ -16,15 +16,14 @@ class BangumiRowAdapter extends TypeAdapter<BangumiRow> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return BangumiRow(
-      name: fields[0] as String,
-      sname: fields[1] as String,
-      num: fields[2] as int,
-      updatedNum: fields[3] as int,
-      subscribedNum: fields[4] as int,
-      subscribedUpdatedNum: fields[5] as int,
-      bangumis: (fields[6] as List)?.cast<Bangumi>(),
-    );
+    return BangumiRow()
+      ..name = fields[0] as String
+      ..sname = fields[1] as String
+      ..num = fields[2] as int
+      ..updatedNum = fields[3] as int
+      ..subscribedNum = fields[4] as int
+      ..subscribedUpdatedNum = fields[5] as int
+      ..bangumis = (fields[6] as List).cast<Bangumi>();
   }
 
   @override

@@ -1,19 +1,21 @@
 import 'package:mikan_flutter/model/bangumi.dart';
 
 class SeasonGallery {
-  String year;
-  String season;
-  String title;
-  bool isCurrentSeason;
-  List<Bangumi> bangumis;
+  late final String year;
+  late final String season;
+  late final String title;
+  late final bool isCurrentSeason;
+  late final List<Bangumi> bangumis;
 
   SeasonGallery({
-    this.year,
-    this.season,
-    this.title,
-    this.isCurrentSeason,
-    this.bangumis,
+    required this.year,
+    required this.season,
+    required this.title,
+    this.isCurrentSeason = false,
+    required this.bangumis,
   });
+
+  SeasonGallery.empty();
 
   @override
   bool operator ==(Object other) =>

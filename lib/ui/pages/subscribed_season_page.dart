@@ -1,5 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -33,9 +33,9 @@ class SubscribedSeasonPage extends StatelessWidget {
   final List<SeasonGallery> galleries;
 
   const SubscribedSeasonPage({
-    Key key,
-    this.years,
-    this.galleries,
+    Key? key,
+    required this.years,
+    required this.galleries,
   }) : super(key: key);
 
   @override
@@ -130,7 +130,6 @@ class SubscribedSeasonPage extends StatelessWidget {
                           bangumi.subscribed,
                           onSuccess: () {
                             bangumi.subscribed = !bangumi.subscribed;
-                            context.read<OpModel>().performTap(flag);
                           },
                           onError: (msg) {
                             "订阅失败：$msg".toast();
@@ -215,6 +214,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                       year: gallery.year,
                       season: gallery.season,
                       title: gallery.title,
+                      active: gallery.isCurrentSeason,
                     ),
                   ),
                 );

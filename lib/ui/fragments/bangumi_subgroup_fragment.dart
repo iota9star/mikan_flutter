@@ -9,7 +9,6 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/view_models/bangumi_model.dart';
-import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
@@ -22,8 +21,8 @@ class BangumiSubgroupFragment extends StatelessWidget {
   final BangumiModel bangumiModel;
 
   const BangumiSubgroupFragment({
-    Key key,
-    @required this.bangumiModel,
+    Key? key,
+    required this.bangumiModel,
   }) : super(key: key);
 
   @override
@@ -48,11 +47,11 @@ class BangumiSubgroupFragment extends StatelessWidget {
               }
               return true;
             },
-            child: Selector<BangumiModel, SubgroupBangumi>(
+            child: Selector<BangumiModel, SubgroupBangumi?>(
               selector: (_, model) => model.subgroupBangumi,
               shouldRebuild: (pre, next) => pre != next,
               builder: (context, subgroupBangumi, child) {
-                if (subgroupBangumi == null) return Container();
+                if (subgroupBangumi == null) return SizedBox();
                 return Column(
                   children: [
                     _buildHeader(
@@ -80,7 +79,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
   ) {
     return Expanded(
       child: Selector<BangumiModel, List<RecordItem>>(
-        selector: (_, model) => model.subgroupBangumi.records,
+        selector: (_, model) => model.subgroupBangumi?.records ?? [],
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, records, __) {
           return SmartRefresher(
@@ -99,32 +98,15 @@ class BangumiSubgroupFragment extends StatelessWidget {
               itemCount: records.length,
               itemBuilder: (context, ind) {
                 final RecordItem record = records[ind];
-                final String currFlag = "bs:$ind:${record.url}";
-                return Selector<OpModel, String>(
-                  selector: (_, model) => model.rebuildFlag,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (_, tapFlag, __) {
-                    final Matrix4 transform = tapFlag == currFlag
-                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                        : Matrix4.identity();
-                    return SimpleRecordItem(
-                      index: ind,
-                      theme: theme,
-                      record: record,
-                      transform: transform,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          Routes.recordDetail.name,
-                          arguments: Routes.recordDetail.d(url: record.url),
-                        );
-                      },
-                      onTapStart: () {
-                        context.read<OpModel>().rebuildFlag = currFlag;
-                      },
-                      onTapEnd: () {
-                        context.read<OpModel>().rebuildFlag = null;
-                      },
+                return SimpleRecordItem(
+                  index: ind,
+                  theme: theme,
+                  record: record,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.recordDetail.name,
+                      arguments: Routes.recordDetail.d(url: record.url),
                     );
                   },
                 );

@@ -5,104 +5,36 @@ part 'theme_item.g.dart';
 
 @HiveType(typeId: MyHive.THEME_ITEM)
 class ThemeItem extends HiveObject {
-  static const String THEME_VERSION_V1 = "v1";
-
   @HiveField(0)
-  int id;
+  late int id;
 
   @HiveField(1)
-  bool canDelete;
+  bool canDelete = true;
 
   @HiveField(2)
-  bool autoMode;
+  bool autoMode = true;
 
   @HiveField(4)
-  bool isDark;
+  bool isDark = false;
 
   @HiveField(5)
-  int primaryColor;
+  int primaryColor = 0;
 
   @HiveField(6)
-  int accentColor;
+  int accentColor = 0;
 
   @HiveField(7)
-  int lightBackgroundColor;
+  int lightBackgroundColor = 0;
 
   @HiveField(8)
-  int darkBackgroundColor;
+  int darkBackgroundColor = 0;
 
   @HiveField(9)
-  int lightScaffoldBackgroundColor;
+  int lightScaffoldBackgroundColor = 0;
 
   @HiveField(10)
-  int darkScaffoldBackgroundColor;
+  int darkScaffoldBackgroundColor = 0;
 
   @HiveField(11)
-  String fontFamily;
-
-  @HiveField(255)
-  String version;
-
-  ThemeItem({
-    this.id,
-    this.canDelete,
-    this.autoMode,
-    this.isDark,
-    this.primaryColor,
-    this.accentColor,
-    this.lightBackgroundColor,
-    this.darkBackgroundColor,
-    this.lightScaffoldBackgroundColor,
-    this.darkScaffoldBackgroundColor,
-    this.fontFamily,
-    this.version,
-  });
-
-  ThemeItem.create({
-    this.id,
-    this.canDelete,
-    this.autoMode,
-    this.isDark,
-    this.primaryColor,
-    this.accentColor,
-    this.lightBackgroundColor,
-    this.darkBackgroundColor,
-    this.lightScaffoldBackgroundColor,
-    this.darkScaffoldBackgroundColor,
-    this.fontFamily,
-    this.version = THEME_VERSION_V1,
-  });
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ThemeItem &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          canDelete == other.canDelete &&
-          autoMode == other.autoMode &&
-          isDark == other.isDark &&
-          primaryColor == other.primaryColor &&
-          accentColor == other.accentColor &&
-          lightBackgroundColor == other.lightBackgroundColor &&
-          darkBackgroundColor == other.darkBackgroundColor &&
-          lightScaffoldBackgroundColor == other.lightScaffoldBackgroundColor &&
-          darkScaffoldBackgroundColor == other.darkScaffoldBackgroundColor &&
-          fontFamily == other.fontFamily &&
-          version == other.version;
-
-  @override
-  int get hashCode =>
-      id.hashCode ^
-      canDelete.hashCode ^
-      autoMode.hashCode ^
-      isDark.hashCode ^
-      primaryColor.hashCode ^
-      accentColor.hashCode ^
-      lightBackgroundColor.hashCode ^
-      darkBackgroundColor.hashCode ^
-      lightScaffoldBackgroundColor.hashCode ^
-      darkScaffoldBackgroundColor.hashCode ^
-      fontFamily.hashCode ^
-      version.hashCode;
+  String? fontFamily;
 }

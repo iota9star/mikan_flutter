@@ -8,41 +8,31 @@ part 'bangumi_row.g.dart';
 class BangumiRow extends HiveObject {
   // 周几或者剧场版之类的名称
   @HiveField(0)
-  String name;
+  late String name;
 
   // 周几或者剧场版之类的名称
   @HiveField(1)
-  String sname;
+  late String sname;
 
   // 今日有多少部
   @HiveField(2)
-  int num;
+  late int num;
 
   // 更新的部数
   @HiveField(3)
-  int updatedNum;
+  late int updatedNum;
 
   //订阅的部数
   @HiveField(4)
-  int subscribedNum;
+  late int subscribedNum;
 
   //订阅更新的部数
   @HiveField(5)
-  int subscribedUpdatedNum;
+  late int subscribedUpdatedNum;
 
   // 这天的番剧
   @HiveField(6)
-  List<Bangumi> bangumis;
-
-  BangumiRow({
-    this.name,
-    this.sname,
-    this.num,
-    this.updatedNum,
-    this.subscribedNum,
-    this.subscribedUpdatedNum,
-    this.bangumis,
-  });
+  late List<Bangumi> bangumis;
 
   @override
   bool operator ==(Object other) =>

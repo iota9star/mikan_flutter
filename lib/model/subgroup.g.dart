@@ -17,7 +17,7 @@ class SubgroupAdapter extends TypeAdapter<Subgroup> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Subgroup(
-      id: fields[0] as String,
+      id: fields[0] as String?,
       name: fields[1] as String,
     );
   }

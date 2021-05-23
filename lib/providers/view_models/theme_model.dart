@@ -7,7 +7,7 @@ import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/view_models/base_model.dart';
 
 class ThemeModel extends BaseModel {
-  ThemeItem _themeItem;
+  late ThemeItem _themeItem;
 
   ThemeItem get themeItem => _themeItem;
 
@@ -18,11 +18,8 @@ class ThemeModel extends BaseModel {
   }
 
   ThemeModel() {
-    _themeItem = MyHive.themeItemBox.values.firstWhere(
-      (element) =>
-          element.id == MyHive.db.get(HiveDBKey.THEME_ID, defaultValue: 1),
-      orElse: () => null,
-    );
+    _themeItem = MyHive.themeItemBox.values.firstWhere((element) =>
+        element.id == MyHive.db.get(HiveDBKey.THEME_ID, defaultValue: 1));
   }
 
   theme({bool darkTheme = false}) {

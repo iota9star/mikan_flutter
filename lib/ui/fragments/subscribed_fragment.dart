@@ -1,7 +1,6 @@
 import 'dart:math' as Math;
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -19,8 +18,8 @@ import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/widget/animated_widget.dart';
 import 'package:mikan_flutter/widget/common_widgets.dart';
+import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -133,7 +132,7 @@ class SubscribedFragment extends StatelessWidget {
     final ThemeData theme,
     final SubscribedModel subscribedModel,
   ) {
-    return Selector<SubscribedModel, List<Bangumi>>(
+    return Selector<SubscribedModel, List<Bangumi>?>(
       selector: (_, model) => model.bangumis,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, bangumis, __) {
@@ -203,14 +202,13 @@ class SubscribedFragment extends StatelessWidget {
         }
         return BangumiSliverGridFragment(
           flag: "subscribed",
-          bangumis: bangumis,
+          bangumis: bangumis!,
           handleSubscribe: (bangumi, flag) {
             context.read<OpModel>().subscribeBangumi(
               bangumi.id,
               bangumi.subscribed,
               onSuccess: () {
                 bangumi.subscribed = !bangumi.subscribed;
-                context.read<OpModel>().performTap(flag);
               },
               onError: (msg) {
                 "订阅失败：$msg".toast();
@@ -245,24 +243,24 @@ class SubscribedFragment extends StatelessWidget {
                 ),
               ),
             ),
-            Selector<SubscribedModel, List<YearSeason>>(
+            Selector<SubscribedModel, List<YearSeason>?>(
               selector: (_, model) => model.years,
               shouldRebuild: (pre, next) => pre.ne(next),
               builder: (context, years, __) {
-                if (years.isNullOrEmpty) return Container();
+                if (years.isNullOrEmpty) return SizedBox();
                 return MaterialButton(
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
                       Routes.subscribedSeason.name,
                       arguments: Routes.subscribedSeason.d(
-                        years: subscribedModel.years,
+                        years: subscribedModel.years ?? [],
                         galleries: [
                           SeasonGallery(
-                            year: subscribedModel.season.year,
-                            season: subscribedModel.season.season,
-                            title: subscribedModel.season.title,
-                            bangumis: subscribedModel.bangumis,
+                            year: subscribedModel.season!.year,
+                            season: subscribedModel.season!.season,
+                            title: subscribedModel.season!.title,
+                            bangumis: subscribedModel.bangumis ?? [],
                           )
                         ],
                       ),
@@ -336,7 +334,7 @@ class SubscribedFragment extends StatelessWidget {
     final SubscribedModel subscribedModel,
   ) {
     return SliverToBoxAdapter(
-      child: Selector<SubscribedModel, Map<String, List<RecordItem>>>(
+      child: Selector<SubscribedModel, Map<String, List<RecordItem>>?>(
         selector: (_, model) => model.rss,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, rss, __) {
@@ -376,10 +374,10 @@ class SubscribedFragment extends StatelessWidget {
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 itemBuilder: (context, index) {
-                  final entry = rss.entries.elementAt(index);
-                  return _buildRssListItemCover(entry);
+                  final entry = rss!.entries.elementAt(index);
+                  return _buildRssListItemCover(context, entry);
                 },
-                itemCount: rss.length,
+                itemCount: rss!.length,
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
               ),
@@ -421,11 +419,12 @@ class SubscribedFragment extends StatelessWidget {
       context,
       Routes.recentSubscribed.name,
       arguments: Routes.recentSubscribed
-          .d(loaded: context.read<SubscribedModel>().records),
+          .d(loaded: context.read<SubscribedModel>().records ?? []),
     );
   }
 
   Widget _buildRssListItemCover(
+    final BuildContext context,
     final MapEntry<String, List<RecordItem>> entry,
   ) {
     final List<RecordItem> records = entry.value;
@@ -434,42 +433,29 @@ class SubscribedFragment extends StatelessWidget {
     final String bangumiId = entry.key;
     final String badge = recordsLength > 99 ? "99+" : "+$recordsLength";
     final String currFlag = "rss:$bangumiId:$bangumiCover";
-    return Selector<OpModel, String>(
-      selector: (_, model) => model.rebuildFlag,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, tapFlag, child) {
-        final Matrix4 transform = tapFlag == currFlag
-            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-            : Matrix4.identity();
-        return AnimatedTapContainer(
-          transform: transform,
-          onTapStart: () => context.read<OpModel>().rebuildFlag = currFlag,
-          onTapEnd: () => context.read<OpModel>().rebuildFlag = null,
-          width: 64.0,
-          margin: EdgeInsets.symmetric(
-            horizontal: 6.0,
-            vertical: 8.0,
+    return TapScaleContainer(
+      width: 64.0,
+      margin: EdgeInsets.symmetric(
+        horizontal: 6.0,
+        vertical: 8.0,
+      ),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 8.0,
+            color: Colors.black.withOpacity(0.08),
           ),
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 8.0,
-                color: Colors.black.withOpacity(0.08),
-              ),
-            ],
+        ],
+      ),
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          Routes.bangumi.name,
+          arguments: Routes.bangumi.d(
+            heroTag: currFlag,
+            bangumiId: bangumiId,
+            cover: bangumiCover,
           ),
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              Routes.bangumi.name,
-              arguments: Routes.bangumi.d(
-                heroTag: currFlag,
-                bangumiId: bangumiId,
-                cover: bangumiCover,
-              ),
-            );
-          },
-          child: child,
         );
       },
       child: ClipRRect(
@@ -482,7 +468,7 @@ class SubscribedFragment extends StatelessWidget {
               child: Hero(
                 tag: currFlag,
                 child: ExtendedImage(
-                  image: CachedNetworkImageProvider(bangumiCover),
+                  image: ExtendedNetworkImageProvider(bangumiCover),
                   fit: BoxFit.cover,
                   loadStateChanged: (state) {
                     switch (state.extendedImageLoadState) {
@@ -509,7 +495,6 @@ class SubscribedFragment extends StatelessWidget {
                       case LoadState.completed:
                         return null;
                     }
-                    return null;
                   },
                 ),
               ),
@@ -547,7 +532,7 @@ class SubscribedFragment extends StatelessWidget {
     final BuildContext context,
     final ThemeData theme,
   ) {
-    return Selector<SubscribedModel, List<RecordItem>>(
+    return Selector<SubscribedModel, List<RecordItem>?>(
       selector: (_, model) => model.records,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
@@ -595,14 +580,14 @@ class SubscribedFragment extends StatelessWidget {
   }
 
   Widget _buildRssRecordsList(final ThemeData theme) {
-    return Selector<SubscribedModel, List<RecordItem>>(
+    return Selector<SubscribedModel, List<RecordItem>?>(
       selector: (_, model) => model.records,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
         }
-        final int length = records.length;
+        final int length = records!.length;
         return SliverPadding(
           padding: EdgeInsets.only(
             bottom: 8.0,
@@ -625,32 +610,15 @@ class SubscribedFragment extends StatelessWidget {
                   );
                 }
                 final RecordItem record = records[index];
-                final String currFlag = "subscribed:$index:${record.url}";
-                return Selector<OpModel, String>(
-                  selector: (_, model) => model.rebuildFlag,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (context, scaleIndex, __) {
-                    final Matrix4 transform = scaleIndex == currFlag
-                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                        : Matrix4.identity();
-                    return RssRecordItem(
-                      index: index,
-                      record: record,
-                      theme: theme,
-                      transform: transform,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          Routes.recordDetail.name,
-                          arguments: Routes.recordDetail.d(url: record.url),
-                        );
-                      },
-                      onTapStart: () {
-                        context.read<OpModel>().rebuildFlag = currFlag;
-                      },
-                      onTapEnd: () {
-                        context.read<OpModel>().rebuildFlag = null;
-                      },
+                return RssRecordItem(
+                  index: index,
+                  record: record,
+                  theme: theme,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.recordDetail.name,
+                      arguments: Routes.recordDetail.d(url: record.url),
                     );
                   },
                 );

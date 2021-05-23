@@ -4,37 +4,28 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
-import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
 class ComplexRecordItem extends StatelessWidget {
   final int index;
-  final Matrix4 transform;
   final RecordItem record;
   final VoidCallback onTap;
-  final VoidCallback onTapStart;
-  final VoidCallback onTapEnd;
   final ThemeData theme;
 
   const ComplexRecordItem({
-    @required this.index,
-    @required this.record,
-    @required this.transform,
-    @required this.onTap,
-    @required this.onTapStart,
-    @required this.onTapEnd,
-    @required this.theme,
+    required this.index,
+    required this.record,
+    required this.onTap,
+    required this.theme,
   });
 
   @override
   Widget build(BuildContext context) {
     final List<Subgroup> subgroups = record.groups;
     final List<String> tags = record.tags;
-    return AnimatedTapContainer(
+    return TapScaleContainer(
       onTap: onTap,
-      onTapEnd: onTapEnd,
-      onTapStart: onTapStart,
-      transform: transform,
       margin: EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 8.0,

@@ -7,14 +7,9 @@ part 'year_season.g.dart';
 @HiveType(typeId: MyHive.MIAKN_YEARSEASON)
 class YearSeason extends HiveObject {
   @HiveField(0)
-  String year;
+  late String year;
   @HiveField(1)
-  List<Season> seasons;
-
-  YearSeason({
-    this.year,
-    this.seasons,
-  });
+  late List<Season> seasons;
 
   @override
   bool operator ==(Object other) =>

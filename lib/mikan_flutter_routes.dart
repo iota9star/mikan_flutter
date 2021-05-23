@@ -35,7 +35,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// BangumiPage : [Key key, String bangumiId, String cover, String heroTag]
+  /// BangumiPage : [Key? key, String(required) bangumiId, String(required) cover, String(required) heroTag]
   static const _Bangumi bangumi = _Bangumi();
 
   /// 'home'
@@ -60,7 +60,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// RecentSubscribedPage : [Key key, List<RecordItem> loaded]
+  /// RecentSubscribedPage : [Key? key, List<RecordItem>(required) loaded]
   static const _RecentSubscribed recentSubscribed = _RecentSubscribed();
 
   /// 'record-detail'
@@ -71,7 +71,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// RecordDetailPage : [Key key, String url]
+  /// RecordDetailPage : [Key? key, String(required) url]
   static const _RecordDetail recordDetail = _RecordDetail();
 
   /// 'register'
@@ -89,7 +89,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// SingleSeasonPage : [Key key, Season season]
+  /// SingleSeasonPage : [Key? key, Season(required) season]
   static const _Season season = _Season();
 
   /// 'season-list'
@@ -100,7 +100,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// SeasonListPage : [Key key, List<YearSeason> years]
+  /// SeasonListPage : [Key? key, List<YearSeason>(required) years]
   static const _SeasonList seasonList = _SeasonList();
 
   /// 'splash'
@@ -118,7 +118,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// SubgroupPage : [Key key, Subgroup subgroup]
+  /// SubgroupPage : [Key? key, Subgroup(required) subgroup]
   static const _Subgroup subgroup = _Subgroup();
 
   /// 'subscribed-season'
@@ -129,7 +129,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// SubscribedSeasonPage : [Key key, List<YearSeason> years, List<SeasonGallery> galleries]
+  /// SubscribedSeasonPage : [Key? key, List<YearSeason>(required) years, List<SeasonGallery>(required) galleries]
   static const _SubscribedSeason subscribedSeason = _SubscribedSeason();
 }
 
@@ -139,7 +139,10 @@ class _Bangumi {
   String get name => 'bangumi';
 
   Map<String, dynamic> d(
-          {Key key, String bangumiId, String cover, String heroTag}) =>
+          {Key? key,
+          required String bangumiId,
+          required String cover,
+          required String heroTag}) =>
       <String, dynamic>{
         'key': key,
         'bangumiId': bangumiId,
@@ -156,7 +159,7 @@ class _RecentSubscribed {
 
   String get name => 'recent-subscribed';
 
-  Map<String, dynamic> d({Key key, List<RecordItem> loaded}) =>
+  Map<String, dynamic> d({Key? key, required List<RecordItem> loaded}) =>
       <String, dynamic>{
         'key': key,
         'loaded': loaded,
@@ -171,7 +174,7 @@ class _RecordDetail {
 
   String get name => 'record-detail';
 
-  Map<String, dynamic> d({Key key, String url}) => <String, dynamic>{
+  Map<String, dynamic> d({Key? key, required String url}) => <String, dynamic>{
         'key': key,
         'url': url,
       };
@@ -185,7 +188,8 @@ class _Season {
 
   String get name => 'season';
 
-  Map<String, dynamic> d({Key key, Season season}) => <String, dynamic>{
+  Map<String, dynamic> d({Key? key, required Season season}) =>
+      <String, dynamic>{
         'key': key,
         'season': season,
       };
@@ -199,7 +203,7 @@ class _SeasonList {
 
   String get name => 'season-list';
 
-  Map<String, dynamic> d({Key key, List<YearSeason> years}) =>
+  Map<String, dynamic> d({Key? key, required List<YearSeason> years}) =>
       <String, dynamic>{
         'key': key,
         'years': years,
@@ -214,7 +218,8 @@ class _Subgroup {
 
   String get name => 'subgroup';
 
-  Map<String, dynamic> d({Key key, Subgroup subgroup}) => <String, dynamic>{
+  Map<String, dynamic> d({Key? key, required Subgroup subgroup}) =>
+      <String, dynamic>{
         'key': key,
         'subgroup': subgroup,
       };
@@ -229,7 +234,9 @@ class _SubscribedSeason {
   String get name => 'subscribed-season';
 
   Map<String, dynamic> d(
-          {Key key, List<YearSeason> years, List<SeasonGallery> galleries}) =>
+          {Key? key,
+          required List<YearSeason> years,
+          required List<SeasonGallery> galleries}) =>
       <String, dynamic>{
         'key': key,
         'years': years,

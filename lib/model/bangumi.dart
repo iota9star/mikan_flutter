@@ -10,47 +10,36 @@ part 'bangumi.g.dart';
 class Bangumi extends HiveObject {
   // 番剧的id
   @HiveField(0)
-  String id;
+  late String id;
 
   // 更新时间
   @HiveField(1)
-  String updateAt;
+  late String updateAt;
 
   // 更新的数量
   @HiveField(2)
-  int num;
+  int? num;
 
   // 标题
   @HiveField(3)
-  String name;
+  late String name;
 
   // 封面
   @HiveField(4)
-  String cover;
+  late String cover;
 
   // 是否已订阅
   @HiveField(5)
-  bool subscribed;
+  late bool subscribed;
 
   @HiveField(6)
-  bool grey;
+  late bool grey;
 
   @HiveField(7)
-  Size coverSize;
+  Size? coverSize;
 
   @HiveField(8)
-  String week;
-
-  Bangumi({
-    this.id,
-    this.updateAt,
-    this.num,
-    this.name,
-    this.cover,
-    this.subscribed,
-    this.grey,
-    this.week,
-  });
+  late String week;
 
   @override
   bool operator ==(Object other) =>

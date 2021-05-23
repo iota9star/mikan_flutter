@@ -116,11 +116,11 @@ class SelectSeasonFragment extends StatelessWidget {
         widthFactor: 1,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Selector<IndexModel, Season>(
+          child: Selector<IndexModel, Season?>(
             selector: (_, model) => model.selectedSeason,
             shouldRebuild: (pre, next) => pre != next,
             builder: (context, selectedSeason, _) {
-              final Color color = season.title == selectedSeason.title
+              final Color color = season.title == selectedSeason?.title
                   ? theme.primaryColor
                   : theme.accentColor;
               return Tooltip(

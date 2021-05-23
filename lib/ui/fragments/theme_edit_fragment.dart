@@ -5,13 +5,12 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/view_models/theme_edit_model.dart';
 import 'package:mikan_flutter/providers/view_models/theme_model.dart';
-import 'package:mikan_flutter/widget/custom_switch.dart';
 import 'package:provider/provider.dart';
 
 class ThemeEditFragment extends StatelessWidget {
-  final ThemeItem themeItem;
+  final ThemeItem? themeItem;
 
-  const ThemeEditFragment({Key key, this.themeItem}) : super(key: key);
+  const ThemeEditFragment({Key? key, this.themeItem}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +53,7 @@ class ThemeEditFragment extends StatelessWidget {
                       ),
                     ),
                   ),
-                  CustomSwitch(
+                  Switch(
                     value: themeItem.autoMode,
                     activeColor: theme.accentColor,
                     onChanged: (value) {
@@ -83,7 +82,7 @@ class ThemeEditFragment extends StatelessWidget {
                         ),
                       ),
                     ),
-                    CustomSwitch(
+                    Switch(
                       value: themeItem.isDark,
                       activeColor: theme.accentColor,
                       onChanged: (value) {

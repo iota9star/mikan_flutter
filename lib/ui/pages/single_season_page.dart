@@ -1,5 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -24,7 +24,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class SingleSeasonPage extends StatelessWidget {
   final Season season;
 
-  const SingleSeasonPage({Key key, this.season}) : super(key: key);
+  const SingleSeasonPage({Key? key, required this.season}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,6 @@ class SingleSeasonPage extends StatelessWidget {
                                 bangumi.subscribed,
                                 onSuccess: () {
                                   bangumi.subscribed = !bangumi.subscribed;
-                                  context.read<OpModel>().performTap(flag);
                                 },
                                 onError: (msg) {
                                   "订阅失败：$msg".toast();
@@ -205,7 +204,7 @@ class SingleSeasonPage extends StatelessWidget {
               child: Text(
                 simple,
                 style: TextStyle(
-                  color: theme.textTheme.subtitle1.color,
+                  color: theme.textTheme.subtitle1?.color,
                   fontSize: 12.0,
                   height: 1.25,
                 ),

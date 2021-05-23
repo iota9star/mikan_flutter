@@ -5,28 +5,28 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 
 class RecordDetail {
-  String id;
-  String cover;
-  String name;
-  bool subscribed;
-  Map<String, String> more;
-  String intro;
-  List<Subgroup> subgroups;
+  late String id;
+  late String cover;
+  late String name;
+  late bool subscribed;
+  late Map<String, String> more;
+  late String intro;
+  late List<Subgroup> subgroups;
 
   // 详情地址
-  String url;
+  late String url;
 
   // 标题
-  String title;
+  late String title;
 
   // 磁链地址
-  String magnet;
+  late String magnet;
 
   // 种子下载地址
-  String torrent;
-  List<String> tags;
+  late String torrent;
+  late List<String> tags;
 
-  Size coverSize;
+  Size? coverSize;
 
   String get shareString {
     final StringBuffer sb = StringBuffer();

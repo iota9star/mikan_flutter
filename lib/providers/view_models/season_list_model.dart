@@ -23,7 +23,7 @@ class SeasonListModel extends CancelableBaseModel {
 
   bool get loading => _loading;
 
-  List<Season> _seasons;
+  List<Season> _seasons = [];
 
   List<Season> get seasons => _seasons;
 

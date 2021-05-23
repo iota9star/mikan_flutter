@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -10,10 +9,9 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
-import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/search_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
-import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -71,10 +69,10 @@ class SearchFragment extends StatelessWidget {
     final ThemeData theme,
     final SearchModel searchModel,
   ) {
-    return Selector<SearchModel, List<RecordItem>>(
+    return Selector<SearchModel, List<RecordItem>?>(
       selector: (_, model) => model.searchResult?.records,
       shouldRebuild: (pre, next) => pre.ne(next),
-      builder: (_, records, __) {
+      builder: (context, records, __) {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
         }
@@ -83,37 +81,21 @@ class SearchFragment extends StatelessWidget {
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
               (_, index) {
-                final RecordItem record = records[index];
-                return Selector<SearchModel, int>(
-                  selector: (_, model) => model.tapRecordItemIndex,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (context, tapRecordItemIndex, child) {
-                    final Matrix4 transform = tapRecordItemIndex == index
-                        ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-                        : Matrix4.identity();
-                    return SimpleRecordItem(
-                      index: index,
-                      record: record,
-                      theme: theme,
-                      transform: transform,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          Routes.recordDetail.name,
-                          arguments: Routes.recordDetail.d(url: record.url),
-                        );
-                      },
-                      onTapStart: () {
-                        searchModel.tapRecordItemIndex = index;
-                      },
-                      onTapEnd: () {
-                        searchModel.tapRecordItemIndex = null;
-                      },
+                final RecordItem record = records![index];
+                return SimpleRecordItem(
+                  index: index,
+                  record: record,
+                  theme: theme,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.recordDetail.name,
+                      arguments: Routes.recordDetail.d(url: record.url),
                     );
                   },
                 );
               },
-              childCount: records.length,
+              childCount: records!.length,
             ),
           ),
         );
@@ -122,7 +104,7 @@ class SearchFragment extends StatelessWidget {
   }
 
   Widget _buildSearchResultSection(final ThemeData theme) {
-    return Selector<SearchModel, List<RecordItem>>(
+    return Selector<SearchModel, List<RecordItem>?>(
       selector: (_, model) => model.searchResult?.records,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, records, child) {
@@ -131,7 +113,7 @@ class SearchFragment extends StatelessWidget {
         }
         return SliverToBoxAdapter(
           child: Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: 8.0,
               left: 16.0,
               right: 16.0,
@@ -142,7 +124,7 @@ class SearchFragment extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.0,
                 height: 1.25,
-                color: theme.textTheme.caption.color,
+                color: theme.textTheme.caption?.color,
               ),
             ),
           ),
@@ -152,10 +134,10 @@ class SearchFragment extends StatelessWidget {
   }
 
   Widget _buildRecommendList(final ThemeData theme) {
-    return Selector<SearchModel, List<Bangumi>>(
+    return Selector<SearchModel, List<Bangumi>?>(
       selector: (_, model) => model.searchResult?.bangumis,
       shouldRebuild: (pre, next) => pre.ne(next),
-      builder: (_, bangumis, __) {
+      builder: (context, bangumis, __) {
         if (bangumis.isNullOrEmpty) {
           return SliverToBoxAdapter();
         }
@@ -170,12 +152,13 @@ class SearchFragment extends StatelessWidget {
                 right: 16.0,
               ),
               scrollDirection: Axis.horizontal,
-              itemCount: bangumis.length,
+              itemCount: bangumis!.length,
               itemBuilder: (_, index) {
                 final bangumi = bangumis[index];
                 final String currFlag =
                     "bangumi:${bangumi.id}:${bangumi.cover}";
                 return _buildRecommentListItem(
+                  context,
                   theme,
                   currFlag,
                   bangumi,
@@ -195,60 +178,49 @@ class SearchFragment extends StatelessWidget {
   }
 
   Widget _buildRecommentListItem(
+    final BuildContext context,
     final ThemeData theme,
     final String currFlag,
     final Bangumi bangumi,
   ) {
-    return Selector<OpModel, String>(
-      selector: (_, model) => model.rebuildFlag,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, tapFlag, child) {
-        final Matrix4 transform = tapFlag == currFlag
-            ? Matrix4.diagonal3Values(0.9, 0.9, 1)
-            : Matrix4.identity();
-        Widget cover = _buildBangumiListItem(
-          theme,
-          currFlag,
-          bangumi,
-        );
-        return Tooltip(
-          message: bangumi.name,
-          child: AnimatedTapContainer(
-            height: double.infinity,
-            transform: transform,
-            margin: EdgeInsets.symmetric(
-              vertical: 16.0,
+    Widget cover = _buildBangumiListItem(
+      theme,
+      currFlag,
+      bangumi,
+    );
+    return Tooltip(
+      message: bangumi.name,
+      child: TapScaleContainer(
+        height: double.infinity,
+        margin: EdgeInsets.symmetric(
+          vertical: 16.0,
+        ),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 8.0,
+              color: Colors.black.withAlpha(24),
+            )
+          ],
+        ),
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            Routes.bangumi.name,
+            arguments: Routes.bangumi.d(
+              heroTag: currFlag,
+              bangumiId: bangumi.id,
+              cover: bangumi.cover,
             ),
-            onTapStart: () => context.read<OpModel>().rebuildFlag = currFlag,
-            onTapEnd: () => context.read<OpModel>().rebuildFlag = null,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
-            ),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                Routes.bangumi.name,
-                arguments: Routes.bangumi.d(
-                  heroTag: currFlag,
-                  bangumiId: bangumi.id,
-                  cover: bangumi.cover,
-                ),
-              );
-            },
-            child: cover,
-          ),
-        );
-      },
+          );
+        },
+        child: cover,
+      ),
     );
   }
 
   Widget _buildRecommendSection(final ThemeData theme) {
-    return Selector<SearchModel, List<Bangumi>>(
+    return Selector<SearchModel, List<Bangumi>?>(
       selector: (_, model) => model.searchResult?.bangumis,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, bangumis, child) {
@@ -269,7 +241,7 @@ class SearchFragment extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.0,
             height: 1.25,
-            color: theme.textTheme.caption.color,
+            color: theme.textTheme.caption?.color,
           ),
         ),
       ),
@@ -280,14 +252,14 @@ class SearchFragment extends StatelessWidget {
     final ThemeData theme,
     final SearchModel searchModel,
   ) {
-    return Selector<SearchModel, List<Subgroup>>(
+    return Selector<SearchModel, List<Subgroup>?>(
       selector: (_, model) => model.searchResult?.subgroups,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, subgroups, __) {
         if (subgroups.isNullOrEmpty) {
           return SliverToBoxAdapter();
         }
-        final bool less = subgroups.length < 5;
+        final bool less = subgroups!.length < 5;
         return SliverPinnedToBoxAdapter(
           child: Transform.translate(
             offset: Offset(0, -2),
@@ -354,7 +326,7 @@ class SearchFragment extends StatelessWidget {
     final Subgroup subgroup,
     final SearchModel searchModel,
   ) {
-    return Selector<SearchModel, String>(
+    return Selector<SearchModel, String?>(
       selector: (_, model) => model.subgroupId,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, subgroupId, __) {
@@ -386,7 +358,7 @@ class SearchFragment extends StatelessWidget {
   }
 
   Widget _buildSubgroupSection(final ThemeData theme) {
-    return Selector<SearchModel, List<Subgroup>>(
+    return Selector<SearchModel, List<Subgroup>?>(
       selector: (_, model) => model.searchResult?.subgroups,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, subgroups, child) {
@@ -398,7 +370,7 @@ class SearchFragment extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           top: 8.0,
           left: 16.0,
           right: 16.0,
@@ -409,7 +381,7 @@ class SearchFragment extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.0,
             height: 1.25,
-            color: theme.textTheme.caption.color,
+            color: theme.textTheme.caption?.color,
           ),
         ),
       ),
@@ -521,7 +493,7 @@ class SearchFragment extends StatelessWidget {
     final Bangumi bangumi,
   ) {
     return ExtendedImage(
-      image: CachedNetworkImageProvider(bangumi.cover),
+      image: ExtendedNetworkImageProvider(bangumi.cover),
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {
         Widget child = Row(
@@ -576,8 +548,7 @@ class SearchFragment extends StatelessWidget {
               ),
             ),
           );
-        }
-        if (value.extendedImageLoadState == LoadState.failed) {
+        } else if (value.extendedImageLoadState == LoadState.failed) {
           cover = Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
@@ -588,10 +559,10 @@ class SearchFragment extends StatelessWidget {
               ),
             ),
           );
-        } else if (value.extendedImageLoadState == LoadState.completed) {
+        } else {
           bangumi.coverSize = Size(
-            value.extendedImageInfo.image.width.toDouble(),
-            value.extendedImageInfo.image.height.toDouble(),
+            value.extendedImageInfo!.image.width.toDouble(),
+            value.extendedImageInfo!.image.height.toDouble(),
           );
           cover = Container(
             decoration: BoxDecoration(
@@ -606,7 +577,7 @@ class SearchFragment extends StatelessWidget {
         return AspectRatio(
           aspectRatio: bangumi.coverSize == null
               ? 3 / 4
-              : bangumi.coverSize.width / bangumi.coverSize.height,
+              : bangumi.coverSize!.width / bangumi.coverSize!.height,
           child: Stack(
             children: [
               Positioned.fill(

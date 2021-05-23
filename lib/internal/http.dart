@@ -17,8 +17,8 @@ import 'package:mikan_flutter/internal/store.dart';
 
 class _BaseInterceptor extends InterceptorsWrapper {
   @override
-  Future onRequest(RequestOptions options) async {
-    final int timeout = Duration(minutes: 1).inMilliseconds;
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    final int timeout = 60 * 1000;
     options.baseUrl = MikanUrl.BASE_URL;
     options.connectTimeout = timeout;
     options.receiveTimeout = timeout;
@@ -29,7 +29,7 @@ class _BaseInterceptor extends InterceptorsWrapper {
     options.headers['client'] = "mikan_flutter";
     options.headers['os'] = Platform.operatingSystem;
     options.headers['osv'] = Platform.operatingSystemVersion;
-    return options;
+    super.onRequest(options, handler);
   }
 }
 
@@ -78,10 +78,8 @@ class MikanTransformer extends DefaultTransformer {
 
 class _Http extends DioForNative {
   _Http({
-    String cookiesDir,
-    String deviceModel,
-    String appVersion,
-    BaseOptions options,
+    String? cookiesDir,
+    BaseOptions? options,
   }) : super(options) {
     // this.httpClientAdapter = Http2Adapter(ConnectionManager());
     // (this.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -108,10 +106,10 @@ class _Http extends DioForNative {
           requestBody: true,
           responseBody: false,
           error: true,
-          logPrint: (obj) => logd(obj),
+          logPrint: logd,
         ),
       )
-      ..add(CookieManager(PersistCookieJar(dir: cookiesDir)));
+      ..add(CookieManager(PersistCookieJar(storage: FileStorage(cookiesDir))));
 
     this.transformer = MikanTransformer();
   }
@@ -121,34 +119,22 @@ final Future<LoadBalancer> loadBalancer =
     LoadBalancer.create(1, IsolateRunner.spawn);
 
 class _Fetcher {
-  _Http _http;
-  static _Fetcher _fetcher;
+  late final _Http _http;
+  static _Fetcher? _fetcher;
 
   factory _Fetcher({
-    String cookiesDir,
-    String deviceModel,
-    String appVersion,
+    String? cookiesDir,
   }) {
     if (_fetcher == null) {
-      _fetcher = _Fetcher._(
-        cookiesDir: cookiesDir,
-        deviceModel: deviceModel,
-        appVersion: appVersion,
-      );
+      _fetcher = _Fetcher._(cookiesDir: cookiesDir);
     }
-    return _fetcher;
+    return _fetcher!;
   }
 
   _Fetcher._({
-    final String cookiesDir,
-    final String deviceModel,
-    final String appVersion,
+    final String? cookiesDir,
   }) {
-    _http = _Http(
-      cookiesDir: cookiesDir,
-      deviceModel: deviceModel,
-      appVersion: appVersion,
-    );
+    _http = _Http(cookiesDir: cookiesDir);
   }
 
   static Future<Resp> _asyncInIsolate(final _Protocol proto) async {
@@ -167,11 +153,7 @@ class _Fetcher {
     sendPort.send(receivePort.sendPort);
     receivePort.listen((final proto) async {
       try {
-        final _Http http = _Fetcher(
-          cookiesDir: proto.cookiesDir,
-          deviceModel: proto.deviceModel,
-          appVersion: proto.appVersion,
-        )._http;
+        final _Http http = _Fetcher(cookiesDir: proto.cookiesDir)._http;
         Response resp;
         if (proto.method == _RequestMethod.GET) {
           resp = await http.get(
@@ -209,14 +191,14 @@ class _Fetcher {
         }
       } catch (e) {
         if (e is DioError &&
-            e.response.statusCode == 302 &&
+            e.response?.statusCode == 302 &&
             proto.method == _RequestMethod.POST_WITH_FORM &&
-            (e.request.path == MikanUrl.LOGIN ||
-                e.request.path == MikanUrl.REGISTER)) {
+            (e.requestOptions.path == MikanUrl.LOGIN ||
+                e.requestOptions.path == MikanUrl.REGISTER)) {
           proto._sendPort.send(Resp(true));
         } else {
           logd("请求出错：$e");
-          proto._sendPort.send(Resp(false, msg: e?.message));
+          proto._sendPort.send(Resp(false, msg: e.toString()));
         }
       }
     });
@@ -228,8 +210,8 @@ class Http {
 
   static Future<Resp> get(
     final String url, {
-    final Map<String, dynamic> queryParameters,
-    final Options options,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   }) async {
     final _Protocol proto = _Protocol(
       url,
@@ -244,8 +226,8 @@ class Http {
   static Future<Resp> postForm(
     final String url, {
     final data,
-    final Map<String, dynamic> queryParameters,
-    final Options options,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   }) async {
     final _Protocol proto = _Protocol(
       url,
@@ -261,8 +243,8 @@ class Http {
   static Future<Resp> postJSON(
     final String url, {
     final data,
-    final Map<String, dynamic> queryParameters,
-    final Options options,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   }) async {
     final _Protocol proto = _Protocol(
       url,
@@ -282,13 +264,11 @@ class _Protocol {
   final String url;
   final _RequestMethod method;
   final data;
-  final Map<String, dynamic> queryParameters;
-  final Options options;
+  final Map<String, dynamic>? queryParameters;
+  final Options? options;
 
-  final String cookiesDir;
-  final String deviceModel;
-  final String appVersion;
-  SendPort _sendPort;
+  final String? cookiesDir;
+  late SendPort _sendPort;
 
   _Protocol(
     this.url,
@@ -297,15 +277,13 @@ class _Protocol {
     this.queryParameters,
     this.options,
     this.cookiesDir,
-    this.deviceModel,
-    this.appVersion,
   });
 }
 
 class Resp {
   final dynamic data;
   final bool success;
-  final String msg;
+  final String? msg;
 
   Resp(this.success, {this.msg, this.data});
 

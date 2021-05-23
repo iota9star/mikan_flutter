@@ -1,13 +1,13 @@
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 
 class BangumiDetail {
-  String id;
-  String cover;
-  String name;
-  bool subscribed;
-  Map<String, String> more;
-  String intro;
-  List<SubgroupBangumi> subgroupBangumis;
+  late String id;
+  late String cover;
+  late String name;
+  late bool subscribed;
+  late Map<String, String> more;
+  String? intro;
+  late List<SubgroupBangumi> subgroupBangumis;
 
   @override
   bool operator ==(Object other) =>

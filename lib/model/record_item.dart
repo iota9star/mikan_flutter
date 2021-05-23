@@ -9,44 +9,44 @@ part 'record_item.g.dart';
 @HiveType(typeId: MyHive.MIAKN_RECORD_ITEM)
 class RecordItem {
   @HiveField(0)
-  String id;
+  String? id;
 
   @HiveField(1)
-  String name;
+  late String name = "";
 
   @HiveField(2)
-  String cover;
+  late String cover = "";
 
   // 标题
   @HiveField(3)
-  String title;
+  late String title = "";
 
   // 发布时间
   @HiveField(4)
-  String publishAt;
+  late String publishAt = "";
 
   // 字幕组
-  @HiveField(5)
-  List<Subgroup> groups;
+  @HiveField(5, defaultValue: [])
+  late List<Subgroup> groups = [];
 
   // 详情地址
   @HiveField(6)
-  String url;
+  late String url = "";
 
   // 磁链地址
   @HiveField(7)
-  String magnet;
+  late String magnet = "";
 
   // 文件大小
   @HiveField(8)
-  String size;
+  late String size = "";
 
   // 种子下载地址
   @HiveField(9)
-  String torrent;
+  late String torrent = "";
 
-  @HiveField(10)
-  List<String> tags;
+  @HiveField(10, defaultValue: [])
+  late List<String> tags = [];
 
   @override
   bool operator ==(Object other) =>

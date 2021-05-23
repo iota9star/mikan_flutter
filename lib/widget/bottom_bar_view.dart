@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 
 class BarItem {
-  final IconData icon;
-  final IconData selectedIcon;
-  final String iconPath;
-  final String selectedIconPath;
-  final VoidCallback onClick;
+  IconData? icon;
+  IconData? selectedIcon;
+  String? iconPath;
+  String? selectedIconPath;
+  VoidCallback? onClick;
   bool isSelected;
   int _index = 0;
-  double _size;
+  double _size = 0;
 
   BarItem({
     this.icon,
@@ -28,9 +28,9 @@ class BarItem {
 
 class BottomBarView extends StatefulWidget {
   const BottomBarView({
-    Key key,
-    this.items,
-    this.onItemClick,
+    Key? key,
+    required this.items,
+    required this.onItemClick,
     this.height = 64,
     this.iconSize = 30,
   })  : assert(height > iconSize),
@@ -47,7 +47,7 @@ class BottomBarView extends StatefulWidget {
 
 class _BottomBarViewState extends State<BottomBarView>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
   @override
   void initState() {
@@ -86,19 +86,20 @@ class _BottomBarViewState extends State<BottomBarView>
   }
 
   List<Widget> _buildBarItems() {
-    List<Widget> bars = List(widget.items.length);
-    for (int i = 0; i < widget.items.length; i++) {
-      widget.items[i]._index = i;
-      widget.items[i]._size = widget.iconSize;
-      bars[i] = _BottomBarItemView(
-        barItem: widget.items[i],
-        removeAllSelect: () {
-          setRemoveAllSelection(widget.items[i]);
-          widget.onItemClick(i);
-        },
-      );
-    }
-    return bars;
+    return List.generate(
+      widget.items.length,
+      (i) {
+        widget.items[i]._index = i;
+        widget.items[i]._size = widget.iconSize;
+        return _BottomBarItemView(
+          barItem: widget.items[i],
+          removeAllSelect: () {
+            setRemoveAllSelection(widget.items[i]);
+            widget.onItemClick(i);
+          },
+        );
+      },
+    );
   }
 
   void setRemoveAllSelection(BarItem item) {
@@ -115,7 +116,8 @@ class _BottomBarViewState extends State<BottomBarView>
 }
 
 class _BottomBarItemView extends StatefulWidget {
-  const _BottomBarItemView({Key key, this.barItem, this.removeAllSelect})
+  const _BottomBarItemView(
+      {Key? key, required this.barItem, required this.removeAllSelect})
       : super(key: key);
 
   final BarItem barItem;
@@ -127,8 +129,8 @@ class _BottomBarItemView extends StatefulWidget {
 
 class _BottomBarItemViewState extends State<_BottomBarItemView>
     with TickerProviderStateMixin {
-  List<_Point> _points;
-  AnimationController _animationController;
+  List<_Point>? _points;
+  late AnimationController _animationController;
 
   @override
   void initState() {
@@ -146,14 +148,14 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
   }
 
   void setAnimation() {
-    _animationController?.forward();
+    _animationController.forward();
   }
 
   Widget _toBarIcon(final Color accentColor, final BarItem barItem) {
     if (barItem.isSelected) {
       return barItem.selectedIcon == null
           ? ExtendedImage.asset(
-              barItem.selectedIconPath,
+              barItem.selectedIconPath!,
               width: barItem._size + 10,
               height: barItem._size + 10,
             )
@@ -165,7 +167,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     }
     return barItem.icon == null
         ? ExtendedImage.asset(
-            barItem.iconPath,
+            barItem.iconPath!,
             width: barItem._size,
             height: barItem._size,
           )
@@ -194,9 +196,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
               if (!widget.barItem.isSelected) {
                 setAnimation();
               }
-              if (widget.barItem.onClick != null) {
-                widget.barItem.onClick();
-              }
+              widget.barItem.onClick?.call();
             },
             child: IgnorePointer(
               child: Stack(
@@ -230,8 +230,8 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
 
   List<Widget> _buildPointWidgets(final ThemeData theme) {
     return List.generate(
-      this._points.length,
-      (index) => _buildPointWidget(this._points[index], theme.accentColor),
+      this._points!.length,
+      (index) => _buildPointWidget(this._points![index], theme.accentColor),
     );
   }
 
@@ -268,7 +268,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
   List<_Point> _buildPoints() {
     final random = math.Random();
     final int count = random.nextInt(2) + 3;
-    List<_Point> points = List(count);
+    final List<_Point> points = [];
     final double offset = 360 / count;
     final out = (offset / 4).floor();
     final always = offset - out;
@@ -290,10 +290,10 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
       radius = (64 - 16) / 2;
       x = radius * math.cos(angle);
       y = radius * math.sin(angle);
-      double left;
-      double right;
-      double top;
-      double bottom;
+      double? left;
+      double? right;
+      double? top;
+      double? bottom;
       if (0 <= angle && 90 > angle) {
         right = radius - x.abs();
         top = radius - y.abs();
@@ -307,24 +307,24 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
         right = radius - x.abs();
         bottom = radius - y.abs();
       }
-      points[i] = _Point(
+      points.add(_Point(
         top: top,
         left: left,
         right: right,
         bottom: bottom,
         size: size,
         interval: interval,
-      );
+      ));
     }
     return points;
   }
 }
 
 class _Point {
-  final double top;
-  final double bottom;
-  final double left;
-  final double right;
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
   final List<double> interval;
   final double size;
 
@@ -333,7 +333,7 @@ class _Point {
     this.bottom,
     this.left,
     this.right,
-    this.interval,
-    this.size,
+    required this.interval,
+    required this.size,
   });
 }

@@ -4,26 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/widget/animated_widget.dart';
+import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
 class OVARecordItem extends StatelessWidget {
   final int index;
-  final Matrix4 transform;
   final RecordItem record;
   final ThemeData theme;
   final VoidCallback onTap;
-  final VoidCallback onTapStart;
-  final VoidCallback onTapEnd;
 
   const OVARecordItem({
-    @required this.index,
-    @required this.record,
-    @required this.transform,
-    @required this.onTap,
-    @required this.onTapStart,
-    @required this.onTapEnd,
-    @required this.theme,
+    required this.index,
+    required this.record,
+    required this.onTap,
+    required this.theme,
   });
 
   @override
@@ -42,12 +36,9 @@ class OVARecordItem extends StatelessWidget {
           ? Colors.white
           : Colors.black,
     );
-    return AnimatedTapContainer(
+    return TapScaleContainer(
       width: Sz.screenWidth * 0.9 - 32.0,
       onTap: onTap,
-      onTapEnd: onTapEnd,
-      onTapStart: onTapStart,
-      transform: transform,
       margin: EdgeInsets.only(
         right: 16.0,
       ),
@@ -197,13 +188,6 @@ class OVARecordItem extends StatelessWidget {
                   record.shareString.share();
                 },
               ),
-              // IconButton(
-              //   icon: Icon(FluentIcons.star_24_regular),
-              //   color: accentColor,
-              //   tooltip: "收藏",
-              //   iconSize: 20.0,
-              //   onPressed: () {},
-              // ),
             ],
           ),
         ],

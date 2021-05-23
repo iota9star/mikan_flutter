@@ -17,12 +17,12 @@ class IndexAdapter extends TypeAdapter<Index> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Index(
-      years: (fields[0] as List)?.cast<YearSeason>(),
-      bangumiRows: (fields[1] as List)?.cast<BangumiRow>(),
-      rss: (fields[2] as Map)?.map((dynamic k, dynamic v) =>
-          MapEntry(k as String, (v as List)?.cast<RecordItem>())),
-      carousels: (fields[3] as List)?.cast<Carousel>(),
-      user: fields[4] as User,
+      years: (fields[0] as List).cast<YearSeason>(),
+      bangumiRows: (fields[1] as List).cast<BangumiRow>(),
+      rss: (fields[2] as Map).map((dynamic k, dynamic v) =>
+          MapEntry(k as String, (v as List).cast<RecordItem>())),
+      carousels: (fields[3] as List).cast<Carousel>(),
+      user: fields[4] as User?,
     );
   }
 

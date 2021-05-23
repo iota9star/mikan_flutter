@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
@@ -19,11 +19,11 @@ class BangumiModel extends CancelableBaseModel {
 
   bool get loading => _loading;
 
-  BangumiDetail _bangumiDetail;
+  BangumiDetail? _bangumiDetail;
 
-  BangumiDetail get bangumiDetail => _bangumiDetail;
+  BangumiDetail? get bangumiDetail => _bangumiDetail;
 
-  Size coverSize;
+  Size? coverSize;
 
   bool _hasScrolled = false;
 
@@ -46,18 +46,16 @@ class BangumiModel extends CancelableBaseModel {
         .whenComplete(() => this._loadCoverMainColor());
   }
 
-  SubgroupBangumi _subgroupBangumi;
+  SubgroupBangumi? _subgroupBangumi;
 
-  SubgroupBangumi get subgroupBangumi => _subgroupBangumi;
+  SubgroupBangumi? get subgroupBangumi => _subgroupBangumi;
 
   set selectedSubgroupId(String value) {
     if (value == _subgroupBangumi?.dataId) {
       return;
     }
-    _subgroupBangumi = _bangumiDetail.subgroupBangumis.firstWhere(
-      (element) => element.dataId == value,
-      orElse: () => null,
-    );
+    _subgroupBangumi = _bangumiDetail?.subgroupBangumis
+        .firstWhere((element) => element.dataId == value);
     _hasScrolled = false;
     if (_refreshController.headerStatus != RefreshStatus.completed) {
       _refreshController.loadComplete();
@@ -65,13 +63,13 @@ class BangumiModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  Color _coverMainColor;
+  Color? _coverMainColor;
 
-  Color get coverMainColor => _coverMainColor;
+  Color? get coverMainColor => _coverMainColor;
 
   _loadCoverMainColor() {
     PaletteGenerator.fromImageProvider(
-      CachedNetworkImageProvider(this.cover),
+      ExtendedNetworkImageProvider(this.cover),
       maximumColorCount: 3,
       targets: [
         PaletteTarget.lightVibrant,
@@ -88,22 +86,22 @@ class BangumiModel extends CancelableBaseModel {
   }
 
   loadSubgroupList() async {
-    if (this._subgroupBangumi.records.length < 10) {
+    if ((this._subgroupBangumi?.records.length ?? 0) < 10) {
       return _refreshController.loadNoData();
     }
     final Resp resp = await (this +
         Repo.bangumiMore(
           this.id,
-          this._subgroupBangumi.dataId,
-          this._subgroupBangumi.records.length + 20,
+          this._subgroupBangumi?.dataId ?? "",
+          this._subgroupBangumi?.records.length ?? 0 + 20,
         ));
     if (resp.success) {
-      if (this._subgroupBangumi.records.length == resp.data.length) {
+      if (this._subgroupBangumi?.records.length == resp.data.length) {
         _refreshController.loadNoData();
       } else {
         _refreshController.loadComplete();
       }
-      this._subgroupBangumi.records = resp.data;
+      this._subgroupBangumi?.records = resp.data;
       notifyListeners();
     } else {
       _refreshController.loadFailed();

@@ -1,5 +1,5 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -83,10 +83,10 @@ class LoginPage extends StatelessWidget {
         final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
         final Color iconColor =
             btnColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-        return RaisedButton(
+        return ElevatedButton(
           onPressed: () {
             if (loading) return;
-            if (_formKey.currentState.validate()) {
+            if (_formKey.currentState!.validate()) {
               context.read<LoginModel>().submit(() {
                 context.read<IndexModel>().refresh();
                 context.read<SubscribedModel>().refresh();
@@ -97,11 +97,11 @@ class LoginPage extends StatelessWidget {
               });
             }
           },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24.0),
-          ),
-          color: theme.backgroundColor,
-          padding: EdgeInsets.zero,
+          // shape: RoundedRectangleBorder(
+          //   borderRadius: BorderRadius.circular(24.0),
+          // ),
+          // color: theme.backgroundColor,
+          // padding: EdgeInsets.zero,
           child: Container(
             height: 48.0,
             decoration: BoxDecoration(
@@ -160,10 +160,9 @@ class LoginPage extends StatelessWidget {
           builder: (_, checked, __) {
             return Checkbox(
               value: checked,
-              visualDensity: VisualDensity(),
               activeColor: theme.accentColor,
               onChanged: (val) {
-                loginModel.rememberMe = val;
+                loginModel.rememberMe = val ?? false;
               },
             );
           },
@@ -245,7 +244,7 @@ class LoginPage extends StatelessWidget {
             ),
             validator: (value) {
               if (value.isNullOrBlank) return "密码不能为空";
-              if (value.length < 6) return "密码最少6位";
+              if (value!.length < 6) return "密码最少6位";
               return null;
             },
             textInputAction: TextInputAction.done,

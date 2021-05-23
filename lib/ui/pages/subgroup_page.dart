@@ -1,5 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class SubgroupPage extends StatelessWidget {
   final Subgroup subgroup;
 
-  const SubgroupPage({Key key, this.subgroup}) : super(key: key);
+  const SubgroupPage({Key? key, required this.subgroup}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +119,6 @@ class SubgroupPage extends StatelessWidget {
                     bangumi.subscribed,
                     onSuccess: () {
                       bangumi.subscribed = !bangumi.subscribed;
-                      context.read<OpModel>().performTap(flag);
                     },
                     onError: (msg) {
                       "订阅失败：$msg".toast();

@@ -7,13 +7,13 @@ part 'user.g.dart';
 @HiveType(typeId: MyHive.MIAKN_USER)
 class User extends HiveObject {
   @HiveField(0)
-  String name;
+  String? name;
 
   @HiveField(1)
-  String avatar;
+  String? avatar;
 
   @HiveField(2)
-  String token;
+  String? token;
 
   bool get hasLogin => name.isNotBlank && avatar.isNotBlank;
 

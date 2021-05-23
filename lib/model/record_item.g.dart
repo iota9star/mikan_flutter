@@ -17,17 +17,17 @@ class RecordItemAdapter extends TypeAdapter<RecordItem> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return RecordItem()
-      ..id = fields[0] as String
+      ..id = fields[0] as String?
       ..name = fields[1] as String
       ..cover = fields[2] as String
       ..title = fields[3] as String
       ..publishAt = fields[4] as String
-      ..groups = (fields[5] as List)?.cast<Subgroup>()
+      ..groups = fields[5] == null ? [] : (fields[5] as List).cast<Subgroup>()
       ..url = fields[6] as String
       ..magnet = fields[7] as String
       ..size = fields[8] as String
       ..torrent = fields[9] as String
-      ..tags = (fields[10] as List)?.cast<String>();
+      ..tags = fields[10] == null ? [] : (fields[10] as List).cast<String>();
   }
 
   @override

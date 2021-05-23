@@ -1,6 +1,7 @@
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
+@FFArgumentImport()
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/providers/view_models/home_model.dart';
@@ -13,7 +14,6 @@ import 'package:provider/provider.dart';
 @FFRoute(
   name: "home",
   routeName: "home",
-  argumentImports: ["import 'package:flutter/material.dart';"],
 )
 @immutable
 class HomePage extends StatelessWidget {

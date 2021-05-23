@@ -6,7 +6,7 @@ import 'package:mikan_flutter/model/subgroup.dart';
 class SubgroupFragment extends StatelessWidget {
   final List<Subgroup> subgroups;
 
-  const SubgroupFragment({Key key, this.subgroups}) : super(key: key);
+  const SubgroupFragment({Key? key, required this.subgroups}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

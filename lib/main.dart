@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/logger.dart';
 import 'package:mikan_flutter/internal/store.dart';
+import 'package:mikan_flutter/mikan_flutter_route.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/providers/view_models/firebase_model.dart';
 import 'package:mikan_flutter/providers/view_models/home_model.dart';
@@ -18,7 +20,6 @@ import 'package:mikan_flutter/providers/view_models/list_model.dart';
 import 'package:mikan_flutter/providers/view_models/op_model.dart';
 import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
 import 'package:mikan_flutter/providers/view_models/theme_model.dart';
-import 'package:mikan_flutter/route_helper.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -40,7 +41,7 @@ class CustomWidgetsFlutterBinding extends WidgetsFlutterBinding {
 
   static WidgetsBinding ensureInitialized() {
     if (WidgetsBinding.instance == null) CustomWidgetsFlutterBinding();
-    return WidgetsBinding.instance;
+    return WidgetsBinding.instance!;
   }
 }
 
@@ -77,7 +78,6 @@ class MikanApp extends StatelessWidget {
   Widget build(BuildContext context) {
     _subscribeConnectivityChange();
     return RefreshConfiguration(
-      autoLoad: true,
       headerTriggerDistance: 80.0,
       enableScrollWhenRefreshCompleted: true,
       enableLoadingWhenFailed: true,
@@ -86,21 +86,20 @@ class MikanApp extends StatelessWidget {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider<ThemeModel>(
-            create: (context) => ThemeModel(),
+            create: (_) => ThemeModel(),
           ),
           ChangeNotifierProvider<FirebaseModel>(
-            create: (context) => FirebaseModel(),
+            create: (_) => FirebaseModel(),
           ),
           ChangeNotifierProvider<SubscribedModel>(
             create: (context) => SubscribedModel(),
-            lazy: false,
           ),
           ChangeNotifierProvider<OpModel>(
             create: (context) => OpModel(),
+            lazy: false,
           ),
           ChangeNotifierProvider<IndexModel>(
-            create: (context) => IndexModel(context.read<SubscribedModel>()),
-            lazy: false,
+            create: (context) => IndexModel(),
           ),
           ChangeNotifierProvider<ListModel>(
             create: (context) => ListModel(),
@@ -147,7 +146,6 @@ class MikanApp extends StatelessWidget {
     final ThemeData theme = themeModel.theme();
     return Theme(
       data: theme,
-      isMaterialAppTheme: true,
       child: OKToast(
         position: ToastPosition(align: Alignment.bottomCenter, offset: -72.0),
         duration: Duration(milliseconds: 3600),
@@ -156,13 +154,18 @@ class MikanApp extends StatelessWidget {
           theme: theme,
           darkTheme: themeModel.theme(darkTheme: true),
           initialRoute: Routes.home,
-          onGenerateRoute: (settings) => onGenerateRouteHelper(settings),
+          onGenerateRoute: (RouteSettings settings) {
+            return onGenerateRoute(
+              settings: settings,
+              getRouteSettings: getRouteSettings,
+            );
+          },
           navigatorObservers: [
             firebaseModel.observer,
             FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
               //you can track page here
-              final RouteSettings oldSettings = oldRoute?.settings;
-              final RouteSettings newSettings = newRoute?.settings;
+              final RouteSettings? oldSettings = oldRoute?.settings;
+              final RouteSettings? newSettings = newRoute?.settings;
               logd("route change: "
                   "${oldSettings?.name} => ${newSettings?.name}");
             }),

@@ -6,28 +6,25 @@ import 'package:mikan_flutter/providers/view_models/theme_model.dart';
 
 class ThemeEditModel extends BaseModel {
   final ThemeModel _themeModel;
-  ThemeItem _themeItem;
+  late ThemeItem _themeItem;
 
   ThemeItem get themeItem => _themeItem;
 
-  ThemeEditModel(this._themeItem, this._themeModel) {
-    this._themeItem = this._themeItem ??
-        ThemeItem(
-          id: DateTime.now().microsecondsSinceEpoch,
-          canDelete: true,
-          autoMode: true,
-          isDark: false,
-          primaryColor: this._themeModel.themeItem.primaryColor,
-          accentColor: this._themeModel.themeItem.accentColor,
-          lightBackgroundColor: this._themeModel.themeItem.lightBackgroundColor,
-          lightScaffoldBackgroundColor:
-              this._themeModel.themeItem.lightScaffoldBackgroundColor,
-          darkBackgroundColor: this._themeModel.themeItem.darkBackgroundColor,
-          darkScaffoldBackgroundColor:
-              this._themeModel.themeItem.darkScaffoldBackgroundColor,
-          fontFamily: this._themeModel.themeItem.fontFamily,
-          version: ThemeItem.THEME_VERSION_V1,
-        );
+  ThemeEditModel(ThemeItem? themeItem, this._themeModel) {
+    this._themeItem = themeItem ?? ThemeItem()
+      ..id = DateTime.now().microsecondsSinceEpoch
+      ..canDelete = true
+      ..autoMode = true
+      ..isDark = false
+      ..primaryColor = this._themeModel.themeItem.primaryColor
+      ..accentColor = this._themeModel.themeItem.accentColor
+      ..lightBackgroundColor = this._themeModel.themeItem.lightBackgroundColor
+      ..lightScaffoldBackgroundColor =
+          this._themeModel.themeItem.lightScaffoldBackgroundColor
+      ..darkBackgroundColor = this._themeModel.themeItem.darkBackgroundColor
+      ..darkScaffoldBackgroundColor =
+          this._themeModel.themeItem.darkScaffoldBackgroundColor
+      ..fontFamily = this._themeModel.themeItem.fontFamily;
   }
 
   apply(final bool isAdd, final VoidCallback afterApply) {

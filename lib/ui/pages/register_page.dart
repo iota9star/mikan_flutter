@@ -1,5 +1,5 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -81,7 +81,7 @@ class RegisterPage extends StatelessWidget {
         return RaisedButton(
           onPressed: () {
             if (loading) return;
-            if (_formKey.currentState.validate()) {
+            if (_formKey.currentState!.validate()) {
               context.read<RegisterModel>().submit(() {
                 context.read<IndexModel>().refresh();
                 context.read<SubscribedModel>().refresh();
@@ -196,7 +196,7 @@ class RegisterPage extends StatelessWidget {
         ),
         validator: (value) {
           if (value.isNullOrBlank) return "邮箱不能为空";
-          if (!RegExp(r".+@.+\..+").hasMatch(value)) return "邮箱格式不正确";
+          if (!RegExp(r".+@.+\..+").hasMatch(value!)) return "邮箱格式不正确";
           return null;
         },
         textInputAction: TextInputAction.next,
@@ -229,7 +229,7 @@ class RegisterPage extends StatelessWidget {
         ),
         validator: (value) {
           if (value.isNotBlank) {
-            if (!RegExp(r"\d+").hasMatch(value)) return "QQ号码应为数字";
+            if (!RegExp(r"\d+").hasMatch(value!)) return "QQ号码应为数字";
             if (value.length < 5) {
               return "QQ号码最少为5位";
             }
@@ -279,7 +279,7 @@ class RegisterPage extends StatelessWidget {
             ),
             validator: (value) {
               if (value.isNullOrBlank) return "密码不能为空";
-              if (value.length < 6) return "密码最少6位";
+              if (value!.length < 6) return "密码最少6位";
               return null;
             },
             textInputAction: TextInputAction.next,

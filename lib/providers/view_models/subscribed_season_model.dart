@@ -23,7 +23,7 @@ class SubscribedSeasonModel extends CancelableBaseModel {
 
   bool get loading => _loading;
 
-  List<Season> _seasons;
+  late List<Season> _seasons;
 
   List<Season> get seasons => _seasons;
 
@@ -59,6 +59,7 @@ class SubscribedSeasonModel extends CancelableBaseModel {
         year: season.year,
         season: season.season,
         title: season.title,
+        isCurrentSeason: season.active,
         bangumis: resp.data ?? [],
       );
       if (this._loadIndex == 0) {

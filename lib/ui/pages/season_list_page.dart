@@ -1,5 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class SeasonListPage extends StatelessWidget {
   final List<YearSeason> years;
 
-  const SeasonListPage({Key key, this.years}) : super(key: key);
+  const SeasonListPage({Key? key, required this.years}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +122,6 @@ class SeasonListPage extends StatelessWidget {
                         bangumi.subscribed,
                         onSuccess: () {
                           bangumi.subscribed = !bangumi.subscribed;
-                          context.read<OpModel>().performTap(flag);
                         },
                         onError: (msg) {
                           "订阅失败：$msg".toast();
@@ -203,7 +202,7 @@ class SeasonListPage extends StatelessWidget {
               child: Text(
                 simple,
                 style: TextStyle(
-                  color: theme.textTheme.subtitle1.color,
+                  color: theme.textTheme.subtitle1?.color,
                   fontSize: 12.0,
                   height: 1.25,
                 ),

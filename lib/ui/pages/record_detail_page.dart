@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
+@FFArgumentImport()
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -21,14 +21,13 @@ import 'package:provider/provider.dart';
   argumentImports: [
     "import 'package:mikan_flutter/model/year_season.dart';",
     "import 'package:mikan_flutter/model/season_gallery.dart';",
-    "import 'package:flutter/material.dart';",
   ],
 )
 @immutable
 class RecordDetailPage extends StatelessWidget {
   final String url;
 
-  const RecordDetailPage({Key key, this.url}) : super(key: key);
+  const RecordDetailPage({Key? key, required this.url}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,21 +84,21 @@ class RecordDetailPage extends StatelessWidget {
 
   Widget _buildBackground(final ThemeData theme) {
     return Positioned.fill(
-      child: Selector<RecordDetailModel, RecordDetail>(
+      child: Selector<RecordDetailModel, RecordDetail?>(
         selector: (_, model) => model.recordDetail,
         shouldRebuild: (pre, next) => pre != next,
         builder: (_, recordDetail, __) {
-          if (recordDetail == null) return Container();
+          if (recordDetail == null) return const SizedBox();
           return Container(
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(recordDetail.cover),
+                image: ExtendedNetworkImageProvider(recordDetail.cover),
               ),
             ),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
-              child: Selector<RecordDetailModel, Color>(
+              child: Selector<RecordDetailModel, Color?>(
                 selector: (_, model) => model.coverMainColor,
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (_, bgColor, __) {
@@ -127,7 +126,7 @@ class RecordDetailPage extends StatelessWidget {
     return Positioned.fill(
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
-        child: Selector<RecordDetailModel, RecordDetail>(
+        child: Selector<RecordDetailModel, RecordDetail?>(
           selector: (context, model) => model.recordDetail,
           shouldRebuild: (pre, next) => pre != next,
           builder: (context, recordDetail, __) {
@@ -215,7 +214,7 @@ class RecordDetailPage extends StatelessWidget {
                       height: 1.6,
                       fontSize: 15.0,
                       fontWeight: FontWeight.bold,
-                      color: theme.textTheme.subtitle1.color,
+                      color: theme.textTheme.subtitle1?.color,
                     ),
                   ))
               .toList(),
@@ -269,7 +268,7 @@ class RecordDetailPage extends StatelessWidget {
         selector: (_, model) => model.loading,
         shouldRebuild: (pre, next) => pre != next,
         builder: (_, loading, child) {
-          if (loading) return child;
+          if (loading) return child!;
           return Container();
         },
         child: SizedBox(
@@ -429,9 +428,9 @@ class RecordDetailPage extends StatelessWidget {
             recordDetail.intro,
             customWidgetBuilder: (element) {
               if (element.localName == "img") {
-                final String src = element.attributes["src"];
+                final String? src = element.attributes["src"];
                 if (src.isNotBlank) {
-                  return _buildImageWidget(src);
+                  return _buildImageWidget(src!);
                 }
               }
               return null;
@@ -447,7 +446,7 @@ class RecordDetailPage extends StatelessWidget {
     final RecordDetail recordDetail,
   ) {
     return ExtendedImage(
-      image: CachedNetworkImageProvider(recordDetail.cover),
+      image: ExtendedNetworkImageProvider(recordDetail.cover),
       width: 136.0,
       shape: BoxShape.rectangle,
       loadStateChanged: (state) {
@@ -490,10 +489,10 @@ class RecordDetailPage extends StatelessWidget {
               ),
             ),
           );
-        } else if (state.extendedImageLoadState == LoadState.completed) {
+        } else {
           recordDetail.coverSize = Size(
-            state.extendedImageInfo.image.width.toDouble(),
-            state.extendedImageInfo.image.height.toDouble(),
+            state.extendedImageInfo!.image.width.toDouble(),
+            state.extendedImageInfo!.image.height.toDouble(),
           );
           child = Container(
             decoration: BoxDecoration(
@@ -514,7 +513,7 @@ class RecordDetailPage extends StatelessWidget {
         return AspectRatio(
           aspectRatio: recordDetail.coverSize == null
               ? 1
-              : recordDetail.coverSize.width / recordDetail.coverSize.height,
+              : recordDetail.coverSize!.width / recordDetail.coverSize!.height,
           child: Stack(
             children: [
               Positioned.fill(child: child),
@@ -530,7 +529,7 @@ class RecordDetailPage extends StatelessWidget {
 
   Widget _buildSubscribeBtn(BuildContext context, RecordDetail recordDetail) {
     return Selector<RecordDetailModel, bool>(
-      selector: (_, model) => model.recordDetail?.subscribed,
+      selector: (_, model) => model.recordDetail?.subscribed ?? false,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, subscribed, __) {
         final Widget child = subscribed
@@ -589,7 +588,7 @@ class RecordDetailPage extends StatelessWidget {
 
   Widget _buildImageWidget(final String url) {
     return ExtendedImage(
-      image: CachedNetworkImageProvider(url),
+      image: ExtendedNetworkImageProvider(url),
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
@@ -610,7 +609,6 @@ class RecordDetailPage extends StatelessWidget {
           case LoadState.completed:
             return null;
         }
-        return null;
       },
     );
   }

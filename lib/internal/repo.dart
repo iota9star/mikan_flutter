@@ -32,8 +32,8 @@ class Repo {
   }
 
   static Future<Resp> search(
-    final String keywords, {
-    final String subgroupId,
+    final String? keywords, {
+    final String? subgroupId,
   }) async {
     final parameters = {"searchstr": keywords, "subgroupid": subgroupId};
     final extra = {"$MikanFunc": MikanFunc.SEARCH};
@@ -45,7 +45,7 @@ class Repo {
     );
   }
 
-  static Future<Resp> list(final int page) async {
+  static Future<Resp> list(final int? page) async {
     final extra = {"$MikanFunc": MikanFunc.LIST};
     final Options options = Options(extra: extra);
     return await Http.get("${MikanUrl.LIST}/${page ?? ""}", options: options);
@@ -57,7 +57,7 @@ class Repo {
     return await Http.get(MikanUrl.BASE_URL, options: options);
   }
 
-  static Future<Resp> subgroup(final String subgroupId) async {
+  static Future<Resp> subgroup(final String? subgroupId) async {
     final extra = {"$MikanFunc": MikanFunc.SUBGROUP};
     final Options options = Options(extra: extra);
     return await Http.get("${MikanUrl.SUBGROUP}/$subgroupId", options: options);
@@ -96,7 +96,7 @@ class Repo {
   static Future<Resp> subscribeBangumi(
     final int bangumiId,
     final bool subscribe, {
-    final int subgroupId,
+    final int? subgroupId,
   }) async {
     final Options options = Options(
       contentType: "application/json; charset=UTF-8",

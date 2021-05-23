@@ -121,7 +121,7 @@ class Indicator {
   }) {
     return CustomHeader(
       height: height + top,
-      builder: (BuildContext context, RefreshStatus mode) {
+      builder: (context, RefreshStatus? mode) {
         switch (mode) {
           case RefreshStatus.idle:
             return idle(context, color, height: height, top: top);
@@ -137,8 +137,9 @@ class Indicator {
           case RefreshStatus.twoLevelOpening:
           case RefreshStatus.twoLeveling:
           case RefreshStatus.twoLevelClosing:
+          default:
+            return SizedBox();
         }
-        return null;
       },
     );
   }
@@ -151,7 +152,7 @@ class Indicator {
   }) {
     return CustomFooter(
       height: height + bottom,
-      builder: (BuildContext context, LoadStatus mode) {
+      builder: (BuildContext context, LoadStatus? mode) {
         switch (mode) {
           case LoadStatus.idle:
             return idle(context, color, height: height, bottom: bottom);
@@ -163,8 +164,9 @@ class Indicator {
             return noMore(context, color, height: height, bottom: bottom);
           case LoadStatus.failed:
             return failed(context, color, height: height, bottom: bottom);
+          default:
+            return SizedBox();
         }
-        return null;
       },
     );
   }
