@@ -1,4 +1,5 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -23,7 +24,20 @@ class ComplexRecordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Subgroup> subgroups = record.groups;
-    final List<String> tags = record.tags;
+    final TextStyle fileTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: theme.accentColor.computeLuminance() < 0.5
+          ? Colors.white
+          : Colors.black,
+    );
+    final TextStyle titleTagStyle = TextStyle(
+      fontSize: 10,
+      height: 1.25,
+      color: theme.primaryColor.computeLuminance() < 0.5
+          ? Colors.white
+          : Colors.black,
+    );
     return TapScaleContainer(
       onTap: onTap,
       margin: EdgeInsets.symmetric(
@@ -31,11 +45,19 @@ class ComplexRecordItem extends StatelessWidget {
         vertical: 8.0,
       ),
       decoration: BoxDecoration(
-        gradient: _createGradientByIndex(theme, index),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.backgroundColor.withOpacity(0.48),
+            theme.backgroundColor
+          ],
+        ),
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(
@@ -57,87 +79,85 @@ class ComplexRecordItem extends StatelessWidget {
               right: 16.0,
               top: 8.0,
             ),
-            child: Text(
-              record.title,
-              style: TextStyle(
-                fontSize: 14.0,
+            child: Tooltip(
+              message: record.title,
+              padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                record.title + "\n\n",
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  height: 1.25,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 8.0,
+          Container(
+            margin: EdgeInsets.only(
               left: 16.0,
               right: 16.0,
+              top: 8.0,
             ),
-            child: Wrap(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 4.0,
-                    bottom: 4.0,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 4.0,
-                    vertical: 2.0,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        theme.accentColor,
-                        theme.accentColor.withOpacity(0.56),
-                      ],
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                      right: 4.0,
                     ),
-                    borderRadius: BorderRadius.circular(2.0),
-                  ),
-                  child: Text(
-                    record.size,
-                    style: TextStyle(
-                      fontSize: 10,
-                      height: 1.25,
-                      color: theme.accentColor.computeLuminance() < 0.5
-                          ? Colors.white
-                          : Colors.black,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 4.0,
+                      vertical: 2.0,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          theme.accentColor,
+                          theme.accentColor.withOpacity(0.56),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(2.0),
+                    ),
+                    child: Text(
+                      record.size,
+                      style: fileTagStyle,
                     ),
                   ),
-                ),
-                if (!tags.isNullOrEmpty)
-                  ...List.generate(tags.length, (index) {
-                    return Container(
-                      margin: EdgeInsets.only(
-                        right: 4.0,
-                        bottom: 4.0,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.0,
-                        vertical: 2.0,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            theme.primaryColor,
-                            theme.primaryColor.withOpacity(0.56),
-                          ],
+                  if (!record.tags.isNullOrEmpty)
+                    ...List.generate(record.tags.length, (index) {
+                      return Container(
+                        margin: EdgeInsets.only(
+                          right: 4.0,
                         ),
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      child: Text(
-                        tags[index],
-                        style: TextStyle(
-                          fontSize: 10,
-                          height: 1.25,
-                          color: theme.primaryColor.computeLuminance() < 0.5
-                              ? Colors.white
-                              : Colors.black,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 4.0,
+                          vertical: 2.0,
                         ),
-                      ),
-                    );
-                  }),
-              ],
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              theme.primaryColor,
+                              theme.primaryColor.withOpacity(0.56),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(2.0),
+                        ),
+                        child: Text(
+                          record.tags[index],
+                          style: titleTagStyle,
+                        ),
+                      );
+                    }),
+                ],
+              ),
             ),
           ),
           Row(
@@ -220,67 +240,10 @@ class ComplexRecordItem extends StatelessWidget {
                   record.shareString.share();
                 },
               ),
-              // IconButton(
-              //   icon: Icon(FluentIcons.star_24_regular),
-              //   color: accentColor,
-              //   tooltip: "收藏",
-              //   iconSize: 20.0,
-              //   onPressed: () {},
-              // ),
             ],
           ),
         ],
       ),
-    );
-  }
-
-  LinearGradient _createGradientByIndex(
-    final ThemeData theme,
-    final int index,
-  ) {
-    final Color withOpacity = theme.backgroundColor.withOpacity(0.48);
-    switch (index % 6) {
-      case 0:
-        return LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [withOpacity, theme.backgroundColor],
-        );
-      case 1:
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [withOpacity, theme.backgroundColor],
-        );
-      case 2:
-        return LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [withOpacity, theme.backgroundColor],
-        );
-      case 3:
-        return LinearGradient(
-          begin: Alignment.bottomRight,
-          end: Alignment.topLeft,
-          colors: [withOpacity, theme.backgroundColor],
-        );
-      case 4:
-        return LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [withOpacity, theme.backgroundColor],
-        );
-      case 5:
-        return LinearGradient(
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-          colors: [withOpacity, theme.backgroundColor],
-        );
-    }
-    return LinearGradient(
-      begin: Alignment.bottomRight,
-      end: Alignment.topLeft,
-      colors: [withOpacity, theme.backgroundColor],
     );
   }
 }

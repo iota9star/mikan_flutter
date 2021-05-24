@@ -85,6 +85,12 @@ class ListFragment extends StatelessWidget {
               },
               childCount: length,
             ),
+            // gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+            //   minCrossAxisExtent: 240.0,
+            //   mainAxisExtent: 16.0,
+            //   crossAxisSpacing: 16.0,
+            //   mainAxisSpacing: 164.0,
+            // ),
           );
         },
       ),

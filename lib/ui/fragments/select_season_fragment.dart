@@ -45,7 +45,7 @@ class SelectSeasonFragment extends StatelessWidget {
     final IndexModel indexModel,
   ) {
     return SliverPinnedToBoxAdapter(
-      child: AnimatedContainer(
+      child: Container(
         decoration: BoxDecoration(
           color: theme.backgroundColor,
           boxShadow: [
@@ -61,7 +61,6 @@ class SelectSeasonFragment extends StatelessWidget {
             bottomRight: Radius.circular(16.0),
           ),
         ),
-        duration: Duration(milliseconds: 240),
         padding: EdgeInsets.only(
           top: 16.0,
           left: 16.0,
@@ -163,7 +162,7 @@ class SelectSeasonFragment extends StatelessWidget {
       padding: EdgeInsets.only(
         left: 16.0,
         right: 16.0,
-        top: 24.0,
+        top: 8.0,
         bottom: 16.0 + Sz.navBarHeight,
       ),
       sliver: Selector<IndexModel, List<YearSeason>>(

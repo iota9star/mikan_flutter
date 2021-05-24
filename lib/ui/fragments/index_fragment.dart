@@ -87,6 +87,7 @@ class IndexFragment extends StatelessWidget {
                           _buildWeekSection(theme, bangumiRow),
                           BangumiSliverGridFragment(
                             padding: EdgeInsets.only(
+                              top: 4.0,
                               left: 16.0,
                               right: 16.0,
                               bottom: 16.0,
@@ -461,8 +462,8 @@ class IndexFragment extends StatelessWidget {
         if (records.isNullOrEmpty) return SliverToBoxAdapter();
         return SliverToBoxAdapter(
           child: Container(
-            height: 192.0,
-            padding: EdgeInsets.only(bottom: 16.0, top: 16.0),
+            height: 156.0,
+            padding: EdgeInsets.only(bottom: 12.0, top: 12.0),
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
               itemCount: records.length,

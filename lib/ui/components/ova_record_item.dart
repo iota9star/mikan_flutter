@@ -2,7 +2,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
@@ -37,7 +36,7 @@ class OVARecordItem extends StatelessWidget {
           : Colors.black,
     );
     return TapScaleContainer(
-      width: Sz.screenWidth * 0.9 - 32.0,
+      width: 360.0,
       onTap: onTap,
       margin: EdgeInsets.only(
         right: 16.0,
@@ -55,27 +54,19 @@ class OVARecordItem extends StatelessWidget {
               right: 16.0,
               top: 16.0,
             ),
-            child: Text(
-              record.publishAt,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 8.0,
-            ),
-            child: Text(
-              record.title + "\n",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 14.0,
-                height: 1.25,
+            child: Tooltip(
+              message: record.title,
+              padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                record.title + "\n",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.0,
+                  height: 1.25,
+                ),
               ),
             ),
           ),
@@ -85,19 +76,7 @@ class OVARecordItem extends StatelessWidget {
               right: 16.0,
               top: 8.0,
             ),
-            foregroundDecoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  theme.backgroundColor.withOpacity(0),
-                  theme.backgroundColor
-                ],
-                stops: [0.8, 1],
-              ),
-            ),
             child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
@@ -158,8 +137,17 @@ class OVARecordItem extends StatelessWidget {
           ),
           Spacer(),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: Text(
+                  record.publishAt,
+                  style: TextStyle(
+                    fontSize: 13.0,
+                  ),
+                ),
+              ),
               IconButton(
                 icon: Icon(FluentIcons.cloud_download_24_regular),
                 tooltip: "复制并尝试打开种子链接",

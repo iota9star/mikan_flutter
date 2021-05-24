@@ -74,6 +74,7 @@ class _TapScaleContainerState extends State<TapScaleContainer> {
         constraints: widget.constraints,
         margin: widget.margin,
         transformAlignment: widget.transformAlignment,
+        clipBehavior: widget.clipBehavior,
         child: widget.child,
       ),
     );

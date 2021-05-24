@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
@@ -40,11 +41,11 @@ class BangumiSliverGridFragment extends StatelessWidget {
     return SliverPadding(
       padding: this.padding,
       sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
-          mainAxisExtent: 210.0,
-          maxCrossAxisExtent: 120.0,
+          mainAxisExtent: 208.0,
+          minCrossAxisExtent: 112.0,
         ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
