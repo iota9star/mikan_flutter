@@ -466,8 +466,7 @@ class BangumiPage extends StatelessWidget {
               ),
             ),
           );
-        }
-        if (value.extendedImageLoadState == LoadState.failed) {
+        } else if (value.extendedImageLoadState == LoadState.failed) {
           child = Container(
             decoration: BoxDecoration(
               boxShadow: [

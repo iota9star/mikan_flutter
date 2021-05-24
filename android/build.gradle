@@ -3,13 +3,12 @@ buildscript {
     repositories {
         google()
         maven { url 'https://download.flutter.io' }
-        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
         maven { url 'https://jitpack.io' }
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.4'
+        classpath 'com.android.tools.build:gradle:4.2.1'
         classpath 'com.google.gms:google-services:4.3.8'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.6.1'
     }
@@ -19,7 +18,6 @@ allprojects {
     repositories {
         google()
         maven { url 'https://download.flutter.io' }
-        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
         maven { url 'https://jitpack.io' }
         mavenCentral()
     }

@@ -21,6 +21,9 @@ class TapScaleContainer extends StatefulWidget {
   final BoxConstraints? constraints;
   final EdgeInsetsGeometry? margin;
   final AlignmentGeometry transformAlignment;
+  final double? width;
+  final double? height;
+  final Clip clipBehavior;
 
   TapScaleContainer({
     Key? key,
@@ -30,30 +33,15 @@ class TapScaleContainer extends StatefulWidget {
     this.color,
     this.decoration,
     this.foregroundDecoration,
-    double? width,
-    double? height,
-    BoxConstraints? constraints,
+    this.width,
+    this.height,
     this.margin,
     this.transformAlignment = Alignment.center,
     this.child,
     this.clipBehavior = Clip.none,
     this.onLongPress,
-  })  : assert(margin == null || margin.isNonNegative),
-        assert(padding == null || padding.isNonNegative),
-        assert(decoration == null || decoration.debugAssertIsValid()),
-        assert(constraints == null || constraints.debugAssertIsValid()),
-        assert(decoration != null || clipBehavior == Clip.none),
-        assert(
-          color == null || decoration == null,
-          'Cannot provide both a color and a decoration\n'
-          'To provide both, use "decoration: BoxDecoration(color: color)".',
-        ),
-        constraints = (width != null || height != null)
-            ? constraints?.tighten(width: width, height: height) ??
-                BoxConstraints.tightFor(width: width, height: height)
-            : constraints,
-        super(key: key);
-  final Clip clipBehavior;
+    this.constraints,
+  }) : super(key: key);
 
   @override
   _TapScaleContainerState createState() => _TapScaleContainerState();
@@ -80,10 +68,13 @@ class _TapScaleContainerState extends State<TapScaleContainer> {
         padding: widget.padding,
         color: widget.color,
         decoration: widget.decoration,
-        // foregroundDecoration: widget.foregroundDecoration,
+        width: widget.width,
+        height: widget.height,
+        foregroundDecoration: widget.foregroundDecoration,
         constraints: widget.constraints,
         margin: widget.margin,
         transformAlignment: widget.transformAlignment,
+        child: widget.child,
       ),
     );
   }

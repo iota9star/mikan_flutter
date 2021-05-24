@@ -145,7 +145,7 @@ class SearchFragment extends StatelessWidget {
           child: Container(
             width: double.infinity,
             height: 220,
-            child: WaterfallFlow.builder(
+            child: ListView.builder(
               physics: BouncingScrollPhysics(),
               padding: EdgeInsets.only(
                 left: 16.0,
@@ -155,21 +155,12 @@ class SearchFragment extends StatelessWidget {
               itemCount: bangumis!.length,
               itemBuilder: (_, index) {
                 final bangumi = bangumis[index];
-                final String currFlag =
-                    "bangumi:${bangumi.id}:${bangumi.cover}";
-                return _buildRecommentListItem(
+                return _buildRecommendListItem(
                   context,
                   theme,
-                  currFlag,
                   bangumi,
                 );
               },
-              gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                lastChildLayoutTypeBuilder: (index) => LastChildLayoutType.none,
-              ),
             ),
           ),
         );
@@ -177,12 +168,12 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommentListItem(
+  Widget _buildRecommendListItem(
     final BuildContext context,
     final ThemeData theme,
-    final String currFlag,
     final Bangumi bangumi,
   ) {
+    final String currFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
     Widget cover = _buildBangumiListItem(
       theme,
       currFlag,
@@ -474,6 +465,7 @@ class SearchFragment extends StatelessWidget {
             return Container();
           },
         ),
+        const SizedBox(width: 8.0),
         MaterialButton(
           padding: EdgeInsets.zero,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

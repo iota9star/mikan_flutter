@@ -110,9 +110,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 fit: StackFit.expand,
                 children: [
-                  Positioned.fill(
-                    child: cover,
-                  ),
+                  Positioned.fill(child: cover),
                   if (bangumi.num != null && bangumi.num! > 0)
                     Positioned(
                       right: -10,
@@ -248,7 +246,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
             child = _buildBangumiItemPlaceholder();
             break;
           case LoadState.completed:
-            child = _buildScrollableBackgroundCover(
+            child = _buildBackgroundCover(
               bangumi,
               state.imageProvider,
             );
@@ -288,7 +286,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildScrollableBackgroundCover(
+  Widget _buildBackgroundCover(
     final Bangumi bangumi,
     final ImageProvider imageProvider,
   ) {

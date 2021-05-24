@@ -194,8 +194,8 @@ class IndexFragment extends StatelessWidget {
             top: 8.0,
           ),
           child: Text(
-            "OVA/剧场版 (beta)",
-            style: TextStyle(
+            "OVA/剧场版",
+            style: const TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
               height: 1.25,
