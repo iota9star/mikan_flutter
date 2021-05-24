@@ -78,7 +78,7 @@ class RegisterPage extends StatelessWidget {
         final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
         final Color iconColor =
             btnColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-        return RaisedButton(
+        return ElevatedButton(
           onPressed: () {
             if (loading) return;
             if (_formKey.currentState!.validate()) {
@@ -92,11 +92,6 @@ class RegisterPage extends StatelessWidget {
               });
             }
           },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24.0),
-          ),
-          color: theme.backgroundColor,
-          padding: EdgeInsets.zero,
           child: Container(
             height: 48.0,
             decoration: BoxDecoration(

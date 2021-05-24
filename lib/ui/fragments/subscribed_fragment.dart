@@ -461,7 +461,7 @@ class SubscribedFragment extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
         child: Stack(
           fit: StackFit.loose,
-          overflow: Overflow.clip,
+          clipBehavior: Clip.antiAlias,
           children: [
             Positioned.fill(
               child: Hero(
@@ -600,7 +600,7 @@ class SubscribedFragment extends StatelessWidget {
                       horizontal: 16.0,
                       vertical: 8.0,
                     ),
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         _toRecentSubscribedPage(context);
                       },

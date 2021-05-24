@@ -53,7 +53,7 @@ class LoginPage extends StatelessWidget {
                       SizedBox(height: 16.0),
                       _buildRememberRow(theme, loginModel),
                       SizedBox(height: 16.0),
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           Navigator.pushNamed(context, Routes.register);
                         },
@@ -168,7 +168,7 @@ class LoginPage extends StatelessWidget {
           },
         ),
         Expanded(child: Text("记住密码")),
-        FlatButton(
+        TextButton(
           onPressed: () {},
           child: Text("忘记密码"),
         )

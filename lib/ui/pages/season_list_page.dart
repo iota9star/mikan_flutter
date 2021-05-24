@@ -14,6 +14,7 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 @FFRoute(
   name: "season-list",
@@ -97,52 +98,59 @@ class SeasonListPage extends StatelessWidget {
         ...List.generate(seasons.length, (index) {
           final SeasonBangumis seasonBangumis = seasons[index];
           final String seasonTitle = seasonBangumis.season.title;
-          return <Widget>[
-            _buildSeasonSection(seasonTitle),
-            ...List.generate(
-              seasonBangumis.bangumiRows.length,
-              (ind) {
-                final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
-                return <Widget>[
-                  _buildBangumiRowSection(theme, bangumiRow),
-                  BangumiSliverGridFragment(
-                    flag: seasonTitle,
-                    padding: seasonBangumis.bangumiRows.length - 1 == index
-                        ? EdgeInsets.only(
-                            left: 16.0,
-                            right: 16.0,
-                            top: 16.0,
-                            bottom: 16.0 + Sz.navBarHeight,
-                          )
-                        : EdgeInsets.all(16.0),
-                    bangumis: bangumiRow.bangumis,
-                    handleSubscribe: (bangumi, flag) {
-                      context.read<SubscribedModel>().subscribeBangumi(
-                        bangumi.id,
-                        bangumi.subscribed,
-                        onSuccess: () {
-                          bangumi.subscribed = !bangumi.subscribed;
+          return MultiSliver(
+            pushPinnedChildren: true,
+            children: <Widget>[
+              _buildSeasonSection(theme, seasonTitle),
+              ...List.generate(
+                seasonBangumis.bangumiRows.length,
+                (ind) {
+                  final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
+                  return MultiSliver(
+                    pushPinnedChildren: true,
+                    children: <Widget>[
+                      _buildBangumiRowSection(theme, bangumiRow),
+                      BangumiSliverGridFragment(
+                        flag: seasonTitle,
+                        padding: seasonBangumis.bangumiRows.length - 1 == index
+                            ? EdgeInsets.only(
+                                left: 16.0,
+                                right: 16.0,
+                                top: 16.0,
+                                bottom: 16.0 + Sz.navBarHeight,
+                              )
+                            : EdgeInsets.all(16.0),
+                        bangumis: bangumiRow.bangumis,
+                        handleSubscribe: (bangumi, flag) {
+                          context.read<SubscribedModel>().subscribeBangumi(
+                            bangumi.id,
+                            bangumi.subscribed,
+                            onSuccess: () {
+                              bangumi.subscribed = !bangumi.subscribed;
+                            },
+                            onError: (msg) {
+                              "订阅失败：$msg".toast();
+                            },
+                          );
                         },
-                        onError: (msg) {
-                          "订阅失败：$msg".toast();
-                        },
-                      );
-                    },
-                  ),
-                ];
-              },
-            ).expand((element) => element),
-          ];
-        }).expand((element) => element),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildSeasonSection(final String seasonTitle) {
-    return SliverToBoxAdapter(
+  Widget _buildSeasonSection(final ThemeData theme, final String seasonTitle) {
+    return SliverPinnedToBoxAdapter(
       child: Container(
+        color: theme.scaffoldBackgroundColor,
         padding: EdgeInsets.only(
-          top: 16.0,
+          top: 8.0,
           left: 16.0,
           right: 16.0,
         ),
@@ -176,39 +184,44 @@ class SeasonListPage extends StatelessWidget {
       if (bangumiRow.subscribedNum > 0) "订阅${bangumiRow.subscribedNum}部",
       "共${bangumiRow.num}部"
     ].join("，");
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.only(
-          top: 16.0,
-          left: 16.0,
-          right: 16.0,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                bangumiRow.name,
-                style: TextStyle(
-                  fontSize: 18,
-                  height: 1.25,
-                  fontWeight: FontWeight.bold,
+    return SliverPinnedToBoxAdapter(
+      child: Transform.translate(
+        offset: Offset(0, -2),
+        child: Container(
+          color: theme.scaffoldBackgroundColor,
+          padding: EdgeInsets.only(
+            top: 8.0,
+            left: 16.0,
+            right: 16.0,
+            bottom: 8.0,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  bangumiRow.name,
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 1.25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Tooltip(
-              message: full,
-              child: Text(
-                simple,
-                style: TextStyle(
-                  color: theme.textTheme.subtitle1?.color,
-                  fontSize: 12.0,
-                  height: 1.25,
+              Tooltip(
+                message: full,
+                child: Text(
+                  simple,
+                  style: TextStyle(
+                    color: theme.textTheme.subtitle1?.color,
+                    fontSize: 12.0,
+                    height: 1.25,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

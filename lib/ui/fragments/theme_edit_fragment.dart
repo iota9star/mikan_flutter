@@ -33,15 +33,14 @@ class ThemeEditFragment extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildHeader(context, theme, model),
-            SizedBox(
-              height: 12.0,
-            ),
+            const SizedBox(height: 12.0),
             MaterialButton(
               onPressed: () {},
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.0,
+              padding: EdgeInsets.only(
+                left: 16.0,
+                right: 8.0,
               ),
-              height: 50.0,
+              height: 56.0,
               child: Row(
                 children: [
                   Expanded(
@@ -67,10 +66,11 @@ class ThemeEditFragment extends StatelessWidget {
             if (!themeItem.autoMode)
               MaterialButton(
                 onPressed: () {},
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0,
+                padding: EdgeInsets.only(
+                  left: 16.0,
+                  right: 8.0,
                 ),
-                height: 50.0,
+                height: 56.0,
                 child: Row(
                   children: [
                     Expanded(
@@ -107,7 +107,7 @@ class ThemeEditFragment extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: 16.0,
               ),
-              height: 50.0,
+              height: 56.0,
               child: Row(
                 children: [
                   Expanded(
@@ -150,7 +150,7 @@ class ThemeEditFragment extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: 16.0,
               ),
-              height: 50.0,
+              height: 56.0,
               child: Row(
                 children: [
                   Expanded(
@@ -194,7 +194,7 @@ class ThemeEditFragment extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: 16.0,
                 ),
-                height: 50.0,
+                height: 56.0,
                 child: Row(
                   children: [
                     Expanded(
@@ -238,7 +238,7 @@ class ThemeEditFragment extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: 16.0,
                 ),
-                height: 50.0,
+                height: 56.0,
                 child: Row(
                   children: [
                     Expanded(
@@ -282,7 +282,7 @@ class ThemeEditFragment extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: 16.0,
                 ),
-                height: 50.0,
+                height: 56.0,
                 child: Row(
                   children: [
                     Expanded(
@@ -326,7 +326,7 @@ class ThemeEditFragment extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: 16.0,
                 ),
-                height: 50.0,
+                height: 56.0,
                 child: Row(
                   children: [
                     Expanded(
