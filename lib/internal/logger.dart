@@ -34,8 +34,7 @@ class Log {
         sb.clear();
         lastIndex = index + 1;
         if (length - lastIndex < _limit) {
-          debugPrint(
-              "${msg.substring(lastIndex, length)}");
+          debugPrint("${msg.substring(lastIndex, length)}");
           break;
         }
       }

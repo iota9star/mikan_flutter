@@ -69,6 +69,19 @@ class Resolver {
           .where((it) => it.subscribed && it.num != null && it.num! > 0)
           .length;
       bangumis.sort((a, b) {
+        if (a.grey && b.grey) {
+          if (a.subscribed && b.subscribed) {
+            return 0;
+          } else if (a.subscribed) {
+            return -1;
+          } else {
+            return 1;
+          }
+        } else if (a.grey) {
+          return 1;
+        } else if (b.grey) {
+          return -1;
+        }
         if (a.subscribed && b.subscribed) {
           return 0;
         } else if (a.subscribed) {

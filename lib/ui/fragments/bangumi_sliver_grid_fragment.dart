@@ -135,7 +135,11 @@ class BangumiSliverGridFragment extends StatelessWidget {
                         ),
                       ),
                     ),
-                  _buildSubscribeButton(bangumi, currFlag),
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    child: _buildSubscribeButton(bangumi, currFlag),
+                  ),
                 ],
               ),
             ),
@@ -195,7 +199,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
   }
 
   Widget _buildSubscribeButton(final Bangumi bangumi, final String currFlag) {
-    final Widget child = bangumi.subscribed
+    return bangumi.subscribed
         ? SizedBox(
             width: 28.0,
             height: 28.0,
@@ -228,9 +232,6 @@ class BangumiSliverGridFragment extends StatelessWidget {
               },
             ),
           );
-    return Positioned(
-      child: child,
-    );
   }
 
   Widget _buildBangumiItemCover(

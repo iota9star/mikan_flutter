@@ -174,17 +174,14 @@ class SearchFragment extends StatelessWidget {
     final Bangumi bangumi,
   ) {
     final String currFlag = "bangumi:${bangumi.id}:${bangumi.cover}";
-    Widget cover = _buildBangumiListItem(
-      theme,
-      currFlag,
-      bangumi,
-    );
     return Tooltip(
       message: bangumi.name,
       child: TapScaleContainer(
         height: double.infinity,
-        margin: EdgeInsets.symmetric(
-          vertical: 16.0,
+        margin: EdgeInsets.only(
+          right: 16.0,
+          bottom: 16.0,
+          top: 16.0,
         ),
         decoration: BoxDecoration(
           boxShadow: [
@@ -205,7 +202,14 @@ class SearchFragment extends StatelessWidget {
             ),
           );
         },
-        child: cover,
+        child: AspectRatio(
+          aspectRatio: 2.0 / 3.0,
+          child: _buildBangumiListItem(
+            theme,
+            currFlag,
+            bangumi,
+          ),
+        ),
       ),
     );
   }

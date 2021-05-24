@@ -40,7 +40,7 @@ class MikanTransformer extends DefaultTransformer {
     ResponseBody response,
   ) async {
     final transformResponse = await super.transformResponse(options, response);
-    final String func = options.extra["$MikanFunc"];
+    final String? func = options.extra["$MikanFunc"];
     if (func.isNotBlank && transformResponse is String) {
       final Document document = parse(transformResponse);
       switch (func) {
@@ -161,14 +161,14 @@ class _Fetcher {
             queryParameters: proto.queryParameters,
             options: proto.options,
           );
-        } else if (proto.method == _RequestMethod.POST_WITH_FORM) {
+        } else if (proto.method == _RequestMethod.POST_FORM) {
           resp = await http.post(
             proto.url,
             data: FormData.fromMap(proto.data),
             queryParameters: proto.queryParameters,
             options: proto.options,
           );
-        } else if (proto.method == _RequestMethod.POST_WITH_JSON) {
+        } else if (proto.method == _RequestMethod.POST_JSON) {
           resp = await http.post(
             proto.url,
             data: proto.data,
@@ -192,7 +192,7 @@ class _Fetcher {
       } catch (e) {
         if (e is DioError &&
             e.response?.statusCode == 302 &&
-            proto.method == _RequestMethod.POST_WITH_FORM &&
+            proto.method == _RequestMethod.POST_FORM &&
             (e.requestOptions.path == MikanUrl.LOGIN ||
                 e.requestOptions.path == MikanUrl.REGISTER)) {
           proto._sendPort.send(Resp(true));
@@ -231,7 +231,7 @@ class Http {
   }) async {
     final _Protocol proto = _Protocol(
       url,
-      _RequestMethod.POST_WITH_FORM,
+      _RequestMethod.POST_FORM,
       data: data,
       queryParameters: queryParameters,
       options: options,
@@ -248,7 +248,7 @@ class Http {
   }) async {
     final _Protocol proto = _Protocol(
       url,
-      _RequestMethod.POST_WITH_JSON,
+      _RequestMethod.POST_JSON,
       data: data,
       queryParameters: queryParameters,
       options: options,
@@ -258,7 +258,7 @@ class Http {
   }
 }
 
-enum _RequestMethod { POST_WITH_FORM, POST_WITH_JSON, GET }
+enum _RequestMethod { POST_FORM, POST_JSON, GET }
 
 class _Protocol {
   final String url;

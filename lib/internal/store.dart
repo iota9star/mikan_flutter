@@ -23,6 +23,10 @@ class Store {
     MyHive.db.put(HiveBoxKey.LOGIN, login);
   }
 
+  static removeLogin() {
+    MyHive.db.delete(HiveBoxKey.LOGIN);
+  }
+
   static Map<String, dynamic> getLogin() {
     return MyHive.db.get(HiveBoxKey.LOGIN,
         defaultValue: <String, dynamic>{}).cast<String, dynamic>();

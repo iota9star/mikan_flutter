@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
                     items: [
                       BarItem(
                         icon: FluentIcons.layer_24_regular,
-                        selectedIcon: FluentIcons.shape_intersect_24_regular,
+                        selectedIcon: FluentIcons.conference_room_24_filled,
                         isSelected: selectIndex == 0,
                       ),
                       BarItem(
@@ -58,7 +58,7 @@ class HomePage extends StatelessWidget {
                         isSelected: selectIndex == 1,
                       ),
                       BarItem(
-                        icon: FluentIcons.leaf_two_24_regular,
+                        icon: FluentIcons.leaf_one_24_regular,
                         selectedIcon: FluentIcons.leaf_three_24_filled,
                         isSelected: selectIndex == 2,
                       ),

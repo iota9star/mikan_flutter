@@ -15,8 +15,8 @@ class LoginModel extends CancelableBaseModel {
 
   LoginModel() {
     final login = Store.getLogin();
-    _accountController.text = login["UserName"];
-    _passwordController.text = login["Password"];
+    _accountController.text = login["UserName"] ?? "";
+    _passwordController.text = login["Password"] ?? "";
     this._rememberMe = login["RememberMe"] ?? false;
   }
 
@@ -67,7 +67,11 @@ class LoginModel extends CancelableBaseModel {
     this._loading = false;
     notifyListeners();
     if (resp.success) {
-      Store.setLogin(loginParams);
+      if (_rememberMe) {
+        Store.setLogin(loginParams);
+      } else {
+        Store.removeLogin();
+      }
       "登录成功".toast();
       loginSuccess.call();
     } else {

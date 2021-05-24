@@ -14,7 +14,7 @@ class Bangumi extends HiveObject {
 
   // 更新时间
   @HiveField(1)
-  late String updateAt;
+  late String updateAt = "";
 
   // 更新的数量
   @HiveField(2)
