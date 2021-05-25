@@ -90,18 +90,16 @@ class MikanApp extends StatelessWidget {
             create: (_) => FirebaseModel(),
           ),
           ChangeNotifierProvider<SubscribedModel>(
-            create: (context) => SubscribedModel(),
+            create: (_) => SubscribedModel(),
           ),
           ChangeNotifierProvider<IndexModel>(
-            create: (context) => IndexModel(),
+            create: (context) => IndexModel(context.read<SubscribedModel>()),
           ),
           ChangeNotifierProvider<ListModel>(
-            create: (context) => ListModel(),
-            lazy: false,
+            create: (_) => ListModel(),
           ),
           ChangeNotifierProvider<HomeModel>(
-            create: (context) => HomeModel(),
-            lazy: false,
+            create: (_) => HomeModel(),
           ),
         ],
         child: Consumer<ThemeModel>(

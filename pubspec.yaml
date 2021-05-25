@@ -30,7 +30,7 @@ dependencies:
   fluentui_system_icons: ^1.1.124
   clipboard: ^0.1.3
   url_launcher: ^6.0.4
-  share: ^2.0.1
+  share_plus: ^2.1.2
   carousel_slider: ^4.0.0-nullsafety.0
   flutter_widget_from_html: ^0.6.1
   extended_sliver: ^2.0.0
@@ -38,10 +38,7 @@ dependencies:
   waterfall_flow: ^3.0.1
   modal_bottom_sheet: ^2.0.0
   jiffy: ^4.1.0
-  intent:
-    git:
-      url: https://github.com/iota9star/intent
-      ref: grab-fixes
+  android_intent_plus: ^1.0.1
   isolate:
     git:
       url: https://github.com/iota9star/isolate

@@ -30,16 +30,16 @@ class Bangumi extends HiveObject {
 
   // 是否已订阅
   @HiveField(5)
-  late bool subscribed;
+  late bool subscribed = false;
 
   @HiveField(6)
-  late bool grey;
+  late bool grey = false;
 
   @HiveField(7)
   Size? coverSize;
 
   @HiveField(8)
-  late String week;
+  late String week = "";
 
   @override
   bool operator ==(Object other) =>

@@ -3,17 +3,16 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' hide Intent, Action;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intent/action.dart';
-import 'package:intent/flag.dart';
-import 'package:intent/intent.dart';
 import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 extension IterableExt<T> on Iterable<T>? {
@@ -149,15 +148,16 @@ extension NullableStringExt on String? {
 
     await FlutterClipboard.copy(this!);
     if (Platform.isAndroid) {
-      Intent()
-        ..setAction(Action.ACTION_VIEW)
-        ..setData(Uri.parse(this!))
-        ..addFlag(Flag.FLAG_ACTIVITY_NEW_TASK |
-            Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-        ..startActivity().catchError((e) async {
-          e.d();
-          await _doOtherAction();
-        });
+      AndroidIntent(
+        action: "android.intent.action.VIEW",
+        flags: [
+          Flag.FLAG_ACTIVITY_NEW_TASK | Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+        ],
+        data: this!,
+      ).launch().catchError((e) async {
+        e.d();
+        await _doOtherAction();
+      });
     } else {
       await _doOtherAction();
     }

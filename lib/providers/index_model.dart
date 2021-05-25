@@ -10,6 +10,7 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
+import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class IndexModel extends CancelableBaseModel {
@@ -56,7 +57,9 @@ class IndexModel extends CancelableBaseModel {
 
   bool get ovaLoading => _ovaLoading;
 
-  IndexModel() {
+  SubscribedModel _subscribedModel;
+
+  IndexModel(this._subscribedModel) {
     this._ovas = (MyHive.db
             .get(HiveDBKey.MIKAN_OVA, defaultValue: <RecordItem>[]) as List)
         .cast<RecordItem>();
@@ -103,6 +106,7 @@ class IndexModel extends CancelableBaseModel {
   void _bindIndexData(final Index? index) {
     if (index == null) return;
     this._years = index.years;
+    this._subscribedModel.years = this._years;
     this._selectedSeason = this._years.getOrNull(0)?.seasons.getOrNull(0);
     this._bangumiRows = index.bangumiRows;
     this._selectedBangumiRow = this._bangumiRows[0];

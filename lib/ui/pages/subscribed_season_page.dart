@@ -16,6 +16,7 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 @FFRoute(
   name: "subscribed-season",
@@ -107,38 +108,44 @@ class SubscribedSeasonPage extends StatelessWidget {
       slivers: [
         _buildHeader(theme),
         if (galleries.isSafeNotEmpty)
-          ...List.generate(galleries.length, (index) {
-            final SeasonGallery gallery = galleries[index];
-            return <Widget>[
-              _buildSeasonSection(context, theme, gallery),
-              gallery.bangumis.isNullOrEmpty
-                  ? _buildEmptySubscribedContainer(theme)
-                  : BangumiSliverGridFragment(
-                      flag: gallery.title,
-                      padding: galleries.length - 1 == index
-                          ? EdgeInsets.only(
-                              left: 16.0,
-                              right: 16.0,
-                              top: 16.0,
-                              bottom: 16.0 + Sz.navBarHeight,
-                            )
-                          : EdgeInsets.all(16.0),
-                      bangumis: gallery.bangumis,
-                      handleSubscribe: (bangumi, flag) {
-                        context.read<SubscribedModel>().subscribeBangumi(
-                          bangumi.id,
-                          bangumi.subscribed,
-                          onSuccess: () {
-                            bangumi.subscribed = !bangumi.subscribed;
+          ...List.generate(
+            galleries.length,
+            (index) {
+              final SeasonGallery gallery = galleries[index];
+              return MultiSliver(
+                pushPinnedChildren: true,
+                children: <Widget>[
+                  _buildSeasonSection(context, theme, gallery),
+                  gallery.bangumis.isNullOrEmpty
+                      ? _buildEmptySubscribedContainer(theme)
+                      : BangumiSliverGridFragment(
+                          flag: gallery.title,
+                          padding: galleries.length - 1 == index
+                              ? EdgeInsets.only(
+                                  left: 16.0,
+                                  right: 16.0,
+                                  top: 16.0,
+                                  bottom: 16.0 + Sz.navBarHeight,
+                                )
+                              : EdgeInsets.all(16.0),
+                          bangumis: gallery.bangumis,
+                          handleSubscribe: (bangumi, flag) {
+                            context.read<SubscribedModel>().subscribeBangumi(
+                              bangumi.id,
+                              bangumi.subscribed,
+                              onSuccess: () {
+                                bangumi.subscribed = !bangumi.subscribed;
+                              },
+                              onError: (msg) {
+                                "订阅失败：$msg".toast();
+                              },
+                            );
                           },
-                          onError: (msg) {
-                            "订阅失败：$msg".toast();
-                          },
-                        );
-                      },
-                    ),
-            ];
-          }).expand((element) => element),
+                        ),
+                ],
+              );
+            },
+          ),
       ],
     );
   }
@@ -185,12 +192,14 @@ class SubscribedSeasonPage extends StatelessWidget {
     final ThemeData theme,
     final SeasonGallery gallery,
   ) {
-    return SliverToBoxAdapter(
+    return SliverPinnedToBoxAdapter(
       child: Container(
+        color: theme.scaffoldBackgroundColor,
         padding: EdgeInsets.only(
-          top: 16.0,
+          top: 8.0,
           left: 16.0,
           right: 16.0,
+          bottom: 8.0,
         ),
         child: Row(
           children: [

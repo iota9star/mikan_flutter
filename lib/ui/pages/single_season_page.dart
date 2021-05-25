@@ -12,6 +12,7 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 @FFRoute(
   name: "season",
@@ -69,33 +70,38 @@ class SingleSeasonPage extends StatelessWidget {
                       _buildHeader(theme),
                       ...List.generate(bangumiRows.length, (index) {
                         final BangumiRow bangumiRow = bangumiRows[index];
-                        return [
-                          _buildWeekSection(theme, bangumiRow),
-                          BangumiSliverGridFragment(
-                            padding: bangumiRows.length - 1 == index
-                                ? EdgeInsets.only(
-                                    left: 16.0,
-                                    right: 16.0,
-                                    top: 16.0,
-                                    bottom: 16.0 + Sz.navBarHeight,
-                                  )
-                                : EdgeInsets.all(16.0),
-                            bangumis: bangumiRow.bangumis,
-                            handleSubscribe: (bangumi, flag) {
-                              context.read<SubscribedModel>().subscribeBangumi(
-                                bangumi.id,
-                                bangumi.subscribed,
-                                onSuccess: () {
-                                  bangumi.subscribed = !bangumi.subscribed;
-                                },
-                                onError: (msg) {
-                                  "订阅失败：$msg".toast();
-                                },
-                              );
-                            },
-                          ),
-                        ];
-                      }).expand((element) => element),
+                        return MultiSliver(
+                          pushPinnedChildren: true,
+                          children: [
+                            _buildWeekSection(theme, bangumiRow),
+                            BangumiSliverGridFragment(
+                              padding: bangumiRows.length - 1 == index
+                                  ? EdgeInsets.only(
+                                      left: 16.0,
+                                      right: 16.0,
+                                      top: 16.0,
+                                      bottom: 16.0 + Sz.navBarHeight,
+                                    )
+                                  : EdgeInsets.all(16.0),
+                              bangumis: bangumiRow.bangumis,
+                              handleSubscribe: (bangumi, flag) {
+                                context
+                                    .read<SubscribedModel>()
+                                    .subscribeBangumi(
+                                  bangumi.id,
+                                  bangumi.subscribed,
+                                  onSuccess: () {
+                                    bangumi.subscribed = !bangumi.subscribed;
+                                  },
+                                  onError: (msg) {
+                                    "订阅失败：$msg".toast();
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }),
                     ],
                   ),
                 );
@@ -175,12 +181,13 @@ class SingleSeasonPage extends StatelessWidget {
       "共${bangumiRow.num}部"
     ].join("，");
 
-    return SliverToBoxAdapter(
+    return SliverPinnedToBoxAdapter(
       child: Container(
         padding: EdgeInsets.only(
-          top: 16.0,
+          top: 8.0,
           left: 16.0,
           right: 16.0,
+          bottom: 8.0,
         ),
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,
