@@ -32,8 +32,8 @@ class CustomWidgetsFlutterBinding extends WidgetsFlutterBinding {
   @override
   ImageCache createImageCache() {
     final ImageCache imageCache = super.createImageCache();
-    imageCache.maximumSize = 72;
-    imageCache.maximumSizeBytes = 72 * 1024 * 1024; // 72MB
+    imageCache.maximumSize = 128;
+    imageCache.maximumSizeBytes = 512 * 1024 * 1024; // 512MB
     return imageCache;
   }
 
