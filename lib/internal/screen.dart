@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:mikan_flutter/internal/logger.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 
 class Sz {
   static MediaQueryData _mediaQueryData = MediaQueryData.fromWindow(window);
@@ -47,21 +47,22 @@ class Sz {
   const Sz._();
 
   static void screenInfo() {
-    logd("screen info."
-        "\n===========================================>"
-        "\n_screenPhysicalSize: $_screenPhysicalSize, "
-        "\n_screenPhysicalWidth: $_screenPhysicalWidth, "
-        "\n_screenPhysicalHeight: $_screenPhysicalHeight, "
-        "\n_screenSize: $_screenSize, "
-        "\n_screenWidth: $_screenWidth, "
-        "\n_screenHeight: $_screenHeight, "
-        "\n_screenRatio: $_screenRatio, "
-        "\n_devicePixelRatio: $_devicePixelRatio, "
-        "\n_mediaQueryData: $_mediaQueryData, "
-        "\n_safePadding: $_safePadding, "
-        "\n_statusBarHeight: $_statusBarHeight, "
-        "\n_navBarHeight: $_navBarHeight, "
-        "\n_isTablet: $_isTablet, "
-        "\n<===========================================");
+    "screen info."
+            "\n===========================================>"
+            "\n_screenPhysicalSize: $_screenPhysicalSize, "
+            "\n_screenPhysicalWidth: $_screenPhysicalWidth, "
+            "\n_screenPhysicalHeight: $_screenPhysicalHeight, "
+            "\n_screenSize: $_screenSize, "
+            "\n_screenWidth: $_screenWidth, "
+            "\n_screenHeight: $_screenHeight, "
+            "\n_screenRatio: $_screenRatio, "
+            "\n_devicePixelRatio: $_devicePixelRatio, "
+            "\n_mediaQueryData: $_mediaQueryData, "
+            "\n_safePadding: $_safePadding, "
+            "\n_statusBarHeight: $_statusBarHeight, "
+            "\n_navBarHeight: $_navBarHeight, "
+            "\n_isTablet: $_isTablet, "
+            "\n<==========================================="
+        .debug();
   }
 }

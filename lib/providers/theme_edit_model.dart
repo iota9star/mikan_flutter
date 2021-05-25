@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
-import 'package:mikan_flutter/providers/view_models/base_model.dart';
-import 'package:mikan_flutter/providers/view_models/theme_model.dart';
+import 'package:mikan_flutter/providers/base_model.dart';
+import 'package:mikan_flutter/providers/theme_model.dart';
 
 class ThemeEditModel extends BaseModel {
   final ThemeModel _themeModel;

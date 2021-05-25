@@ -9,16 +9,15 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
-import 'package:mikan_flutter/internal/logger.dart';
 import 'package:mikan_flutter/internal/store.dart';
 import 'package:mikan_flutter/mikan_flutter_route.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
-import 'package:mikan_flutter/providers/view_models/firebase_model.dart';
-import 'package:mikan_flutter/providers/view_models/home_model.dart';
-import 'package:mikan_flutter/providers/view_models/index_model.dart';
-import 'package:mikan_flutter/providers/view_models/list_model.dart';
-import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
-import 'package:mikan_flutter/providers/view_models/theme_model.dart';
+import 'package:mikan_flutter/providers/firebase_model.dart';
+import 'package:mikan_flutter/providers/home_model.dart';
+import 'package:mikan_flutter/providers/index_model.dart';
+import 'package:mikan_flutter/providers/list_model.dart';
+import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -161,8 +160,9 @@ class MikanApp extends StatelessWidget {
               //you can track page here
               final RouteSettings? oldSettings = oldRoute?.settings;
               final RouteSettings? newSettings = newRoute?.settings;
-              logd("route change: "
-                  "${oldSettings?.name} => ${newSettings?.name}");
+              "route change: "
+                      "${oldSettings?.name} => ${newSettings?.name}"
+                  .debug();
             }),
           ],
         ),

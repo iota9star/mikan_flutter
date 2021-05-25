@@ -73,7 +73,7 @@ class Indicator {
         },
         duration: Duration(milliseconds: 800),
       ),
-      "加载中，请稍候",
+      "加载中，请稍候...",
       height,
       top,
       bottom,

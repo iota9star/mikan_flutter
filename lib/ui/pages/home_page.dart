@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 @FFArgumentImport()
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/providers/view_models/home_model.dart';
+import 'package:mikan_flutter/providers/home_model.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/list_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/subscribed_fragment.dart';

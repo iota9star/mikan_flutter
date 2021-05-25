@@ -9,7 +9,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
-import 'package:mikan_flutter/providers/view_models/search_model.dart';
+import 'package:mikan_flutter/providers/search_model.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';

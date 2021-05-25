@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
-import 'package:mikan_flutter/providers/view_models/theme_edit_model.dart';
-import 'package:mikan_flutter/providers/view_models/theme_model.dart';
+import 'package:mikan_flutter/providers/theme_edit_model.dart';
+import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:provider/provider.dart';
 
 class ThemeEditFragment extends StatelessWidget {

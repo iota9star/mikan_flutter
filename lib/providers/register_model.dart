@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
-import 'package:mikan_flutter/providers/view_models/base_model.dart';
+import 'package:mikan_flutter/providers/base_model.dart';
 
 class RegisterModel extends CancelableBaseModel {
   final TextEditingController _userNameController = TextEditingController();

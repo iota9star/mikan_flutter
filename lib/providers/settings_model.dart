@@ -1,4 +1,4 @@
-import 'package:mikan_flutter/providers/view_models/base_model.dart';
+import 'package:mikan_flutter/providers/base_model.dart';
 
 class SettingsModel extends CancelableBaseModel {
   bool _hasScrolled = false;

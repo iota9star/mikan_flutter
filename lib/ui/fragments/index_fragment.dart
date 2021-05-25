@@ -16,8 +16,8 @@ import 'package:mikan_flutter/model/carousel.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
-import 'package:mikan_flutter/providers/view_models/index_model.dart';
-import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
+import 'package:mikan_flutter/providers/index_model.dart';
+import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/ui/components/ova_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
@@ -195,7 +195,7 @@ class IndexFragment extends StatelessWidget {
             top: 8.0,
           ),
           child: Text(
-            "OVA/剧场版",
+            "剧场版/OVA",
             style: const TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,

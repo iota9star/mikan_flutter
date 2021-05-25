@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mikan_flutter/internal/logger.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 
 class BaseModel extends ChangeNotifier {
   bool _disposed = false;
@@ -12,10 +12,10 @@ class BaseModel extends ChangeNotifier {
   @override
   void notifyListeners() {
     if (_disposed) {
-      logd("disposed, return.", this.runtimeType);
+      "waiting notify, but disposed, ignore...".debug();
       return;
     }
-    logd("notify", this.runtimeType);
+    "notify...".debug();
     super.notifyListeners();
   }
 
@@ -23,7 +23,7 @@ class BaseModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
-    logd("disposed.", this.runtimeType);
+    "disposed.".debug();
     super.dispose();
   }
 }
@@ -35,7 +35,7 @@ class CancelableBaseModel extends BaseModel {
   @override
   void dispose() {
     CancelableCompleter job;
-    logd("等待取消任务: ${_jobs.length}", this.runtimeType);
+    "等待取消任务: ${_jobs.length}".debug();
     while (_jobs.isNotEmpty) {
       job = _jobs.removeFirst();
       job.operation.cancel();
@@ -45,15 +45,15 @@ class CancelableBaseModel extends BaseModel {
 
   Future operator +(Future future) {
     CancelableCompleter completer = CancelableCompleter(onCancel: () {
-      logd("取消了一个任务", this.runtimeType);
+      "取消了一个任务".debug();
     });
     _jobs.add(completer);
     completer.complete(future);
     completer.operation.value.catchError((e) {
-      logd("$runtimeType: $e");
+      "$runtimeType: $e".debug();
     }).whenComplete(() {
       _jobs.remove(completer);
-      logd("$runtimeType 执行完了一个任务");
+      "$runtimeType 执行完了一个任务".debug();
     });
     return completer.operation.value;
   }

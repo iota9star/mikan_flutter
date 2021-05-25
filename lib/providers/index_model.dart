@@ -9,7 +9,7 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
-import 'package:mikan_flutter/providers/view_models/base_model.dart';
+import 'package:mikan_flutter/providers/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class IndexModel extends CancelableBaseModel {

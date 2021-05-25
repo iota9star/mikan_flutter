@@ -8,7 +8,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
-import 'package:mikan_flutter/providers/view_models/theme_model.dart';
+import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/ui/fragments/theme_edit_fragment.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';

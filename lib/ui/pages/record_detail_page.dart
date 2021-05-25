@@ -11,8 +11,8 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_details.dart';
-import 'package:mikan_flutter/providers/view_models/record_detail_model.dart';
-import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
+import 'package:mikan_flutter/providers/record_detail_model.dart';
+import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(

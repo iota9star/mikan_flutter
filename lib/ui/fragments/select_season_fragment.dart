@@ -7,7 +7,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/year_season.dart';
-import 'package:mikan_flutter/providers/view_models/index_model.dart';
+import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 

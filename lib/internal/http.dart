@@ -11,7 +11,6 @@ import 'package:isolate/isolate_runner.dart';
 import 'package:isolate/load_balancer.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/logger.dart';
 import 'package:mikan_flutter/internal/resolver.dart';
 import 'package:mikan_flutter/internal/store.dart';
 
@@ -106,7 +105,7 @@ class _Http extends DioForNative {
           requestBody: true,
           responseBody: false,
           error: true,
-          logPrint: logd,
+          logPrint: (m) => m.debug(),
         ),
       )
       ..add(CookieManager(PersistCookieJar(storage: FileStorage(cookiesDir))));
@@ -197,7 +196,7 @@ class _Fetcher {
                 e.requestOptions.path == MikanUrl.REGISTER)) {
           proto._sendPort.send(Resp(true));
         } else {
-          logd("请求出错：$e");
+          "请求出错：$e".error();
           proto._sendPort.send(Resp(false, msg: e.toString()));
         }
       }

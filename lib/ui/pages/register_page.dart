@@ -8,9 +8,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
-import 'package:mikan_flutter/providers/view_models/index_model.dart';
-import 'package:mikan_flutter/providers/view_models/register_model.dart';
-import 'package:mikan_flutter/providers/view_models/subscribed_model.dart';
+import 'package:mikan_flutter/providers/index_model.dart';
+import 'package:mikan_flutter/providers/register_model.dart';
+import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(

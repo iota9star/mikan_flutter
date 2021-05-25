@@ -141,19 +141,7 @@ class RssRecordItem extends StatelessWidget {
                     right: 16.0,
                     top: 4.0,
                   ),
-                  foregroundDecoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        theme.backgroundColor.withOpacity(0),
-                        theme.backgroundColor
-                      ],
-                      stops: [0.8, 1],
-                    ),
-                  ),
                   child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
