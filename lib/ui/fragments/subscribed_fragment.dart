@@ -21,6 +21,7 @@ import 'package:mikan_flutter/widget/common_widgets.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 @immutable
 class SubscribedFragment extends StatelessWidget {
@@ -59,12 +60,27 @@ class SubscribedFragment extends StatelessWidget {
             child: CustomScrollView(
               slivers: [
                 _buildHeader(theme),
-                _buildRssSection(context, theme, subscribedModel),
-                _buildRssList(theme, subscribedModel),
-                _buildSeasonRssSection(theme, subscribedModel),
-                _buildSeasonRssList(theme, subscribedModel),
-                _buildRssRecordsSection(context, theme),
-                _buildRssRecordsList(theme),
+                MultiSliver(
+                  pushPinnedChildren: true,
+                  children: [
+                    _buildRssSection(context, theme, subscribedModel),
+                    _buildRssList(theme, subscribedModel),
+                  ],
+                ),
+                MultiSliver(
+                  pushPinnedChildren: true,
+                  children: [
+                    _buildSeasonRssSection(theme, subscribedModel),
+                    _buildSeasonRssList(theme, subscribedModel),
+                  ],
+                ),
+                MultiSliver(
+                  pushPinnedChildren: true,
+                  children: [
+                    _buildRssRecordsSection(context, theme),
+                    _buildRssRecordsList(theme),
+                  ],
+                ),
                 CommonWidgets.sliverBottomSpace,
               ],
             ),
@@ -202,6 +218,12 @@ class SubscribedFragment extends StatelessWidget {
         return BangumiSliverGridFragment(
           flag: "subscribed",
           bangumis: bangumis!,
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            bottom: 8.0,
+            top: 8.0,
+          ),
           handleSubscribe: (bangumi, flag) {
             context.read<SubscribedModel>().subscribeBangumi(
               bangumi.id,
@@ -223,12 +245,14 @@ class SubscribedFragment extends StatelessWidget {
     final ThemeData theme,
     final SubscribedModel subscribedModel,
   ) {
-    return SliverToBoxAdapter(
-      child: Padding(
+    return SliverPinnedToBoxAdapter(
+      child: Container(
+        color: theme.scaffoldBackgroundColor,
         padding: const EdgeInsets.only(
           left: 16.0,
           right: 16.0,
-          top: 24.0,
+          top: 4.0,
+          bottom: 4.0,
         ),
         child: Row(
           children: [
@@ -288,13 +312,14 @@ class SubscribedFragment extends StatelessWidget {
     final ThemeData theme,
     final SubscribedModel subscribedModel,
   ) {
-    return SliverToBoxAdapter(
-      child: Padding(
+    return SliverPinnedToBoxAdapter(
+      child: Container(
+        color: theme.scaffoldBackgroundColor,
         padding: const EdgeInsets.only(
           left: 16.0,
           right: 16.0,
-          top: 16.0,
-          bottom: 8.0,
+          top: 4.0,
+          bottom: 4.0,
         ),
         child: Row(
           children: [
@@ -332,13 +357,13 @@ class SubscribedFragment extends StatelessWidget {
     final ThemeData theme,
     final SubscribedModel subscribedModel,
   ) {
-    return SliverToBoxAdapter(
-      child: Selector<SubscribedModel, Map<String, List<RecordItem>>?>(
-        selector: (_, model) => model.rss,
-        shouldRebuild: (pre, next) => pre.ne(next),
-        builder: (_, rss, __) {
-          if (subscribedModel.recordsLoading) {
-            return Container(
+    return Selector<SubscribedModel, Map<String, List<RecordItem>>?>(
+      selector: (_, model) => model.rss,
+      shouldRebuild: (pre, next) => pre.ne(next),
+      builder: (_, rss, __) {
+        if (subscribedModel.recordsLoading) {
+          return SliverToBoxAdapter(
+            child: Container(
               width: double.infinity,
               height: 120.0,
               margin: EdgeInsets.only(
@@ -365,23 +390,35 @@ class SubscribedFragment extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: Center(child: CupertinoActivityIndicator()),
-            );
-          }
-          if (rss.isSafeNotEmpty)
-            return SizedBox(
-              height: 64.0 + 16.0,
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                itemBuilder: (context, index) {
+            ),
+          );
+        }
+        if (rss.isSafeNotEmpty)
+          return SliverPadding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 8.0,
+              top: 8.0,
+            ),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 72.0,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 12.0,
+                childAspectRatio: 5.0 / 4.0,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
                   final entry = rss!.entries.elementAt(index);
                   return _buildRssListItemCover(context, entry);
                 },
-                itemCount: rss!.length,
-                scrollDirection: Axis.horizontal,
-                physics: BouncingScrollPhysics(),
+                childCount: rss!.length,
               ),
-            );
-          return Container(
+            ),
+          );
+        return SliverToBoxAdapter(
+          child: Container(
             width: double.infinity,
             margin: EdgeInsets.only(
               left: 16.0,
@@ -407,9 +444,9 @@ class SubscribedFragment extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -433,11 +470,6 @@ class SubscribedFragment extends StatelessWidget {
     final String badge = recordsLength > 99 ? "99+" : "+$recordsLength";
     final String currFlag = "rss:$bangumiId:$bangumiCover";
     return TapScaleContainer(
-      width: 64.0,
-      margin: EdgeInsets.symmetric(
-        horizontal: 6.0,
-        vertical: 8.0,
-      ),
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -536,13 +568,14 @@ class SubscribedFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
         if (records.isNullOrEmpty) return SliverToBoxAdapter();
-        return SliverToBoxAdapter(
-          child: Padding(
+        return SliverPinnedToBoxAdapter(
+          child: Container(
+            color: theme.scaffoldBackgroundColor,
             padding: const EdgeInsets.only(
               left: 16.0,
               right: 16.0,
-              top: 16.0,
-              bottom: 8.0,
+              top: 4.0,
+              bottom: 4.0,
             ),
             child: Row(
               children: [
@@ -604,7 +637,7 @@ class SubscribedFragment extends StatelessWidget {
                       onPressed: () {
                         _toRecentSubscribedPage(context);
                       },
-                      child: Text("没有找到您需要的？点击查看更多"),
+                      child: Text("- _ - _ -  查看更多  - _ - _ -"),
                     ),
                   );
                 }
