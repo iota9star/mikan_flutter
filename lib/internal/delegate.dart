@@ -17,10 +17,10 @@ class SliverGridDelegateWithMinCrossAxisExtent extends SliverGridDelegate {
     this.crossAxisSpacing = 0.0,
     this.childAspectRatio = 1.0,
     this.mainAxisExtent,
-  })  : assert(minCrossAxisExtent != null && minCrossAxisExtent >= 0),
-        assert(mainAxisSpacing != null && mainAxisSpacing >= 0),
-        assert(crossAxisSpacing != null && crossAxisSpacing >= 0),
-        assert(childAspectRatio != null && childAspectRatio > 0);
+  })  : assert(minCrossAxisExtent >= 0),
+        assert(mainAxisSpacing >= 0),
+        assert(crossAxisSpacing >= 0),
+        assert(childAspectRatio > 0);
 
   /// The maximum extent of tiles in the cross axis.
   ///

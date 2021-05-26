@@ -7,6 +7,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -81,6 +82,7 @@ class SubscribedFragment extends StatelessWidget {
                     _buildRssRecordsList(theme),
                   ],
                 ),
+                _buildSeeMore(subscribedModel),
                 CommonWidgets.sliverBottomSpace,
               ],
             ),
@@ -325,7 +327,7 @@ class SubscribedFragment extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                "最近更新",
+                "三日更新",
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -403,7 +405,7 @@ class SubscribedFragment extends StatelessWidget {
             ),
             sliver: SliverGrid(
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 72.0,
+                maxCrossAxisExtent: 108.0,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
                 childAspectRatio: 5.0 / 4.0,
@@ -619,29 +621,17 @@ class SubscribedFragment extends StatelessWidget {
         if (records.isNullOrEmpty) {
           return SliverToBoxAdapter();
         }
-        final int length = records!.length;
         return SliverPadding(
           padding: EdgeInsets.only(
             bottom: 8.0,
+            top: 8.0,
+            left: 16.0,
+            right: 16.0,
           ),
-          sliver: SliverList(
+          sliver: SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                if (index == length) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    child: TextButton(
-                      onPressed: () {
-                        _toRecentSubscribedPage(context);
-                      },
-                      child: Text("- _ - _ -  查看更多  - _ - _ -"),
-                    ),
-                  );
-                }
-                final RecordItem record = records[index];
+                final RecordItem record = records![index];
                 return RssRecordItem(
                   index: index,
                   record: record,
@@ -655,11 +645,43 @@ class SubscribedFragment extends StatelessWidget {
                   },
                 );
               },
-              childCount: length > 10 ? length + 1 : length,
+              childCount: records!.length,
+            ),
+            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 360.0,
+              crossAxisSpacing: 12.0,
+              mainAxisSpacing: 12.0,
+              mainAxisExtent: 176,
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildSeeMore(final SubscribedModel subscribedModel) {
+    return Selector<SubscribedModel, int>(
+      builder: (context, length, _) {
+        if (length == 0) {
+          return SliverToBoxAdapter();
+        }
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 16.0,
+            ),
+            child: TextButton(
+              onPressed: () {
+                _toRecentSubscribedPage(context);
+              },
+              child: Text("- _ - _ -  查看更多  - _ - _ -"),
+            ),
+          ),
+        );
+      },
+      shouldRebuild: (pre, next) => pre != next,
+      selector: (_, model) => model.records?.length ?? 0,
     );
   }
 }
