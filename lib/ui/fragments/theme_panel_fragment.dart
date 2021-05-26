@@ -118,6 +118,7 @@ class ThemePanelFragment extends StatelessWidget {
                         this._showEditThemePanel(context, themeItem: themeItem);
                       },
                       margin: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(0.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24.0),
                         boxShadow: [

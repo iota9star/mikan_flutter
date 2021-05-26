@@ -57,7 +57,6 @@ class ComplexRecordItem extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(
@@ -84,8 +83,8 @@ class ComplexRecordItem extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                record.title + "\n\n",
-                maxLines: 3,
+                record.title,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 14.0,
@@ -212,7 +211,7 @@ class ComplexRecordItem extends StatelessWidget {
                     );
                   },
                 ),
-              Spacer(),
+              const Spacer(),
               IconButton(
                 icon: Icon(FluentIcons.cloud_download_24_regular),
                 tooltip: "复制并尝试打开种子链接",

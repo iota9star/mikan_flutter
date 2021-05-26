@@ -58,7 +58,7 @@ class ListFragment extends StatelessWidget {
     );
   }
 
-  SliverPadding _buildList(final ThemeData theme, final ListModel listModel) {
+  Widget _buildList(final ThemeData theme, final ListModel listModel) {
     return SliverPadding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       sliver: Selector<ListModel, int>(
