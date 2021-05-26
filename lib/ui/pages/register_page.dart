@@ -92,46 +92,32 @@ class RegisterPage extends StatelessWidget {
               });
             }
           },
-          child: Container(
-            height: 48.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24.0),
-              gradient: LinearGradient(
-                colors: [
-                  btnColor,
-                  btnColor.withOpacity(0.64),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (loading)
-                  SpinKitWave(
-                    size: 20.0,
-                    type: SpinKitWaveType.center,
-                    color: iconColor,
-                  ),
-                SizedBox(width: 12.0),
-                Text(
-                  loading ? "注册中" : "注册",
-                  style: TextStyle(
-                    color: iconColor,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (loading)
+                SpinKitWave(
+                  size: 20.0,
+                  type: SpinKitWaveType.center,
+                  color: iconColor,
                 ),
-                SizedBox(width: 12.0),
-                if (loading)
-                  SpinKitWave(
-                    size: 20.0,
-                    type: SpinKitWaveType.center,
-                    color: iconColor,
-                  ),
-              ],
-            ),
+              SizedBox(width: 12.0),
+              Text(
+                loading ? "注册中" : "注册",
+                style: TextStyle(
+                  color: iconColor,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(width: 12.0),
+              if (loading)
+                SpinKitWave(
+                  size: 20.0,
+                  type: SpinKitWaveType.center,
+                  color: iconColor,
+                ),
+            ],
           ),
         );
       },
@@ -142,30 +128,25 @@ class RegisterPage extends StatelessWidget {
     final ThemeData theme,
     final RegisterModel registerModel,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: TextFormField(
-        controller: registerModel.userNameController,
-        cursorColor: theme.accentColor,
-        decoration: InputDecoration(
-          isDense: true,
-          border: InputBorder.none,
-          labelText: '用户名',
-          hintText: '请输入用户名',
-          hintStyle: TextStyle(fontSize: 14.0),
-          prefixIcon: Icon(
-            FluentIcons.person_24_regular,
-          ),
+    return TextFormField(
+      controller: registerModel.userNameController,
+      cursorColor: theme.accentColor,
+      decoration: InputDecoration(
+        isDense: true,
+        border: InputBorder.none,
+        labelText: '用户名',
+        hintText: '请输入用户名',
+        hintStyle: TextStyle(fontSize: 14.0),
+        prefixIcon: Icon(
+          FluentIcons.person_24_regular,
+          color: theme.accentColor,
         ),
-        validator: (value) {
-          return value.isNullOrBlank ? "用户名不能为空" : null;
-        },
-        textInputAction: TextInputAction.next,
-        keyboardType: TextInputType.text,
       ),
+      validator: (value) {
+        return value.isNullOrBlank ? "用户名不能为空" : null;
+      },
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.text,
     );
   }
 
@@ -173,30 +154,27 @@ class RegisterPage extends StatelessWidget {
     final ThemeData theme,
     final RegisterModel registerModel,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: TextFormField(
-        controller: registerModel.emailController,
-        cursorColor: theme.accentColor,
-        decoration: InputDecoration(
-          isDense: true,
-          border: InputBorder.none,
-          labelText: '邮箱',
-          hintText: '请输入邮箱',
-          hintStyle: TextStyle(fontSize: 14.0),
-          prefixIcon: Icon(FluentIcons.mail_24_regular),
+    return TextFormField(
+      controller: registerModel.emailController,
+      cursorColor: theme.accentColor,
+      decoration: InputDecoration(
+        isDense: true,
+        border: InputBorder.none,
+        labelText: '邮箱',
+        hintText: '请输入邮箱',
+        hintStyle: TextStyle(fontSize: 14.0),
+        prefixIcon: Icon(
+          FluentIcons.mail_24_regular,
+          color: theme.accentColor,
         ),
-        validator: (value) {
-          if (value.isNullOrBlank) return "邮箱不能为空";
-          if (!RegExp(r".+@.+\..+").hasMatch(value!)) return "邮箱格式不正确";
-          return null;
-        },
-        textInputAction: TextInputAction.next,
-        keyboardType: TextInputType.emailAddress,
       ),
+      validator: (value) {
+        if (value.isNullOrBlank) return "邮箱不能为空";
+        if (!RegExp(r".+@.+\..+").hasMatch(value!)) return "邮箱格式不正确";
+        return null;
+      },
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.emailAddress,
     );
   }
 
@@ -204,36 +182,31 @@ class RegisterPage extends StatelessWidget {
     final ThemeData theme,
     final RegisterModel registerModel,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: TextFormField(
-        controller: registerModel.qqController,
-        cursorColor: theme.accentColor,
-        decoration: InputDecoration(
-          isDense: true,
-          border: InputBorder.none,
-          labelText: 'QQ',
-          hintText: '请输入QQ号码',
-          hintStyle: TextStyle(fontSize: 14.0),
-          prefixIcon: Icon(
-            FluentIcons.emoji_surprise_24_regular,
-          ),
+    return TextFormField(
+      controller: registerModel.qqController,
+      cursorColor: theme.accentColor,
+      decoration: InputDecoration(
+        isDense: true,
+        border: InputBorder.none,
+        labelText: 'QQ',
+        hintText: '请输入QQ号码',
+        hintStyle: TextStyle(fontSize: 14.0),
+        prefixIcon: Icon(
+          FluentIcons.emoji_surprise_24_regular,
+          color: theme.accentColor,
         ),
-        validator: (value) {
-          if (value.isNotBlank) {
-            if (!RegExp(r"\d+").hasMatch(value!)) return "QQ号码应为数字";
-            if (value.length < 5) {
-              return "QQ号码最少为5位";
-            }
-          }
-          return null;
-        },
-        textInputAction: TextInputAction.done,
-        keyboardType: TextInputType.number,
       ),
+      validator: (value) {
+        if (value.isNotBlank) {
+          if (!RegExp(r"\d+").hasMatch(value!)) return "QQ号码应为数字";
+          if (value.length < 5) {
+            return "QQ号码最少为5位";
+          }
+        }
+        return null;
+      },
+      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.number,
     );
   }
 
@@ -241,47 +214,48 @@ class RegisterPage extends StatelessWidget {
     final ThemeData theme,
     final RegisterModel registerModel,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: Selector<RegisterModel, bool>(
-        selector: (_, model) => model.showPassword,
-        shouldRebuild: (pre, next) => pre != next,
-        builder: (_, showPassword, __) {
-          return TextFormField(
-            obscureText: !showPassword,
-            obscuringCharacter: "*",
-            style: TextStyle(letterSpacing: 6.0),
-            cursorColor: theme.accentColor,
-            controller: registerModel.passwordController,
-            decoration: InputDecoration(
-              isDense: true,
-              border: InputBorder.none,
-              labelText: '密码',
-              hintText: '请输入密码',
-              hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
-              prefixIcon: Icon(FluentIcons.password_24_regular),
-              suffixIcon: IconButton(
-                icon: showPassword
-                    ? Icon(FluentIcons.eye_show_24_regular)
-                    : Icon(FluentIcons.eye_show_24_filled),
-                onPressed: () {
-                  registerModel.showPassword = !showPassword;
-                },
-              ),
+    return Selector<RegisterModel, bool>(
+      selector: (_, model) => model.showPassword,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, showPassword, __) {
+        return TextFormField(
+          obscureText: !showPassword,
+          cursorColor: theme.accentColor,
+          controller: registerModel.passwordController,
+          decoration: InputDecoration(
+            isDense: true,
+            border: InputBorder.none,
+            labelText: '密码',
+            hintText: '请输入密码',
+            hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
+            prefixIcon: Icon(
+              FluentIcons.password_24_regular,
+              color: theme.accentColor,
             ),
-            validator: (value) {
-              if (value.isNullOrBlank) return "密码不能为空";
-              if (value!.length < 6) return "密码最少6位";
-              return null;
-            },
-            textInputAction: TextInputAction.next,
-            keyboardType: TextInputType.visiblePassword,
-          );
-        },
-      ),
+            suffixIcon: IconButton(
+              icon: showPassword
+                  ? Icon(
+                      FluentIcons.eye_show_24_regular,
+                      color: theme.accentColor,
+                    )
+                  : Icon(
+                      FluentIcons.eye_show_24_filled,
+                      color: theme.accentColor,
+                    ),
+              onPressed: () {
+                registerModel.showPassword = !showPassword;
+              },
+            ),
+          ),
+          validator: (value) {
+            if (value.isNullOrBlank) return "密码不能为空";
+            if (value!.length < 6) return "密码最少6位";
+            return null;
+          },
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.visiblePassword,
+        );
+      },
     );
   }
 
@@ -289,48 +263,49 @@ class RegisterPage extends StatelessWidget {
     final ThemeData theme,
     final RegisterModel registerModel,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: Selector<RegisterModel, bool>(
-        selector: (_, model) => model.showPassword,
-        shouldRebuild: (pre, next) => pre != next,
-        builder: (_, showPassword, __) {
-          return TextFormField(
-            obscureText: !showPassword,
-            obscuringCharacter: "*",
-            style: TextStyle(letterSpacing: 6.0),
-            cursorColor: theme.accentColor,
-            controller: registerModel.confirmPasswordController,
-            decoration: InputDecoration(
-              isDense: true,
-              border: InputBorder.none,
-              labelText: '确认密码',
-              hintText: '请输入确认密码',
-              hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
-              prefixIcon: Icon(FluentIcons.key_multiple_20_regular),
-              suffixIcon: IconButton(
-                icon: showPassword
-                    ? Icon(FluentIcons.eye_show_24_regular)
-                    : Icon(FluentIcons.eye_show_24_filled),
-                onPressed: () {
-                  registerModel.showPassword = !showPassword;
-                },
-              ),
+    return Selector<RegisterModel, bool>(
+      selector: (_, model) => model.showPassword,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, showPassword, __) {
+        return TextFormField(
+          obscureText: !showPassword,
+          cursorColor: theme.accentColor,
+          controller: registerModel.confirmPasswordController,
+          decoration: InputDecoration(
+            isDense: true,
+            border: InputBorder.none,
+            labelText: '确认密码',
+            hintText: '请输入确认密码',
+            hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
+            prefixIcon: Icon(
+              FluentIcons.key_multiple_20_regular,
+              color: theme.accentColor,
             ),
-            validator: (value) {
-              if (value.isNullOrBlank) return "确认密码不能为空";
-              if (value != registerModel.passwordController.text)
-                return "确认密码与密码不一致，请重新输入";
-              return null;
-            },
-            textInputAction: TextInputAction.next,
-            keyboardType: TextInputType.visiblePassword,
-          );
-        },
-      ),
+            suffixIcon: IconButton(
+              icon: showPassword
+                  ? Icon(
+                      FluentIcons.eye_show_24_regular,
+                      color: theme.accentColor,
+                    )
+                  : Icon(
+                      FluentIcons.eye_show_24_filled,
+                      color: theme.accentColor,
+                    ),
+              onPressed: () {
+                registerModel.showPassword = !showPassword;
+              },
+            ),
+          ),
+          validator: (value) {
+            if (value.isNullOrBlank) return "确认密码不能为空";
+            if (value != registerModel.passwordController.text)
+              return "确认密码与密码不一致，请重新输入";
+            return null;
+          },
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.visiblePassword,
+        );
+      },
     );
   }
 

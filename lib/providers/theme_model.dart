@@ -56,6 +56,49 @@ class ThemeModel extends BaseModel {
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       fontFamily: fontFamily,
       backgroundColor: backgroundColor,
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: accentColor),
+          borderRadius: BorderRadius.zero,
+        ),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: accentColor),
+          borderRadius: BorderRadius.zero,
+        ),
+        prefixStyle: TextStyle(color: accentColor),
+        suffixStyle: TextStyle(color: accentColor),
+        focusColor: accentColor,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 14.0,
+          vertical: 4.0,
+        ),
+        hintStyle: TextStyle(height: 1.4, color: accentColor),
+        labelStyle: TextStyle(fontSize: 16.0, color: accentColor),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: accentColor,
+        selectionColor: accentColor,
+        selectionHandleColor: accentColor,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          primary: accentColor,
+          shape: const RoundedRectangleBorder(),
+          minimumSize: Size(120.0, 48.0),
+        ),
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: backgroundColor,
+        shape: const RoundedRectangleBorder(),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          textStyle: TextStyle(
+            color: primaryColor,
+          ),
+        ),
+      ),
     );
     return themeData;
   }

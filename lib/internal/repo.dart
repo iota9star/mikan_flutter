@@ -99,7 +99,7 @@ class Repo {
     final int? subgroupId,
   }) async {
     final Options options = Options(
-      contentType: "application/json; charset=UTF-8",
+      contentType: Headers.jsonContentType,
       responseType: ResponseType.json,
     );
     return await Http.postJSON(
@@ -127,29 +127,27 @@ class Repo {
     );
   }
 
-  static Future<Resp> login(final Map<String, dynamic> loginParams) async {
+  static Future<Resp> login(final Map<String, dynamic> params) async {
     final Options options = Options(
-      contentType: "application/x-www-form-urlencoded",
+      contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.plain,
     );
     return await Http.postForm(
       MikanUrl.LOGIN,
       queryParameters: {"ReturnUrl": "/"},
-      data: loginParams,
+      data: params,
       options: options,
     );
   }
 
-  static Future<Resp> register(
-    final Map<String, dynamic> registerParams,
-  ) async {
+  static Future<Resp> register(final Map<String, dynamic> params) async {
     final Options options = Options(
-      contentType: "application/x-www-form-urlencoded",
+      contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.plain,
     );
     return await Http.postForm(
       MikanUrl.REGISTER,
-      data: registerParams,
+      data: params,
       options: options,
     );
   }

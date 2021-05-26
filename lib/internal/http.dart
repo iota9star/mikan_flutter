@@ -179,7 +179,18 @@ class _Fetcher {
               .send(Resp(false, msg: "Not support request method."));
         }
         if (resp.statusCode == HttpStatus.ok) {
-          proto._sendPort.send(Resp(true, data: resp.data));
+          if (proto.method == _RequestMethod.POST_FORM &&
+              (resp.requestOptions.path == MikanUrl.LOGIN ||
+                  resp.requestOptions.path == MikanUrl.REGISTER)) {
+            proto._sendPort.send(Resp(
+              false,
+              msg: resp.requestOptions.path == MikanUrl.LOGIN
+                  ? "登录失败，请稍后重试"
+                  : "注册失败，请稍后重试",
+            ));
+          } else {
+            proto._sendPort.send(Resp(true, data: resp.data));
+          }
         } else {
           proto._sendPort.send(
             Resp(
