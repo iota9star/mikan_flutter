@@ -45,6 +45,7 @@ class RssRecordItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
             onTap: () {

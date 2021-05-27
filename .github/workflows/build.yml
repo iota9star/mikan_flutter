@@ -1,28 +1,27 @@
-name: daily build apk
+name: daily build
 on:
   push:
     tags:
       - v*
 jobs:
   build:
-    name: release apk
+    name: release build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: setup jdk
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: '11.x'
       - name: setup flutter
-        uses: subosito/flutter-action@v1.4.0
+        uses: subosito/flutter-action@v1
         with:
-          flutter-version: "2.2.0"
           channel: "stable"
       - run: flutter pub get
       - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;20.0.5594570"
       - run: flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
       - name: release apk
-        uses: ncipollo/release-action@v1.7.3
+        uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/release/*.apk"
           token: ${{ secrets.ACTION_TOKEN }}

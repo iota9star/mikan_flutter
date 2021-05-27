@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Theme;
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
@@ -56,6 +57,24 @@ class ThemeModel extends BaseModel {
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       fontFamily: fontFamily,
       backgroundColor: backgroundColor,
+      splashColor: accentColor.withOpacity(0.27),
+      colorScheme: isDark
+          ? ColorScheme.dark(
+              primary: primaryColor,
+              primaryVariant: primaryColor.darken(0.24),
+              secondary: accentColor,
+              secondaryVariant: accentColor.darken(0.36),
+              background: backgroundColor,
+              surface: backgroundColor,
+            )
+          : ColorScheme.light(
+              primary: primaryColor,
+              primaryVariant: primaryColor.darken(0.2),
+              secondary: accentColor,
+              secondaryVariant: accentColor.darken(0.36),
+              background: backgroundColor,
+              surface: backgroundColor,
+            ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         focusedBorder: OutlineInputBorder(

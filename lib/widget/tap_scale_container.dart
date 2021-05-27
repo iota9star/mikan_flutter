@@ -28,6 +28,7 @@ class TapScaleContainer extends StatefulWidget {
   TapScaleContainer({
     Key? key,
     this.onTap,
+    this.onLongPress,
     this.alignment,
     this.padding,
     this.color,
@@ -39,7 +40,6 @@ class TapScaleContainer extends StatefulWidget {
     this.transformAlignment = Alignment.center,
     this.child,
     this.clipBehavior = Clip.none,
-    this.onLongPress,
     this.constraints,
   }) : super(key: key);
 

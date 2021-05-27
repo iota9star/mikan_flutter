@@ -68,7 +68,10 @@ class RecentSubscribedPage extends StatelessWidget {
                 onRefresh: recentSubscribedModel.refresh,
                 onLoading: recentSubscribedModel.loadMoreRecentRecords,
                 child: CustomScrollView(
-                  slivers: [_buildHeader(theme), _buildRecordsList(theme)],
+                  slivers: [
+                    _buildHeader(theme),
+                    _buildRecordsList(theme),
+                  ],
                 ),
               ),
             ),

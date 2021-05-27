@@ -82,7 +82,7 @@ class SubscribedFragment extends StatelessWidget {
                     _buildRssRecordsList(theme),
                   ],
                 ),
-                _buildSeeMore(subscribedModel),
+                _buildSeeMore(theme, subscribedModel),
                 CommonWidgets.sliverBottomSpace,
               ],
             ),
@@ -659,7 +659,10 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildSeeMore(final SubscribedModel subscribedModel) {
+  Widget _buildSeeMore(
+    final ThemeData theme,
+    final SubscribedModel subscribedModel,
+  ) {
     return Selector<SubscribedModel, int>(
       builder: (context, length, _) {
         if (length == 0) {
@@ -675,7 +678,18 @@ class SubscribedFragment extends StatelessWidget {
               onPressed: () {
                 _toRecentSubscribedPage(context);
               },
-              child: Text("- _ - _ -  查看更多  - _ - _ -"),
+              style: TextButton.styleFrom(
+                textStyle: TextStyle(
+                  color: theme.accentColor,
+                ),
+                shadowColor: theme.accentColor.withOpacity(0.87),
+              ),
+              child: Text(
+                "- _ - _ -  查看更多  - _ - _ -",
+                style: TextStyle(
+                  color: theme.accentColor,
+                ),
+              ),
             ),
           ),
         );
