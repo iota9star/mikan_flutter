@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
@@ -90,7 +89,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
             footer: Indicator.footer(
               context,
               theme.accentColor,
-              bottom: 16.0 + Sz.navBarHeight,
+              bottom: 16.0,
             ),
             child: ListView.builder(
               padding: EdgeInsets.symmetric(vertical: 8.0),

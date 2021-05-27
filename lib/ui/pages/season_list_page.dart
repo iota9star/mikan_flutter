@@ -70,7 +70,7 @@ class SeasonListPage extends StatelessWidget {
                     footer: Indicator.footer(
                       context,
                       theme.accentColor,
-                      bottom: 16.0 + Sz.navBarHeight,
+                      bottom: 16.0,
                     ),
                     enablePullDown: true,
                     enablePullUp: true,
@@ -114,10 +114,10 @@ class SeasonListPage extends StatelessWidget {
                         flag: seasonTitle,
                         padding: seasonBangumis.bangumiRows.length - 1 == index
                             ? EdgeInsets.only(
-                                left: 16.0,
+                          left: 16.0,
                                 right: 16.0,
                                 top: 16.0,
-                                bottom: 16.0 + Sz.navBarHeight,
+                                bottom: 16.0,
                               )
                             : EdgeInsets.all(16.0),
                         bangumis: bangumiRow.bangumis,

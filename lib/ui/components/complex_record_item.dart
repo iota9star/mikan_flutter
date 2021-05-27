@@ -40,19 +40,8 @@ class ComplexRecordItem extends StatelessWidget {
     );
     return TapScaleContainer(
       onTap: onTap,
-      margin: EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 8.0,
-      ),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            theme.backgroundColor.withOpacity(0.48),
-            theme.backgroundColor
-          ],
-        ),
+        color: theme.backgroundColor,
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
@@ -94,15 +83,18 @@ class ComplexRecordItem extends StatelessWidget {
               ),
             ),
           ),
+          const Spacer(),
           Container(
             margin: EdgeInsets.only(
               left: 16.0,
               right: 16.0,
-              top: 8.0,
+              top: 4.0,
             ),
+            width: double.infinity,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     margin: EdgeInsets.only(

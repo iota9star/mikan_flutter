@@ -109,7 +109,7 @@ class SubgroupPage extends StatelessWidget {
                         left: 16.0,
                         right: 16.0,
                         top: 16.0,
-                        bottom: 16.0 + Sz.navBarHeight,
+                        bottom: 16.0,
                       )
                     : EdgeInsets.all(16.0),
                 bangumis: gallery.bangumis,

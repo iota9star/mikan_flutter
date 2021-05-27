@@ -6,7 +6,6 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/ui/fragments/theme_edit_fragment.dart';
@@ -24,7 +23,7 @@ class ThemePanelFragment extends StatelessWidget {
       margin: EdgeInsets.only(
         left: 16.0,
         right: 16.0,
-        bottom: 24.0 + Sz.navBarHeight,
+        bottom: 24.0,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.0),

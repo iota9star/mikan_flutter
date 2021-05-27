@@ -9,9 +9,17 @@ class ListModel extends CancelableBaseModel {
   int _page = 0;
   List<RecordItem> _records = [];
 
-  int get recordsLength => _records.length;
-
   List<RecordItem> get records => _records;
+
+  int _changeFlag = 0;
+
+  int get changeFlag => _changeFlag;
+
+  @override
+  void notifyListeners() {
+    this._changeFlag++;
+    super.notifyListeners();
+  }
 
   bool _hasScrolled = false;
 

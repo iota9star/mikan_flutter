@@ -1,7 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/theme_edit_model.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
@@ -356,7 +355,7 @@ class ThemeEditFragment extends StatelessWidget {
                 ),
               ),
             SizedBox(
-              height: 12.0 + Sz.navBarHeight,
+              height: 12.0,
             ),
           ],
         );

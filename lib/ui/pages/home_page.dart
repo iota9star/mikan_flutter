@@ -30,10 +30,11 @@ class HomePage extends StatelessWidget {
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (_, selectIndex, __) {
                   return IndexedStack(
+                    sizing: StackFit.expand,
                     children: [
-                      ListFragment(),
-                      IndexFragment(),
-                      SubscribedFragment(),
+                      Positioned.fill(child: ListFragment()),
+                      Positioned.fill(child: IndexFragment()),
+                      Positioned.fill(child: SubscribedFragment()),
                     ],
                     index: selectIndex,
                   );

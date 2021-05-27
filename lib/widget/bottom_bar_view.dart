@@ -69,7 +69,7 @@ class _BottomBarViewState extends State<BottomBarView>
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
         child: Container(
-          height: widget.height + Sz.navBarHeight,
+          height: widget.height,
           padding: EdgeInsets.only(bottom: Sz.navBarHeight),
           decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor.withOpacity(0.72),

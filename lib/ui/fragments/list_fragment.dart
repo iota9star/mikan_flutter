@@ -1,6 +1,7 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -40,7 +41,7 @@ class ListFragment extends StatelessWidget {
           footer: Indicator.footer(
             context,
             theme.accentColor,
-            bottom: 80.0 + Sz.navBarHeight,
+            bottom: 80.0,
           ),
           enablePullDown: true,
           enablePullUp: true,
@@ -60,19 +61,28 @@ class ListFragment extends StatelessWidget {
 
   Widget _buildList(final ThemeData theme, final ListModel listModel) {
     return SliverPadding(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.only(
+        bottom: 8.0,
+        top: 8.0,
+        left: 16.0,
+        right: 16.0,
+      ),
       sliver: Selector<ListModel, int>(
-        selector: (_, model) => model.recordsLength,
+        selector: (_, model) => model.changeFlag,
         shouldRebuild: (pre, next) => pre != next,
-        builder: (_, length, __) {
+        builder: (_, __, ___) {
           final List<RecordItem> records = listModel.records;
-          return SliverList(
+          if (records.isEmpty) {
+            return SliverToBoxAdapter();
+          }
+          return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final RecordItem record = records[index];
                 return ComplexRecordItem(
                   index: index,
                   record: record,
+                  theme: theme,
                   onTap: () {
                     Navigator.pushNamed(
                       context,
@@ -80,17 +90,16 @@ class ListFragment extends StatelessWidget {
                       arguments: Routes.recordDetail.d(url: record.url),
                     );
                   },
-                  theme: theme,
                 );
               },
-              childCount: length,
+              childCount: records.length,
             ),
-            // gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
-            //   minCrossAxisExtent: 240.0,
-            //   mainAxisExtent: 16.0,
-            //   crossAxisSpacing: 16.0,
-            //   mainAxisSpacing: 164.0,
-            // ),
+            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 360.0,
+              mainAxisExtent: 16.0,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 164.0,
+            ),
           );
         },
       ),

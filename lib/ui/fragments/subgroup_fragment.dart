@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 
@@ -92,7 +91,7 @@ class SubgroupFragment extends StatelessWidget {
             },
           ),
           SizedBox(
-            height: 8.0 + Sz.navBarHeight,
+            height: 8.0,
           )
         ],
       ),

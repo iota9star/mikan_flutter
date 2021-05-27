@@ -3,7 +3,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/year_season.dart';
@@ -163,7 +162,7 @@ class SelectSeasonFragment extends StatelessWidget {
         left: 16.0,
         right: 16.0,
         top: 8.0,
-        bottom: 16.0 + Sz.navBarHeight,
+        bottom: 16.0,
       ),
       sliver: Selector<IndexModel, List<YearSeason>>(
         selector: (_, model) => model.years,

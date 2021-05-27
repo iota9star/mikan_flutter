@@ -62,7 +62,7 @@ class RecentSubscribedPage extends StatelessWidget {
                 footer: Indicator.footer(
                   context,
                   theme.accentColor,
-                  bottom: 16.0 + Sz.navBarHeight,
+                  bottom: 16.0,
                 ),
                 enablePullDown: true,
                 enablePullUp: true,
@@ -126,12 +126,12 @@ class RecentSubscribedPage extends StatelessWidget {
   }
 
   Widget _buildHeader(final ThemeData theme) {
-    return Selector<RecentSubscribedModel, bool>(
-      selector: (_, model) => model.hasScrolled,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (_, hasScrolled, __) {
-        return SliverPinnedToBoxAdapter(
-          child: AnimatedContainer(
+    return SliverPinnedToBoxAdapter(
+      child: Selector<RecentSubscribedModel, bool>(
+        selector: (_, model) => model.hasScrolled,
+        shouldRebuild: (pre, next) => pre != next,
+        builder: (_, hasScrolled, __) {
+          return AnimatedContainer(
             decoration: BoxDecoration(
               color: hasScrolled
                   ? theme.backgroundColor
@@ -172,9 +172,9 @@ class RecentSubscribedPage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
