@@ -42,9 +42,9 @@ class RecentSubscribedModel extends CancelableBaseModel {
     final Resp resp = await (this + Repo.day(next, 1));
     if (resp.success) {
       final List<RecordItem> data = resp.data ?? [];
-      if (data.length == this._records.length) {
-        return this._refreshController.completed(noMore: true);
-      }
+      final noMore = data.length == this._records.length;
+      this._refreshController.completed(noMore: noMore);
+      if (noMore) return;
       this._dayOffset = next;
       this._records = data;
       notifyListeners();

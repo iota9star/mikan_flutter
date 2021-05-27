@@ -17,7 +17,7 @@ class Repo {
   }
 
   static Future<Resp> day(final int pre, final int end) async {
-    final parameters = {"predate": pre, "enddate": end, "maximumitems": 6};
+    final parameters = {"predate": pre, "enddate": end, "maximumitems": 16};
     final extra = {"$MikanFunc": MikanFunc.DAY};
     final Options options = Options(extra: extra);
     return await Http.get(
