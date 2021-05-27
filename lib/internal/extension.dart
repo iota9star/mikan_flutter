@@ -406,7 +406,7 @@ Iterable<String> _debugWordWrap(String message, int width,
 }
 
 extension RefreshControllerExt on RefreshController {
-  completed([bool noMore = false]) {
+  completed({bool noMore = false}) {
     if (this.isRefresh) {
       this.refreshCompleted();
     } else if (this.isLoading) {

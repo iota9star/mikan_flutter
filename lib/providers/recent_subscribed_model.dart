@@ -10,7 +10,6 @@ class RecentSubscribedModel extends CancelableBaseModel {
   List<RecordItem> _records;
 
   int _dayOffset = 2;
-  int _step = 0;
 
   List<RecordItem> get records => _records;
 
@@ -42,14 +41,11 @@ class RecentSubscribedModel extends CancelableBaseModel {
     final int next = this._dayOffset + 2;
     final Resp resp = await (this + Repo.day(next, 1));
     if (resp.success) {
-      this._refreshController.completed();
       final List<RecordItem> data = resp.data ?? [];
       if (data.length == this._records.length) {
-        this._step++;
-      } else {
-        this._step = 0;
+        return this._refreshController.completed(noMore: true);
       }
-      this._dayOffset = next + _step * 5;
+      this._dayOffset = next;
       this._records = data;
       notifyListeners();
     } else {

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 @FFArgumentImport()
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -82,31 +83,45 @@ class RecentSubscribedPage extends StatelessWidget {
   }
 
   Widget _buildRecordsList(final ThemeData theme) {
-    return Selector<RecentSubscribedModel, List<RecordItem>>(
-      selector: (_, model) => model.records,
-      shouldRebuild: (pre, next) => pre.ne(next),
-      builder: (_, records, __) {
-        return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final RecordItem record = records[index];
-              return RssRecordItem(
-                index: index,
-                record: record,
-                theme: theme,
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    Routes.recordDetail.name,
-                    arguments: Routes.recordDetail.d(url: record.url),
-                  );
-                },
-              );
-            },
-            childCount: records.length,
-          ),
-        );
-      },
+    return SliverPadding(
+      padding: EdgeInsets.only(
+        bottom: 8.0,
+        top: 8.0,
+        left: 16.0,
+        right: 16.0,
+      ),
+      sliver: Selector<RecentSubscribedModel, List<RecordItem>>(
+        selector: (_, model) => model.records,
+        shouldRebuild: (pre, next) => pre.ne(next),
+        builder: (_, records, __) {
+          return SliverGrid(
+            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 360.0,
+              crossAxisSpacing: 12.0,
+              mainAxisSpacing: 12.0,
+              mainAxisExtent: 176,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final RecordItem record = records[index];
+                return RssRecordItem(
+                  index: index,
+                  record: record,
+                  theme: theme,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.recordDetail.name,
+                      arguments: Routes.recordDetail.d(url: record.url),
+                    );
+                  },
+                );
+              },
+              childCount: records.length,
+            ),
+          );
+        },
+      ),
     );
   }
 

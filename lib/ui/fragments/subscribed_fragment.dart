@@ -614,21 +614,21 @@ class SubscribedFragment extends StatelessWidget {
   }
 
   Widget _buildRssRecordsList(final ThemeData theme) {
-    return Selector<SubscribedModel, List<RecordItem>?>(
-      selector: (_, model) => model.records,
-      shouldRebuild: (pre, next) => pre.ne(next),
-      builder: (_, records, __) {
-        if (records.isNullOrEmpty) {
-          return SliverToBoxAdapter();
-        }
-        return SliverPadding(
-          padding: EdgeInsets.only(
-            bottom: 8.0,
-            top: 8.0,
-            left: 16.0,
-            right: 16.0,
-          ),
-          sliver: SliverGrid(
+    return SliverPadding(
+      padding: EdgeInsets.only(
+        bottom: 8.0,
+        top: 8.0,
+        left: 16.0,
+        right: 16.0,
+      ),
+      sliver: Selector<SubscribedModel, List<RecordItem>?>(
+        selector: (_, model) => model.records,
+        shouldRebuild: (pre, next) => pre.ne(next),
+        builder: (_, records, __) {
+          if (records.isNullOrEmpty) {
+            return SliverToBoxAdapter();
+          }
+          return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final RecordItem record = records![index];
@@ -653,9 +653,9 @@ class SubscribedFragment extends StatelessWidget {
               mainAxisSpacing: 12.0,
               mainAxisExtent: 176,
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
