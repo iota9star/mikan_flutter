@@ -151,11 +151,11 @@ extension NullableStringExt on String? {
       AndroidIntent(
         action: "android.intent.action.VIEW",
         flags: [
-          Flag.FLAG_ACTIVITY_NEW_TASK | Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+          Flag.FLAG_ACTIVITY_NEW_TASK,
+          Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
         ],
         data: this!,
       ).launch().catchError((e) async {
-        e.d();
         await _doOtherAction();
       });
     } else {
@@ -471,14 +471,29 @@ extension BuildContextExt on BuildContext {
   }
 }
 
-extension LightColor on Color {
-  static Color random() {
+extension BrightnessColor on Color {
+  static Color lightRandom() {
     return HSLColor.fromAHSL(
       1,
       math.Random().nextDouble() * 360,
       0.5,
       0.75,
     ).toColor();
+  }
+
+  Color darken([double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+    final hsl = HSLColor.fromColor(this);
+    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+    return hslDark.toColor();
+  }
+
+  Color lighten([double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+    final hsl = HSLColor.fromColor(this);
+    final hslLight =
+        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+    return hslLight.toColor();
   }
 }
 
