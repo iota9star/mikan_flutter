@@ -11,6 +11,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 @FFArgumentImport()
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/recent_subscribed_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
@@ -84,12 +85,7 @@ class RecentSubscribedPage extends StatelessWidget {
 
   Widget _buildRecordsList(final ThemeData theme) {
     return SliverPadding(
-      padding: EdgeInsets.only(
-        bottom: 8.0,
-        top: 8.0,
-        left: 16.0,
-        right: 16.0,
-      ),
+      padding: edgeH16V8,
       sliver: Selector<RecentSubscribedModel, List<RecordItem>>(
         selector: (_, model) => model.records,
         shouldRebuild: (pre, next) => pre.ne(next),
@@ -136,30 +132,11 @@ class RecentSubscribedPage extends StatelessWidget {
               color: hasScrolled
                   ? theme.backgroundColor
                   : theme.scaffoldBackgroundColor,
-              boxShadow: hasScrolled
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
-                  : null,
-              borderRadius: hasScrolled
-                  ? BorderRadius.only(
-                      bottomLeft: Radius.circular(16.0),
-                      bottomRight: Radius.circular(16.0),
-                    )
-                  : null,
+              borderRadius: scrollHeaderBorderRadius(hasScrolled),
+              boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            padding: EdgeInsets.only(
-              top: 16.0 + Sz.statusBarHeight,
-              left: 16.0,
-              right: 16.0,
-              bottom: 16.0,
-            ),
-            duration: Duration(milliseconds: 240),
+            padding: edge16Header(),
+            duration: dur240,
             child: Row(
               children: <Widget>[
                 Text(

@@ -8,6 +8,7 @@ import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/providers/season_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -124,30 +125,11 @@ class SingleSeasonPage extends StatelessWidget {
               color: hasScrolled
                   ? theme.backgroundColor
                   : theme.scaffoldBackgroundColor,
-              boxShadow: hasScrolled
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
-                  : null,
-              borderRadius: hasScrolled
-                  ? BorderRadius.only(
-                      bottomLeft: Radius.circular(16.0),
-                      bottomRight: Radius.circular(16.0),
-                    )
-                  : null,
+              borderRadius: scrollHeaderBorderRadius(hasScrolled),
+              boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            padding: EdgeInsets.only(
-              top: 16.0 + Sz.statusBarHeight,
-              left: 16.0,
-              right: 16.0,
-              bottom: 16.0,
-            ),
-            duration: Duration(milliseconds: 240),
+            padding: edge16Header(),
+            duration: dur240,
             child: Text(
               this.season.title,
               style: TextStyle(
@@ -183,12 +165,7 @@ class SingleSeasonPage extends StatelessWidget {
 
     return SliverPinnedToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.only(
-          top: 8.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 8.0,
-        ),
+        padding: edgeH16V8,
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,
         ),
@@ -199,11 +176,7 @@ class SingleSeasonPage extends StatelessWidget {
             Expanded(
               child: Text(
                 bangumiRow.name,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  height: 1.25,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: textStyle20B,
               ),
             ),
             Tooltip(

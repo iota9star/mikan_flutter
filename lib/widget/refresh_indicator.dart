@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Indicator {
@@ -138,7 +139,7 @@ class Indicator {
           case RefreshStatus.twoLeveling:
           case RefreshStatus.twoLevelClosing:
           default:
-            return SizedBox();
+          return sizedBox;
         }
       },
     );
@@ -165,7 +166,7 @@ class Indicator {
           case LoadStatus.failed:
             return failed(context, color, height: height, bottom: bottom);
           default:
-            return SizedBox();
+            return sizedBox;
         }
       },
     );

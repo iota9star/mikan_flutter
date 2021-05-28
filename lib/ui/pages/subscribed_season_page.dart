@@ -12,6 +12,7 @@ import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/providers/subscribed_season_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
@@ -119,15 +120,8 @@ class SubscribedSeasonPage extends StatelessWidget {
                   gallery.bangumis.isNullOrEmpty
                       ? _buildEmptySubscribedContainer(theme)
                       : BangumiSliverGridFragment(
-                          flag: gallery.title,
-                          padding: galleries.length - 1 == index
-                              ? EdgeInsets.only(
-                                  left: 16.0,
-                                  right: 16.0,
-                                  top: 16.0,
-                                  bottom: 16.0,
-                                )
-                              : EdgeInsets.all(16.0),
+                    flag: gallery.title,
+                          padding: edge16,
                           bangumis: gallery.bangumis,
                           handleSubscribe: (bangumi, flag) {
                             context.read<SubscribedModel>().subscribeBangumi(
@@ -155,18 +149,8 @@ class SubscribedSeasonPage extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: 240.0,
-        margin: EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          bottom: 8.0,
-          top: 8.0,
-        ),
-        padding: EdgeInsets.only(
-          left: 24.0,
-          right: 24.0,
-          bottom: 24.0,
-          top: 24.0,
-        ),
+        margin: edgeH16V8,
+        padding: edge24,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topRight,
@@ -176,7 +160,7 @@ class SubscribedSeasonPage extends StatelessWidget {
               theme.backgroundColor.withOpacity(0.9),
             ],
           ),
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: borderRadius16,
         ),
         child: Center(
           child: Text(
@@ -195,12 +179,7 @@ class SubscribedSeasonPage extends StatelessWidget {
     return SliverPinnedToBoxAdapter(
       child: Container(
         color: theme.scaffoldBackgroundColor,
-        padding: EdgeInsets.only(
-          top: 8.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 8.0,
-        ),
+        padding: edgeH16V8,
         child: Row(
           children: [
             Expanded(
@@ -256,30 +235,11 @@ class SubscribedSeasonPage extends StatelessWidget {
               color: hasScrolled
                   ? theme.backgroundColor
                   : theme.scaffoldBackgroundColor,
-              boxShadow: hasScrolled
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
-                  : null,
-              borderRadius: hasScrolled
-                  ? BorderRadius.only(
-                      bottomLeft: Radius.circular(16.0),
-                      bottomRight: Radius.circular(16.0),
-                    )
-                  : null,
+              borderRadius: scrollHeaderBorderRadius(hasScrolled),
+              boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            padding: EdgeInsets.only(
-              top: 16.0 + Sz.statusBarHeight,
-              left: 16.0,
-              right: 16.0,
-              bottom: 16.0,
-            ),
-            duration: Duration(milliseconds: 240),
+            padding: edge16Header(),
+            duration: dur240,
             child: Row(
               children: <Widget>[
                 Text(

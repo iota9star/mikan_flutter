@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
@@ -21,73 +22,47 @@ class OVARecordItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: theme.accentColor.computeLuminance() < 0.5
-          ? Colors.white
-          : Colors.black,
+    final TextStyle fileTagStyle = textStyle10WithColor(
+      theme.accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: theme.primaryColor.computeLuminance() < 0.5
-          ? Colors.white
-          : Colors.black,
+    final TextStyle titleTagStyle = textStyle10WithColor(
+      theme.primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
     return TapScaleContainer(
       width: 360.0,
       onTap: onTap,
-      margin: EdgeInsets.only(
-        right: 16.0,
-      ),
+      margin: edgeR16,
       decoration: BoxDecoration(
         color: theme.backgroundColor,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: borderRadius16,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-            ),
+            padding: edgeHT16,
             child: Tooltip(
               message: record.title,
-              padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: edgeH12V8,
+              margin: edgeH16,
               child: Text(
-                record.title + "\n",
+                record.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.0,
-                  height: 1.25,
-                ),
+                style: textStyle14B,
               ),
             ),
           ),
+          spacer,
           Container(
-            margin: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 8.0,
-            ),
+            margin: edgeH16T8,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(
-                      right: 4.0,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 4.0,
-                      vertical: 2.0,
-                    ),
+                    margin: edgeR4,
+                    padding: edgeH4V2,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -97,7 +72,7 @@ class OVARecordItem extends StatelessWidget {
                           theme.accentColor.withOpacity(0.56),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(2.0),
+                      borderRadius: borderRadius2,
                     ),
                     child: Text(
                       record.size,
@@ -107,13 +82,8 @@ class OVARecordItem extends StatelessWidget {
                   if (!record.tags.isNullOrEmpty)
                     ...List.generate(record.tags.length, (index) {
                       return Container(
-                        margin: EdgeInsets.only(
-                          right: 4.0,
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4.0,
-                          vertical: 2.0,
-                        ),
+                        margin: edgeR4,
+                        padding: edgeH4V2,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
@@ -123,7 +93,7 @@ class OVARecordItem extends StatelessWidget {
                               theme.primaryColor.withOpacity(0.56),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(2.0),
+                          borderRadius: borderRadius2,
                         ),
                         child: Text(
                           record.tags[index],
@@ -135,17 +105,14 @@ class OVARecordItem extends StatelessWidget {
               ),
             ),
           ),
-          Spacer(),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(width: 16.0),
+              sizedBoxW16,
               Expanded(
                 child: Text(
                   record.publishAt,
-                  style: TextStyle(
-                    fontSize: 13.0,
-                  ),
+                  style: textStyle13,
                 ),
               ),
               IconButton(

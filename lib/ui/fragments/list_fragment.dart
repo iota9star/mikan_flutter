@@ -6,6 +6,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/list_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/normal_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
@@ -61,19 +62,14 @@ class ListFragment extends StatelessWidget {
 
   Widget _buildList(final ThemeData theme, final ListModel listModel) {
     return SliverPadding(
-      padding: EdgeInsets.only(
-        bottom: 8.0,
-        top: 8.0,
-        left: 16.0,
-        right: 16.0,
-      ),
+      padding: edgeH16V8,
       sliver: Selector<ListModel, int>(
         selector: (_, model) => model.changeFlag,
         shouldRebuild: (pre, next) => pre != next,
         builder: (_, __, ___) {
           final List<RecordItem> records = listModel.records;
           if (records.isEmpty) {
-            return SliverToBoxAdapter();
+            return sliverToBoxAdapter;
           }
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
@@ -117,28 +113,11 @@ class ListFragment extends StatelessWidget {
               color: hasScrolled
                   ? theme.backgroundColor
                   : theme.scaffoldBackgroundColor,
-              boxShadow: hasScrolled
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
-                  : null,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16.0),
-                bottomRight: Radius.circular(16.0),
-              ),
+              borderRadius: scrollHeaderBorderRadius(hasScrolled),
+              boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            padding: EdgeInsets.only(
-              top: 16.0 + Sz.statusBarHeight,
-              left: 16.0,
-              right: 16.0,
-              bottom: 16.0,
-            ),
-            duration: Duration(milliseconds: 240),
+            padding: edge16Header(),
+            duration: dur240,
             child: Row(
               children: <Widget>[
                 Text(

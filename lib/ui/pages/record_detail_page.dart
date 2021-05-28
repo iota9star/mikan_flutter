@@ -13,6 +13,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_details.dart';
 import 'package:mikan_flutter/providers/record_detail_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
@@ -131,7 +132,7 @@ class RecordDetailPage extends StatelessWidget {
           shouldRebuild: (pre, next) => pre != next,
           builder: (context, recordDetail, __) {
             if (recordDetail == null) {
-              return Container();
+              return sizedBox;
             }
             return Column(
               children: [
@@ -168,12 +169,7 @@ class RecordDetailPage extends StatelessWidget {
         bottom: 12.0,
         top: 12.0,
       ),
-      padding: EdgeInsets.only(
-        left: 24.0,
-        right: 24.0,
-        bottom: 24.0,
-        top: 24.0,
-      ),
+      padding: edge24,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topRight,
@@ -183,7 +179,7 @@ class RecordDetailPage extends StatelessWidget {
             theme.backgroundColor.withOpacity(0.9),
           ],
         ),
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: borderRadius16,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,13 +193,10 @@ class RecordDetailPage extends StatelessWidget {
                 fontSize: 24.0,
               ),
             ),
-          if (recordDetail.name.isNotBlank) SizedBox(height: 8.0),
+          if (recordDetail.name.isNotBlank) sizedBoxH8,
           Text(
             recordDetail.title,
-            style: TextStyle(
-              fontSize: 14.0,
-              height: 1.25,
-            ),
+            style: textStyle14,
           ),
           Divider(),
           ...recordDetail.more.entries
@@ -218,7 +211,7 @@ class RecordDetailPage extends StatelessWidget {
                     ),
                   ))
               .toList(),
-          SizedBox(height: 12.0),
+          sizedBoxH12,
           if (!tags.isNullOrEmpty)
             Wrap(
               children: [
@@ -269,7 +262,7 @@ class RecordDetailPage extends StatelessWidget {
         shouldRebuild: (pre, next) => pre != next,
         builder: (_, loading, child) {
           if (loading) return child!;
-          return Container();
+          return sizedBox;
         },
         child: SizedBox(
           width: double.infinity,
@@ -325,7 +318,7 @@ class RecordDetailPage extends StatelessWidget {
               child: Row(
                 children: [
                   _buildBangumiCover(context, recordDetail),
-                  Spacer(),
+                  spacer,
                   MaterialButton(
                     onPressed: () {
                       recordDetail.shareString.share();
@@ -340,7 +333,7 @@ class RecordDetailPage extends StatelessWidget {
                             theme.accentColor,
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(24.0),
+                        borderRadius: borderRadius24,
                       ),
                       child: Icon(
                         FluentIcons.share_24_regular,
@@ -353,7 +346,7 @@ class RecordDetailPage extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     shape: CircleBorder(),
                   ),
-                  SizedBox(width: 16.0),
+                  sizedBoxW16,
                   MaterialButton(
                     onPressed: () {
                       recordDetail.magnet.launchAppAndCopy();
@@ -418,12 +411,9 @@ class RecordDetailPage extends StatelessWidget {
         children: [
           Text(
             "概况简介",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
-            ),
+            style: textStyle20B,
           ),
-          SizedBox(height: 12.0),
+          sizedBoxH12,
           HtmlWidget(
             recordDetail.intro,
             customWidgetBuilder: (element) {

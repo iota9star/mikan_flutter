@@ -7,6 +7,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -113,7 +114,7 @@ class SelectSeasonFragment extends StatelessWidget {
       child: FractionallySizedBox(
         widthFactor: 1,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: edge8,
           child: Selector<IndexModel, Season?>(
             selector: (_, model) => model.selectedSeason,
             shouldRebuild: (pre, next) => pre != next,
@@ -158,17 +159,12 @@ class SelectSeasonFragment extends StatelessWidget {
     final IndexModel indexModel,
   ) {
     return SliverPadding(
-      padding: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        top: 8.0,
-        bottom: 16.0,
-      ),
+      padding: edgeHB16T8,
       sliver: Selector<IndexModel, List<YearSeason>>(
         selector: (_, model) => model.years,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, years, __) {
-          if (years.isNullOrEmpty) return SliverToBoxAdapter();
+          if (years.isNullOrEmpty) return sliverToBoxAdapter;
           return SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -181,11 +177,7 @@ class SelectSeasonFragment extends StatelessWidget {
                         widthFactor: 1,
                         child: Text(
                           year.year,
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            height: 1.25,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: textStyle20B,
                         ),
                       ),
                     ),

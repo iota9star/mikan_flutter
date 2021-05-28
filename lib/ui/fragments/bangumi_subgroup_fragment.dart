@@ -8,6 +8,7 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/bangumi_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
@@ -92,7 +93,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
               bottom: 16.0,
             ),
             child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
+              padding: edgeV4,
               controller: ModalScrollController.of(context),
               itemCount: records.length,
               itemBuilder: (context, ind) {
@@ -127,34 +128,15 @@ class BangumiSubgroupFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, hasScrolled, child) {
         return AnimatedContainer(
-          padding: EdgeInsets.only(
-            right: 8.0,
-            left: 16.0,
-            top: 16.0,
-            bottom: 16.0,
-          ),
+          padding: edgeVT16R8,
           decoration: BoxDecoration(
             color: hasScrolled
                 ? theme.backgroundColor
                 : theme.scaffoldBackgroundColor,
-            borderRadius: hasScrolled
-                ? BorderRadius.only(
-                    bottomLeft: Radius.circular(16.0),
-                    bottomRight: Radius.circular(16.0),
-                  )
-                : null,
-            boxShadow: hasScrolled
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.024),
-                      offset: Offset(0, 1),
-                      blurRadius: 3.0,
-                      spreadRadius: 3.0,
-                    ),
-                  ]
-                : null,
+            borderRadius: scrollHeaderBorderRadius(hasScrolled),
+            boxShadow: scrollHeaderBoxShadow(hasScrolled),
           ),
-          duration: Duration(milliseconds: 240),
+          duration: dur240,
           child: child,
         );
       },
@@ -163,11 +145,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
           Expanded(
             child: Text(
               subgroupBangumi.name,
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-                height: 1.25,
-              ),
+              style: textStyle24B,
             ),
           ),
           if (subgroupBangumi.subgroups.isNotEmpty)
@@ -212,7 +190,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
     showCupertinoModalBottomSheet(
       context: context,
       expand: false,
-      topRadius: Radius.circular(16.0),
+      topRadius: radius16,
       builder: (context) {
         return SubgroupFragment(subgroups: subgroups);
       },

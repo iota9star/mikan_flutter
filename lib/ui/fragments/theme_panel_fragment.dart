@@ -8,6 +8,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/theme_edit_fragment.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -34,17 +35,12 @@ class ThemePanelFragment extends StatelessWidget {
         builder: (context, Box<ThemeItem> box, widget) {
           final int themeNum = box.values.length;
           return GridView.builder(
-            padding: EdgeInsets.only(
-              top: 8.0,
-              left: 8.0,
-              right: 8.0,
-              bottom: 8.0,
-            ),
+            padding: edge8,
             shrinkWrap: true,
             itemBuilder: (_, index) {
               if (index == themeNum) {
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: edge8,
                   child: MaterialButton(
                     onPressed: () {
                       this._showEditThemePanel(context);
@@ -53,7 +49,7 @@ class ThemePanelFragment extends StatelessWidget {
                     shape: CircleBorder(),
                     color: theme.scaffoldBackgroundColor,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: EdgeInsets.all(0.0),
+                    padding: EdgeInsets.zero,
                     child: Icon(
                       FluentIcons.add_24_regular,
                       size: 16.0,

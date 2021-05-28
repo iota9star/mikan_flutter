@@ -10,6 +10,7 @@ import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/search_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -74,7 +75,7 @@ class SearchFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, records, __) {
         if (records.isNullOrEmpty) {
-          return SliverToBoxAdapter();
+          return sliverToBoxAdapter;
         }
         return SliverPadding(
           padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -109,16 +110,11 @@ class SearchFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, records, child) {
         if (records.isNullOrEmpty) {
-          return SliverToBoxAdapter();
+          return sliverToBoxAdapter;
         }
         return SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.only(
-              top: 8.0,
-              left: 16.0,
-              right: 16.0,
-              bottom: 8.0,
-            ),
+            padding: edgeH16V8,
             child: Text(
               "搜索结果",
               style: TextStyle(
@@ -139,7 +135,7 @@ class SearchFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, bangumis, __) {
         if (bangumis.isNullOrEmpty) {
-          return SliverToBoxAdapter();
+          return sliverToBoxAdapter;
         }
         return SliverToBoxAdapter(
           child: Container(
@@ -178,11 +174,7 @@ class SearchFragment extends StatelessWidget {
       message: bangumi.name,
       child: TapScaleContainer(
         height: double.infinity,
-        margin: EdgeInsets.only(
-          right: 16.0,
-          bottom: 16.0,
-          top: 16.0,
-        ),
+        margin: edgeHT16,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -220,17 +212,12 @@ class SearchFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, bangumis, child) {
         if (bangumis.isNullOrEmpty) {
-          return SliverToBoxAdapter();
+          return sliverToBoxAdapter;
         }
         return SliverToBoxAdapter(child: child);
       },
       child: Padding(
-        padding: EdgeInsets.only(
-          top: 8.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 8.0,
-        ),
+        padding: edgeH16V8,
         child: Text(
           "相关推荐",
           style: TextStyle(
@@ -252,7 +239,7 @@ class SearchFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, subgroups, __) {
         if (subgroups.isNullOrEmpty) {
-          return SliverToBoxAdapter();
+          return sliverToBoxAdapter;
         }
         final bool less = subgroups!.length < 5;
         return SliverPinnedToBoxAdapter(
@@ -267,22 +254,10 @@ class SearchFragment extends StatelessWidget {
                   height: less ? 72.0 : 112.0,
                   decoration: BoxDecoration(
                     color: theme.scaffoldBackgroundColor,
-                    boxShadow: hasScrolled
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.024),
-                              offset: Offset(0, 1),
-                              blurRadius: 3.0,
-                              spreadRadius: 3.0,
-                            ),
-                          ]
-                        : null,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(16.0),
-                      bottomRight: Radius.circular(16.0),
-                    ),
+                    borderRadius: scrollHeaderBorderRadius(hasScrolled),
+                    boxShadow: scrollHeaderBoxShadow(hasScrolled),
                   ),
-                  duration: Duration(milliseconds: 240),
+                  duration: dur240,
                   child: child,
                 );
               },
@@ -358,19 +333,14 @@ class SearchFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, subgroups, child) {
         if (subgroups.isNullOrEmpty) {
-          return SliverToBoxAdapter();
+          return sliverToBoxAdapter;
         }
         return SliverToBoxAdapter(
           child: child,
         );
       },
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: 8.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 8.0,
-        ),
+        padding: edgeH16V8,
         child: Text(
           "字幕组",
           style: TextStyle(
@@ -401,7 +371,7 @@ class SearchFragment extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeaderTitle(context),
-            SizedBox(height: 12.0),
+            sizedBoxH12,
             _buildHeaderSearchField(theme, searchModel),
           ],
         ),
@@ -466,7 +436,7 @@ class SearchFragment extends StatelessWidget {
             if (loading) {
               return CupertinoActivityIndicator(radius: 12.0);
             }
-            return Container();
+            return sizedBox;
           },
         ),
         const SizedBox(width: 8.0),
@@ -512,7 +482,7 @@ class SearchFragment extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2.0),
               ),
             ),
-            SizedBox(width: 4.0),
+            sizedBoxW4,
             Expanded(
               child: Text(
                 bangumi.name,

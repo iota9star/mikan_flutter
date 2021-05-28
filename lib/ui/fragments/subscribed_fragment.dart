@@ -16,6 +16,7 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/common_widgets.dart';
@@ -103,30 +104,11 @@ class SubscribedFragment extends StatelessWidget {
               color: hasScrolled
                   ? theme.backgroundColor
                   : theme.scaffoldBackgroundColor,
-              boxShadow: hasScrolled
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
-                  : null,
-              borderRadius: hasScrolled
-                  ? BorderRadius.only(
-                      bottomLeft: Radius.circular(16.0),
-                      bottomRight: Radius.circular(16.0),
-                    )
-                  : null,
+              borderRadius: scrollHeaderBorderRadius(hasScrolled),
+              boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            padding: EdgeInsets.only(
-              top: 16.0 + Sz.statusBarHeight,
-              left: 16.0,
-              right: 16.0,
-              bottom: 16.0,
-            ),
-            duration: Duration(milliseconds: 240),
+            padding: edge16Header(),
+            duration: dur240,
             child: Row(
               children: <Widget>[
                 Text(
@@ -158,12 +140,7 @@ class SubscribedFragment extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: 240.0,
-              margin: EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                bottom: 8.0,
-                top: 8.0,
-              ),
+              margin: edgeH16V8,
               padding: EdgeInsets.only(
                 left: 24.0,
                 right: 24.0,
@@ -190,12 +167,7 @@ class SubscribedFragment extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: 240.0,
-              margin: EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                bottom: 8.0,
-                top: 8.0,
-              ),
+              margin: edgeH16V8,
               padding: EdgeInsets.only(
                 left: 24.0,
                 right: 24.0,
@@ -220,12 +192,7 @@ class SubscribedFragment extends StatelessWidget {
         return BangumiSliverGridFragment(
           flag: "subscribed",
           bangumis: bangumis!,
-          padding: EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            bottom: 8.0,
-            top: 8.0,
-          ),
+          padding: edgeH16V8,
           handleSubscribe: (bangumi, flag) {
             context.read<SubscribedModel>().subscribeBangumi(
               bangumi.id,
@@ -261,11 +228,7 @@ class SubscribedFragment extends StatelessWidget {
             Expanded(
               child: Text(
                 "季度订阅",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  height: 1.25,
-                ),
+                style: textStyle20B,
               ),
             ),
             Selector<SubscribedModel, List<YearSeason>?>(
@@ -328,11 +291,7 @@ class SubscribedFragment extends StatelessWidget {
             Expanded(
               child: Text(
                 "三日更新",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  height: 1.25,
-                ),
+                style: textStyle20B,
               ),
             ),
             MaterialButton(
@@ -368,12 +327,7 @@ class SubscribedFragment extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: 120.0,
-              margin: EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                bottom: 8.0,
-                top: 8.0,
-              ),
+              margin: edgeH16V8,
               padding: EdgeInsets.only(
                 left: 24.0,
                 right: 24.0,
@@ -397,12 +351,7 @@ class SubscribedFragment extends StatelessWidget {
         }
         if (rss.isSafeNotEmpty)
           return SliverPadding(
-            padding: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: 8.0,
-              top: 8.0,
-            ),
+            padding: edgeH16V8,
             sliver: SliverGrid(
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 108.0,
@@ -422,12 +371,7 @@ class SubscribedFragment extends StatelessWidget {
         return SliverToBoxAdapter(
           child: Container(
             width: double.infinity,
-            margin: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: 8.0,
-              top: 8.0,
-            ),
+            margin: edgeH16V8,
             padding: EdgeInsets.only(
               left: 24.0,
               right: 24.0,
@@ -569,7 +513,7 @@ class SubscribedFragment extends StatelessWidget {
       selector: (_, model) => model.records,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
-        if (records.isNullOrEmpty) return SliverToBoxAdapter();
+        if (records.isNullOrEmpty) return sliverToBoxAdapter;
         return SliverPinnedToBoxAdapter(
           child: Container(
             color: theme.scaffoldBackgroundColor,
@@ -584,11 +528,7 @@ class SubscribedFragment extends StatelessWidget {
                 Expanded(
                   child: Text(
                     "更新列表",
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      height: 1.25,
-                    ),
+                    style: textStyle20B,
                   ),
                 ),
                 MaterialButton(
@@ -615,18 +555,13 @@ class SubscribedFragment extends StatelessWidget {
 
   Widget _buildRssRecordsList(final ThemeData theme) {
     return SliverPadding(
-      padding: EdgeInsets.only(
-        bottom: 8.0,
-        top: 8.0,
-        left: 16.0,
-        right: 16.0,
-      ),
+      padding: edgeH16V8,
       sliver: Selector<SubscribedModel, List<RecordItem>?>(
         selector: (_, model) => model.records,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, records, __) {
           if (records.isNullOrEmpty) {
-            return SliverToBoxAdapter();
+            return sliverToBoxAdapter;
           }
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
@@ -666,7 +601,7 @@ class SubscribedFragment extends StatelessWidget {
     return Selector<SubscribedModel, int>(
       builder: (context, length, _) {
         if (length == 0) {
-          return SliverToBoxAdapter();
+          return sliverToBoxAdapter;
         }
         return SliverToBoxAdapter(
           child: Padding(

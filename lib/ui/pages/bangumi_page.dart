@@ -13,6 +13,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/bangumi_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_subgroup_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -147,12 +148,7 @@ class BangumiPage extends StatelessWidget {
           return Container(
             width: double.infinity,
             height: 240.0,
-            margin: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: 8.0,
-              top: 8.0,
-            ),
+            margin: edgeH16V8,
             padding: EdgeInsets.only(
               left: 24.0,
               right: 24.0,
@@ -173,7 +169,7 @@ class BangumiPage extends StatelessWidget {
             child: Center(child: CupertinoActivityIndicator()),
           );
         }
-        return Container();
+        return sizedBox;
       },
     );
   }
@@ -210,10 +206,7 @@ class BangumiPage extends StatelessWidget {
             children: [
               Text(
                 "概况简介",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                ),
+                style: textStyle20B,
               ),
               SizedBox(height: 12.0),
               Text(
@@ -264,10 +257,7 @@ class BangumiPage extends StatelessWidget {
             children: [
               Text(
                 "字幕组",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                ),
+                style: textStyle20B,
               ),
               SizedBox(height: 12.0),
               Wrap(

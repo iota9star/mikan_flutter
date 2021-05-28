@@ -5,6 +5,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
@@ -42,55 +43,36 @@ class NormalRecordItem extends StatelessWidget {
       onTap: onTap,
       decoration: BoxDecoration(
         color: theme.backgroundColor,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: borderRadius16,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-            ),
+            padding: edgeHT16,
             child: Text(
               record.publishAt,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
+              style: textStyle18B,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 8.0,
-            ),
+            padding: edgeH16T8,
             child: Tooltip(
               message: record.title,
-              padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: edgeH12V8,
+              margin: edgeH16,
               child: Text(
                 record.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 14.0,
-                  height: 1.25,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: textStyle14B500,
               ),
             ),
           ),
-          const Spacer(),
+          spacer,
           Container(
-            margin: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 4.0,
-            ),
+            margin: edgeH16T4,
             width: double.infinity,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -98,13 +80,8 @@ class NormalRecordItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(
-                      right: 4.0,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 4.0,
-                      vertical: 2.0,
-                    ),
+                    margin: edgeR4,
+                    padding: edgeH4V2,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -114,7 +91,7 @@ class NormalRecordItem extends StatelessWidget {
                           theme.accentColor.withOpacity(0.56),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(2.0),
+                      borderRadius: borderRadius2,
                     ),
                     child: Text(
                       record.size,
@@ -124,13 +101,8 @@ class NormalRecordItem extends StatelessWidget {
                   if (!record.tags.isNullOrEmpty)
                     ...List.generate(record.tags.length, (index) {
                       return Container(
-                        margin: EdgeInsets.only(
-                          right: 4.0,
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4.0,
-                          vertical: 2.0,
-                        ),
+                        margin: edgeR4,
+                        padding: edgeH4V2,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
@@ -140,7 +112,7 @@ class NormalRecordItem extends StatelessWidget {
                               theme.primaryColor.withOpacity(0.56),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(2.0),
+                          borderRadius: borderRadius2,
                         ),
                         child: Text(
                           record.tags[index],
@@ -204,7 +176,7 @@ class NormalRecordItem extends StatelessWidget {
                     );
                   },
                 ),
-              const Spacer(),
+              spacer,
               IconButton(
                 icon: Icon(FluentIcons.cloud_download_24_regular),
                 tooltip: "复制并尝试打开种子链接",

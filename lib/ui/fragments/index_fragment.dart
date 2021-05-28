@@ -18,6 +18,7 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/ova_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
@@ -86,12 +87,7 @@ class IndexFragment extends StatelessWidget {
                         children: [
                           _buildWeekSection(theme, bangumiRow),
                           BangumiSliverGridFragment(
-                            padding: EdgeInsets.only(
-                              top: 4.0,
-                              left: 16.0,
-                              right: 16.0,
-                              bottom: 16.0,
-                            ),
+                            padding: edgeHB16T4,
                             bangumis: bangumiRow.bangumis,
                             handleSubscribe: (bangumi, flag) {
                               context.read<SubscribedModel>().subscribeBangumi(
@@ -141,10 +137,7 @@ class IndexFragment extends StatelessWidget {
 
     return SliverPinnedToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 8.0,
-        ),
+        padding: edgeH16V8,
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,
         ),
@@ -155,11 +148,7 @@ class IndexFragment extends StatelessWidget {
             Expanded(
               child: Text(
                 bangumiRow.name,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  height: 1.25,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: textStyle20B,
               ),
             ),
             Tooltip(
@@ -185,22 +174,14 @@ class IndexFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, ovas, child) {
         if (ovas.isSafeNotEmpty) return child!;
-        return SliverToBoxAdapter();
+        return sliverToBoxAdapter;
       },
       child: SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            top: 8.0,
-          ),
+          padding: edgeH16T8,
           child: Text(
             "剧场版/OVA",
-            style: const TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-              height: 1.25,
-            ),
+            style: textStyle20B,
           ),
         ),
       ),
@@ -236,7 +217,7 @@ class IndexFragment extends StatelessWidget {
               ),
             ),
           );
-        return SliverToBoxAdapter();
+        return sliverToBoxAdapter;
       },
     );
   }
@@ -261,9 +242,9 @@ class IndexFragment extends StatelessWidget {
             ),
           );
         },
-        margin: EdgeInsets.only(top: 16.0, bottom: 12.0),
+        margin: edgeT16B12,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: borderRadius16,
           color: theme.backgroundColor,
           boxShadow: [
             BoxShadow(
@@ -287,34 +268,15 @@ class IndexFragment extends StatelessWidget {
         shouldRebuild: (pre, next) => pre != next,
         builder: (_, hasScrolled, child) {
           return AnimatedContainer(
-            padding: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0 + Sz.statusBarHeight,
-              bottom: 4.0,
-            ),
             decoration: BoxDecoration(
               color: hasScrolled
                   ? theme.backgroundColor
                   : theme.scaffoldBackgroundColor,
-              borderRadius: hasScrolled
-                  ? BorderRadius.only(
-                      bottomLeft: Radius.circular(16.0),
-                      bottomRight: Radius.circular(16.0),
-                    )
-                  : null,
-              boxShadow: hasScrolled
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
-                  : null,
+              borderRadius: scrollHeaderBorderRadius(hasScrolled),
+              boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            duration: Duration(milliseconds: 240),
+            padding: edge16Header(),
+            duration: dur240,
             child: Row(
               children: [
                 Expanded(
@@ -329,11 +291,7 @@ class IndexFragment extends StatelessWidget {
                               user == null || user.name.isNullOrBlank;
                           return Text(
                             withoutName ? "Mikan Project" : "Hi, ${user!.name}",
-                            style: TextStyle(
-                              fontSize: 14,
-                              height: 1.25,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: textStyle14B,
                           );
                         },
                       ),
@@ -347,7 +305,7 @@ class IndexFragment extends StatelessWidget {
                   },
                   child: Icon(FluentIcons.search_24_regular),
                   minWidth: 0,
-                  padding: EdgeInsets.all(10.0),
+                  padding: edge10,
                   shape: CircleBorder(),
                 ),
                 MaterialButton(
@@ -379,7 +337,7 @@ class IndexFragment extends StatelessWidget {
           shouldRebuild: (pre, next) => pre != next,
           builder: (_, season, __) {
             return season == null
-                ? SizedBox()
+                ? sizedBox
                 : Text(
                     season.title,
                     style: TextStyle(
@@ -459,7 +417,7 @@ class IndexFragment extends StatelessWidget {
       selector: (_, model) => model.ovas,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, records, __) {
-        if (records.isNullOrEmpty) return SliverToBoxAdapter();
+        if (records.isNullOrEmpty) return sliverToBoxAdapter;
         return SliverToBoxAdapter(
           child: Container(
             height: 156.0,

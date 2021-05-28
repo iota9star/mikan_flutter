@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
@@ -20,78 +21,43 @@ class SimpleRecordItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: theme.accentColor.computeLuminance() < 0.5
-          ? Colors.white
-          : Colors.black,
+    final TextStyle fileTagStyle = textStyle10WithColor(
+      theme.accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: theme.primaryColor.computeLuminance() < 0.5
-          ? Colors.white
-          : Colors.black,
+    final TextStyle titleTagStyle = textStyle10WithColor(
+      theme.primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
     return TapScaleContainer(
       onTap: onTap,
-      margin: EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 8.0,
-      ),
+      margin: edgeH16V8,
       decoration: BoxDecoration(
         gradient: _createGradientByIndex(index, theme.backgroundColor),
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: borderRadius16,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-            ),
+            padding: edgeHT16,
             child: Text(
               record.publishAt,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
+              style: textStyle18B,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 8.0,
-            ),
+            padding: edgeH16T8,
             child: Text(
               record.title,
-              style: TextStyle(
-                fontSize: 14.0,
-                height: 1.25,
-              ),
+              style: textStyle14,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-              top: 8.0,
-              left: 16.0,
-              right: 16.0,
-            ),
+            padding: edgeH16T8,
             child: Wrap(
               children: [
                 Container(
-                  margin: EdgeInsets.only(
-                    right: 4.0,
-                    bottom: 4.0,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 4.0,
-                    vertical: 2.0,
-                  ),
+                  margin: edgeRB4,
+                  padding: edgeH4V2,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -101,7 +67,7 @@ class SimpleRecordItem extends StatelessWidget {
                         theme.accentColor.withOpacity(0.56),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(2.0),
+                    borderRadius: borderRadius2,
                   ),
                   child: Text(
                     record.size,
@@ -111,14 +77,8 @@ class SimpleRecordItem extends StatelessWidget {
                 if (!record.tags.isNullOrEmpty)
                   ...List.generate(record.tags.length, (index) {
                     return Container(
-                      margin: EdgeInsets.only(
-                        right: 4.0,
-                        bottom: 4.0,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.0,
-                        vertical: 2.0,
-                      ),
+                      margin: edgeRB4,
+                      padding: edgeH4V2,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
@@ -128,7 +88,7 @@ class SimpleRecordItem extends StatelessWidget {
                             theme.primaryColor.withOpacity(0.56),
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(2.0),
+                        borderRadius: borderRadius2,
                       ),
                       child: Text(
                         record.tags[index],

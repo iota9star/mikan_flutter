@@ -4,6 +4,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/theme_edit_model.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
 
 class ThemeEditFragment extends StatelessWidget {
@@ -415,7 +416,7 @@ class ThemeEditFragment extends StatelessWidget {
     final ThemeData theme,
     final ThemeEditModel themeEditModel,
   ) {
-    return AnimatedContainer(
+    return Container(
       decoration: BoxDecoration(
         color: theme.backgroundColor,
         boxShadow: [
@@ -426,18 +427,9 @@ class ThemeEditFragment extends StatelessWidget {
             spreadRadius: 3.0,
           ),
         ],
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(16.0),
-          bottomRight: Radius.circular(16.0),
-        ),
+        borderRadius: borderRadiusB16,
       ),
-      duration: Duration(milliseconds: 240),
-      padding: EdgeInsets.only(
-        top: 16.0,
-        left: 16.0,
-        right: 16.0,
-        bottom: 16.0,
-      ),
+      padding: edge16,
       child: Row(
         children: <Widget>[
           Expanded(

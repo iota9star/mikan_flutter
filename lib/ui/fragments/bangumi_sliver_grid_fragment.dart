@@ -9,6 +9,7 @@ import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 typedef HandleSubscribe = void Function(Bangumi bangumi, String flag);
@@ -25,7 +26,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     this.flag,
     required this.bangumis,
     required this.handleSubscribe,
-    this.padding = const EdgeInsets.all(16.0),
+    this.padding = edge16,
   }) : super(key: key);
 
   @override
@@ -41,7 +42,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     return SliverPadding(
       padding: this.padding,
       sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+        gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
           mainAxisExtent: 208.0,
@@ -81,7 +82,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
           child: TapScaleContainer(
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: borderRadius8,
               boxShadow: [
                 BoxShadow(
                   blurRadius: 8.0,
@@ -106,7 +107,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
               }
             },
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: borderRadius8,
               child: Stack(
                 clipBehavior: Clip.antiAlias,
                 fit: StackFit.expand,
@@ -124,12 +125,10 @@ class BangumiSliverGridFragment extends StatelessWidget {
                           child: Text(
                             bangumi.num! > 99 ? "99+" : "+${bangumi.num}",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 10.0,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
-                              wordSpacing: 1.0,
                               height: 1.25,
                             ),
                           ),
@@ -146,10 +145,10 @@ class BangumiSliverGridFragment extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 10.0),
+        sizedBoxH10,
         Tooltip(
-          padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
-          showDuration: Duration(seconds: 3),
+          padding: edgeH8V6,
+          showDuration: dur3000,
           message: msg,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +156,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
               Container(
                 width: 4,
                 height: 12,
-                margin: EdgeInsets.only(top: 2.0),
+                margin: edgeT2,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -167,20 +166,16 @@ class BangumiSliverGridFragment extends StatelessWidget {
                       theme.accentColor.withOpacity(0.1),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(2.0),
+                  borderRadius: borderRadius2,
                 ),
               ),
-              SizedBox(width: 4.0),
+              sizedBoxW4,
               Expanded(
                 child: Text(
                   bangumi.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    height: 1.25,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: textStyle14B500,
                 ),
               ),
             ],
@@ -190,10 +185,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
           Text(
             bangumi.updateAt,
             maxLines: 1,
-            style: TextStyle(
-              fontSize: 10.0,
-              height: 1.25,
-            ),
+            style: textStyle10,
           )
       ],
     );
@@ -206,7 +198,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
             height: 28.0,
             child: IconButton(
               tooltip: "取消订阅",
-              padding: EdgeInsets.all(4.0),
+              padding: edge4,
               iconSize: 20.0,
               icon: Icon(
                 FluentIcons.heart_24_filled,
@@ -222,7 +214,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
             height: 28.0,
             child: IconButton(
               tooltip: "订阅",
-              padding: EdgeInsets.all(4.0),
+              padding: edge4,
               iconSize: 20.0,
               icon: Icon(
                 FluentIcons.heart_24_regular,
@@ -267,7 +259,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
 
   Widget _buildBangumiItemPlaceholder() {
     return Container(
-      padding: EdgeInsets.all(28.0),
+      padding: edge28,
       child: Center(
         child: ExtendedImage.asset(
           "assets/mikan.png",

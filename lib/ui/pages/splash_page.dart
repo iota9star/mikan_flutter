@@ -9,6 +9,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
@@ -41,9 +42,7 @@ class SplashPage extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, Routes.home);
               },
             ),
-            SizedBox(
-              height: 4.0,
-            ),
+            sizedBoxH4,
             Text(
               "蜜柑计划",
               style: TextStyle(

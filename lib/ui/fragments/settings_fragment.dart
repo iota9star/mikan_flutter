@@ -5,6 +5,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/settings_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/theme_panel_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -69,11 +70,7 @@ class SettingsFragment extends StatelessWidget {
             Expanded(
               child: Text(
                 "主题",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  height: 1.25,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: textStyle20B,
               ),
             ),
           ],
@@ -93,27 +90,11 @@ class SettingsFragment extends StatelessWidget {
               color: hasScrolled
                   ? theme.backgroundColor
                   : theme.scaffoldBackgroundColor,
-              boxShadow: hasScrolled
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: Offset(0, 1),
-                        blurRadius: 3.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ]
-                  : null,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16.0),
-                bottomRight: Radius.circular(16.0),
-              ),
+              borderRadius: scrollHeaderBorderRadius(hasScrolled),
+              boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            padding: EdgeInsets.only(
-              top: 16.0,
-              left: 16.0,
-              right: 16.0,
-            ),
-            duration: Duration(milliseconds: 240),
+            padding: edgeHT16,
+            duration: dur240,
             child: _buildHeadSection(),
           );
         },
@@ -139,17 +120,11 @@ class SettingsFragment extends StatelessWidget {
           child: Row(
             children: [
               _buildAvatar(user),
-              SizedBox(
-                width: 16.0,
-              ),
+              sizedBoxW16,
               Expanded(
                 child: Text(
                   "Hi, ${user?.hasLogin == true ? user!.name : "👉 请登录 👈"}",
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    height: 1.25,
-                  ),
+                  style: textStyle20B,
                 ),
               ),
             ],

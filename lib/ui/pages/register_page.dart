@@ -11,6 +11,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/register_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
@@ -46,19 +47,19 @@ class RegisterPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       _buildHeader(),
-                      SizedBox(height: 42.0),
+                      sizedBoxH16,
                       _buildUserNameField(theme, registerModel),
-                      SizedBox(height: 16.0),
+                      sizedBoxH16,
                       _buildPasswordField(theme, registerModel),
-                      SizedBox(height: 16.0),
+                      sizedBoxH16,
                       _buildConfirmPasswordField(theme, registerModel),
-                      SizedBox(height: 16.0),
+                      sizedBoxH16,
                       _buildEmailField(theme, registerModel),
-                      SizedBox(height: 16.0),
+                      sizedBoxH16,
                       _buildQQField(theme, registerModel),
-                      SizedBox(height: 56.0),
+                      sizedBoxH56,
                       _buildLoginButton(theme),
-                      SizedBox(height: 56.0),
+                      sizedBoxH56,
                     ],
                   ),
                 ),
@@ -101,7 +102,7 @@ class RegisterPage extends StatelessWidget {
                   type: SpinKitWaveType.center,
                   color: iconColor,
                 ),
-              SizedBox(width: 12.0),
+              sizedBoxW12,
               Text(
                 loading ? "注册中" : "注册",
                 style: TextStyle(
@@ -110,7 +111,7 @@ class RegisterPage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(width: 12.0),
+              sizedBoxW12,
               if (loading)
                 SpinKitWave(
                   size: 20.0,
@@ -317,7 +318,7 @@ class RegisterPage extends StatelessWidget {
           "assets/mikan.png",
           width: 72.0,
         ),
-        SizedBox(width: 24.0),
+        sizedBoxW24,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
