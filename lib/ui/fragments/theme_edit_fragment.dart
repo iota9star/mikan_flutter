@@ -421,7 +421,7 @@ class ThemeEditFragment extends StatelessWidget {
               });
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: EdgeInsets.all(8.0),
+            padding: edge8,
             child: Icon(
               FluentIcons.save_24_regular,
               size: 16.0,

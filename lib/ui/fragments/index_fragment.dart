@@ -339,7 +339,7 @@ class IndexFragment extends StatelessWidget {
             return season == null
                 ? sizedBox
                 : Text(
-              season.title,
+                    season.title,
                     style: textStyle24B,
                   );
           },

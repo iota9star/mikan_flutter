@@ -141,7 +141,7 @@ class Indicator {
           case RefreshStatus.twoLeveling:
           case RefreshStatus.twoLevelClosing:
           default:
-          return sizedBox;
+            return sizedBox;
         }
       },
     );
