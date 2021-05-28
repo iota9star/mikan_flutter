@@ -114,7 +114,7 @@ class SeasonListPage extends StatelessWidget {
                         flag: seasonTitle,
                         padding: seasonBangumis.bangumiRows.length - 1 == index
                             ? EdgeInsets.only(
-                          left: 16.0,
+                                left: 16.0,
                                 right: 16.0,
                                 top: 16.0,
                                 bottom: 16.0,

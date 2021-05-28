@@ -45,6 +45,7 @@ class RssRecordItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
             onTap: () {

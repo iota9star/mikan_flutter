@@ -31,8 +31,8 @@ class Resolver {
     Bangumi bangumi;
     List<Bangumi> bangumis;
     List<Element> bangumiElements;
-    Map<dynamic, String> attributes;
-    String temp;
+    Map<dynamic, String>? attributes;
+    String? temp;
     for (final Element rowEle in rowElements) {
       bangumiRow = BangumiRow();
       temp = rowEle.children[0].text.trim();
@@ -44,19 +44,20 @@ class Resolver {
       for (final Element ele in bangumiElements) {
         bangumi = Bangumi();
         attributes = ele.querySelector("span")?.attributes ?? {};
-        bangumi.id = attributes["data-bangumiid"] ?? "";
+        bangumi.id = attributes["data-bangumiid"]?.trim() ?? "";
         bangumi.cover = MikanUrl.BASE_URL +
-            (attributes["data-src"]?.split("?").first ?? "");
+            (attributes["data-src"]?.split("?").first.trim() ?? "");
         bangumi.grey = ele.querySelector("span.greyout") != null;
         bangumi.updateAt = ele.querySelector(".date-text")?.text.trim() ?? "";
         attributes = (ele.querySelector(".an-text") ??
                     ele.querySelector(".date-text[title]"))
                 ?.attributes ??
             {};
-        bangumi.name = attributes['title'] ?? "";
+        bangumi.name = attributes['title']?.trim() ?? "";
         bangumi.subscribed = ele.querySelector(".active") != null;
         bangumi.num =
-            int.tryParse(ele.querySelector(".num-node")?.text ?? "0") ?? 0;
+            int.tryParse(ele.querySelector(".num-node")?.text.trim() ?? "0") ??
+                0;
         bangumis.add(bangumi);
         bangumi.week = temp;
       }
@@ -103,41 +104,43 @@ class Resolver {
     final List<RecordItem> list = [];
     Element? element;
     List<Element> tempEles;
-    String temp;
+    String? temp;
     String tempLowerCase;
     Set<String> tags;
     for (final ele in elements) {
       record = RecordItem();
       element = ele.querySelector("div.sk-col.rss-thumb");
       if (element != null) {
-        temp = element.attributes['style']!;
-        record.cover =
-            MikanUrl.BASE_URL + RegExp(r"\((.*)\)").firstMatch(temp)!.group(1)!;
+        temp = element.attributes['style'];
+        if (temp != null) {
+          record.cover = MikanUrl.BASE_URL +
+              RegExp(r"\((.*)\)").firstMatch(temp)!.group(1)!;
+        }
       }
       element = ele.querySelector("div.sk-col.rss-name > div > a");
       if (element != null) {
         record.name = element.text.trim();
-        temp = element.attributes['href']!;
+        temp = element.attributes['href'];
         if (temp.isNotBlank) {
-          record.id = temp.substring(14).split("#")[0];
+          record.id = temp!.substring(14).split("#")[0].trim();
         }
       }
       tempEles = ele.querySelectorAll("div.sk-col.rss-name > a");
       if (tempEles.isNotEmpty) {
         element = tempEles.getOrNull(0);
         if (element != null) {
-          temp = element.attributes['href'] ?? "";
+          temp = element.attributes['href']?.trim() ?? "";
           if (temp.isNotBlank) {
             record.torrent = MikanUrl.BASE_URL + temp;
           }
           temp = element.querySelector("span")?.text.trim() ?? "";
           if (temp.isNotBlank) {
-            record.size = temp.replaceAll(r"[", "").replaceAll(r"]", "");
+            record.size = temp.replaceAll(r"[", "").replaceAll(r"]", "").trim();
           }
           element.querySelector("span")?.remove();
-          temp = element.text;
+          temp = element.text.trim();
           if (temp.isNotBlank) {
-            temp = temp.trim().replaceAll("【", "[").replaceAll("】", "]");
+            temp = temp.replaceAll("【", "[").replaceAll("】", "]");
             tempLowerCase = temp.toLowerCase();
             tags = LinkedHashSet();
             keywords.forEach((key, value) {
@@ -150,9 +153,10 @@ class Resolver {
           }
         }
         element = tempEles.getOrNull(1);
-        record.magnet = element?.attributes['data-clipboard-text'] ?? "";
+        record.magnet =
+            element?.attributes['data-clipboard-text']?.trim() ?? "";
         element = tempEles.getOrNull(2);
-        record.url = element?.attributes["href"] ?? "";
+        record.url = element?.attributes["href"]?.trim() ?? "";
       }
       temp = ele.querySelector("div.sk-col.pull-right")?.text.trim() ?? "";
       if (temp.isNotBlank &&
@@ -170,11 +174,14 @@ class Resolver {
   static Future<User> parseUser(final Document document) async {
     final String? name =
         document.querySelector("#user-name .text-right")?.text.trim();
-    final String? avatar =
-        document.querySelector("#user-welcome #head-pic")?.attributes["src"];
+    final String? avatar = document
+        .querySelector("#user-welcome #head-pic")
+        ?.attributes["src"]
+        ?.trim();
     final String? token = document
         .querySelector("#login input[name=__RequestVerificationToken]")
-        ?.attributes["value"];
+        ?.attributes["value"]
+        ?.trim();
     return User(
       name: name,
       avatar: avatar == null ? null : MikanUrl.BASE_URL + avatar,
@@ -207,7 +214,7 @@ class Resolver {
     String? temp;
     Subgroup subgroup;
     for (final Element ele in eles) {
-      temp = ele.attributes['data-subgroupid'];
+      temp = ele.attributes['data-subgroupid']?.trim();
       if (temp.isNotBlank) {
         subgroup = Subgroup(id: temp!, name: ele.text.trim());
         subgroups.add(subgroup);
@@ -218,14 +225,15 @@ class Resolver {
     Bangumi bangumi;
     for (final Element ele in eles) {
       bangumi = Bangumi();
-      temp = ele.querySelector("a")?.attributes['href'];
+      temp = ele.querySelector("a")?.attributes['href']?.trim();
       bangumi.id = temp?.replaceAll("/Home/Bangumi/", "") ?? "";
       bangumi.cover = MikanUrl.BASE_URL +
           (ele
                   .querySelector("span")
                   ?.attributes["data-src"]
                   ?.split("?")
-                  .first ??
+                  .first
+                  .trim() ??
               "");
       bangumi.name =
           ele.querySelector(".an-text")?.attributes['title']?.trim() ?? "";
@@ -241,8 +249,8 @@ class Resolver {
       record = RecordItem();
       elements = ele.querySelectorAll("td");
       record.url = MikanUrl.BASE_URL +
-          (elements[0].children[0].attributes['href'] ?? "");
-      temp = elements.getOrNull(0)?.children.getOrNull(0)?.text;
+          (elements[0].children[0].attributes['href']?.trim() ?? "");
+      temp = elements.getOrNull(0)?.children.getOrNull(0)?.text.trim();
       if (temp.isNotBlank) {
         temp = temp!.trim().replaceAll("【", "[").replaceAll("】", "]");
         tags = LinkedHashSet();
@@ -316,8 +324,9 @@ class Resolver {
       } else if (element.children.length > 0) {
         tempElement = element.children[0];
         subgroup = Subgroup(
-            id: tempElement.attributes['href']?.substring(19),
-            name: tempElement.text.trim());
+          id: tempElement.attributes['href']?.substring(19),
+          name: tempElement.text.trim(),
+        );
         subgroups.add(subgroup);
       } else {
         subgroup = Subgroup(name: element.text.trim());
@@ -339,11 +348,13 @@ class Resolver {
         record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
         record.title = temp;
       }
-      record.url = MikanUrl.BASE_URL + (tempElement.attributes['href'] ?? "");
-      record.magnet = tempElements[1].attributes['data-clipboard-text'] ?? "";
+      record.url =
+          MikanUrl.BASE_URL + (tempElement.attributes['href']?.trim() ?? "");
+      record.magnet =
+          tempElements[1].attributes['data-clipboard-text']?.trim() ?? "";
       record.size = elements[3].text.trim();
       record.torrent = MikanUrl.BASE_URL +
-          (elements[4].children[0].attributes['href'] ?? "");
+          (elements[4].children[0].attributes['href']?.trim() ?? "");
       records.add(record);
     }
     return records;
@@ -373,7 +384,7 @@ class Resolver {
     String? temp;
     for (final Element ele in eles) {
       carousel = Carousel();
-      temp = ele.attributes['style'];
+      temp = ele.attributes['style']?.trim();
       carousel.cover = MikanUrl.BASE_URL + (temp?.split("'")[1] ?? "");
       temp = ele.attributes["onclick"];
       temp = temp?.split("'")[1];
@@ -405,7 +416,7 @@ class Resolver {
         season = Season.empty();
         element = e.children[0];
         attributes = element.attributes;
-        season.year = attributes["data-year"];
+        season.year = attributes["data-year"].trim();
         season.season = attributes["data-season"];
         season.title = season.year + ' ' + element.text.trim();
         season.active = season.title == selected;
@@ -439,16 +450,17 @@ class Resolver {
       bangumis = [];
       for (final Element e in elements) {
         bangumi = Bangumi();
-        bangumi.id = e.attributes['data-bangumiid'] ?? "";
+        bangumi.id = e.attributes['data-bangumiid']?.trim() ?? "";
         attributes = e.querySelector("div.an-info-group > a")?.attributes ?? {};
-        bangumi.name = attributes['title'];
+        bangumi.name = attributes['title']?.trim();
         bangumi.subscribed = e.querySelector(".an-info-icon.active") != null;
         bangumi.cover = MikanUrl.BASE_URL +
             (e
                     .querySelector("span[data-bangumiid]")
                     ?.attributes['data-src']
                     ?.split("?")
-                    .elementAt(0) ??
+                    .elementAt(0)
+                    .trim() ??
                 "");
         bangumis.add(bangumi);
       }
@@ -477,7 +489,8 @@ class Resolver {
                 "> a")
             ?.attributes["href"]
             ?.split("=")
-            .getOrNull(1) ??
+            .getOrNull(1)
+            ?.trim() ??
         "";
     detail.cover = MikanUrl.BASE_URL +
         (document
@@ -488,7 +501,8 @@ class Resolver {
                 ?.split("'")
                 .elementAt(1)
                 .split("?")
-                .elementAt(0) ??
+                .elementAt(0)
+                .trim() ??
             '');
     detail.name = document
             .querySelector(
@@ -536,8 +550,8 @@ class Resolver {
       for (int i = 0; i < tables.length; i++) {
         subgroupBangumi = SubgroupBangumi();
         element = subs.elementAt(i);
-        temp = element.children[0].attributes["href"];
-        subgroupBangumi.dataId = element.attributes["id"] ?? "";
+        temp = element.children[0].attributes["href"]?.trim();
+        subgroupBangumi.dataId = element.attributes["id"]?.trim() ?? "";
         temp = element.nodes.getOrNull(0)?.text?.trim();
         if (temp.isNullOrBlank) {
           final Element child =
@@ -553,7 +567,9 @@ class Resolver {
         if (elements.isSafeNotEmpty) {
           for (final Element ele in elements) {
             subgroup = Subgroup(
-                id: ele.attributes["href"]?.split("/").last, name: ele.text);
+              id: ele.attributes["href"]?.split("/").last.trim(),
+              name: ele.text.trim(),
+            );
             subgroups.add(subgroup);
           }
         }
@@ -562,8 +578,10 @@ class Resolver {
           if (element != null) {
             temp = element.attributes["href"];
             if (temp?.startsWith("/Home/PublishGroup") == true) {
-              subgroup =
-                  Subgroup(id: temp?.split("/").last, name: element.text);
+              subgroup = Subgroup(
+                id: temp?.split("/").last.trim(),
+                name: element.text.trim(),
+              );
               subgroups.add(subgroup);
             }
           }
@@ -576,7 +594,8 @@ class Resolver {
           record = RecordItem();
           element = ele.children[0];
           record.magnet =
-              element.children[1].attributes['data-clipboard-text'] ?? "";
+              element.children[1].attributes['data-clipboard-text']?.trim() ??
+                  "";
           element = element.children[0];
           temp = element.text;
           if (temp.isNotBlank) {
@@ -602,7 +621,7 @@ class Resolver {
             record.publishAt = temp;
           }
           record.torrent = MikanUrl.BASE_URL +
-              (ele.children[3].children[0].attributes["href"] ?? "");
+              (ele.children[3].children[0].attributes["href"]?.trim() ?? "");
           records.add(record);
         }
         subgroupBangumi.records = records;
@@ -617,7 +636,8 @@ class Resolver {
     recordDetail.id = document
             .querySelector(
                 "#sk-container > div.pull-left.leftbar-container > div.leftbar-nav > button")
-            ?.attributes["data-bangumiid"] ??
+            ?.attributes["data-bangumiid"]
+            ?.trim() ??
         "";
     recordDetail.cover = MikanUrl.BASE_URL +
         (document
@@ -627,7 +647,8 @@ class Resolver {
                 ?.split("'")
                 .elementAt(1)
                 .split("?")
-                .elementAt(0) ??
+                .elementAt(0)
+                .trim() ??
             '');
     recordDetail.name = document
             .querySelector(
@@ -643,7 +664,7 @@ class Resolver {
         "";
     final Set<String> tags = LinkedHashSet();
     if (title.isNotBlank) {
-      title = title.replaceAll("【", "[").replaceAll("】", "]");
+      title = title.trim().replaceAll("【", "[").replaceAll("】", "]");
       recordDetail.title = title;
       final String lowerCaseTitle = title.toLowerCase();
       keywords.forEach((key, value) {
@@ -667,22 +688,22 @@ class Resolver {
       map[element[0].trim()] = element[1].trim();
     });
     recordDetail.more = map;
-    String temp;
+    String? temp;
     List<Element> elements = document.querySelectorAll(
         "#sk-container > div.pull-left.leftbar-container > div.leftbar-nav > a");
     elements.forEach((element) {
-      temp = element.text;
+      temp = element.text.trim();
       if (temp == "下载种子") {
         recordDetail.torrent =
-            MikanUrl.BASE_URL + (element.attributes["href"] ?? "");
+            MikanUrl.BASE_URL + (element.attributes["href"]?.trim() ?? "");
       } else if (temp == "磁力链接") {
-        recordDetail.magnet = (element.attributes['href'] ?? "");
+        recordDetail.magnet = (element.attributes['href']?.trim() ?? "");
       }
     });
     final Element? element = document.querySelector(
         "#sk-container > div.central-container > div.episode-desc");
     element?.children.forEach((ele) {
-      final style = ele.attributes['style'];
+      final style = ele.attributes['style']?.trim();
       if (style == "margin-top: -10px; margin-bottom: 10px;") {
         ele.remove();
       }
@@ -705,7 +726,7 @@ class Resolver {
       record = RecordItem();
       element = ele.children[0];
       record.magnet =
-          element.children[1].attributes['data-clipboard-text'] ?? "";
+          element.children[1].attributes['data-clipboard-text']?.trim() ?? "";
       element = element.children[0];
       temp = element.text;
       if (temp.isNotBlank) {
@@ -747,19 +768,19 @@ class Resolver {
     for (final Element ele in elements) {
       bangumi = Bangumi();
       attributes = ele.querySelector("span")?.attributes ?? {};
-      bangumi.id = attributes["data-bangumiid"] ?? "";
-      bangumi.cover =
-          MikanUrl.BASE_URL + (attributes["data-src"]?.split("?")[0] ?? "");
+      bangumi.id = attributes["data-bangumiid"]?.trim() ?? "";
+      bangumi.cover = MikanUrl.BASE_URL +
+          (attributes["data-src"]?.split("?")[0].trim() ?? "");
       bangumi.grey = ele.querySelector("span.greyout") != null;
       bangumi.updateAt = ele.querySelector(".date-text")?.text.trim() ?? "";
       attributes = (ele.querySelector(".an-text") ??
                   ele.querySelector(".date-text[title]"))
               ?.attributes ??
           {};
-      bangumi.name = attributes['title'] ?? "";
+      bangumi.name = attributes['title']?.trim() ?? "";
       bangumi.subscribed = ele.querySelector(".active") != null;
       bangumi.num =
-          int.tryParse(ele.querySelector(".num-node")?.text ?? "0") ?? 0;
+          int.tryParse(ele.querySelector(".num-node")?.text.trim() ?? "0") ?? 0;
       bangumis.add(bangumi);
     }
     return bangumis;

@@ -6,16 +6,16 @@ part 'season.g.dart';
 @HiveType(typeId: MyHive.MIAKN_SEASON)
 class Season extends HiveObject {
   @HiveField(0)
-  late String year;
+  late String year = "";
 
   @HiveField(1)
-  late String season;
+  late String season = "";
 
   @HiveField(2)
-  late String title;
+  late String title = "";
 
   @HiveField(3)
-  bool active = false;
+  late bool active = false;
 
   Season({
     required this.year,
