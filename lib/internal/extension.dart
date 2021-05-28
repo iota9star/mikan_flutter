@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:mikan_flutter/topvars.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
@@ -101,15 +102,15 @@ extension NullableStringExt on String? {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                padding: edgeH16V12,
+                margin: edgeH8,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [bgc, bgc.withOpacity(0.87)],
                   ),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: borderRadius8,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.024),

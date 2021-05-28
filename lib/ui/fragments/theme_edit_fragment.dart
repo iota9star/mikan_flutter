@@ -98,9 +98,7 @@ class ThemeEditFragment extends StatelessWidget {
                   },
                 );
               },
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.0,
-              ),
+              padding: edgeH16,
               height: 56.0,
               child: Row(
                 children: [
@@ -138,9 +136,7 @@ class ThemeEditFragment extends StatelessWidget {
                   },
                 );
               },
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.0,
-              ),
+              padding: edgeH16,
               height: 56.0,
               child: Row(
                 children: [
@@ -179,9 +175,7 @@ class ThemeEditFragment extends StatelessWidget {
                     },
                   );
                 },
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                ),
+                padding: edgeH16,
                 height: 56.0,
                 child: Row(
                   children: [
@@ -220,9 +214,7 @@ class ThemeEditFragment extends StatelessWidget {
                     },
                   );
                 },
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                ),
+                padding: edgeH16,
                 height: 56.0,
                 child: Row(
                   children: [
@@ -261,9 +253,7 @@ class ThemeEditFragment extends StatelessWidget {
                     },
                   );
                 },
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                ),
+                padding: edgeH16,
                 height: 56.0,
                 child: Row(
                   children: [
@@ -302,9 +292,7 @@ class ThemeEditFragment extends StatelessWidget {
                     },
                   );
                 },
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                ),
+                padding: edgeH16,
                 height: 56.0,
                 child: Row(
                   children: [

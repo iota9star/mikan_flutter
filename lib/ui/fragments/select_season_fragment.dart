@@ -56,27 +56,15 @@ class SelectSeasonFragment extends StatelessWidget {
               spreadRadius: 3.0,
             ),
           ],
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(16.0),
-            bottomRight: Radius.circular(16.0),
-          ),
+          borderRadius: borderRadiusB16,
         ),
-        padding: EdgeInsets.only(
-          top: 16.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 16.0,
-        ),
+        padding: edge16,
         child: Row(
           children: <Widget>[
             Expanded(
               child: Text(
                 "年度番组",
-                style: TextStyle(
-                  fontSize: 20,
-                  height: 1.25,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: textStyle20B,
               ),
             ),
             MaterialButton(
@@ -90,7 +78,7 @@ class SelectSeasonFragment extends StatelessWidget {
                 );
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: EdgeInsets.all(8.0),
+              padding: edge8,
               child: Icon(
                 FluentIcons.chevron_right_24_regular,
                 size: 16.0,

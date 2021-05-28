@@ -57,12 +57,7 @@ class SettingsFragment extends StatelessWidget {
   Widget _buildThemeSection() {
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.only(
-          top: 16.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 16.0,
-        ),
+        padding: edge16,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -135,6 +130,11 @@ class SettingsFragment extends StatelessWidget {
   }
 
   Widget _buildAvatar(User? user) {
+    final placeholder = ExtendedImage.asset(
+      "assets/mikan.png",
+      width: 36.0,
+      height: 36.0,
+    );
     return user?.hasLogin == true
         ? ClipOval(
             child: ExtendedImage(
@@ -145,21 +145,13 @@ class SettingsFragment extends StatelessWidget {
                 switch (state.extendedImageLoadState) {
                   case LoadState.loading:
                   case LoadState.failed:
-                    return ExtendedImage.asset(
-                      "assets/mikan.png",
-                      width: 36.0,
-                      height: 36.0,
-                    );
+                    return placeholder;
                   case LoadState.completed:
                     return null;
                 }
               },
             ),
           )
-        : ExtendedImage.asset(
-            "assets/mikan.png",
-            width: 36.0,
-            height: 36.0,
-          );
+        : placeholder;
   }
 }

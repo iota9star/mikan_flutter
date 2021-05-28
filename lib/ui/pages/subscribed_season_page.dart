@@ -185,11 +185,7 @@ class SubscribedSeasonPage extends StatelessWidget {
             Expanded(
               child: Text(
                 gallery.title,
-                style: TextStyle(
-                  fontSize: 20,
-                  height: 1.25,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: textStyle20B,
               ),
             ),
             MaterialButton(
@@ -210,7 +206,7 @@ class SubscribedSeasonPage extends StatelessWidget {
               color: theme.backgroundColor,
               minWidth: 0,
               height: 0,
-              padding: EdgeInsets.all(5.0),
+              padding: edge4,
               shape: circleShape,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               child: Icon(

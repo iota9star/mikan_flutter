@@ -17,6 +17,8 @@ const edge24 = const EdgeInsets.all(24.0);
 const edge28 = const EdgeInsets.all(28.0);
 const edgeH12V8 = const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
 const edgeH16 = const EdgeInsets.symmetric(horizontal: 16.0);
+const edgeH8 = const EdgeInsets.symmetric(horizontal: 8.0);
+const edgeH16V12 = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0);
 const edgeH8V6 = const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0);
 const edgeT2 = const EdgeInsets.only(top: 2.0);
 const edgeR4 = const EdgeInsets.only(right: 4.0);
@@ -91,6 +93,7 @@ const radius10 = const Radius.circular(10.0);
 
 const borderRadius24 = const BorderRadius.all(const Radius.circular(24.0));
 const borderRadius16 = const BorderRadius.all(radius16);
+const borderRadius12 = const BorderRadius.all(const Radius.circular(12.0));
 const borderRadius10 = const BorderRadius.all(radius10);
 const borderRadius8 = const BorderRadius.all(const Radius.circular(8.0));
 const borderRadius2 = const BorderRadius.all(const Radius.circular(2.0));

@@ -427,7 +427,7 @@ class SubscribedFragment extends StatelessWidget {
                     switch (state.extendedImageLoadState) {
                       case LoadState.loading:
                         return Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: edge16,
                           child: Center(
                             child: ExtendedImage.asset(
                               "assets/mikan.png",
@@ -436,7 +436,7 @@ class SubscribedFragment extends StatelessWidget {
                         );
                       case LoadState.failed:
                         return Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: edge16,
                           child: Center(
                             child: ExtendedImage.asset(
                               "assets/mikan.png",
@@ -581,10 +581,7 @@ class SubscribedFragment extends StatelessWidget {
         }
         return SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 16.0,
-            ),
+            padding: edge16,
             child: TextButton(
               onPressed: () {
                 _toRecentSubscribedPage(context);

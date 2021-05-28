@@ -76,14 +76,7 @@ class SingleSeasonPage extends StatelessWidget {
                           children: [
                             _buildWeekSection(theme, bangumiRow),
                             BangumiSliverGridFragment(
-                              padding: bangumiRows.length - 1 == index
-                                  ? EdgeInsets.only(
-                                      left: 16.0,
-                                      right: 16.0,
-                                      top: 16.0,
-                                      bottom: 16.0,
-                                    )
-                                  : EdgeInsets.all(16.0),
+                              padding: edge16,
                               bangumis: bangumiRow.bangumis,
                               handleSubscribe: (bangumi, flag) {
                                 context

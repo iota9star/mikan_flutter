@@ -126,7 +126,7 @@ class RecordDetailPage extends StatelessWidget {
   Widget _buildContentWrapper(final ThemeData theme) {
     return Positioned.fill(
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Selector<RecordDetailModel, RecordDetail?>(
           selector: (context, model) => model.recordDetail,
           shouldRebuild: (pre, next) => pre != next,

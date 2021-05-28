@@ -142,11 +142,8 @@ class SearchFragment extends StatelessWidget {
             width: double.infinity,
             height: 220,
             child: ListView.builder(
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-              ),
+              physics: const BouncingScrollPhysics(),
+              padding: edgeH16,
               scrollDirection: Axis.horizontal,
               itemCount: bangumis!.length,
               itemBuilder: (_, index) {
@@ -262,13 +259,8 @@ class SearchFragment extends StatelessWidget {
                 );
               },
               child: WaterfallFlow.builder(
-                physics: BouncingScrollPhysics(),
-                padding: EdgeInsets.only(
-                  top: 16.0,
-                  left: 16.0,
-                  right: 16.0,
-                  bottom: 16.0,
-                ),
+                physics: const BouncingScrollPhysics(),
+                padding: edge16,
                 scrollDirection: Axis.horizontal,
                 itemCount: subgroups.length,
                 gridDelegate:

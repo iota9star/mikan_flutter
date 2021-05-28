@@ -53,7 +53,7 @@ class SubgroupFragment extends StatelessWidget {
                           ),
                         ),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
+                          borderRadius: borderRadius12,
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -77,9 +77,7 @@ class SubgroupFragment extends StatelessWidget {
               );
             },
           ),
-          SizedBox(
-            height: 8.0,
-          )
+          sizedBoxH8,
         ],
       ),
     );

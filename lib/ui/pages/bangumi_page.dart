@@ -81,7 +81,7 @@ class BangumiPage extends StatelessWidget {
                 ),
                 Positioned.fill(
                   child: CustomScrollView(
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     slivers: [
                       SliverPinnedToBoxAdapter(
                         child: Container(
@@ -341,7 +341,7 @@ class BangumiPage extends StatelessWidget {
                   //   child: Icon(FluentIcons.star_24_filled),
                   //   color: Colors.blueAccent,
                   //   minWidth: 0,
-                  //   padding: EdgeInsets.all(16.0),
+                  //   padding: edge16,
                   //   shape: circleShape,
                   // ),
                 ],

@@ -105,14 +105,7 @@ class SubgroupPage extends StatelessWidget {
               _buildYearSeasonSection(gallery.title),
               BangumiSliverGridFragment(
                 flag: gallery.title,
-                padding: galleries.length - 1 == index
-                    ? EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0,
-                        top: 16.0,
-                        bottom: 16.0,
-                      )
-                    : EdgeInsets.all(16.0),
+                padding: edge16,
                 bangumis: gallery.bangumis,
                 handleSubscribe: (bangumi, flag) {
                   context.read<SubscribedModel>().subscribeBangumi(
