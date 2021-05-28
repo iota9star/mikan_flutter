@@ -6,7 +6,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/list_model.dart';
-import 'package:mikan_flutter/ui/components/complex_record_item.dart';
+import 'package:mikan_flutter/ui/components/normal_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -16,7 +16,7 @@ class ListFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ListModel listModel = Provider.of<ListModel>(context, listen: false);
+    final ListModel model = Provider.of<ListModel>(context, listen: false);
     return Scaffold(
       body: NotificationListener(
         onNotification: (notification) {
@@ -25,7 +25,7 @@ class ListFragment extends StatelessWidget {
           } else if (notification is ScrollUpdateNotification) {
             if (notification.depth == 0) {
               final double offset = notification.metrics.pixels;
-              listModel.hasScrolled = offset > 0.0;
+              model.hasScrolled = offset > 0.0;
             }
           }
           return true;
@@ -45,13 +45,13 @@ class ListFragment extends StatelessWidget {
           ),
           enablePullDown: true,
           enablePullUp: true,
-          controller: listModel.refreshController,
-          onRefresh: listModel.refresh,
-          onLoading: listModel.loadMore,
+          controller: model.refreshController,
+          onRefresh: model.refresh,
+          onLoading: model.loadMore,
           child: CustomScrollView(
             slivers: [
               _buildHeader(theme),
-              _buildList(theme, listModel),
+              _buildList(theme, model),
             ],
           ),
         ),
@@ -79,7 +79,7 @@ class ListFragment extends StatelessWidget {
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final RecordItem record = records[index];
-                return ComplexRecordItem(
+                return NormalRecordItem(
                   index: index,
                   record: record,
                   theme: theme,
@@ -94,7 +94,7 @@ class ListFragment extends StatelessWidget {
               },
               childCount: records.length,
             ),
-            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 360.0,
               mainAxisExtent: 16.0,
               crossAxisSpacing: 16.0,

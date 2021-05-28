@@ -35,7 +35,7 @@ class RecentSubscribedPage extends StatelessWidget {
       child: ChangeNotifierProvider(
         create: (_) => RecentSubscribedModel(this.loaded),
         child: Builder(builder: (context) {
-          final RecentSubscribedModel recentSubscribedModel =
+          final RecentSubscribedModel model =
               Provider.of<RecentSubscribedModel>(context, listen: false);
           return Scaffold(
             body: NotificationListener(
@@ -45,13 +45,13 @@ class RecentSubscribedPage extends StatelessWidget {
                 } else if (notification is ScrollUpdateNotification) {
                   if (notification.depth == 0) {
                     final double offset = notification.metrics.pixels;
-                    recentSubscribedModel.hasScrolled = offset > 0.0;
+                    model.hasScrolled = offset > 0.0;
                   }
                 }
                 return true;
               },
               child: SmartRefresher(
-                controller: recentSubscribedModel.refreshController,
+                controller: model.refreshController,
                 header: WaterDropMaterialHeader(
                   backgroundColor: theme.accentColor,
                   color: theme.accentColor.computeLuminance() < 0.5
@@ -66,8 +66,8 @@ class RecentSubscribedPage extends StatelessWidget {
                 ),
                 enablePullDown: true,
                 enablePullUp: true,
-                onRefresh: recentSubscribedModel.refresh,
-                onLoading: recentSubscribedModel.loadMoreRecentRecords,
+                onRefresh: model.refresh,
+                onLoading: model.loadMoreRecentRecords,
                 child: CustomScrollView(
                   slivers: [
                     _buildHeader(theme),

@@ -8,13 +8,13 @@ import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
-class ComplexRecordItem extends StatelessWidget {
+class NormalRecordItem extends StatelessWidget {
   final int index;
   final RecordItem record;
   final VoidCallback onTap;
   final ThemeData theme;
 
-  const ComplexRecordItem({
+  const NormalRecordItem({
     required this.index,
     required this.record,
     required this.onTap,
@@ -46,6 +46,7 @@ class ComplexRecordItem extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(

@@ -30,11 +30,10 @@ class HomePage extends StatelessWidget {
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (_, selectIndex, __) {
                   return IndexedStack(
-                    sizing: StackFit.expand,
                     children: [
-                      Positioned.fill(child: ListFragment()),
-                      Positioned.fill(child: IndexFragment()),
-                      Positioned.fill(child: SubscribedFragment()),
+                      ListFragment(),
+                      IndexFragment(),
+                      SubscribedFragment(),
                     ],
                     index: selectIndex,
                   );
@@ -42,6 +41,9 @@ class HomePage extends StatelessWidget {
               ),
             ),
             Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: Selector<HomeModel, int>(
                 selector: (_, model) => model.selectedIndex,
                 shouldRebuild: (pre, next) => pre != next,
@@ -70,9 +72,6 @@ class HomePage extends StatelessWidget {
                   );
                 },
               ),
-              bottom: 0,
-              left: 0,
-              right: 0,
             )
           ],
         ),
