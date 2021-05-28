@@ -36,6 +36,20 @@ const edgeHB16T4 = const EdgeInsets.only(
   bottom: 16.0,
 );
 
+const edgeHB16T24 = const EdgeInsets.only(
+  left: 16.0,
+  right: 16.0,
+  top: 24.0,
+  bottom: 16.0,
+);
+
+const edgeHT16B8 = const EdgeInsets.only(
+  top: 16.0,
+  bottom: 8.0,
+  left: 16.0,
+  right: 16.0,
+);
+
 const edgeT16B12 = const EdgeInsets.only(top: 16.0, bottom: 12.0);
 
 EdgeInsets edge16Header() => EdgeInsets.only(
@@ -73,9 +87,11 @@ List<BoxShadow> scrollHeaderBoxShadow(final bool hasScrolled) => hasScrolled
     : const [];
 
 const radius16 = const Radius.circular(16.0);
+const radius10 = const Radius.circular(10.0);
 
 const borderRadius24 = const BorderRadius.all(const Radius.circular(24.0));
 const borderRadius16 = const BorderRadius.all(radius16);
+const borderRadius10 = const BorderRadius.all(radius10);
 const borderRadius8 = const BorderRadius.all(const Radius.circular(8.0));
 const borderRadius2 = const BorderRadius.all(const Radius.circular(2.0));
 
@@ -95,6 +111,17 @@ const textStyle14B = const TextStyle(
   fontSize: 14.0,
   height: 1.25,
   fontWeight: FontWeight.bold,
+);
+
+const textStyle16B = const TextStyle(
+  fontSize: 16.0,
+  height: 1.25,
+  fontWeight: FontWeight.bold,
+);
+
+const textStyle16 = const TextStyle(
+  fontSize: 16.0,
+  height: 1.25,
 );
 
 const textStyle14 = const TextStyle(
@@ -123,6 +150,7 @@ const textStyle24B = const TextStyle(
   fontWeight: FontWeight.bold,
   height: 1.25,
 );
+
 const textStyle20B = const TextStyle(
   fontSize: 20.0,
   height: 1.25,
@@ -153,3 +181,5 @@ const dur240 = const Duration(milliseconds: 240);
 const dur3000 = const Duration(milliseconds: 3000);
 
 const sliverToBoxAdapter = const SliverToBoxAdapter();
+
+const circleShape = const CircleBorder();

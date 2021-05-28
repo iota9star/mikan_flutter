@@ -5,8 +5,13 @@ import 'package:mikan_flutter/topvars.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Indicator {
-  static Widget _build(final Widget spin, final String msg, final double height,
-      final double top, final double bottom) {
+  static Widget _build(
+    final Widget spin,
+    final String msg,
+    final double height,
+    final double top,
+    final double bottom,
+  ) {
     return Container(
       padding: EdgeInsets.only(top: top, bottom: bottom),
       height: height + top + bottom,
@@ -21,10 +26,7 @@ class Indicator {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 msg,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: textStyle18B,
               ),
             )
           ],

@@ -113,11 +113,7 @@ class SubscribedFragment extends StatelessWidget {
               children: <Widget>[
                 Text(
                   "我的订阅",
-                  style: TextStyle(
-                    fontSize: 24,
-                    height: 1.25,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textStyle24B,
                 ),
               ],
             ),
@@ -141,12 +137,7 @@ class SubscribedFragment extends StatelessWidget {
               width: double.infinity,
               height: 240.0,
               margin: edgeH16V8,
-              padding: EdgeInsets.only(
-                left: 24.0,
-                right: 24.0,
-                bottom: 24.0,
-                top: 24.0,
-              ),
+              padding: edge24,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topRight,
@@ -168,12 +159,7 @@ class SubscribedFragment extends StatelessWidget {
               width: double.infinity,
               height: 240.0,
               margin: edgeH16V8,
-              padding: EdgeInsets.only(
-                left: 24.0,
-                right: 24.0,
-                bottom: 24.0,
-                top: 24.0,
-              ),
+              padding: edge24,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topRight,
@@ -258,7 +244,7 @@ class SubscribedFragment extends StatelessWidget {
                   minWidth: 0,
                   padding: EdgeInsets.all(5.0),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: CircleBorder(),
+                  shape: circleShape,
                   child: Icon(
                     FluentIcons.chevron_right_24_regular,
                     size: 16.0,
@@ -302,7 +288,7 @@ class SubscribedFragment extends StatelessWidget {
               minWidth: 0,
               padding: EdgeInsets.all(5.0),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: CircleBorder(),
+              shape: circleShape,
               child: Icon(
                 FluentIcons.chevron_right_24_regular,
                 size: 16.0,
@@ -328,12 +314,7 @@ class SubscribedFragment extends StatelessWidget {
               width: double.infinity,
               height: 120.0,
               margin: edgeH16V8,
-              padding: EdgeInsets.only(
-                left: 24.0,
-                right: 24.0,
-                bottom: 24.0,
-                top: 24.0,
-              ),
+              padding: edge24,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topRight,
@@ -353,7 +334,7 @@ class SubscribedFragment extends StatelessWidget {
           return SliverPadding(
             padding: edgeH16V8,
             sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 108.0,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
@@ -372,12 +353,7 @@ class SubscribedFragment extends StatelessWidget {
           child: Container(
             width: double.infinity,
             margin: edgeH16V8,
-            padding: EdgeInsets.only(
-              left: 24.0,
-              right: 24.0,
-              bottom: 24.0,
-              top: 24.0,
-            ),
+            padding: edge24,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topRight,
@@ -539,7 +515,7 @@ class SubscribedFragment extends StatelessWidget {
                   minWidth: 0,
                   padding: EdgeInsets.all(5.0),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: CircleBorder(),
+                  shape: circleShape,
                   child: Icon(
                     FluentIcons.chevron_right_24_regular,
                     size: 16.0,
@@ -582,7 +558,7 @@ class SubscribedFragment extends StatelessWidget {
               },
               childCount: records!.length,
             ),
-            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 360.0,
               crossAxisSpacing: 12.0,
               mainAxisSpacing: 12.0,

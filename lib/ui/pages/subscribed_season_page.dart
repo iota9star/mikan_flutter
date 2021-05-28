@@ -120,7 +120,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                   gallery.bangumis.isNullOrEmpty
                       ? _buildEmptySubscribedContainer(theme)
                       : BangumiSliverGridFragment(
-                    flag: gallery.title,
+                          flag: gallery.title,
                           padding: edge16,
                           bangumis: gallery.bangumis,
                           handleSubscribe: (bangumi, flag) {
@@ -211,7 +211,7 @@ class SubscribedSeasonPage extends StatelessWidget {
               minWidth: 0,
               height: 0,
               padding: EdgeInsets.all(5.0),
-              shape: CircleBorder(),
+              shape: circleShape,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               child: Icon(
                 FluentIcons.chevron_right_24_regular,
@@ -244,11 +244,7 @@ class SubscribedSeasonPage extends StatelessWidget {
               children: <Widget>[
                 Text(
                   "季度订阅",
-                  style: TextStyle(
-                    fontSize: 24,
-                    height: 1.25,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textStyle24B,
                 ),
               ],
             ),

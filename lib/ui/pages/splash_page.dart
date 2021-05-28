@@ -93,7 +93,7 @@ class SplashPage extends StatelessWidget {
                 width: size,
                 height: size,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: borderRadius10,
                   image: DecorationImage(
                     fit: BoxFit.cover,
                     image: ExtendedNetworkImageProvider(cover),

@@ -306,7 +306,7 @@ class IndexFragment extends StatelessWidget {
                   child: Icon(FluentIcons.search_24_regular),
                   minWidth: 0,
                   padding: edge10,
-                  shape: CircleBorder(),
+                  shape: circleShape,
                 ),
                 MaterialButton(
                   onPressed: () {
@@ -314,8 +314,8 @@ class IndexFragment extends StatelessWidget {
                   },
                   child: _buildAvatar(),
                   minWidth: 0,
-                  padding: EdgeInsets.all(10.0),
-                  shape: CircleBorder(),
+                  padding: edge10,
+                  shape: circleShape,
                 ),
               ],
             ),
@@ -339,12 +339,8 @@ class IndexFragment extends StatelessWidget {
             return season == null
                 ? sizedBox
                 : Text(
-                    season.title,
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      height: 1.25,
-                      fontWeight: FontWeight.bold,
-                    ),
+              season.title,
+                    style: textStyle24B,
                   );
           },
         ),
@@ -361,7 +357,7 @@ class IndexFragment extends StatelessWidget {
               ? theme.scaffoldBackgroundColor
               : theme.backgroundColor,
           padding: EdgeInsets.all(5.0),
-          shape: CircleBorder(),
+          shape: circleShape,
         ),
       ],
     );

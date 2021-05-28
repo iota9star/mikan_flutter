@@ -132,11 +132,7 @@ class SingleSeasonPage extends StatelessWidget {
             duration: dur240,
             child: Text(
               this.season.title,
-              style: TextStyle(
-                fontSize: 24,
-                height: 1.25,
-                fontWeight: FontWeight.bold,
-              ),
+              style: textStyle24B,
             ),
           ),
         );

@@ -194,11 +194,7 @@ class SeasonListPage extends StatelessWidget {
               Expanded(
                 child: Text(
                   bangumiRow.name,
-                  style: TextStyle(
-                    fontSize: 18,
-                    height: 1.25,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textStyle18B,
                 ),
               ),
               Tooltip(
@@ -239,11 +235,7 @@ class SeasonListPage extends StatelessWidget {
               children: <Widget>[
                 Text(
                   "季度番组",
-                  style: TextStyle(
-                    fontSize: 24,
-                    height: 1.25,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textStyle24B,
                 ),
               ],
             ),

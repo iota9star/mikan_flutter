@@ -101,7 +101,7 @@ class BangumiPage extends StatelessWidget {
                                 color: theme.backgroundColor.withOpacity(0.87),
                                 minWidth: 0,
                                 padding: EdgeInsets.all(10.0),
-                                shape: CircleBorder(),
+                                shape: circleShape,
                               ),
                             ],
                           ),
@@ -149,12 +149,7 @@ class BangumiPage extends StatelessWidget {
             width: double.infinity,
             height: 240.0,
             margin: edgeH16V8,
-            padding: EdgeInsets.only(
-              left: 24.0,
-              right: 24.0,
-              bottom: 24.0,
-              top: 24.0,
-            ),
+            padding: edge24,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topRight,
@@ -338,7 +333,7 @@ class BangumiPage extends StatelessWidget {
                   //   color: Colors.pinkAccent,
                   //   padding: EdgeInsets.all(12.0),
                   //   minWidth: 0,
-                  //   shape: CircleBorder(),
+                  //   shape: circleShape,
                   // ),
                   // Spacer(),
                   // MaterialButton(
@@ -347,7 +342,7 @@ class BangumiPage extends StatelessWidget {
                   //   color: Colors.blueAccent,
                   //   minWidth: 0,
                   //   padding: EdgeInsets.all(16.0),
-                  //   shape: CircleBorder(),
+                  //   shape: circleShape,
                   // ),
                 ],
               ),
@@ -377,12 +372,7 @@ class BangumiPage extends StatelessWidget {
             bottom: 12.0,
             top: 12.0,
           ),
-          padding: const EdgeInsets.only(
-            left: 24.0,
-            right: 24.0,
-            bottom: 24.0,
-            top: 24.0,
-          ),
+          padding: edge24,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topRight,
@@ -392,7 +382,7 @@ class BangumiPage extends StatelessWidget {
                 theme.backgroundColor.withOpacity(0.9),
               ],
             ),
-            borderRadius: BorderRadius.circular(16.0),
+            borderRadius: borderRadius16,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

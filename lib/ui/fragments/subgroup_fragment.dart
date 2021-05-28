@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
+import 'package:mikan_flutter/topvars.dart';
 
 class SubgroupFragment extends StatelessWidget {
   final List<Subgroup> subgroups;
@@ -17,12 +18,7 @@ class SubgroupFragment extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-              top: 16.0,
-              bottom: 8.0,
-              left: 16.0,
-              right: 16.0,
-            ),
+            padding: edgeHT16B8,
             child: const Text("请选择字幕组"),
           ),
           ...List.generate(
@@ -38,10 +34,7 @@ class SubgroupFragment extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
+                  padding: edgeH16V8,
                   child: Row(
                     children: [
                       Container(
@@ -71,17 +64,11 @@ class SubgroupFragment extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        width: 12.0,
-                      ),
+                      sizedBoxW12,
                       Expanded(
                         child: Text(
                           subgroup.name,
-                          style: TextStyle(
-                            height: 1.25,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
-                          ),
+                          style: textStyle16B,
                         ),
                       ),
                     ],

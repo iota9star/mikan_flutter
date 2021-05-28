@@ -91,7 +91,7 @@ class RecentSubscribedPage extends StatelessWidget {
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, records, __) {
           return SliverGrid(
-            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 360.0,
               crossAxisSpacing: 12.0,
               mainAxisSpacing: 12.0,
@@ -141,11 +141,7 @@ class RecentSubscribedPage extends StatelessWidget {
               children: <Widget>[
                 Text(
                   "订阅更新",
-                  style: TextStyle(
-                    fontSize: 24,
-                    height: 1.25,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textStyle24B,
                 ),
               ],
             ),

@@ -122,11 +122,7 @@ class ListFragment extends StatelessWidget {
               children: <Widget>[
                 Text(
                   "最新发布",
-                  style: TextStyle(
-                    fontSize: 24,
-                    height: 1.25,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textStyle24B,
                 ),
               ],
             ),

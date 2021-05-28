@@ -306,7 +306,7 @@ class SearchFragment extends StatelessWidget {
           minWidth: 0,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: borderRadius10,
           ),
           child: Text(
             subgroup.name,
@@ -361,12 +361,7 @@ class SearchFragment extends StatelessWidget {
     return SliverPinnedToBoxAdapter(
       child: Container(
         color: theme.scaffoldBackgroundColor,
-        padding: EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 24.0,
-          bottom: 16.0,
-        ),
+        padding: edgeHB16T24,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -422,11 +417,7 @@ class SearchFragment extends StatelessWidget {
         Expanded(
           child: Text(
             "Search",
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              height: 1.25,
-            ),
+            style: textStyle24B,
           ),
         ),
         Selector<SearchModel, bool>(

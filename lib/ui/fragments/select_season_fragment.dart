@@ -97,7 +97,7 @@ class SelectSeasonFragment extends StatelessWidget {
               ),
               minWidth: 0,
               color: theme.scaffoldBackgroundColor,
-              shape: CircleBorder(),
+              shape: circleShape,
             ),
           ],
         ),
@@ -127,9 +127,9 @@ class SelectSeasonFragment extends StatelessWidget {
                 child: MaterialButton(
                   minWidth: 0,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: EdgeInsets.all(0.0),
+                  padding: EdgeInsets.zero,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: borderRadius10,
                   ),
                   child: Text(
                     season.season,
