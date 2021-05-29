@@ -72,7 +72,7 @@ class RssRecordItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  sizedBoxH8,
+                  sizedBoxW8,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

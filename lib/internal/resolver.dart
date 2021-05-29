@@ -343,10 +343,26 @@ class Resolver {
         keywords.forEach((key, value) {
           if (tempLowerCase.contains(key)) {
             tags.add(value);
+            // temp = temp.replaceAll(
+            //   RegExp(
+            //     key,
+            //     caseSensitive: false,
+            //     multiLine: true,
+            //   ),
+            //   "",
+            // );
           }
         });
         record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
         record.title = temp;
+        // record.title = temp.replaceAll(
+        //   RegExp(
+        //     r"\[[\s\[\]-_]*\]",
+        //     caseSensitive: false,
+        //     multiLine: true,
+        //   ),
+        //   "",
+        // );
       }
       record.url =
           MikanUrl.BASE_URL + (tempElement.attributes['href']?.trim() ?? "");

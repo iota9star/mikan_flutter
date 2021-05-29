@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/register_model.dart';
@@ -35,18 +33,13 @@ class RegisterPage extends StatelessWidget {
           return Scaffold(
             body: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.only(
-                  left: 24.0,
-                  right: 24.0,
-                  top: Sz.statusBarHeight + 36.0,
-                  bottom: 36.0,
-                ),
+                padding: edgeH24V36WithStatusBar,
                 child: Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      _buildHeader(),
+                      normalFormHeader,
                       sizedBoxH16,
                       _buildUserNameField(theme, registerModel),
                       sizedBoxH16,
@@ -307,36 +300,6 @@ class RegisterPage extends StatelessWidget {
           keyboardType: TextInputType.visiblePassword,
         );
       },
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        ExtendedImage.asset(
-          "assets/mikan.png",
-          width: 72.0,
-        ),
-        sizedBoxW24,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              "Mikan Project",
-              style: TextStyle(fontSize: 14.0),
-            ),
-            Text(
-              "蜜柑计划",
-              style: TextStyle(
-                fontSize: 32.0,
-                height: 1.25,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        )
-      ],
     );
   }
 }

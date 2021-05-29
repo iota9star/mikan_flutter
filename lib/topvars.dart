@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/screen.dart';
@@ -25,41 +26,32 @@ const edgeR4 = const EdgeInsets.only(right: 4.0);
 const edgeR16 = const EdgeInsets.only(right: 16.0);
 const edgeH4V2 = const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0);
 const edgeRB4 = const EdgeInsets.only(right: 4.0, bottom: 4.0);
-const edgeVT16R8 = const EdgeInsets.only(
-  right: 8.0,
-  left: 16.0,
-  top: 16.0,
-  bottom: 16.0,
-);
-const edgeHB16T4 = const EdgeInsets.only(
-  top: 4.0,
-  left: 16.0,
-  right: 16.0,
-  bottom: 16.0,
-);
+const edgeVT16R8 =
+    const EdgeInsets.only(right: 8.0, left: 16.0, top: 16.0, bottom: 16.0);
+const edgeHB16T4 =
+    const EdgeInsets.only(top: 4.0, left: 16.0, right: 16.0, bottom: 16.0);
 
-const edgeHB16T24 = const EdgeInsets.only(
-  left: 16.0,
-  right: 16.0,
-  top: 24.0,
-  bottom: 16.0,
-);
+const edgeHB16T24 =
+    const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 16.0);
 
-const edgeHT16B8 = const EdgeInsets.only(
-  top: 16.0,
-  bottom: 8.0,
-  left: 16.0,
-  right: 16.0,
-);
+const edgeHT16B8 =
+    const EdgeInsets.only(top: 16.0, bottom: 8.0, left: 16.0, right: 16.0);
 
 const edgeT16B12 = const EdgeInsets.only(top: 16.0, bottom: 12.0);
 
-EdgeInsets edge16Header() => EdgeInsets.only(
-      top: 16.0 + Sz.statusBarHeight,
-      left: 16.0,
-      right: 16.0,
-      bottom: 16.0,
-    );
+final edge16WithStatusBar = EdgeInsets.only(
+  top: 16.0 + Sz.statusBarHeight,
+  left: 16.0,
+  right: 16.0,
+  bottom: 16.0,
+);
+
+final edgeH24V36WithStatusBar = EdgeInsets.only(
+  top: Sz.statusBarHeight + 36.0,
+  bottom: 36.0,
+  left: 24.0,
+  right: 24.0,
+);
 
 const borderRadiusT16 = const BorderRadius.only(
   topRight: Radius.circular(16.0),
@@ -143,8 +135,8 @@ const textStyle13B500 = const TextStyle(
   fontWeight: FontWeight.w500,
 );
 
-const textStyle10 = const TextStyle(
-  fontSize: 10.0,
+const textStyle11 = const TextStyle(
+  fontSize: 11.0,
   height: 1.25,
 );
 
@@ -174,9 +166,11 @@ const sizedBoxW12 = const SizedBox(width: 12.0);
 const sizedBoxH12 = const SizedBox(height: 12.0);
 const sizedBoxH10 = const SizedBox(height: 10.0);
 const sizedBoxH8 = const SizedBox(height: 8.0);
+const sizedBoxW8 = const SizedBox(width: 8.0);
 const sizedBoxW4 = const SizedBox(width: 4.0);
 const sizedBoxH4 = const SizedBox(height: 4.0);
 const sizedBoxH56 = const SizedBox(height: 56.0);
+const sizedBoxH42 = const SizedBox(height: 42.0);
 
 const spacer = const Spacer();
 
@@ -186,3 +180,31 @@ const dur3000 = const Duration(milliseconds: 3000);
 const sliverToBoxAdapter = const SliverToBoxAdapter();
 
 const circleShape = const CircleBorder();
+
+final normalFormHeader = Row(
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: <Widget>[
+    ExtendedImage.asset(
+      "assets/mikan.png",
+      width: 72.0,
+    ),
+    sizedBoxW24,
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          "Mikan Project",
+          style: TextStyle(fontSize: 14.0),
+        ),
+        Text(
+          "蜜柑计划",
+          style: TextStyle(
+            fontSize: 32.0,
+            height: 1.25,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    )
+  ],
+);
