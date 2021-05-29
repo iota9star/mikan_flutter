@@ -18,7 +18,6 @@ jobs:
         with:
           channel: "stable"
       - run: flutter pub get
-      - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;20.0.5594570"
       - run: flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
       - name: release apk
         uses: ncipollo/release-action@v1

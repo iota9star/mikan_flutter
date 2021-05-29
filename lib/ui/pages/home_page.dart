@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
                     items: [
                       BarItem(
                         icon: FluentIcons.layer_24_regular,
-                        selectedIcon: FluentIcons.conference_room_24_filled,
+                        selectedIcon: FluentIcons.link_square_24_filled,
                         isSelected: selectIndex == 0,
                       ),
                       BarItem(
