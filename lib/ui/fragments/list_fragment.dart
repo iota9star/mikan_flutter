@@ -1,7 +1,6 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -71,7 +70,7 @@ class ListFragment extends StatelessWidget {
           if (records.isEmpty) {
             return sliverToBoxAdapter;
           }
-          return SliverGrid(
+          return SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final RecordItem record = records[index];
@@ -90,12 +89,12 @@ class ListFragment extends StatelessWidget {
               },
               childCount: records.length,
             ),
-            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 360.0,
-              mainAxisExtent: 16.0,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 164.0,
-            ),
+            // gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+            //   minCrossAxisExtent: 360.0,
+            //   mainAxisExtent: 16.0,
+            //   crossAxisSpacing: 16.0,
+            //   mainAxisSpacing: 164.0,
+            // ),
           );
         },
       ),

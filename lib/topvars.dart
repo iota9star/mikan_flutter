@@ -38,6 +38,7 @@ const edgeHT16B8 =
     const EdgeInsets.only(top: 16.0, bottom: 8.0, left: 16.0, right: 16.0);
 
 const edgeT16B12 = const EdgeInsets.only(top: 16.0, bottom: 12.0);
+const edgeB16 = const EdgeInsets.only(bottom: 16.0);
 
 final edge16WithStatusBar = EdgeInsets.only(
   top: 16.0 + Sz.statusBarHeight,
@@ -133,11 +134,6 @@ const textStyle13B500 = const TextStyle(
   fontSize: 13.0,
   height: 1.25,
   fontWeight: FontWeight.w500,
-);
-
-const textStyle11 = const TextStyle(
-  fontSize: 11.0,
-  height: 1.25,
 );
 
 const textStyle24B = const TextStyle(

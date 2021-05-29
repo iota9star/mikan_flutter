@@ -68,11 +68,11 @@ class RecentSubscribedPage extends StatelessWidget {
                 enablePullDown: true,
                 enablePullUp: true,
                 onRefresh: model.refresh,
-                onLoading: model.loadMoreRecentRecords,
+                onLoading: model.loadMore,
                 child: CustomScrollView(
                   slivers: [
                     _buildHeader(theme),
-                    _buildRecordsList(theme),
+                    _buildList(theme),
                   ],
                 ),
               ),
@@ -83,7 +83,7 @@ class RecentSubscribedPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRecordsList(final ThemeData theme) {
+  Widget _buildList(final ThemeData theme) {
     return SliverPadding(
       padding: edgeH16V8,
       sliver: Selector<RecentSubscribedModel, List<RecordItem>>(

@@ -140,7 +140,6 @@ class MikanApp extends StatelessWidget {
       data: theme,
       child: OKToast(
         position: ToastPosition(align: Alignment.bottomCenter, offset: -72.0),
-        duration: Duration(milliseconds: 3600),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: theme,

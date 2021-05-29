@@ -185,7 +185,11 @@ class BangumiSliverGridFragment extends StatelessWidget {
           Text(
             bangumi.updateAt,
             maxLines: 1,
-            style: textStyle11,
+            style: TextStyle(
+              fontSize: 11.0,
+              height: 1.25,
+              color: theme.textTheme.subtitle1?.color,
+            ),
           )
       ],
     );

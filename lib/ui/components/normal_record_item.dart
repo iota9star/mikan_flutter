@@ -45,6 +45,8 @@ class NormalRecordItem extends StatelessWidget {
         color: theme.backgroundColor,
         borderRadius: borderRadius16,
       ),
+      margin: edgeB16,
+      height: 164.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

@@ -34,10 +34,10 @@ class RecentSubscribedModel extends CancelableBaseModel {
 
   refresh() async {
     this._dayOffset = 0;
-    await this.loadMoreRecentRecords();
+    await this.loadMore();
   }
 
-  loadMoreRecentRecords() async {
+  loadMore() async {
     final int next = this._dayOffset + 2;
     final Resp resp = await (this + Repo.day(next, 1));
     if (resp.success) {
