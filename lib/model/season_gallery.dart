@@ -1,17 +1,17 @@
 import 'package:mikan_flutter/model/bangumi.dart';
 
 class SeasonGallery {
-  late final String year;
-  late final String season;
-  late final String title;
-  late final bool isCurrentSeason;
-  late final List<Bangumi> bangumis;
+  late String year = "";
+  late String season = "";
+  late String title = "";
+  late bool active = false;
+  late List<Bangumi> bangumis;
 
   SeasonGallery({
     required this.year,
     required this.season,
     required this.title,
-    this.isCurrentSeason = false,
+    this.active = false,
     required this.bangumis,
   });
 
@@ -25,7 +25,7 @@ class SeasonGallery {
           year == other.year &&
           season == other.season &&
           title == other.title &&
-          isCurrentSeason == other.isCurrentSeason &&
+          active == other.active &&
           bangumis == other.bangumis;
 
   @override
@@ -33,6 +33,6 @@ class SeasonGallery {
       year.hashCode ^
       season.hashCode ^
       title.hashCode ^
-      isCurrentSeason.hashCode ^
+      active.hashCode ^
       bangumis.hashCode;
 }

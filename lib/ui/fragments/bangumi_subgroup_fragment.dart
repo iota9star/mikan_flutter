@@ -51,7 +51,7 @@ class BangumiSubgroupFragment extends StatelessWidget {
               selector: (_, model) => model.subgroupBangumi,
               shouldRebuild: (pre, next) => pre != next,
               builder: (context, subgroupBangumi, child) {
-                if (subgroupBangumi == null) return SizedBox();
+                if (subgroupBangumi == null) return sizedBox;
                 return Column(
                   children: [
                     _buildHeader(

@@ -198,7 +198,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                       year: gallery.year,
                       season: gallery.season,
                       title: gallery.title,
-                      active: gallery.isCurrentSeason,
+                      active: gallery.active,
                     ),
                   ),
                 );

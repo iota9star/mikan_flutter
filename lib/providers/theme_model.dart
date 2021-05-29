@@ -6,6 +6,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
+import 'package:mikan_flutter/topvars.dart';
 
 class ThemeModel extends BaseModel {
   late ThemeItem _themeItem;
@@ -43,6 +44,10 @@ class ThemeModel extends BaseModel {
       isDark ? _themeItem.darkBackgroundColor : _themeItem.lightBackgroundColor,
     );
     final fontFamily = _themeItem.fontFamily;
+    final underlineInputBorder = UnderlineInputBorder(
+      borderSide: BorderSide.none,
+      borderRadius: borderRadius16,
+    );
     ThemeData themeData = ThemeData(
       brightness: brightness,
       cupertinoOverrideTheme: CupertinoThemeData(
@@ -77,21 +82,16 @@ class ThemeModel extends BaseModel {
             ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: accentColor),
-          borderRadius: BorderRadius.zero,
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: accentColor),
-          borderRadius: BorderRadius.zero,
-        ),
+        focusedBorder: underlineInputBorder,
+        disabledBorder: underlineInputBorder,
+        enabledBorder: underlineInputBorder,
+        errorBorder: underlineInputBorder,
+        focusedErrorBorder: underlineInputBorder,
+        border: underlineInputBorder,
         prefixStyle: TextStyle(color: accentColor),
         suffixStyle: TextStyle(color: accentColor),
         focusColor: accentColor,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 14.0,
-          vertical: 4.0,
-        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.0),
         hintStyle: TextStyle(height: 1.4, color: accentColor),
         labelStyle: TextStyle(fontSize: 16.0, color: accentColor),
       ),
@@ -103,7 +103,7 @@ class ThemeModel extends BaseModel {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           primary: accentColor,
-          shape: const RoundedRectangleBorder(),
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
           minimumSize: Size(120.0, 48.0),
         ),
       ),

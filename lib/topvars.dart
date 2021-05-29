@@ -9,6 +9,8 @@ const edgeH16T4 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0);
 const edgeH16T8 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0);
 const edgeHB16T8 =
     const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0);
+const edgeH16T24B8 =
+    const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 24.0);
 const edge16 = const EdgeInsets.all(16.0);
 const edge8 = const EdgeInsets.all(8.0);
 const edge10 = const EdgeInsets.all(10.0);
@@ -39,6 +41,7 @@ const edgeHT16B8 =
 
 const edgeT16B12 = const EdgeInsets.only(top: 16.0, bottom: 12.0);
 const edgeB16 = const EdgeInsets.only(bottom: 16.0);
+const edgeV8R12 = const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 12.0);
 
 final edge16WithStatusBar = EdgeInsets.only(
   top: 16.0 + Sz.statusBarHeight,

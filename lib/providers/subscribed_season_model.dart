@@ -59,7 +59,7 @@ class SubscribedSeasonModel extends CancelableBaseModel {
         year: season.year,
         season: season.season,
         title: season.title,
-        isCurrentSeason: season.active,
+        active: season.active,
         bangumis: resp.data ?? [],
       );
       if (this._loadIndex == 0) {

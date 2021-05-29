@@ -175,7 +175,7 @@ class BangumiPage extends StatelessWidget {
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, bangumiDetail, _) {
         if (bangumiDetail == null || bangumiDetail.intro.isNullOrBlank) {
-          return const SizedBox();
+          return sizedBox;
         }
         return Container(
           width: double.infinity,
@@ -230,7 +230,7 @@ class BangumiPage extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, subgroups, __) {
         if (subgroups.isNullOrEmpty) {
-          return const SizedBox();
+          return sizedBox;
         }
         return Container(
           width: double.infinity,
@@ -362,7 +362,7 @@ class BangumiPage extends StatelessWidget {
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, bangumiDetail, _) {
         if (bangumiDetail == null) {
-          return const SizedBox();
+          return sizedBox;
         }
         return Container(
           width: double.infinity,

@@ -89,7 +89,7 @@ class RecordDetailPage extends StatelessWidget {
         selector: (_, model) => model.recordDetail,
         shouldRebuild: (pre, next) => pre != next,
         builder: (_, recordDetail, __) {
-          if (recordDetail == null) return const SizedBox();
+          if (recordDetail == null) return sizedBox;
           return Container(
             decoration: BoxDecoration(
               image: DecorationImage(

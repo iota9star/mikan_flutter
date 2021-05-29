@@ -171,7 +171,7 @@ class SearchFragment extends StatelessWidget {
       message: bangumi.name,
       child: TapScaleContainer(
         height: double.infinity,
-        margin: edgeHT16,
+        margin: edgeV8R12,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -248,7 +248,7 @@ class SearchFragment extends StatelessWidget {
               builder: (_, hasScrolled, child) {
                 return AnimatedContainer(
                   width: double.infinity,
-                  height: less ? 72.0 : 112.0,
+                  height: less ? 56.0 : 96.0,
                   decoration: BoxDecoration(
                     color: theme.scaffoldBackgroundColor,
                     borderRadius: scrollHeaderBorderRadius(hasScrolled),
@@ -260,7 +260,7 @@ class SearchFragment extends StatelessWidget {
               },
               child: WaterfallFlow.builder(
                 physics: const BouncingScrollPhysics(),
-                padding: edge16,
+                padding: edgeH16V8,
                 scrollDirection: Axis.horizontal,
                 itemCount: subgroups.length,
                 gridDelegate:
@@ -353,7 +353,7 @@ class SearchFragment extends StatelessWidget {
     return SliverPinnedToBoxAdapter(
       child: Container(
         color: theme.scaffoldBackgroundColor,
-        padding: edgeHB16T24,
+        padding: edgeH16T24B8,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -368,38 +368,31 @@ class SearchFragment extends StatelessWidget {
 
   Widget _buildHeaderSearchField(
       final ThemeData theme, final SearchModel searchModel) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          labelText: '请输入搜索关键字',
-          prefixIcon: Icon(
-            FluentIcons.search_24_regular,
-            color: theme.accentColor,
-          ),
-          contentPadding: EdgeInsets.only(top: -2),
-          alignLabelWithHint: true,
+    return TextField(
+      decoration: InputDecoration(
+        labelText: '请输入关键字',
+        prefixIcon: Icon(
+          FluentIcons.search_24_regular,
+          color: theme.accentColor,
         ),
-        cursorColor: theme.accentColor,
-        textAlign: TextAlign.left,
-        autofocus: true,
-        maxLines: 1,
-        style: TextStyle(
-          height: 1.25,
+        contentPadding: EdgeInsets.only(
+          left: 14.0,
+          right: 14.0,
         ),
-        textInputAction: TextInputAction.search,
-        controller: searchModel.keywordsController,
-        keyboardType: TextInputType.text,
-        onSubmitted: (keywords) {
-          if (keywords.isNullOrBlank) return;
-          searchModel.search(keywords);
-        },
+        floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
+      cursorColor: theme.accentColor,
+      textAlign: TextAlign.left,
+      autofocus: true,
+      maxLines: 1,
+      style: textStyle14,
+      textInputAction: TextInputAction.search,
+      controller: searchModel.keywordsController,
+      keyboardType: TextInputType.text,
+      onSubmitted: (keywords) {
+        if (keywords.isNullOrBlank) return;
+        searchModel.search(keywords);
+      },
     );
   }
 
@@ -408,7 +401,7 @@ class SearchFragment extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            "Search",
+            "搜索",
             style: textStyle24B,
           ),
         ),

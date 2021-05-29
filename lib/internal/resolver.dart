@@ -460,7 +460,7 @@ class Resolver {
       subgroupGallery.title =
           "${ele.querySelector(".pubgroup-date")?.text.trim()} "
           "${ele.querySelector(".pubgroup-season")?.text.trim()}";
-      subgroupGallery.isCurrentSeason =
+      subgroupGallery.active =
           ele.querySelector(".pubgroup-season.current-season") != null;
       elements = ele.querySelectorAll("li[data-bangumiid]");
       bangumis = [];

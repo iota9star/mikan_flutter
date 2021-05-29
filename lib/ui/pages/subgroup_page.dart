@@ -13,6 +13,7 @@ import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 @FFRoute(
   name: "subgroup",
@@ -101,43 +102,42 @@ class SubgroupPage extends StatelessWidget {
         if (galleries.isSafeNotEmpty)
           ...List.generate(galleries.length, (index) {
             final SeasonGallery gallery = galleries[index];
-            return <Widget>[
-              _buildYearSeasonSection(gallery.title),
-              BangumiSliverGridFragment(
-                flag: gallery.title,
-                padding: edge16,
-                bangumis: gallery.bangumis,
-                handleSubscribe: (bangumi, flag) {
-                  context.read<SubscribedModel>().subscribeBangumi(
-                    bangumi.id,
-                    bangumi.subscribed,
-                    onSuccess: () {
-                      bangumi.subscribed = !bangumi.subscribed;
-                    },
-                    onError: (msg) {
-                      "订阅失败：$msg".toast();
-                    },
-                  );
-                },
-              ),
-            ];
-          }).expand((element) => element),
+            return MultiSliver(
+              pushPinnedChildren: true,
+              children: <Widget>[
+                _buildYearSeasonSection(theme, gallery.title),
+                BangumiSliverGridFragment(
+                  flag: gallery.title,
+                  padding: edgeHB16T4,
+                  bangumis: gallery.bangumis,
+                  handleSubscribe: (bangumi, flag) {
+                    context.read<SubscribedModel>().subscribeBangumi(
+                      bangumi.id,
+                      bangumi.subscribed,
+                      onSuccess: () {
+                        bangumi.subscribed = !bangumi.subscribed;
+                      },
+                      onError: (msg) {
+                        "订阅失败：$msg".toast();
+                      },
+                    );
+                  },
+                ),
+              ],
+            );
+          }),
       ],
     );
   }
 
-  Widget _buildYearSeasonSection(final String section) {
-    return SliverToBoxAdapter(
+  Widget _buildYearSeasonSection(final ThemeData theme, final String section) {
+    return SliverPinnedToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.only(
-          top: 16.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 8.0,
-        ),
+        padding: edgeH16V8,
+        color: theme.scaffoldBackgroundColor,
         child: Text(
           section,
-          style: textStyle18B,
+          style: textStyle20B,
         ),
       ),
     );
