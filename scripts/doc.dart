@@ -61,15 +61,15 @@ String getLibs() {
       continue;
     }
     sb.write(
-        "[![$value](https://img.shields.io/pub/v/$value?label=$value&logo=dart)](https://pub.dev/packages/$value)  ");
+        "[![$value](https://img.shields.io/pub/v/$value?label=$value&logo=dart)](https://pub.dev/packages/$value) ");
   }
-  sb.write("\n---  \n");
+  sb.write(" \n---  \n");
   for (var value in devDeps) {
     if (value == "flutter") {
       continue;
     }
     sb.write(
-        "[![$value](https://img.shields.io/pub/v/$value?label=$value&logo=dart)](https://pub.dev/packages/$value)  ");
+        "[![$value](https://img.shields.io/pub/v/$value?label=$value&logo=dart)](https://pub.dev/packages/$value) ");
   }
   sb.write("\n");
   return sb.toString();
