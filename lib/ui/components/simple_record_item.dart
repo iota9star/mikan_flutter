@@ -29,13 +29,13 @@ class SimpleRecordItem extends StatelessWidget {
     );
     return TapScaleContainer(
       onTap: onTap,
-      margin: edgeH16V8,
+      height: 156.0,
       decoration: BoxDecoration(
         color: theme.backgroundColor,
         borderRadius: borderRadius16,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
             padding: edgeHT16,
@@ -46,57 +46,70 @@ class SimpleRecordItem extends StatelessWidget {
           ),
           Padding(
             padding: edgeH16T8,
-            child: Text(
-              record.title,
-              style: textStyle14,
+            child: Tooltip(
+              message: record.title,
+              padding: edgeH12V8,
+              margin: edgeH16,
+              child: Text(
+                record.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: textStyle14B500,
+              ),
             ),
           ),
-          Padding(
-            padding: edgeH16T8,
-            child: Wrap(
-              children: [
-                Container(
-                  margin: edgeRB4,
-                  padding: edgeH4V2,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        theme.accentColor,
-                        theme.accentColor.withOpacity(0.56),
-                      ],
+          spacer,
+          Container(
+            margin: edgeH16T4,
+            width: double.infinity,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: edgeR4,
+                    padding: edgeH4V2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          theme.accentColor,
+                          theme.accentColor.withOpacity(0.56),
+                        ],
+                      ),
+                      borderRadius: borderRadius2,
                     ),
-                    borderRadius: borderRadius2,
+                    child: Text(
+                      record.size,
+                      style: fileTagStyle,
+                    ),
                   ),
-                  child: Text(
-                    record.size,
-                    style: fileTagStyle,
-                  ),
-                ),
-                if (!record.tags.isNullOrEmpty)
-                  ...List.generate(record.tags.length, (index) {
-                    return Container(
-                      margin: edgeRB4,
-                      padding: edgeH4V2,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            theme.primaryColor,
-                            theme.primaryColor.withOpacity(0.56),
-                          ],
+                  if (!record.tags.isNullOrEmpty)
+                    ...List.generate(record.tags.length, (index) {
+                      return Container(
+                        margin: edgeR4,
+                        padding: edgeH4V2,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              theme.primaryColor,
+                              theme.primaryColor.withOpacity(0.56),
+                            ],
+                          ),
+                          borderRadius: borderRadius2,
                         ),
-                        borderRadius: borderRadius2,
-                      ),
-                      child: Text(
-                        record.tags[index],
-                        style: titleTagStyle,
-                      ),
-                    );
-                  }),
-              ],
+                        child: Text(
+                          record.tags[index],
+                          style: titleTagStyle,
+                        ),
+                      );
+                    }),
+                ],
+              ),
             ),
           ),
           Row(

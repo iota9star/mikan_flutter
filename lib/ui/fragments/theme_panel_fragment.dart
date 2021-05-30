@@ -19,7 +19,7 @@ class ThemePanelFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ThemeModel themeModel = Provider.of(context, listen: false);
+    final themeModel = Provider.of<ThemeModel>(context, listen: false);
     return Container(
       margin: EdgeInsets.only(
         left: 16.0,
@@ -27,7 +27,7 @@ class ThemePanelFragment extends StatelessWidget {
         bottom: 24.0,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: borderRadius16,
         color: theme.backgroundColor,
       ),
       child: ValueListenableBuilder(

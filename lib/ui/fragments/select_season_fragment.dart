@@ -16,8 +16,7 @@ class SelectSeasonFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final IndexModel indexModel =
-        Provider.of<IndexModel>(context, listen: false);
+    final indexModel = Provider.of<IndexModel>(context, listen: false);
     return Material(
       color: theme.scaffoldBackgroundColor,
       child: NotificationListener(
@@ -152,7 +151,7 @@ class SelectSeasonFragment extends StatelessWidget {
         selector: (_, model) => model.years,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, years, __) {
-          if (years.isNullOrEmpty) return sliverToBoxAdapter;
+          if (years.isNullOrEmpty) return emptySliverToBoxAdapter;
           return SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {

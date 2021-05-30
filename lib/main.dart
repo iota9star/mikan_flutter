@@ -104,7 +104,7 @@ class MikanApp extends StatelessWidget {
         ],
         child: Consumer<ThemeModel>(
           builder: (context, themeModel, child) {
-            final FirebaseModel firebaseModel = Provider.of<FirebaseModel>(
+            final firebaseModel = Provider.of<FirebaseModel>(
               context,
               listen: false,
             );

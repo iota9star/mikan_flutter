@@ -533,7 +533,7 @@ class Resolver {
     if (_intro.isNotBlank) {
       _intro = "\u3000\u3000" + _intro!.replaceAll("\n", "\n\u3000\u3000");
     }
-    detail.intro = _intro;
+    detail.intro = _intro ?? "";
     detail.subscribed = document
             .querySelector(".subscribed-badge")
             ?.attributes["style"]
@@ -551,7 +551,7 @@ class Resolver {
     final List<Element> tables = document
         .querySelectorAll("#sk-container > div.central-container > table");
     final List<Element> subs = document.querySelectorAll(".subgroup-text");
-    detail.subgroupBangumis = [];
+    detail.subgroupBangumis = {};
     SubgroupBangumi subgroupBangumi;
     Element? element;
     List<Element> elements;
@@ -641,7 +641,7 @@ class Resolver {
           records.add(record);
         }
         subgroupBangumi.records = records;
-        detail.subgroupBangumis.add(subgroupBangumi);
+        detail.subgroupBangumis[subgroupBangumi.dataId] = subgroupBangumi;
       }
     }
     return detail;

@@ -6,7 +6,6 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
-import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -46,23 +45,6 @@ class BangumiModel extends CancelableBaseModel {
         .whenComplete(() => this._loadCoverMainColor());
   }
 
-  SubgroupBangumi? _subgroupBangumi;
-
-  SubgroupBangumi? get subgroupBangumi => _subgroupBangumi;
-
-  set selectedSubgroupId(String value) {
-    if (value == _subgroupBangumi?.dataId) {
-      return;
-    }
-    _subgroupBangumi = _bangumiDetail?.subgroupBangumis
-        .firstWhere((element) => element.dataId == value);
-    _hasScrolled = false;
-    if (_refreshController.headerStatus != RefreshStatus.completed) {
-      _refreshController.loadComplete();
-    }
-    notifyListeners();
-  }
-
   Color? _coverMainColor;
 
   Color? get coverMainColor => _coverMainColor;
@@ -85,23 +67,24 @@ class BangumiModel extends CancelableBaseModel {
     });
   }
 
-  loadSubgroupList() async {
-    if ((this._subgroupBangumi?.records.length ?? 0) < 10) {
+  loadSubgroupList(final String dataId) async {
+    final sb = _bangumiDetail?.subgroupBangumis[dataId];
+    if ((sb?.records.length ?? 0) < 10) {
       return _refreshController.loadNoData();
     }
     final Resp resp = await (this +
         Repo.bangumiMore(
           this.id,
-          this._subgroupBangumi?.dataId ?? "",
-          this._subgroupBangumi?.records.length ?? 0 + 20,
+          sb?.dataId ?? "",
+          sb?.records.length ?? 0 + 20,
         ));
     if (resp.success) {
-      if (this._subgroupBangumi?.records.length == resp.data.length) {
+      if (sb?.records.length == resp.data.length) {
         _refreshController.loadNoData();
       } else {
         _refreshController.loadComplete();
       }
-      this._subgroupBangumi?.records = resp.data;
+      sb?.records = resp.data;
       notifyListeners();
     } else {
       _refreshController.loadFailed();

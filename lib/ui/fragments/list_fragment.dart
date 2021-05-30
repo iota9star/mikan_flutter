@@ -16,7 +16,7 @@ class ListFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ListModel model = Provider.of<ListModel>(context, listen: false);
+    final model = Provider.of<ListModel>(context, listen: false);
     return Scaffold(
       body: NotificationListener(
         onNotification: (notification) {
@@ -68,7 +68,7 @@ class ListFragment extends StatelessWidget {
         builder: (_, __, ___) {
           final List<RecordItem> records = listModel.records;
           if (records.isEmpty) {
-            return sliverToBoxAdapter;
+            return emptySliverToBoxAdapter;
           }
           return SliverList(
             delegate: SliverChildBuilderDelegate(

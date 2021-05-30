@@ -9,17 +9,21 @@ const edgeH16T4 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0);
 const edgeH16T8 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0);
 const edgeHB16T8 =
     const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0);
+const edgeHB24 = const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0);
 const edgeH16T24B8 =
     const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 24.0);
 const edge16 = const EdgeInsets.all(16.0);
 const edge8 = const EdgeInsets.all(8.0);
 const edge10 = const EdgeInsets.all(10.0);
+const edge12 = const EdgeInsets.all(12.0);
 const edge4 = const EdgeInsets.all(4.0);
 const edgeV4 = const EdgeInsets.symmetric(vertical: 4.0);
+const edgeV8 = const EdgeInsets.symmetric(vertical: 8.0);
 const edge24 = const EdgeInsets.all(24.0);
 const edge28 = const EdgeInsets.all(28.0);
 const edgeH12V8 = const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
 const edgeH16 = const EdgeInsets.symmetric(horizontal: 16.0);
+const edgeH24 = const EdgeInsets.symmetric(horizontal: 24.0);
 const edgeH8 = const EdgeInsets.symmetric(horizontal: 8.0);
 const edgeH16V12 = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0);
 const edgeH8V6 = const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0);
@@ -132,7 +136,10 @@ const textStyle13 = const TextStyle(
   fontSize: 13.0,
   height: 1.25,
 );
-
+const textStyle12 = const TextStyle(
+  fontSize: 12.0,
+  height: 1.25,
+);
 const textStyle13B500 = const TextStyle(
   fontSize: 13.0,
   height: 1.25,
@@ -163,6 +170,7 @@ const sizedBoxW16 = const SizedBox(width: 16.0);
 const sizedBoxH16 = const SizedBox(height: 16.0);
 const sizedBoxW12 = const SizedBox(width: 12.0);
 const sizedBoxH12 = const SizedBox(height: 12.0);
+const sizedBoxH24 = const SizedBox(height: 24.0);
 const sizedBoxH10 = const SizedBox(height: 10.0);
 const sizedBoxH8 = const SizedBox(height: 8.0);
 const sizedBoxW8 = const SizedBox(width: 8.0);
@@ -171,12 +179,16 @@ const sizedBoxH4 = const SizedBox(height: 4.0);
 const sizedBoxH56 = const SizedBox(height: 56.0);
 const sizedBoxH42 = const SizedBox(height: 42.0);
 
+const sliverSizedBoxH64 = const SliverToBoxAdapter(
+  child: const SizedBox(height: 64.0),
+);
+
 const spacer = const Spacer();
 
 const dur240 = const Duration(milliseconds: 240);
 const dur3000 = const Duration(milliseconds: 3000);
 
-const sliverToBoxAdapter = const SliverToBoxAdapter();
+const emptySliverToBoxAdapter = const SliverToBoxAdapter();
 
 const circleShape = const CircleBorder();
 
@@ -207,3 +219,5 @@ final normalFormHeader = Row(
     )
   ],
 );
+
+const centerLoading = const Center(child: CupertinoActivityIndicator());

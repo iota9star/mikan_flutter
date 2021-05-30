@@ -6,8 +6,8 @@ class BangumiDetail {
   late String name;
   late bool subscribed;
   late Map<String, String> more;
-  String? intro;
-  late List<SubgroupBangumi> subgroupBangumis;
+  late String intro;
+  late Map<String, SubgroupBangumi> subgroupBangumis;
 
   @override
   bool operator ==(Object other) =>

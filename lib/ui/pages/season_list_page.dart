@@ -40,7 +40,7 @@ class SeasonListPage extends StatelessWidget {
       child: ChangeNotifierProvider(
         create: (_) => SeasonListModel(this.years),
         child: Builder(builder: (context) {
-          final SeasonListModel seasonListModel =
+          final seasonListModel =
               Provider.of<SeasonListModel>(context, listen: false);
           return Scaffold(
             body: NotificationListener(

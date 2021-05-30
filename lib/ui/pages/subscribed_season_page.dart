@@ -48,7 +48,7 @@ class SubscribedSeasonPage extends StatelessWidget {
       child: ChangeNotifierProvider(
         create: (_) => SubscribedSeasonModel(this.years, this.galleries),
         child: Builder(builder: (context) {
-          final SubscribedSeasonModel seasonSubscribedModel =
+          final model =
               Provider.of<SubscribedSeasonModel>(context, listen: false);
           return Scaffold(
             body: NotificationListener(
@@ -58,7 +58,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                 } else if (notification is ScrollUpdateNotification) {
                   if (notification.depth == 0) {
                     final double offset = notification.metrics.pixels;
-                    seasonSubscribedModel.hasScrolled = offset > 0.0;
+                    model.hasScrolled = offset > 0.0;
                   }
                 }
                 return true;
@@ -68,7 +68,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                 shouldRebuild: (pre, next) => pre.ne(next),
                 builder: (context, galleries, __) {
                   return SmartRefresher(
-                    controller: seasonSubscribedModel.refreshController,
+                    controller: model.refreshController,
                     header: WaterDropMaterialHeader(
                       backgroundColor: theme.accentColor,
                       color: theme.accentColor.computeLuminance() < 0.5
@@ -83,8 +83,8 @@ class SubscribedSeasonPage extends StatelessWidget {
                     ),
                     enablePullDown: true,
                     enablePullUp: true,
-                    onRefresh: seasonSubscribedModel.refresh,
-                    onLoading: seasonSubscribedModel.loadMore,
+                    onRefresh: model.refresh,
+                    onLoading: model.loadMore,
                     child: _buildContentWrapper(
                       context,
                       theme,

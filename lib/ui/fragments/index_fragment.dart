@@ -24,7 +24,6 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
-import 'package:mikan_flutter/widget/common_widgets.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +35,7 @@ class IndexFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final IndexModel indexModel =
-        Provider.of<IndexModel>(context, listen: false);
+    final indexModel = Provider.of<IndexModel>(context, listen: false);
     return Scaffold(
       body: NotificationListener(
         onNotification: (notification) {
@@ -56,9 +54,7 @@ class IndexFragment extends StatelessWidget {
           shouldRebuild: (pre, next) => pre.ne(next),
           builder: (_, bangumiRows, __) {
             if (bangumiRows.isNullOrEmpty && indexModel.seasonLoading) {
-              return Center(
-                child: CupertinoActivityIndicator(),
-              );
+              return centerLoading;
             }
             return SmartRefresher(
               controller: indexModel.refreshController,
@@ -106,7 +102,7 @@ class IndexFragment extends StatelessWidget {
                       );
                     },
                   ),
-                  CommonWidgets.sliverBottomSpace,
+                  sliverSizedBoxH64,
                 ],
               ),
             );
@@ -174,7 +170,7 @@ class IndexFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, ovas, child) {
         if (ovas.isSafeNotEmpty) return child!;
-        return sliverToBoxAdapter;
+        return emptySliverToBoxAdapter;
       },
       child: SliverToBoxAdapter(
         child: Padding(
@@ -217,7 +213,7 @@ class IndexFragment extends StatelessWidget {
               ),
             ),
           );
-        return sliverToBoxAdapter;
+        return emptySliverToBoxAdapter;
       },
     );
   }
@@ -413,7 +409,7 @@ class IndexFragment extends StatelessWidget {
       selector: (_, model) => model.ovas,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, records, __) {
-        if (records.isNullOrEmpty) return sliverToBoxAdapter;
+        if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
         return SliverToBoxAdapter(
           child: Container(
             height: 156.0,

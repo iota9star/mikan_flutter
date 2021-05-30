@@ -18,7 +18,8 @@ class SettingsFragment extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => SettingsModel(),
       child: Builder(builder: (context) {
-        final SettingsModel settingsModel = Provider.of(context, listen: false);
+        final settingsModel =
+            Provider.of<SettingsModel>(context, listen: false);
         return Material(
           color: theme.scaffoldBackgroundColor,
           child: NotificationListener(

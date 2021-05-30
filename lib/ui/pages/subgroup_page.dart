@@ -37,7 +37,7 @@ class SubgroupPage extends StatelessWidget {
       child: ChangeNotifierProvider(
         create: (_) => SubgroupModel(subgroup),
         child: Builder(builder: (context) {
-          final SubgroupModel subgroupModel =
+          final subgroupModel =
               Provider.of<SubgroupModel>(context, listen: false);
           return Scaffold(
             body: NotificationListener(
@@ -95,9 +95,7 @@ class SubgroupPage extends StatelessWidget {
         _buildHeader(theme),
         if (subgroupModel.loading)
           SliverFillRemaining(
-            child: Center(
-              child: CupertinoActivityIndicator(),
-            ),
+            child: centerLoading,
           ),
         if (galleries.isSafeNotEmpty)
           ...List.generate(galleries.length, (index) {

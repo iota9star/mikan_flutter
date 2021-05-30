@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_details.dart';
@@ -15,6 +16,7 @@ import 'package:mikan_flutter/providers/record_detail_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 @FFRoute(
   name: "record-detail",
@@ -125,50 +127,52 @@ class RecordDetailPage extends StatelessWidget {
 
   Widget _buildContentWrapper(final ThemeData theme) {
     return Positioned.fill(
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Selector<RecordDetailModel, RecordDetail?>(
-          selector: (context, model) => model.recordDetail,
-          shouldRebuild: (pre, next) => pre != next,
-          builder: (context, recordDetail, __) {
-            if (recordDetail == null) {
-              return sizedBox;
-            }
-            return Column(
-              children: [
-                SizedBox(height: 160.0 + Sz.statusBarHeight),
-                _buildRecordTop(
-                  context,
-                  theme,
-                  recordDetail,
-                ),
-                _buildBangumiBase(
-                  theme,
-                  recordDetail,
-                ),
-                _buildRecordIntro(theme, recordDetail),
-                SizedBox(height: Sz.navBarHeight + 36.0),
-              ],
-            );
-          },
-        ),
+      child: Selector<RecordDetailModel, RecordDetail?>(
+        selector: (context, model) => model.recordDetail,
+        shouldRebuild: (pre, next) => pre != next,
+        builder: (context, recordDetail, __) {
+          if (recordDetail == null) {
+            return sizedBox;
+          }
+          return WaterfallFlow(
+            padding: EdgeInsets.only(
+              top: 90.0 + Sz.statusBarHeight,
+              left: 16.0,
+              right: 16.0,
+            ),
+            gridDelegate:
+                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 400.0,
+              mainAxisSpacing: 16.0,
+              crossAxisSpacing: 16.0,
+            ),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              _buildTop(
+                context,
+                theme,
+                recordDetail,
+              ),
+              _buildBase(
+                theme,
+                recordDetail,
+              ),
+              _buildIntro(theme, recordDetail),
+              sizedBoxH24,
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildBangumiBase(
+  Widget _buildBase(
     final ThemeData theme,
     final RecordDetail recordDetail,
   ) {
     final List<String> tags = recordDetail.tags;
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        bottom: 12.0,
-        top: 12.0,
-      ),
       padding: edge24,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -196,9 +200,9 @@ class RecordDetailPage extends StatelessWidget {
           if (recordDetail.name.isNotBlank) sizedBoxH8,
           Text(
             recordDetail.title,
-            style: textStyle14,
+            style: textStyle14B500,
           ),
-          Divider(),
+          const Divider(),
           ...recordDetail.more.entries
               .map((e) => Text(
                     "${e.key}: ${e.value}",
@@ -234,7 +238,7 @@ class RecordDetailPage extends StatelessWidget {
                           theme.primaryColor.withOpacity(0.56),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(2.0),
+                      borderRadius: borderRadius2,
                     ),
                     child: Text(
                       tags[index],
@@ -267,16 +271,16 @@ class RecordDetailPage extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           height: double.infinity,
-          child: Center(child: CupertinoActivityIndicator()),
+          child: centerLoading,
         ),
       ),
     );
   }
 
-  Widget _buildRecordTop(
+  Widget _buildTop(
     final BuildContext context,
     final ThemeData theme,
-    final RecordDetail recordDetail,
+    final RecordDetail detail,
   ) {
     final Color accentTextColor = theme.accentColor.computeLuminance() < 0.5
         ? Colors.white
@@ -290,8 +294,6 @@ class RecordDetailPage extends StatelessWidget {
           fit: StackFit.loose,
           children: [
             Positioned.fill(
-              left: 16.0,
-              right: 16.0,
               child: FractionallySizedBox(
                 widthFactor: 1,
                 heightFactor: 0.5,
@@ -308,20 +310,20 @@ class RecordDetailPage extends StatelessWidget {
                         theme.backgroundColor.withOpacity(0.9),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(16.0),
+                    borderRadius: borderRadius16,
                   ),
                 ),
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+              margin: edge24,
               child: Row(
                 children: [
-                  _buildBangumiCover(context, recordDetail),
+                  _buildBangumiCover(context, detail),
                   spacer,
                   MaterialButton(
                     onPressed: () {
-                      recordDetail.shareString.share();
+                      detail.shareString.share();
                     },
                     child: Container(
                       width: 42.0,
@@ -349,7 +351,7 @@ class RecordDetailPage extends StatelessWidget {
                   sizedBoxW16,
                   MaterialButton(
                     onPressed: () {
-                      recordDetail.magnet.launchAppAndCopy();
+                      detail.magnet.launchAppAndCopy();
                     },
                     child: Container(
                       width: 48.0,
@@ -383,18 +385,13 @@ class RecordDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRecordIntro(
+  Widget _buildIntro(
     final ThemeData theme,
     final RecordDetail recordDetail,
   ) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        bottom: 12.0,
-      ),
-      padding: EdgeInsets.all(24.0),
+      padding: edge24,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -404,14 +401,14 @@ class RecordDetailPage extends StatelessWidget {
             theme.backgroundColor.withOpacity(0.9),
           ],
         ),
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: borderRadius16,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "概况简介",
-            style: textStyle20B,
+            style: textStyle18B,
           ),
           sizedBoxH12,
           HtmlWidget(
@@ -451,7 +448,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withOpacity(0.6),
                 ),
               ],
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: borderRadius8,
             ),
             child: Center(
               child: SpinKitPumpingHeart(
@@ -471,7 +468,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: borderRadius8,
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
                 fit: BoxFit.cover,
@@ -492,7 +489,7 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.black.withAlpha(24),
                 )
               ],
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: borderRadius8,
               image: DecorationImage(
                 image: state.imageProvider,
                 fit: BoxFit.cover,

@@ -28,7 +28,7 @@ class RegisterPage extends StatelessWidget {
       child: ChangeNotifierProvider<RegisterModel>(
         create: (_) => RegisterModel(),
         child: Builder(builder: (context) {
-          final RegisterModel registerModel =
+          final registerModel =
               Provider.of<RegisterModel>(context, listen: false);
           return Scaffold(
             body: SingleChildScrollView(

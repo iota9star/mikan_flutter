@@ -34,8 +34,7 @@ class SingleSeasonPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => SeasonModel(this.season),
       child: Builder(builder: (context) {
-        final SeasonModel seasonModel =
-            Provider.of<SeasonModel>(context, listen: false);
+        final seasonModel = Provider.of<SeasonModel>(context, listen: false);
         return Scaffold(
           body: NotificationListener(
             onNotification: (notification) {

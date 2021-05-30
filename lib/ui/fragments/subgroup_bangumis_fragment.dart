@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -17,12 +18,14 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @immutable
-class BangumiSubgroupFragment extends StatelessWidget {
+class SubgroupBangumisFragment extends StatelessWidget {
   final BangumiModel bangumiModel;
+  final String dataId;
 
-  const BangumiSubgroupFragment({
+  const SubgroupBangumisFragment({
     Key? key,
     required this.bangumiModel,
+    required this.dataId,
   }) : super(key: key);
 
   @override
@@ -31,10 +34,11 @@ class BangumiSubgroupFragment extends StatelessWidget {
     return Material(
       color: theme.scaffoldBackgroundColor,
       child: ChangeNotifierProvider.value(
-        value: bangumiModel,
+        value: this.bangumiModel,
         child: Builder(builder: (context) {
-          final BangumiModel bangumiModel =
-              Provider.of<BangumiModel>(context, listen: false);
+          final model = Provider.of<BangumiModel>(context, listen: false);
+          final subgroupBangumi =
+              model.bangumiDetail!.subgroupBangumis[this.dataId]!;
           return NotificationListener(
             onNotification: (notification) {
               if (notification is OverscrollIndicatorNotification) {
@@ -42,30 +46,24 @@ class BangumiSubgroupFragment extends StatelessWidget {
               } else if (notification is ScrollUpdateNotification) {
                 if (notification.depth == 0) {
                   final double offset = notification.metrics.pixels;
-                  bangumiModel.hasScrolled = offset > 0.0;
+                  model.hasScrolled = offset > 0.0;
                 }
               }
               return true;
             },
-            child: Selector<BangumiModel, SubgroupBangumi?>(
-              selector: (_, model) => model.subgroupBangumi,
-              shouldRebuild: (pre, next) => pre != next,
-              builder: (context, subgroupBangumi, child) {
-                if (subgroupBangumi == null) return sizedBox;
-                return Column(
-                  children: [
-                    _buildHeader(
-                      context,
-                      theme,
-                      subgroupBangumi,
-                    ),
-                    _buildContentWrapper(
-                      context,
-                      theme,
-                    ),
-                  ],
-                );
-              },
+            child: Column(
+              children: [
+                _buildHeader(
+                  context,
+                  theme,
+                  subgroupBangumi,
+                ),
+                _buildContentWrapper(
+                  context,
+                  theme,
+                  subgroupBangumi,
+                ),
+              ],
             ),
           );
         }),
@@ -76,24 +74,25 @@ class BangumiSubgroupFragment extends StatelessWidget {
   Widget _buildContentWrapper(
     final BuildContext context,
     final ThemeData theme,
+    final SubgroupBangumi subgroupBangumi,
   ) {
     return Expanded(
       child: Selector<BangumiModel, List<RecordItem>>(
-        selector: (_, model) => model.subgroupBangumi?.records ?? [],
+        selector: (_, model) => subgroupBangumi.records,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, records, __) {
           return SmartRefresher(
             controller: bangumiModel.refreshController,
             enablePullDown: false,
             enablePullUp: true,
-            onLoading: bangumiModel.loadSubgroupList,
+            onLoading: () => bangumiModel.loadSubgroupList(this.dataId),
             footer: Indicator.footer(
               context,
               theme.accentColor,
               bottom: 16.0,
             ),
-            child: ListView.builder(
-              padding: edgeV4,
+            child: GridView.builder(
+              padding: edgeH16V8,
               controller: ModalScrollController.of(context),
               itemCount: records.length,
               itemBuilder: (context, ind) {
@@ -111,6 +110,12 @@ class BangumiSubgroupFragment extends StatelessWidget {
                   },
                 );
               },
+              gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+                minCrossAxisExtent: 360.0,
+                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 16.0,
+                mainAxisExtent: 156.0,
+              ),
             ),
           );
         },

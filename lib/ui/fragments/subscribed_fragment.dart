@@ -19,7 +19,6 @@ import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/widget/common_widgets.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -30,7 +29,7 @@ class SubscribedFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final SubscribedModel subscribedModel =
+    final subscribedModel =
         Provider.of<SubscribedModel>(context, listen: false);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
@@ -84,7 +83,7 @@ class SubscribedFragment extends StatelessWidget {
                   ],
                 ),
                 _buildSeeMore(theme, subscribedModel),
-                CommonWidgets.sliverBottomSpace,
+                sliverSizedBoxH64,
               ],
             ),
           ),
@@ -147,9 +146,9 @@ class SubscribedFragment extends StatelessWidget {
                     theme.backgroundColor.withOpacity(0.9),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: borderRadius16,
               ),
-              child: Center(child: CupertinoActivityIndicator()),
+              child: centerLoading,
             ),
           );
         }
@@ -169,7 +168,7 @@ class SubscribedFragment extends StatelessWidget {
                     theme.backgroundColor.withOpacity(0.9),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: borderRadius16,
               ),
               child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
             ),
@@ -324,9 +323,9 @@ class SubscribedFragment extends StatelessWidget {
                     theme.backgroundColor.withOpacity(0.9),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: borderRadius16,
               ),
-              child: Center(child: CupertinoActivityIndicator()),
+              child: centerLoading,
             ),
           );
         }
@@ -363,7 +362,7 @@ class SubscribedFragment extends StatelessWidget {
                   theme.backgroundColor.withOpacity(0.9),
                 ],
               ),
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: borderRadius16,
             ),
             child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
           ),
@@ -412,7 +411,7 @@ class SubscribedFragment extends StatelessWidget {
         );
       },
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: borderRadius8,
         child: Stack(
           fit: StackFit.loose,
           clipBehavior: Clip.antiAlias,
@@ -489,7 +488,7 @@ class SubscribedFragment extends StatelessWidget {
       selector: (_, model) => model.records,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (_, records, __) {
-        if (records.isNullOrEmpty) return sliverToBoxAdapter;
+        if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
         return SliverPinnedToBoxAdapter(
           child: Container(
             color: theme.scaffoldBackgroundColor,
@@ -537,7 +536,7 @@ class SubscribedFragment extends StatelessWidget {
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, records, __) {
           if (records.isNullOrEmpty) {
-            return sliverToBoxAdapter;
+            return emptySliverToBoxAdapter;
           }
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
@@ -577,7 +576,7 @@ class SubscribedFragment extends StatelessWidget {
     return Selector<SubscribedModel, int>(
       builder: (context, length, _) {
         if (length == 0) {
-          return sliverToBoxAdapter;
+          return emptySliverToBoxAdapter;
         }
         return SliverToBoxAdapter(
           child: Padding(

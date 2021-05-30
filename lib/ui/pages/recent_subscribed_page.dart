@@ -36,7 +36,7 @@ class RecentSubscribedPage extends StatelessWidget {
       child: ChangeNotifierProvider(
         create: (_) => RecentSubscribedModel(this.loaded),
         child: Builder(builder: (context) {
-          final RecentSubscribedModel model =
+          final model =
               Provider.of<RecentSubscribedModel>(context, listen: false);
           return Scaffold(
             body: NotificationListener(

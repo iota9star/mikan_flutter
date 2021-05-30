@@ -28,8 +28,7 @@ class LoginPage extends StatelessWidget {
       child: ChangeNotifierProvider<LoginModel>(
         create: (_) => LoginModel(),
         child: Builder(builder: (context) {
-          final LoginModel loginModel =
-              Provider.of<LoginModel>(context, listen: false);
+          final loginModel = Provider.of<LoginModel>(context, listen: false);
           return Scaffold(
             body: SingleChildScrollView(
               child: Padding(
