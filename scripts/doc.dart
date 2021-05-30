@@ -35,14 +35,14 @@ String getScreenshots() {
   var screenshotDir = Directory("static${Platform.pathSeparator}screenshot");
   var screenshots = screenshotDir.listSync();
   var sb = StringBuffer(
-      "## Screenshot  \n\n| :heart: | :fire: | :sparkles: | :ok_hand: |  \n| -----| ---- | ---- | ---- |  \n");
+      "## Screenshot  \n\n| :heart: | :fire: | :sparkles: |  \n| -----| ---- | ---- |  \n");
   var length = screenshots.length;
   for (var i = 0; i < length; i++) {
     var file = screenshots.elementAt(i);
     sb.write("| ![](");
     sb.write(file.path.replaceAll(new RegExp(r'\\'), r'/'));
     sb.write(") ");
-    if ((i + 1) % 4 == 0 || i == length - 1) {
+    if ((i + 1) % 3 == 0 || i == length - 1) {
       sb.write("|  \n");
     }
   }

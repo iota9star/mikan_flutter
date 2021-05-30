@@ -20,19 +20,22 @@ full API reference.
 
 ## Screenshot  
 
-| :heart: | :fire: | :sparkles: | :ok_hand: |  
-| -----| ---- | ---- | ---- |  
-| ![](static/screenshot/img.png) | ![](static/screenshot/img1.png) | ![](static/screenshot/img2.png) | ![](static/screenshot/img3.png) |  
-| ![](static/screenshot/img_1.png) | ![](static/screenshot/img_2.png) | ![](static/screenshot/img_3.png) | ![](static/screenshot/img_4.png) |  
-| ![](static/screenshot/img_5.png) | ![](static/screenshot/img_6.png) | ![](static/screenshot/Screenshot_20210529-133203.jpg) | ![](static/screenshot/Screenshot_20210529-133232.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-133246.jpg) | ![](static/screenshot/Screenshot_20210529-133306.jpg) | ![](static/screenshot/Screenshot_20210529-133328.jpg) | ![](static/screenshot/Screenshot_20210529-133336.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-133349.jpg) | ![](static/screenshot/Screenshot_20210529-133409.jpg) | ![](static/screenshot/Screenshot_20210529-140004.jpg) | ![](static/screenshot/Screenshot_20210529-140019.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-140052.jpg) | ![](static/screenshot/Screenshot_20210529-141624.jpg) | ![](static/screenshot/Screenshot_20210529-141657.jpg) | ![](static/screenshot/Screenshot_20210529-142739.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-142758.jpg) | ![](static/screenshot/Screenshot_20210529-142810.jpg) | ![](static/screenshot/Screenshot_20210529-142825.jpg) | ![](static/screenshot/Screenshot_20210529-142835.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-142851.jpg) | ![](static/screenshot/Screenshot_20210529-142912.jpg) | ![](static/screenshot/Screenshot_20210529-142918.jpg) | ![](static/screenshot/Screenshot_20210529-142925.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-142929.jpg) | ![](static/screenshot/Screenshot_20210529-143110.jpg) | ![](static/screenshot/Screenshot_20210529-143116.jpg) | ![](static/screenshot/Screenshot_20210529-143127.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-143215.jpg) | ![](static/screenshot/Screenshot_20210529-143302.jpg) | ![](static/screenshot/Screenshot_20210529-143317.jpg) | ![](static/screenshot/Screenshot_20210529-143328.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-143342.jpg) |  
+| :heart: | :fire: | :sparkles: |  
+| -----| ---- | ---- |  
+| ![](static/screenshot/img.png) | ![](static/screenshot/img1.png) | ![](static/screenshot/img2.png) |  
+| ![](static/screenshot/img3.png) | ![](static/screenshot/img_1.png) | ![](static/screenshot/img_2.png) |  
+| ![](static/screenshot/img_3.png) | ![](static/screenshot/img_4.png) | ![](static/screenshot/img_5.png) |  
+| ![](static/screenshot/img_6.png) | ![](static/screenshot/Screenshot_20210529-133203.jpg) | ![](static/screenshot/Screenshot_20210529-133232.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-133246.jpg) | ![](static/screenshot/Screenshot_20210529-133306.jpg) | ![](static/screenshot/Screenshot_20210529-133328.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-133336.jpg) | ![](static/screenshot/Screenshot_20210529-133349.jpg) | ![](static/screenshot/Screenshot_20210529-133409.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-140004.jpg) | ![](static/screenshot/Screenshot_20210529-140019.jpg) | ![](static/screenshot/Screenshot_20210529-140052.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-141624.jpg) | ![](static/screenshot/Screenshot_20210529-141657.jpg) | ![](static/screenshot/Screenshot_20210529-142739.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-142758.jpg) | ![](static/screenshot/Screenshot_20210529-142810.jpg) | ![](static/screenshot/Screenshot_20210529-142825.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-142835.jpg) | ![](static/screenshot/Screenshot_20210529-142851.jpg) | ![](static/screenshot/Screenshot_20210529-142912.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-142918.jpg) | ![](static/screenshot/Screenshot_20210529-142925.jpg) | ![](static/screenshot/Screenshot_20210529-142929.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-143110.jpg) | ![](static/screenshot/Screenshot_20210529-143116.jpg) | ![](static/screenshot/Screenshot_20210529-143127.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-143215.jpg) | ![](static/screenshot/Screenshot_20210529-143302.jpg) | ![](static/screenshot/Screenshot_20210529-143317.jpg) |  
+| ![](static/screenshot/Screenshot_20210529-143328.jpg) | ![](static/screenshot/Screenshot_20210529-143342.jpg) |  
 
 ## Dependencies  
 
