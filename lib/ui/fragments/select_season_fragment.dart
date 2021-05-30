@@ -2,6 +2,7 @@ import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/season.dart';
@@ -101,7 +102,7 @@ class SelectSeasonFragment extends StatelessWidget {
       child: FractionallySizedBox(
         widthFactor: 1,
         child: Padding(
-          padding: edge8,
+          padding: edgeH4,
           child: Selector<IndexModel, Season?>(
             selector: (_, model) => model.selectedSeason,
             shouldRebuild: (pre, next) => pre != next,
@@ -152,20 +153,19 @@ class SelectSeasonFragment extends StatelessWidget {
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, years, __) {
           if (years.isNullOrEmpty) return emptySliverToBoxAdapter;
-          return SliverList(
+          return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final YearSeason year = years[index];
                 return Row(
                   mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Flexible(
-                      child: FractionallySizedBox(
-                        widthFactor: 1,
-                        child: Text(
-                          year.year,
-                          style: textStyle20B,
-                        ),
+                    SizedBox(
+                      width: 56.0,
+                      child: Text(
+                        year.year,
+                        style: textStyle20B,
                       ),
                     ),
                     ...List.generate(
@@ -188,6 +188,12 @@ class SelectSeasonFragment extends StatelessWidget {
                 );
               },
               childCount: years.length,
+            ),
+            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 400.0,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 8.0,
+              mainAxisExtent: 40.0,
             ),
           );
         },

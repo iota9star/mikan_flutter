@@ -1,11 +1,9 @@
 import 'dart:ui';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -24,14 +22,19 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
+import 'package:mikan_flutter/widget/infinite_carousel.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-@immutable
-class IndexFragment extends StatelessWidget {
+class IndexFragment extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _IndexFragmentState();
+}
+
+class _IndexFragmentState extends State<IndexFragment> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -187,6 +190,9 @@ class IndexFragment extends StatelessWidget {
     );
   }
 
+  InfiniteScrollController _infiniteScrollController =
+      InfiniteScrollController();
+
   Widget _buildCarousels(final ThemeData theme) {
     return Selector<IndexModel, List<Carousel>>(
       selector: (_, model) => model.carousels,
@@ -194,69 +200,75 @@ class IndexFragment extends StatelessWidget {
       builder: (context, carousels, __) {
         if (carousels.isNotEmpty)
           return SliverToBoxAdapter(
-            child: CarouselSlider.builder(
-              itemBuilder: (context, index, _) {
-                final carousel = carousels[index];
-                final String currFlag =
-                    "carousel:${carousel.id}:${carousel.cover}";
-                return _buildCarouselsItem(
-                  context,
-                  theme,
-                  currFlag,
-                  carousel,
-                );
-              },
-              itemCount: carousels.length,
-              options: CarouselOptions(
-                height: 180,
-                aspectRatio: 16 / 9,
-                viewportFraction: 0.8,
-                autoPlay: true,
-                enlargeCenterPage: true,
+            child: Container(
+              margin: edgeB16,
+              height: 128.0,
+              child: InfiniteCarousel.builder(
+                itemBuilder: (context, index, realIndex) {
+                  final carousel = carousels[index];
+                  final String currFlag =
+                      "carousel:$index:${carousel.id}:${carousel.cover}";
+                  final currentOffset = 280 * realIndex;
+                  return AnimatedBuilder(
+                    animation: _infiniteScrollController,
+                    builder: (_, __) {
+                      final diff =
+                          (_infiniteScrollController.offset - currentOffset);
+                      final ver = (diff / 36).abs();
+                      var hor = (diff / 72).abs();
+                      if (hor < 6.0) {
+                        hor = 6.0;
+                      } else if (hor > 14.0) {
+                        hor = 14.0;
+                      }
+                      return Hero(
+                        tag: currFlag,
+                        child: TapScaleContainer(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              Routes.bangumi.name,
+                              arguments: Routes.bangumi.d(
+                                heroTag: currFlag,
+                                bangumiId: carousel.id,
+                                cover: carousel.cover,
+                              ),
+                            );
+                          },
+                          margin: EdgeInsets.symmetric(
+                            horizontal: hor,
+                            vertical: ver > 16.0 ? 16.0 : ver,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius16,
+                            color: theme.backgroundColor,
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 8,
+                                color: Colors.black.withOpacity(0.08),
+                              )
+                            ],
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image:
+                                  ExtendedNetworkImageProvider(carousel.cover),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                controller: _infiniteScrollController,
+                itemExtent: 280.0,
+                itemCount: carousels.length,
+                center: true,
+                velocityFactor: 0.8,
               ),
             ),
           );
         return emptySliverToBoxAdapter;
       },
-    );
-  }
-
-  Widget _buildCarouselsItem(
-    final BuildContext context,
-    final ThemeData theme,
-    final String currFlag,
-    final Carousel carousel,
-  ) {
-    return Hero(
-      tag: currFlag,
-      child: TapScaleContainer(
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            Routes.bangumi.name,
-            arguments: Routes.bangumi.d(
-              heroTag: currFlag,
-              bangumiId: carousel.id,
-              cover: carousel.cover,
-            ),
-          );
-        },
-        margin: edgeT16B12,
-        decoration: BoxDecoration(
-          borderRadius: borderRadius16,
-          color: theme.backgroundColor,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 8,
-              color: Colors.black.withOpacity(0.08),
-            )
-          ],
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: ExtendedNetworkImageProvider(carousel.cover),
-          ),
-        ),
-      ),
     );
   }
 

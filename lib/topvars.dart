@@ -25,6 +25,7 @@ const edgeH12V8 = const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
 const edgeH16 = const EdgeInsets.symmetric(horizontal: 16.0);
 const edgeH24 = const EdgeInsets.symmetric(horizontal: 24.0);
 const edgeH8 = const EdgeInsets.symmetric(horizontal: 8.0);
+const edgeH4 = const EdgeInsets.symmetric(horizontal: 4.0);
 const edgeH16V12 = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0);
 const edgeH8V6 = const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0);
 const edgeT2 = const EdgeInsets.only(top: 2.0);
