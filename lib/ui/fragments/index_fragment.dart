@@ -17,7 +17,7 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
-import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/ova_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
@@ -86,11 +86,14 @@ class IndexFragment extends StatelessWidget {
                             padding: edgeHB16T4,
                             bangumis: bangumiRow.bangumis,
                             handleSubscribe: (bangumi, flag) {
-                              context.read<SubscribedModel>().subscribeBangumi(
+                              context.read<OpModel>().subscribeBangumi(
                                 bangumi.id,
                                 bangumi.subscribed,
                                 onSuccess: () {
                                   bangumi.subscribed = !bangumi.subscribed;
+                                  context
+                                      .read<OpModel>()
+                                      .subscribeChanged(flag);
                                 },
                                 onError: (msg) {
                                   "订阅失败：$msg".toast();

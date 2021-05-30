@@ -7,8 +7,8 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
+import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subgroup_model.dart';
-import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:provider/provider.dart';
@@ -109,11 +109,12 @@ class SubgroupPage extends StatelessWidget {
                   padding: edgeHB16T4,
                   bangumis: gallery.bangumis,
                   handleSubscribe: (bangumi, flag) {
-                    context.read<SubscribedModel>().subscribeBangumi(
+                    context.read<OpModel>().subscribeBangumi(
                       bangumi.id,
                       bangumi.subscribed,
                       onSuccess: () {
                         bangumi.subscribed = !bangumi.subscribed;
+                        context.read<OpModel>().subscribeChanged(flag);
                       },
                       onError: (msg) {
                         "订阅失败：$msg".toast();

@@ -60,4 +60,8 @@ class RecordDetailModel extends CancelableBaseModel {
     }
     notifyListeners();
   }
+
+  subscribeChanged() {
+    notifyListeners();
+  }
 }

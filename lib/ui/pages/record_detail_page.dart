@@ -12,8 +12,8 @@ import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_details.dart';
+import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/record_detail_model.dart';
-import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -529,12 +529,12 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.redAccent,
                 ),
                 onPressed: () {
-                  context.read<SubscribedModel>().subscribeBangumi(
+                  context.read<OpModel>().subscribeBangumi(
                     recordDetail.id,
                     recordDetail.subscribed,
                     onSuccess: () {
                       recordDetail.subscribed = !recordDetail.subscribed;
-                      context.read<RecordDetailModel>().notifyListeners();
+                      context.read<RecordDetailModel>().subscribeChanged();
                     },
                     onError: (msg) {
                       "订阅失败：$msg".toast();
@@ -551,12 +551,12 @@ class RecordDetailPage extends StatelessWidget {
                   color: Colors.blueGrey,
                 ),
                 onPressed: () {
-                  context.read<SubscribedModel>().subscribeBangumi(
+                  context.read<OpModel>().subscribeBangumi(
                     recordDetail.id,
                     recordDetail.subscribed,
                     onSuccess: () {
                       recordDetail.subscribed = !recordDetail.subscribed;
-                      context.read<RecordDetailModel>().notifyListeners();
+                      context.read<RecordDetailModel>().subscribeChanged();
                     },
                     onError: (msg) {
                       "订阅失败：$msg".toast();

@@ -9,8 +9,10 @@ import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
+import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:provider/provider.dart';
 
 typedef HandleSubscribe = void Function(Bangumi bangumi, String flag);
 
@@ -196,39 +198,45 @@ class BangumiSliverGridFragment extends StatelessWidget {
   }
 
   Widget _buildSubscribeButton(final Bangumi bangumi, final String currFlag) {
-    return bangumi.subscribed
-        ? SizedBox(
-            width: 28.0,
-            height: 28.0,
-            child: IconButton(
-              tooltip: "取消订阅",
-              padding: edge4,
-              iconSize: 20.0,
-              icon: Icon(
-                FluentIcons.heart_24_filled,
-                color: Colors.redAccent,
-              ),
-              onPressed: () {
-                this.handleSubscribe.call(bangumi, currFlag);
-              },
-            ),
-          )
-        : SizedBox(
-            width: 28.0,
-            height: 28.0,
-            child: IconButton(
-              tooltip: "订阅",
-              padding: edge4,
-              iconSize: 20.0,
-              icon: Icon(
-                FluentIcons.heart_24_regular,
-                color: Colors.blueGrey,
-              ),
-              onPressed: () {
-                this.handleSubscribe.call(bangumi, currFlag);
-              },
-            ),
-          );
+    return Selector<OpModel, String>(
+      selector: (_, model) => model.flag,
+      shouldRebuild: (_, next) => next == currFlag,
+      builder: (_, __, ___) {
+        return bangumi.subscribed
+            ? SizedBox(
+                width: 28.0,
+                height: 28.0,
+                child: IconButton(
+                  tooltip: "取消订阅",
+                  padding: edge4,
+                  iconSize: 20.0,
+                  icon: Icon(
+                    FluentIcons.heart_24_filled,
+                    color: Colors.redAccent,
+                  ),
+                  onPressed: () {
+                    this.handleSubscribe.call(bangumi, currFlag);
+                  },
+                ),
+              )
+            : SizedBox(
+                width: 28.0,
+                height: 28.0,
+                child: IconButton(
+                  tooltip: "订阅",
+                  padding: edge4,
+                  iconSize: 20.0,
+                  icon: Icon(
+                    FluentIcons.heart_24_regular,
+                    color: Colors.blueGrey,
+                  ),
+                  onPressed: () {
+                    this.handleSubscribe.call(bangumi, currFlag);
+                  },
+                ),
+              );
+      },
+    );
   }
 
   Widget _buildBangumiItemCover(

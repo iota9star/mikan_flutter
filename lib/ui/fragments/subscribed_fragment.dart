@@ -15,6 +15,7 @@ import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
+import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
@@ -179,11 +180,12 @@ class SubscribedFragment extends StatelessWidget {
           bangumis: bangumis!,
           padding: edgeH16V8,
           handleSubscribe: (bangumi, flag) {
-            context.read<SubscribedModel>().subscribeBangumi(
+            context.read<OpModel>().subscribeBangumi(
               bangumi.id,
               bangumi.subscribed,
               onSuccess: () {
                 bangumi.subscribed = !bangumi.subscribed;
+                context.read<OpModel>().subscribeChanged(flag);
               },
               onError: (msg) {
                 "订阅失败：$msg".toast();

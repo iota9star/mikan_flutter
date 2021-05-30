@@ -10,7 +10,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/year_season.dart';
-import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subscribed_season_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
@@ -124,11 +124,12 @@ class SubscribedSeasonPage extends StatelessWidget {
                           padding: edge16,
                           bangumis: gallery.bangumis,
                           handleSubscribe: (bangumi, flag) {
-                            context.read<SubscribedModel>().subscribeBangumi(
+                            context.read<OpModel>().subscribeBangumi(
                               bangumi.id,
                               bangumi.subscribed,
                               onSuccess: () {
                                 bangumi.subscribed = !bangumi.subscribed;
+                                context.read<OpModel>().subscribeChanged(flag);
                               },
                               onError: (msg) {
                                 "订阅失败：$msg".toast();

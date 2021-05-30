@@ -16,6 +16,7 @@ import 'package:mikan_flutter/providers/firebase_model.dart';
 import 'package:mikan_flutter/providers/home_model.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/list_model.dart';
+import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
@@ -91,6 +92,9 @@ class MikanApp extends StatelessWidget {
           ),
           ChangeNotifierProvider<SubscribedModel>(
             create: (_) => SubscribedModel(),
+          ),
+          ChangeNotifierProvider<OpModel>(
+            create: (_) => OpModel(),
           ),
           ChangeNotifierProvider<IndexModel>(
             create: (context) => IndexModel(context.read<SubscribedModel>()),
