@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:isolate';
 
 import 'package:connectivity/connectivity.dart';
@@ -66,10 +67,14 @@ Future _initFirebase() async {
   }).sendPort);
 }
 
+final isMobile = Platform.isIOS || Platform.isAndroid;
+
 Future _initDependencies() async {
   await Store.init();
   await MyHive.init();
-  await _initFirebase();
+  if (isMobile) {
+    await _initFirebase();
+  }
 }
 
 class MikanApp extends StatelessWidget {
@@ -87,9 +92,10 @@ class MikanApp extends StatelessWidget {
           ChangeNotifierProvider<ThemeModel>(
             create: (_) => ThemeModel(),
           ),
-          ChangeNotifierProvider<FirebaseModel>(
-            create: (_) => FirebaseModel(),
-          ),
+          if (isMobile)
+            ChangeNotifierProvider<FirebaseModel>(
+              create: (_) => FirebaseModel(),
+            ),
           ChangeNotifierProvider<SubscribedModel>(
             create: (_) => SubscribedModel(),
           ),
@@ -108,10 +114,12 @@ class MikanApp extends StatelessWidget {
         ],
         child: Consumer<ThemeModel>(
           builder: (context, themeModel, child) {
-            final firebaseModel = Provider.of<FirebaseModel>(
-              context,
-              listen: false,
-            );
+            final firebaseModel = isMobile
+                ? Provider.of<FirebaseModel>(
+                    context,
+                    listen: false,
+                  )
+                : null;
             return _buildMaterialApp(themeModel, firebaseModel);
           },
         ),
@@ -137,7 +145,7 @@ class MikanApp extends StatelessWidget {
 
   Widget _buildMaterialApp(
     final ThemeModel themeModel,
-    final FirebaseModel firebaseModel,
+    final FirebaseModel? firebaseModel,
   ) {
     final ThemeData theme = themeModel.theme();
     return Theme(
@@ -156,7 +164,7 @@ class MikanApp extends StatelessWidget {
             );
           },
           navigatorObservers: [
-            firebaseModel.observer,
+            if (isMobile) firebaseModel!.observer,
             FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
               //you can track page here
               final RouteSettings? oldSettings = oldRoute?.settings;
