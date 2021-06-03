@@ -65,8 +65,8 @@ class SplashPage extends StatelessWidget {
   }
 
   Widget _buildSplash(final BuildContext context) {
-    final double itemSize = Sz.screenWidth / 3;
-    final int row = Sz.screenHeight ~/ itemSize;
+    final double itemSize = Screen.screenWidth / 3;
+    final int row = Screen.screenHeight ~/ itemSize;
     final int coverCount = 3 * row;
     return Selector<IndexModel, List<BangumiRow>>(
       selector: (_, model) => model.bangumiRows,

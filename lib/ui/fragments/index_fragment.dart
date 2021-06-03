@@ -68,7 +68,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                 color: theme.accentColor.computeLuminance() < 0.5
                     ? Colors.white
                     : Colors.black,
-                distance: Sz.statusBarHeight + 42.0,
+                distance: Screen.statusBarHeight + 42.0,
               ),
               onRefresh: indexModel.refresh,
               child: CustomScrollView(

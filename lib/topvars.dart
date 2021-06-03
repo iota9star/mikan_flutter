@@ -49,14 +49,14 @@ const edgeB16 = const EdgeInsets.only(bottom: 16.0);
 const edgeV8R12 = const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 12.0);
 
 final edge16WithStatusBar = EdgeInsets.only(
-  top: 16.0 + Sz.statusBarHeight,
+  top: 16.0 + Screen.statusBarHeight,
   left: 16.0,
   right: 16.0,
   bottom: 16.0,
 );
 
 final edgeH24V36WithStatusBar = EdgeInsets.only(
-  top: Sz.statusBarHeight + 36.0,
+  top: Screen.statusBarHeight + 36.0,
   bottom: 36.0,
   left: 24.0,
   right: 24.0,

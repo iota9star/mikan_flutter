@@ -36,7 +36,7 @@ class ListFragment extends StatelessWidget {
             color: theme.accentColor.computeLuminance() < 0.5
                 ? Colors.white
                 : Colors.black,
-            distance: Sz.statusBarHeight + 42.0,
+            distance: Screen.statusBarHeight + 42.0,
           ),
           footer: Indicator.footer(
             context,

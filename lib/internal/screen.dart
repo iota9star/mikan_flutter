@@ -1,9 +1,10 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 
-class Sz {
+class Screen {
   static final MediaQueryData mediaQueryData =
       MediaQueryData.fromWindow(window);
   static final Size screenPhysicalSize = window.physicalSize;
@@ -15,11 +16,11 @@ class Sz {
   static final double screenHeight = screenSize.height;
   static final double screenRatio = screenWidth / screenHeight;
   static final EdgeInsets safePadding = mediaQueryData.padding;
-  static final double statusBarHeight = safePadding.top;
+  static final double statusBarHeight = isMobile ? safePadding.top : 12.0;
   static final double navBarHeight = safePadding.bottom;
   static final bool isTablet = screenSize.shortestSide >= 600;
 
-  const Sz._();
+  const Screen._();
 
   static void screenInfo() {
     "screen info."
@@ -41,3 +42,5 @@ class Sz {
         .debug();
   }
 }
+
+final isMobile = Platform.isIOS || Platform.isAndroid;

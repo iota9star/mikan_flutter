@@ -58,7 +58,7 @@ class RecentSubscribedPage extends StatelessWidget {
                   color: theme.accentColor.computeLuminance() < 0.5
                       ? Colors.white
                       : Colors.black,
-                  distance: Sz.statusBarHeight + 42.0,
+                  distance: Screen.statusBarHeight + 42.0,
                 ),
                 footer: Indicator.footer(
                   context,
@@ -139,9 +139,11 @@ class RecentSubscribedPage extends StatelessWidget {
             duration: dur240,
             child: Row(
               children: <Widget>[
-                Text(
-                  "订阅更新",
-                  style: textStyle24B,
+                Expanded(
+                  child: Text(
+                    "订阅更新",
+                    style: textStyle24B,
+                  ),
                 ),
               ],
             ),

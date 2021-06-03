@@ -86,7 +86,7 @@ class BangumiPage extends StatelessWidget {
                 ),
                 Positioned(
                   left: 16.0,
-                  top: Sz.statusBarHeight + 12.0,
+                  top: Screen.statusBarHeight + 12.0,
                   child: MaterialButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -155,7 +155,7 @@ class BangumiPage extends StatelessWidget {
         return WaterfallFlow(
           children: items,
           padding: EdgeInsets.only(
-            top: 90.0 + Sz.statusBarHeight,
+            top: 90.0 + Screen.statusBarHeight,
             left: 16.0,
             right: 16.0,
           ),

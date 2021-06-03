@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:isolate';
 
 import 'package:connectivity/connectivity.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
+import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/internal/store.dart';
 import 'package:mikan_flutter/mikan_flutter_route.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -66,8 +66,6 @@ Future _initFirebase() async {
     );
   }).sendPort);
 }
-
-final isMobile = Platform.isIOS || Platform.isAndroid;
 
 Future _initDependencies() async {
   await Store.init();

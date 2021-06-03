@@ -63,7 +63,7 @@ class RecordDetailPage extends StatelessWidget {
       right: 0,
       child: Container(
         padding: EdgeInsets.only(
-          top: Sz.statusBarHeight + 12.0,
+          top: Screen.statusBarHeight + 12.0,
           left: 16.0,
           right: 16.0,
         ),
@@ -136,7 +136,7 @@ class RecordDetailPage extends StatelessWidget {
           }
           return WaterfallFlow(
             padding: EdgeInsets.only(
-              top: 90.0 + Sz.statusBarHeight,
+              top: 90.0 + Screen.statusBarHeight,
               left: 16.0,
               right: 16.0,
             ),
