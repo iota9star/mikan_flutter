@@ -1,5 +1,6 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +147,7 @@ class SubgroupPage extends StatelessWidget {
     return Selector<SubgroupModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (_, hasScrolled, __) {
+      builder: (context, hasScrolled, __) {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
             decoration: BoxDecoration(
@@ -160,9 +161,21 @@ class SubgroupPage extends StatelessWidget {
             duration: dur240,
             child: Row(
               children: <Widget>[
-                Text(
-                  subgroup.name,
-                  style: textStyle24B,
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(FluentIcons.chevron_left_24_regular),
+                  minWidth: 0,
+                  padding: edge10,
+                  shape: circleShape,
+                ),
+                sizedBoxW12,
+                Expanded(
+                  child: Text(
+                    subgroup.name,
+                    style: textStyle24B,
+                  ),
                 ),
               ],
             ),

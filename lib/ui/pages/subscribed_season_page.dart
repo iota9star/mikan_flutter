@@ -225,7 +225,7 @@ class SubscribedSeasonPage extends StatelessWidget {
     return Selector<SubscribedSeasonModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (_, hasScrolled, __) {
+      builder: (context, hasScrolled, __) {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
             decoration: BoxDecoration(
@@ -239,9 +239,21 @@ class SubscribedSeasonPage extends StatelessWidget {
             duration: dur240,
             child: Row(
               children: <Widget>[
-                Text(
-                  "季度订阅",
-                  style: textStyle24B,
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(FluentIcons.chevron_left_24_regular),
+                  minWidth: 0,
+                  padding: edge10,
+                  shape: circleShape,
+                ),
+                sizedBoxW12,
+                Expanded(
+                  child: Text(
+                    "季度订阅",
+                    style: textStyle24B,
+                  ),
                 ),
               ],
             ),

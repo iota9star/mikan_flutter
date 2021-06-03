@@ -355,6 +355,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                   );
           },
         ),
+        sizedBoxW8,
         MaterialButton(
           onPressed: () {
             _showYearSeasonBottomSheet(context);
@@ -367,7 +368,7 @@ class _IndexFragmentState extends State<IndexFragment> {
           color: hasScrolled
               ? theme.scaffoldBackgroundColor
               : theme.backgroundColor,
-          padding: EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(8.0),
           shape: circleShape,
         ),
       ],

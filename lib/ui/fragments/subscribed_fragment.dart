@@ -339,7 +339,6 @@ class SubscribedFragment extends StatelessWidget {
                 maxCrossAxisExtent: 108.0,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
-                childAspectRatio: 5.0 / 4.0,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -392,93 +391,107 @@ class SubscribedFragment extends StatelessWidget {
     final String bangumiId = entry.key;
     final String badge = recordsLength > 99 ? "99+" : "+$recordsLength";
     final String currFlag = "rss:$bangumiId:$bangumiCover";
-    return TapScaleContainer(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 8.0,
-            color: Colors.black.withOpacity(0.08),
-          ),
-        ],
-      ),
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          Routes.bangumi.name,
-          arguments: Routes.bangumi.d(
-            heroTag: currFlag,
-            bangumiId: bangumiId,
-            cover: bangumiCover,
-          ),
-        );
-      },
-      child: ClipRRect(
-        borderRadius: borderRadius8,
-        child: Stack(
-          fit: StackFit.loose,
-          clipBehavior: Clip.antiAlias,
-          children: [
-            Positioned.fill(
-              child: Hero(
-                tag: currFlag,
-                child: ExtendedImage(
-                  image: ExtendedNetworkImageProvider(bangumiCover),
-                  fit: BoxFit.cover,
-                  loadStateChanged: (state) {
-                    switch (state.extendedImageLoadState) {
-                      case LoadState.loading:
-                        return Padding(
-                          padding: edge16,
-                          child: Center(
-                            child: ExtendedImage.asset(
-                              "assets/mikan.png",
-                            ),
-                          ),
-                        );
-                      case LoadState.failed:
-                        return Padding(
-                          padding: edge16,
-                          child: Center(
-                            child: ExtendedImage.asset(
-                              "assets/mikan.png",
-                              colorBlendMode: BlendMode.color,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        );
-                      case LoadState.completed:
-                        return null;
-                    }
-                  },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: TapScaleContainer(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 8.0,
+                  color: Colors.black.withOpacity(0.08),
                 ),
-              ),
+              ],
             ),
-            Positioned(
-              right: -10,
-              top: 4,
-              child: Transform.rotate(
-                angle: Math.pi / 4.0,
-                child: Container(
-                  width: 42.0,
-                  color: Colors.redAccent,
-                  child: Text(
-                    badge,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 10.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                      wordSpacing: 1.0,
-                      height: 1.25,
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                Routes.bangumi.name,
+                arguments: Routes.bangumi.d(
+                  heroTag: currFlag,
+                  bangumiId: bangumiId,
+                  cover: bangumiCover,
+                ),
+              );
+            },
+            child: ClipRRect(
+              borderRadius: borderRadius8,
+              child: Stack(
+                fit: StackFit.loose,
+                clipBehavior: Clip.antiAlias,
+                children: [
+                  Positioned.fill(
+                    child: Hero(
+                      tag: currFlag,
+                      child: ExtendedImage(
+                        image: ExtendedNetworkImageProvider(bangumiCover),
+                        fit: BoxFit.cover,
+                        loadStateChanged: (state) {
+                          switch (state.extendedImageLoadState) {
+                            case LoadState.loading:
+                              return Padding(
+                                padding: edge16,
+                                child: Center(
+                                  child: ExtendedImage.asset(
+                                    "assets/mikan.png",
+                                  ),
+                                ),
+                              );
+                            case LoadState.failed:
+                              return Padding(
+                                padding: edge16,
+                                child: Center(
+                                  child: ExtendedImage.asset(
+                                    "assets/mikan.png",
+                                    colorBlendMode: BlendMode.color,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              );
+                            case LoadState.completed:
+                              return null;
+                          }
+                        },
+                      ),
                     ),
                   ),
-                ),
+                  Positioned(
+                    right: -10,
+                    top: 4,
+                    child: Transform.rotate(
+                      angle: Math.pi / 4.0,
+                      child: Container(
+                        width: 42.0,
+                        color: Colors.redAccent,
+                        child: Text(
+                          badge,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 10.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0,
+                            wordSpacing: 1.0,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
-      ),
+        sizedBoxH4,
+        Text(
+          records.first.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: textStyle14B500,
+        )
+      ],
     );
   }
 

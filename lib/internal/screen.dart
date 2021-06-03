@@ -16,7 +16,7 @@ class Screen {
   static final double screenHeight = screenSize.height;
   static final double screenRatio = screenWidth / screenHeight;
   static final EdgeInsets safePadding = mediaQueryData.padding;
-  static final double statusBarHeight = isMobile ? safePadding.top : 12.0;
+  static final double statusBarHeight = safePadding.top;
   static final double navBarHeight = safePadding.bottom;
   static final bool isTablet = screenSize.shortestSide >= 600;
 

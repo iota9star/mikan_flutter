@@ -1,5 +1,6 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 @FFArgumentImport()
@@ -126,7 +127,7 @@ class RecentSubscribedPage extends StatelessWidget {
       child: Selector<RecentSubscribedModel, bool>(
         selector: (_, model) => model.hasScrolled,
         shouldRebuild: (pre, next) => pre != next,
-        builder: (_, hasScrolled, __) {
+        builder: (context, hasScrolled, __) {
           return AnimatedContainer(
             decoration: BoxDecoration(
               color: hasScrolled
@@ -139,6 +140,16 @@ class RecentSubscribedPage extends StatelessWidget {
             duration: dur240,
             child: Row(
               children: <Widget>[
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(FluentIcons.chevron_left_24_regular),
+                  minWidth: 0,
+                  padding: edge10,
+                  shape: circleShape,
+                ),
+                sizedBoxW12,
                 Expanded(
                   child: Text(
                     "订阅更新",
