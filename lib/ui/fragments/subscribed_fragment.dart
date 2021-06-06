@@ -204,12 +204,7 @@ class SubscribedFragment extends StatelessWidget {
     return SliverPinnedToBoxAdapter(
       child: Container(
         color: theme.scaffoldBackgroundColor,
-        padding: const EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 4.0,
-          bottom: 4.0,
-        ),
+        padding: edgeH16V8,
         child: Row(
           children: [
             Expanded(
@@ -242,8 +237,7 @@ class SubscribedFragment extends StatelessWidget {
                     );
                   },
                   color: theme.backgroundColor,
-                  minWidth: 0,
-                  padding: EdgeInsets.all(5.0),
+                  minWidth: 36,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: circleShape,
                   child: Icon(
@@ -267,12 +261,7 @@ class SubscribedFragment extends StatelessWidget {
     return SliverPinnedToBoxAdapter(
       child: Container(
         color: theme.scaffoldBackgroundColor,
-        padding: const EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 4.0,
-          bottom: 4.0,
-        ),
+        padding: edgeH16V8,
         child: Row(
           children: [
             Expanded(
@@ -286,8 +275,7 @@ class SubscribedFragment extends StatelessWidget {
                 _toRecentSubscribedPage(context);
               },
               color: theme.backgroundColor,
-              minWidth: 0,
-              padding: EdgeInsets.all(5.0),
+              minWidth: 36,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: circleShape,
               child: Icon(
@@ -339,6 +327,7 @@ class SubscribedFragment extends StatelessWidget {
                 maxCrossAxisExtent: 108.0,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
+                childAspectRatio: 0.8,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -484,7 +473,7 @@ class SubscribedFragment extends StatelessWidget {
             ),
           ),
         ),
-        sizedBoxH4,
+        sizedBoxH8,
         Text(
           records.first.name,
           maxLines: 1,
@@ -507,12 +496,7 @@ class SubscribedFragment extends StatelessWidget {
         return SliverPinnedToBoxAdapter(
           child: Container(
             color: theme.scaffoldBackgroundColor,
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 4.0,
-              bottom: 4.0,
-            ),
+            padding: edgeH16V8,
             child: Row(
               children: [
                 Expanded(
@@ -526,8 +510,7 @@ class SubscribedFragment extends StatelessWidget {
                     _toRecentSubscribedPage(context);
                   },
                   color: theme.backgroundColor,
-                  minWidth: 0,
-                  padding: EdgeInsets.all(5.0),
+                  minWidth: 36.0,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: circleShape,
                   child: Icon(

@@ -315,16 +315,18 @@ class _IndexFragmentState extends State<IndexFragment> {
                     _showSearchPanel(context);
                   },
                   child: Icon(FluentIcons.search_24_regular),
-                  minWidth: 0,
+                  minWidth: 48.0,
+                  height: 48.0,
                   padding: edge10,
                   shape: circleShape,
                 ),
+                sizedBoxW8,
                 MaterialButton(
                   onPressed: () {
                     _showSettingsPanel(context);
                   },
                   child: _buildAvatar(),
-                  minWidth: 0,
+                  minWidth: 48.0,
                   padding: edge10,
                   shape: circleShape,
                 ),
@@ -364,11 +366,12 @@ class _IndexFragmentState extends State<IndexFragment> {
             FluentIcons.chevron_down_24_regular,
             size: 16.0,
           ),
-          minWidth: 0,
+          minWidth: 36.0,
           color: hasScrolled
               ? theme.scaffoldBackgroundColor
               : theme.backgroundColor,
-          padding: EdgeInsets.all(8.0),
+          padding: edge8,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: circleShape,
         ),
       ],

@@ -167,8 +167,11 @@ class SubgroupPage extends StatelessWidget {
                   },
                   child: Icon(FluentIcons.chevron_left_24_regular),
                   minWidth: 0,
-                  padding: edge10,
+                  padding: edge8,
                   shape: circleShape,
+                  color: hasScrolled
+                      ? theme.scaffoldBackgroundColor
+                      : theme.backgroundColor,
                 ),
                 sizedBoxW12,
                 Expanded(

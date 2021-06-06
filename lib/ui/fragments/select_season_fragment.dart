@@ -72,18 +72,15 @@ class SelectSeasonFragment extends StatelessWidget {
                 Navigator.pushNamed(
                   context,
                   Routes.seasonList.name,
-                  arguments: Routes.seasonList.d(
-                    years: indexModel.years,
-                  ),
+                  arguments: Routes.seasonList.d(years: indexModel.years),
                 );
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: edge8,
               child: Icon(
                 FluentIcons.chevron_right_24_regular,
                 size: 16.0,
               ),
-              minWidth: 0,
+              minWidth: 36.0,
               color: theme.scaffoldBackgroundColor,
               shape: circleShape,
             ),

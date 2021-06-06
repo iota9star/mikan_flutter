@@ -17,10 +17,30 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: "stable"
+      - name: build apk
       - run: flutter pub get
+      - run: flutter build apk
       - run: flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
-      - name: release apk
+      - run: mkdir release-apk
+      - run: cp build/app/outputs/flutter-apk/*-release.apk release-apk/
+      - uses: r0adkll/sign-android-release@v1
+        name: sign build apk
+        with:
+          releaseDirectory: release-apk
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.3"
+      - name: build windows
+      - run: flutter config --enable-windows-desktop
+      - run: flutter build windows
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -r windows-release.zip build/windows/runner/Release
+      - name: release build
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/*.apk"
+          artifacts: "release-apk/*-signed.apk,build/windows/runner/win-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
