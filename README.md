@@ -5,7 +5,7 @@
 
 [mikanani.me](https://mikanani.me)  
 
-![count viewed](https://count.getloli.com/get/@iota9star:mikan_flutter)
+![count viewed](https://count.getloli.com/get/@iota9star:mikan_flutter?theme=gelbooru)
 
 ## Getting Started
 
