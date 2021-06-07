@@ -4,6 +4,7 @@
 ![蜜柑计划](static/art/banner.png)
 
 [mikanani.me](https://mikanani.me)
+![count viewed](https://count.getloli.com/get/@iota9star:mikan_flutter)
 
 ## Getting Started
 
