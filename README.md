@@ -3,7 +3,8 @@
 ![最新release](https://img.shields.io/github/v/release/iota9star/mikan_flutter) ![Apache License 2.0](https://img.shields.io/github/license/iota9star/mikan_flutter) ![下载量](https://img.shields.io/github/downloads/iota9star/mikan_flutter/total) ![open issues](https://img.shields.io/github/issues/iota9star/mikan_flutter) ![fork](https://img.shields.io/github/forks/iota9star/mikan_flutter?style=social) ![代码行数](https://img.shields.io/tokei/lines/github/iota9star/mikan_flutter) ![build](https://img.shields.io/github/workflow/status/iota9star/mikan_flutter/daily%20build%20apk) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f969750dc4aa424ead664219ddcf321d)](https://app.codacy.com/gh/iota9star/mikan_flutter?utm_source=github.com&utm_medium=referral&utm_content=iota9star/mikan_flutter&utm_campaign=Badge_Grade)
 ![蜜柑计划](static/art/banner.png)
 
-[mikanani.me](https://mikanani.me)
+[mikanani.me](https://mikanani.me)  
+
 ![count viewed](https://count.getloli.com/get/@iota9star:mikan_flutter)
 
 ## Getting Started
