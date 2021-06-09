@@ -235,5 +235,6 @@ final normalFormHeader = Row(
 const centerLoading = const Center(child: CupertinoActivityIndicator());
 
 const offsetY_1 = const Offset(0, -1);
+const offsetY_2 = const Offset(0, -2);
 
 final navKey = GlobalKey<NavigatorState>();

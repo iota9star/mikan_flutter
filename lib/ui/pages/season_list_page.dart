@@ -181,7 +181,7 @@ class SeasonListPage extends StatelessWidget {
     ].join("，");
     return SliverPinnedToBoxAdapter(
       child: Transform.translate(
-        offset: offsetY_1,
+        offset: offsetY_2,
         child: Container(
           color: theme.scaffoldBackgroundColor,
           padding: edgeH16V8,

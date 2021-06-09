@@ -209,24 +209,23 @@ class BangumiPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (length > 3)
-                  SizedBox(
-                    width: 20.0,
-                    height: 20.0,
-                    child: TextButton(
-                      child: Icon(
-                        FluentIcons.chevron_right_24_regular,
-                        size: 20.0,
-                      ),
-                      style: TextButton.styleFrom(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed: () {
-                        _showSubgroupPanel(context, model, e.dataId);
-                      },
+                SizedBox(
+                  width: 20.0,
+                  height: 20.0,
+                  child: TextButton(
+                    child: Icon(
+                      FluentIcons.chevron_right_24_regular,
+                      size: 20.0,
                     ),
+                    style: TextButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: EdgeInsets.zero,
+                    ),
+                    onPressed: () {
+                      _showSubgroupPanel(context, model, e.dataId);
+                    },
                   ),
+                ),
               ],
             ),
             sizedBoxH24,
