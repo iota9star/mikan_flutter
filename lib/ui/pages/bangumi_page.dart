@@ -209,7 +209,7 @@ class BangumiPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (length >= 15)
+                if (length > 3)
                   SizedBox(
                     width: 20.0,
                     height: 20.0,
