@@ -7,6 +7,8 @@ const edgeH16V8 = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
 const edgeHT16 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0);
 const edgeH16T4 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0);
 const edgeH16T8 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0);
+const edgeH16T8B16 =
+    const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0);
 const edgeHB16T8 =
     const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0);
 const edgeHB24 = const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0);
@@ -16,7 +18,9 @@ const edge16 = const EdgeInsets.all(16.0);
 const edge8 = const EdgeInsets.all(8.0);
 const edge10 = const EdgeInsets.all(10.0);
 const edge12 = const EdgeInsets.all(12.0);
+const edge6 = const EdgeInsets.all(6.0);
 const edge4 = const EdgeInsets.all(4.0);
+const edge2 = const EdgeInsets.all(2.0);
 const edgeV4 = const EdgeInsets.symmetric(vertical: 4.0);
 const edgeV8 = const EdgeInsets.symmetric(vertical: 8.0);
 const edge24 = const EdgeInsets.all(24.0);
@@ -60,6 +64,13 @@ final edgeH24V36WithStatusBar = EdgeInsets.only(
   bottom: 36.0,
   left: 24.0,
   right: 24.0,
+);
+
+final edgeH16T90B24WithStatusBar = EdgeInsets.only(
+  top: 90.0 + Screen.statusBarHeight,
+  left: 16.0,
+  right: 16.0,
+  bottom: 24.0,
 );
 
 const borderRadiusT16 = const BorderRadius.only(
@@ -222,3 +233,7 @@ final normalFormHeader = Row(
 );
 
 const centerLoading = const Center(child: CupertinoActivityIndicator());
+
+const offsetY_1 = const Offset(0, -1);
+
+final navKey = GlobalKey<NavigatorState>();

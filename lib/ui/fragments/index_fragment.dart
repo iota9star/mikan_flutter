@@ -138,33 +138,36 @@ class _IndexFragmentState extends State<IndexFragment> {
     ].join("，");
 
     return SliverPinnedToBoxAdapter(
-      child: Container(
-        padding: edgeH16V8,
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                bangumiRow.name,
-                style: textStyle20B,
-              ),
-            ),
-            Tooltip(
-              message: full,
-              child: Text(
-                simple,
-                style: TextStyle(
-                  color: theme.textTheme.subtitle1?.color,
-                  fontSize: 12.0,
-                  height: 1.25,
+      child: Transform.translate(
+        offset: offsetY_1,
+        child: Container(
+          padding: edgeH16V8,
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  bangumiRow.name,
+                  style: textStyle20B,
                 ),
               ),
-            ),
-          ],
+              Tooltip(
+                message: full,
+                child: Text(
+                  simple,
+                  style: TextStyle(
+                    color: theme.textTheme.subtitle1?.color,
+                    fontSize: 12.0,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -431,13 +434,13 @@ class _IndexFragmentState extends State<IndexFragment> {
         if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
         return SliverToBoxAdapter(
           child: Container(
-            height: 156.0,
-            padding: EdgeInsets.only(bottom: 12.0, top: 12.0),
+            height: 146.0,
+            padding: const EdgeInsets.only(bottom: 12.0, top: 12.0),
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               itemCount: records.length,
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.only(left: 16.0),
+              padding: const EdgeInsets.only(left: 16.0),
               itemBuilder: (context, index) {
                 final RecordItem record = records[index];
                 return OVARecordItem(

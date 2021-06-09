@@ -132,12 +132,15 @@ class SubgroupPage extends StatelessWidget {
 
   Widget _buildYearSeasonSection(final ThemeData theme, final String section) {
     return SliverPinnedToBoxAdapter(
-      child: Container(
-        padding: edgeH16V8,
-        color: theme.scaffoldBackgroundColor,
-        child: Text(
-          section,
-          style: textStyle20B,
+      child: Transform.translate(
+        offset: offsetY_1,
+        child: Container(
+          padding: edgeH16V8,
+          color: theme.scaffoldBackgroundColor,
+          child: Text(
+            section,
+            style: textStyle20B,
+          ),
         ),
       ),
     );
@@ -165,9 +168,12 @@ class SubgroupPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(FluentIcons.chevron_left_24_regular),
-                  minWidth: 0,
-                  padding: edge8,
+                  child: Icon(
+                    FluentIcons.chevron_left_24_regular,
+                    size: 16.0,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minWidth: 36.0,
                   shape: circleShape,
                   color: hasScrolled
                       ? theme.scaffoldBackgroundColor

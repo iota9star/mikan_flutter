@@ -17,7 +17,7 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: "stable"
-      - name: flutter pub get
+      - name: pub get
         run: flutter pub get
       - name: build common apk
         run: flutter build apk
@@ -48,5 +48,5 @@ jobs:
       - name: release build
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "release-apk/*-signed.apk,build/windows/runner/win-release.zip"
+          artifacts: "release-apk/*-signed.apk,build/windows/runner/windows-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}

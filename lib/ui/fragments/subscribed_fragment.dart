@@ -202,52 +202,56 @@ class SubscribedFragment extends StatelessWidget {
     final SubscribedModel subscribedModel,
   ) {
     return SliverPinnedToBoxAdapter(
-      child: Container(
-        color: theme.scaffoldBackgroundColor,
-        padding: edgeH16V8,
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                "季度订阅",
-                style: textStyle20B,
+      child: Transform.translate(
+        offset: offsetY_1,
+        child: Container(
+          color: theme.scaffoldBackgroundColor,
+          padding: edgeH16V8,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "季度订阅",
+                  style: textStyle20B,
+                ),
               ),
-            ),
-            Selector<SubscribedModel, List<YearSeason>?>(
-              selector: (_, model) => model.years,
-              shouldRebuild: (pre, next) => pre.ne(next),
-              builder: (context, years, __) {
-                if (years.isNullOrEmpty) return sizedBox;
-                return MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.subscribedSeason.name,
-                      arguments: Routes.subscribedSeason.d(
-                        years: subscribedModel.years ?? [],
-                        galleries: [
-                          SeasonGallery(
-                            year: subscribedModel.season!.year,
-                            season: subscribedModel.season!.season,
-                            title: subscribedModel.season!.title,
-                            bangumis: subscribedModel.bangumis ?? [],
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                  color: theme.backgroundColor,
-                  minWidth: 36,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: circleShape,
-                  child: Icon(
-                    FluentIcons.chevron_right_24_regular,
-                    size: 16.0,
-                  ),
-                );
-              },
-            )
-          ],
+              Selector<SubscribedModel, List<YearSeason>?>(
+                selector: (_, model) => model.years,
+                shouldRebuild: (pre, next) => pre.ne(next),
+                builder: (context, years, __) {
+                  if (years.isNullOrEmpty) return sizedBox;
+                  return MaterialButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        Routes.subscribedSeason.name,
+                        arguments: Routes.subscribedSeason.d(
+                          years: subscribedModel.years ?? [],
+                          galleries: [
+                            SeasonGallery(
+                              year: subscribedModel.season!.year,
+                              season: subscribedModel.season!.season,
+                              title: subscribedModel.season!.title,
+                              bangumis: subscribedModel.bangumis ?? [],
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                    color: theme.backgroundColor,
+                    minWidth: 36.0,
+                    padding: EdgeInsets.zero,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: circleShape,
+                    child: Icon(
+                      FluentIcons.chevron_right_24_regular,
+                      size: 16.0,
+                    ),
+                  );
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -259,31 +263,35 @@ class SubscribedFragment extends StatelessWidget {
     final SubscribedModel subscribedModel,
   ) {
     return SliverPinnedToBoxAdapter(
-      child: Container(
-        color: theme.scaffoldBackgroundColor,
-        padding: edgeH16V8,
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                "三日更新",
-                style: textStyle20B,
+      child: Transform.translate(
+        offset: offsetY_1,
+        child: Container(
+          color: theme.scaffoldBackgroundColor,
+          padding: edgeH16V8,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "最近更新",
+                  style: textStyle20B,
+                ),
               ),
-            ),
-            MaterialButton(
-              onPressed: () {
-                _toRecentSubscribedPage(context);
-              },
-              color: theme.backgroundColor,
-              minWidth: 36,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: circleShape,
-              child: Icon(
-                FluentIcons.chevron_right_24_regular,
-                size: 16.0,
+              MaterialButton(
+                onPressed: () {
+                  _toRecentSubscribedPage(context);
+                },
+                color: theme.backgroundColor,
+                minWidth: 36.0,
+                padding: EdgeInsets.zero,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: circleShape,
+                child: Icon(
+                  FluentIcons.chevron_right_24_regular,
+                  size: 16.0,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -494,31 +502,35 @@ class SubscribedFragment extends StatelessWidget {
       builder: (_, records, __) {
         if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
         return SliverPinnedToBoxAdapter(
-          child: Container(
-            color: theme.scaffoldBackgroundColor,
-            padding: edgeH16V8,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    "更新列表",
-                    style: textStyle20B,
+          child: Transform.translate(
+            offset: offsetY_1,
+            child: Container(
+              color: theme.scaffoldBackgroundColor,
+              padding: edgeH16V8,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "更新列表",
+                      style: textStyle20B,
+                    ),
                   ),
-                ),
-                MaterialButton(
-                  onPressed: () {
-                    _toRecentSubscribedPage(context);
-                  },
-                  color: theme.backgroundColor,
-                  minWidth: 36.0,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: circleShape,
-                  child: Icon(
-                    FluentIcons.chevron_right_24_regular,
-                    size: 16.0,
+                  MaterialButton(
+                    onPressed: () {
+                      _toRecentSubscribedPage(context);
+                    },
+                    color: theme.backgroundColor,
+                    minWidth: 36.0,
+                    padding: EdgeInsets.zero,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: circleShape,
+                    child: Icon(
+                      FluentIcons.chevron_right_24_regular,
+                      size: 16.0,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

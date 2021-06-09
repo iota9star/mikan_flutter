@@ -59,24 +59,26 @@ class BangumiPage extends StatelessWidget {
                         image: ExtendedNetworkImageProvider(this.cover),
                       ),
                     ),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
-                      child: Selector<BangumiModel, Color?>(
-                        selector: (_, model) => model.coverMainColor,
-                        shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, bgColor, __) {
-                          final color = bgColor ?? theme.backgroundColor;
-                          return AnimatedContainer(
-                            duration: Duration(milliseconds: 640),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [Colors.transparent, color],
+                    child: ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
+                        child: Selector<BangumiModel, Color?>(
+                          selector: (_, model) => model.coverMainColor,
+                          shouldRebuild: (pre, next) => pre != next,
+                          builder: (_, bgColor, __) {
+                            final color = bgColor ?? theme.backgroundColor;
+                            return AnimatedContainer(
+                              duration: Duration(milliseconds: 640),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [Colors.transparent, color],
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -86,15 +88,19 @@ class BangumiPage extends StatelessWidget {
                 ),
                 Positioned(
                   left: 16.0,
-                  top: Screen.statusBarHeight + 12.0,
+                  top: 12.0 + Screen.statusBarHeight,
                   child: MaterialButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Icon(FluentIcons.chevron_left_24_regular),
-                    color: theme.backgroundColor.withOpacity(0.87),
-                    minWidth: 0,
-                    padding: edge10,
+                    child: Icon(
+                      FluentIcons.chevron_left_24_regular,
+                      size: 16.0,
+                    ),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    color: theme.backgroundColor,
+                    minWidth: 36.0,
+                    padding: EdgeInsets.zero,
                     shape: circleShape,
                   ),
                 ),
@@ -150,15 +156,10 @@ class BangumiPage extends StatelessWidget {
                   ),
                 if (notEmpty)
                   ..._buildSubgroups(context, theme, model, subgroups!),
-                sizedBoxH24,
               ];
         return WaterfallFlow(
           children: items,
-          padding: EdgeInsets.only(
-            top: 90.0 + Screen.statusBarHeight,
-            left: 16.0,
-            right: 16.0,
-          ),
+          padding: edgeH16T90B24WithStatusBar,
           physics: const BouncingScrollPhysics(),
           gridDelegate: const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
             minCrossAxisExtent: 400.0,

@@ -228,7 +228,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                   iconSize: 20.0,
                   icon: Icon(
                     FluentIcons.heart_24_regular,
-                    color: Colors.blueGrey,
+                    color: Colors.redAccent.shade100,
                   ),
                   onPressed: () {
                     this.handleSubscribe.call(bangumi, currFlag);

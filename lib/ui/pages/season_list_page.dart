@@ -143,15 +143,18 @@ class SeasonListPage extends StatelessWidget {
 
   Widget _buildSeasonSection(final ThemeData theme, final String seasonTitle) {
     return SliverPinnedToBoxAdapter(
-      child: Container(
-        color: theme.scaffoldBackgroundColor,
-        padding: edgeH16T8,
-        child: Text(
-          seasonTitle,
-          style: TextStyle(
-            fontSize: 20,
-            height: 1.25,
-            fontWeight: FontWeight.bold,
+      child: Transform.translate(
+        offset: offsetY_1,
+        child: Container(
+          color: theme.scaffoldBackgroundColor,
+          padding: edgeH16T8,
+          child: Text(
+            seasonTitle,
+            style: TextStyle(
+              fontSize: 20,
+              height: 1.25,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -178,7 +181,7 @@ class SeasonListPage extends StatelessWidget {
     ].join("，");
     return SliverPinnedToBoxAdapter(
       child: Transform.translate(
-        offset: Offset(0, -2),
+        offset: offsetY_1,
         child: Container(
           color: theme.scaffoldBackgroundColor,
           padding: edgeH16V8,
@@ -232,9 +235,12 @@ class SeasonListPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(FluentIcons.chevron_left_24_regular),
-                  minWidth: 0,
-                  padding: edge8,
+                  child: Icon(
+                    FluentIcons.chevron_left_24_regular,
+                    size: 16.0,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minWidth: 36.0,
                   shape: circleShape,
                   color: hasScrolled
                       ? theme.scaffoldBackgroundColor

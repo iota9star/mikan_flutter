@@ -153,33 +153,36 @@ class SingleSeasonPage extends StatelessWidget {
     ].join("，");
 
     return SliverPinnedToBoxAdapter(
-      child: Container(
-        padding: edgeH16V8,
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                bangumiRow.name,
-                style: textStyle20B,
-              ),
-            ),
-            Tooltip(
-              message: full,
-              child: Text(
-                simple,
-                style: TextStyle(
-                  color: theme.textTheme.subtitle1?.color,
-                  fontSize: 12.0,
-                  height: 1.25,
+      child: Transform.translate(
+        offset: offsetY_1,
+        child: Container(
+          padding: edgeH16V8,
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  bangumiRow.name,
+                  style: textStyle20B,
                 ),
               ),
-            ),
-          ],
+              Tooltip(
+                message: full,
+                child: Text(
+                  simple,
+                  style: TextStyle(
+                    color: theme.textTheme.subtitle1?.color,
+                    fontSize: 12.0,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

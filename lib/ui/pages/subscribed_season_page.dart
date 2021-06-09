@@ -178,44 +178,46 @@ class SubscribedSeasonPage extends StatelessWidget {
     final SeasonGallery gallery,
   ) {
     return SliverPinnedToBoxAdapter(
-      child: Container(
-        color: theme.scaffoldBackgroundColor,
-        padding: edgeH16V8,
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                gallery.title,
-                style: textStyle20B,
+      child: Transform.translate(
+        offset: offsetY_1,
+        child: Container(
+          color: theme.scaffoldBackgroundColor,
+          padding: edgeH16V8,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  gallery.title,
+                  style: textStyle20B,
+                ),
               ),
-            ),
-            MaterialButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  Routes.season.name,
-                  arguments: Routes.season.d(
-                    season: Season(
-                      year: gallery.year,
-                      season: gallery.season,
-                      title: gallery.title,
-                      active: gallery.active,
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.season.name,
+                    arguments: Routes.season.d(
+                      season: Season(
+                        year: gallery.year,
+                        season: gallery.season,
+                        title: gallery.title,
+                        active: gallery.active,
+                      ),
                     ),
-                  ),
-                );
-              },
-              color: theme.backgroundColor,
-              minWidth: 0,
-              height: 0,
-              padding: edge4,
-              shape: circleShape,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Icon(
-                FluentIcons.chevron_right_24_regular,
-                size: 16.0,
+                  );
+                },
+                color: theme.backgroundColor,
+                minWidth: 36.0,
+                padding: EdgeInsets.zero,
+                shape: circleShape,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                child: Icon(
+                  FluentIcons.chevron_right_24_regular,
+                  size: 16.0,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -243,9 +245,12 @@ class SubscribedSeasonPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(FluentIcons.chevron_left_24_regular),
-                  minWidth: 0,
-                  padding: edge8,
+                  child: Icon(
+                    FluentIcons.chevron_left_24_regular,
+                    size: 16.0,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minWidth: 36.0,
                   shape: circleShape,
                   color: hasScrolled
                       ? theme.scaffoldBackgroundColor

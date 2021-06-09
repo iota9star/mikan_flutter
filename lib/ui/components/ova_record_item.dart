@@ -55,7 +55,7 @@ class OVARecordItem extends StatelessWidget {
           ),
           spacer,
           Container(
-            margin: edgeH16T8,
+            margin: edgeH16,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(

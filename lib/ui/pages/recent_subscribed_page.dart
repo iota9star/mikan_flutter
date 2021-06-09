@@ -144,9 +144,12 @@ class RecentSubscribedPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(FluentIcons.chevron_left_24_regular),
-                  minWidth: 0,
-                  padding: edge8,
+                  child: Icon(
+                    FluentIcons.chevron_left_24_regular,
+                    size: 16.0,
+                  ),
+                  minWidth: 36.0,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: circleShape,
                   color: hasScrolled
                       ? theme.scaffoldBackgroundColor

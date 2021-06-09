@@ -78,7 +78,7 @@ class SearchFragment extends StatelessWidget {
           return emptySliverToBoxAdapter;
         }
         return SliverPadding(
-          padding: edgeH16V8,
+          padding: edgeH16T8B16,
           sliver: SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (_, index) {
@@ -247,7 +247,7 @@ class SearchFragment extends StatelessWidget {
         final bool less = subgroups!.length < 5;
         return SliverPinnedToBoxAdapter(
           child: Transform.translate(
-            offset: Offset(0, -2),
+            offset: offsetY_1,
             child: Selector<SearchModel, bool>(
               selector: (_, model) => model.hasScrolled,
               shouldRebuild: (pre, next) => pre != next,
@@ -359,7 +359,7 @@ class SearchFragment extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeaderTitle(context),
+            _buildHeaderTitle(context, theme),
             sizedBoxH12,
             _buildHeaderSearchField(theme, searchModel),
           ],
@@ -398,9 +398,23 @@ class SearchFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderTitle(final BuildContext context) {
+  Widget _buildHeaderTitle(final BuildContext context, final ThemeData theme) {
     return Row(
       children: [
+        MaterialButton(
+          minWidth: 36.0,
+          color: theme.backgroundColor,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: circleShape,
+          child: Icon(
+            FluentIcons.chevron_left_24_regular,
+            size: 16.0,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        sizedBoxW12,
         Expanded(
           child: Text(
             "搜索",
@@ -415,16 +429,6 @@ class SearchFragment extends StatelessWidget {
               return CupertinoActivityIndicator(radius: 12.0);
             }
             return sizedBox;
-          },
-        ),
-        const SizedBox(width: 8.0),
-        MaterialButton(
-          padding: EdgeInsets.zero,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          minWidth: 0.0,
-          child: Icon(FluentIcons.dismiss_24_regular),
-          onPressed: () {
-            Navigator.pop(context);
           },
         ),
       ],
@@ -479,7 +483,7 @@ class SearchFragment extends StatelessWidget {
         Widget cover;
         if (value.extendedImageLoadState == LoadState.loading) {
           cover = Container(
-            padding: EdgeInsets.all(28.0),
+            padding: edge28,
             decoration: BoxDecoration(
               borderRadius: borderRadius8,
             ),
