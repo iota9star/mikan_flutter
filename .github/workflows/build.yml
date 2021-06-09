@@ -24,7 +24,7 @@ jobs:
       - run: mkdir release-apk
       - run: cp build/app/outputs/flutter-apk/*-release.apk release-apk/
       - uses: r0adkll/sign-android-release@v1
-        name: sign build apk
+      - name: sign build apk
         with:
           releaseDirectory: release-apk
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
@@ -41,7 +41,7 @@ jobs:
         with:
           args: zip -r windows-release.zip build/windows/runner/Release
       - name: release build
-        uses: ncipollo/release-action@v1
+      - uses: ncipollo/release-action@v1
         with:
           artifacts: "release-apk/*-signed.apk,build/windows/runner/win-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
