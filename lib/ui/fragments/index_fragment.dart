@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -469,7 +467,7 @@ class _IndexFragmentState extends State<IndexFragment> {
       expand: true,
       bounce: true,
       enableDrag: false,
-      topRadius: Radius.circular(16.0),
+      topRadius: radius16,
       builder: (_) {
         return SearchFragment();
       },
@@ -479,7 +477,7 @@ class _IndexFragmentState extends State<IndexFragment> {
   void _showSettingsPanel(final BuildContext context) {
     showCupertinoModalBottomSheet(
       context: context,
-      topRadius: Radius.circular(16.0),
+      topRadius: radius16,
       builder: (_) {
         return SettingsFragment();
       },

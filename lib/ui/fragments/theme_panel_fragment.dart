@@ -149,7 +149,7 @@ class ThemePanelFragment extends StatelessWidget {
     showCupertinoModalBottomSheet(
       context: context,
       expand: false,
-      topRadius: Radius.circular(16.0),
+      topRadius: radius16,
       builder: (context) {
         return ThemeEditFragment(themeItem: themeItem);
       },

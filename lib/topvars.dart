@@ -74,18 +74,18 @@ final edgeH16T90B24WithStatusBar = EdgeInsets.only(
 );
 
 const borderRadiusT16 = const BorderRadius.only(
-  topRight: Radius.circular(16.0),
-  topLeft: Radius.circular(16.0),
+  topRight: radius16,
+  topLeft: radius16,
 );
 const borderRadiusB16 = const BorderRadius.only(
-  bottomLeft: Radius.circular(16.0),
-  bottomRight: Radius.circular(16.0),
+  bottomLeft: radius16,
+  bottomRight: radius16,
 );
 
 BorderRadius scrollHeaderBorderRadius(final bool hasScrolled) => hasScrolled
     ? BorderRadius.only(
-        bottomLeft: Radius.circular(16.0),
-        bottomRight: Radius.circular(16.0),
+        bottomLeft: radius16,
+        bottomRight: radius16,
       )
     : BorderRadius.zero;
 
