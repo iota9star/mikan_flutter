@@ -201,7 +201,7 @@ class SeasonListPage extends StatelessWidget {
                   simple,
                   style: TextStyle(
                     color: theme.textTheme.subtitle1?.color,
-                    fontSize: 12.0,
+                    fontSize: 14.0,
                     height: 1.25,
                   ),
                 ),

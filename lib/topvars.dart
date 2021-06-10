@@ -121,17 +121,31 @@ const textStyle14B500 = const TextStyle(
   height: 1.25,
   fontWeight: FontWeight.w500,
 );
-
+const textStyle15B500 = const TextStyle(
+  fontSize: 15.0,
+  height: 1.25,
+  fontWeight: FontWeight.w500,
+);
 const textStyle14B = const TextStyle(
   fontSize: 14.0,
   height: 1.25,
   fontWeight: FontWeight.bold,
 );
-
+const textStyle15B = const TextStyle(
+  fontSize: 15.0,
+  height: 1.25,
+  fontWeight: FontWeight.bold,
+);
 const textStyle16B = const TextStyle(
   fontSize: 16.0,
   height: 1.25,
   fontWeight: FontWeight.bold,
+);
+
+const textStyle16B500 = const TextStyle(
+  fontSize: 16.0,
+  height: 1.25,
+  fontWeight: FontWeight.w500,
 );
 
 const textStyle16 = const TextStyle(

@@ -104,7 +104,7 @@ class ThemeModel extends BaseModel {
         style: ElevatedButton.styleFrom(
           primary: accentColor,
           shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
-          minimumSize: Size(120.0, 48.0),
+          minimumSize: const Size(0, 48.0),
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
@@ -113,9 +113,8 @@ class ThemeModel extends BaseModel {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          textStyle: TextStyle(
-            color: primaryColor,
-          ),
+          textStyle: TextStyle(color: primaryColor),
+          minimumSize: const Size(0, 48.0),
         ),
       ),
     );

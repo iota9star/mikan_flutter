@@ -30,32 +30,57 @@ class LoginPage extends StatelessWidget {
         child: Builder(builder: (context) {
           final loginModel = Provider.of<LoginModel>(context, listen: false);
           return Scaffold(
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: edgeH24V36WithStatusBar,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      normalFormHeader,
-                      sizedBoxH42,
-                      _buildUserNameField(theme, loginModel),
-                      sizedBoxH16,
-                      _buildPasswordField(theme, loginModel),
-                      sizedBoxH16,
-                      _buildRememberRow(theme, loginModel),
-                      sizedBoxH16,
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, Routes.register);
-                        },
-                        child: Text("还没有账号？赶紧来注册一个吧~"),
+            body: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400.0),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: edgeH24V36WithStatusBar,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          normalFormHeader,
+                          sizedBoxH42,
+                          _buildUserNameField(theme, loginModel),
+                          sizedBoxH16,
+                          _buildPasswordField(theme, loginModel),
+                          sizedBoxH16,
+                          _buildRememberRow(theme, loginModel),
+                          sizedBoxH16,
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, Routes.register);
+                            },
+                            child: Text("还没有账号？赶紧来注册一个吧~"),
+                          ),
+                          sizedBoxH16,
+                          Row(
+                            children: [
+                              MaterialButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Icon(
+                                  FluentIcons.chevron_left_24_regular,
+                                  size: 16.0,
+                                ),
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                minWidth: 0.0,
+                                padding: edge16,
+                                shape: circleShape,
+                                color: theme.backgroundColor,
+                              ),
+                              sizedBoxW12,
+                              Expanded(child: _buildLoginButton(theme)),
+                            ],
+                          ),
+                          sizedBoxH56,
+                        ],
                       ),
-                      sizedBoxH16,
-                      _buildLoginButton(theme),
-                      sizedBoxH56,
-                    ],
+                    ),
                   ),
                 ),
               ),

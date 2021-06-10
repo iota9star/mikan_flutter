@@ -207,6 +207,11 @@ class MikanApp extends StatelessWidget {
                           ExtendedImage.asset(
                             "assets/mikan.png",
                             height: 24.0,
+                            width: 24.0,
+                            cacheHeight:
+                                (Screen.devicePixelRatio * 24.0).toInt(),
+                            cacheWidth:
+                                (Screen.devicePixelRatio * 24.0).toInt(),
                           ),
                           sizedBoxW8,
                           Text(

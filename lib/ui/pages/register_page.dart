@@ -31,29 +31,56 @@ class RegisterPage extends StatelessWidget {
           final registerModel =
               Provider.of<RegisterModel>(context, listen: false);
           return Scaffold(
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: edgeH24V36WithStatusBar,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      normalFormHeader,
-                      sizedBoxH16,
-                      _buildUserNameField(theme, registerModel),
-                      sizedBoxH16,
-                      _buildPasswordField(theme, registerModel),
-                      sizedBoxH16,
-                      _buildConfirmPasswordField(theme, registerModel),
-                      sizedBoxH16,
-                      _buildEmailField(theme, registerModel),
-                      sizedBoxH16,
-                      _buildQQField(theme, registerModel),
-                      sizedBoxH56,
-                      _buildLoginButton(theme),
-                      sizedBoxH56,
-                    ],
+            body: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400.0),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: edgeH24V36WithStatusBar,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          normalFormHeader,
+                          sizedBoxH16,
+                          _buildUserNameField(theme, registerModel),
+                          sizedBoxH16,
+                          _buildPasswordField(theme, registerModel),
+                          sizedBoxH16,
+                          _buildConfirmPasswordField(theme, registerModel),
+                          sizedBoxH16,
+                          _buildEmailField(theme, registerModel),
+                          sizedBoxH16,
+                          _buildQQField(theme, registerModel),
+                          sizedBoxH56,
+                          Row(
+                            children: [
+                              MaterialButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Icon(
+                                  FluentIcons.chevron_left_24_regular,
+                                  size: 16.0,
+                                ),
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                minWidth: 0.0,
+                                padding: edge16,
+                                shape: circleShape,
+                                color: theme.backgroundColor,
+                              ),
+                              sizedBoxW12,
+                              Expanded(
+                                child: _buildRegisterButton(theme),
+                              )
+                            ],
+                          ),
+                          sizedBoxH56,
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -64,7 +91,7 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton(final ThemeData theme) {
+  Widget _buildRegisterButton(final ThemeData theme) {
     return Selector<RegisterModel, bool>(
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,

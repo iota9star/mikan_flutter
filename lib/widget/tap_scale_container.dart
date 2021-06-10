@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sprung/sprung.dart';
 
-const _kDuration = Duration(
-  milliseconds: 200,
-);
+const _kDuration = Duration(milliseconds: 200);
 final _kSpringCurve = Sprung();
 
 class TapScaleContainer extends StatefulWidget {
@@ -81,7 +79,7 @@ class _TapScaleContainerState extends State<TapScaleContainer> {
   }
 
   _tapEnd() async {
-    Duration diff = DateTime.now().difference(_clickTime);
+    final Duration diff = DateTime.now().difference(_clickTime);
     if (diff < _kDuration) {
       await Future.delayed(_kDuration - diff);
     }

@@ -161,7 +161,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                   simple,
                   style: TextStyle(
                     color: theme.textTheme.subtitle1?.color,
-                    fontSize: 12.0,
+                    fontSize: 14.0,
                     height: 1.25,
                   ),
                 ),
@@ -205,13 +205,13 @@ class _IndexFragmentState extends State<IndexFragment> {
           return SliverToBoxAdapter(
             child: Container(
               margin: edgeB16,
-              height: 128.0,
+              height: 148.0,
               child: InfiniteCarousel.builder(
                 itemBuilder: (context, index, realIndex) {
                   final carousel = carousels[index];
                   final String currFlag =
                       "carousel:$index:${carousel.id}:${carousel.cover}";
-                  final currentOffset = 280 * realIndex;
+                  final currentOffset = 300 * realIndex;
                   return AnimatedBuilder(
                     animation: _infiniteScrollController,
                     builder: (_, __) {
@@ -219,10 +219,10 @@ class _IndexFragmentState extends State<IndexFragment> {
                           (_infiniteScrollController.offset - currentOffset);
                       final ver = (diff / 36).abs();
                       var hor = (diff / 72).abs();
-                      if (hor < 6.0) {
-                        hor = 6.0;
-                      } else if (hor > 14.0) {
-                        hor = 14.0;
+                      if (hor < 8.0) {
+                        hor = 8.0;
+                      } else if (hor > 12.0) {
+                        hor = 12.0;
                       }
                       return Hero(
                         tag: currFlag,
@@ -240,7 +240,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                           },
                           margin: EdgeInsets.symmetric(
                             horizontal: hor,
-                            vertical: ver > 16.0 ? 16.0 : ver,
+                            vertical: ver > 8.0 ? 8.0 : ver,
                           ),
                           decoration: BoxDecoration(
                             borderRadius: borderRadius16,
@@ -263,7 +263,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                   );
                 },
                 controller: _infiniteScrollController,
-                itemExtent: 280.0,
+                itemExtent: 300.0,
                 itemCount: carousels.length,
                 center: true,
                 velocityFactor: 0.8,
@@ -419,7 +419,7 @@ class _IndexFragmentState extends State<IndexFragment> {
   Future _showYearSeasonBottomSheet(final BuildContext context) {
     return showCupertinoModalBottomSheet(
       context: context,
-      topRadius: Radius.circular(16.0),
+      topRadius: radius16,
       builder: (_) {
         return SelectSeasonFragment();
       },

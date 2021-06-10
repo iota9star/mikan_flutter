@@ -1,5 +1,6 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -123,9 +124,29 @@ class SingleSeasonPage extends StatelessWidget {
             ),
             padding: edge16WithStatusBar,
             duration: dur240,
-            child: Text(
-              this.season.title,
-              style: textStyle24B,
+            child: Row(
+              children: [
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(
+                    FluentIcons.chevron_left_24_regular,
+                    size: 16.0,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minWidth: 36.0,
+                  shape: circleShape,
+                  color: hasScrolled
+                      ? theme.scaffoldBackgroundColor
+                      : theme.backgroundColor,
+                ),
+                sizedBoxW12,
+                Text(
+                  this.season.title,
+                  style: textStyle24B,
+                ),
+              ],
             ),
           ),
         );
@@ -176,7 +197,7 @@ class SingleSeasonPage extends StatelessWidget {
                   simple,
                   style: TextStyle(
                     color: theme.textTheme.subtitle1?.color,
-                    fontSize: 12.0,
+                    fontSize: 14.0,
                     height: 1.25,
                   ),
                 ),

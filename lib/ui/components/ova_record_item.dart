@@ -29,7 +29,7 @@ class OVARecordItem extends StatelessWidget {
       theme.primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
     return TapScaleContainer(
-      width: 360.0,
+      width: 375.0,
       onTap: onTap,
       margin: edgeR16,
       decoration: BoxDecoration(
@@ -49,7 +49,7 @@ class OVARecordItem extends StatelessWidget {
                 record.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: textStyle14B,
+                style: textStyle16B500,
               ),
             ),
           ),
@@ -112,7 +112,7 @@ class OVARecordItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   record.publishAt,
-                  style: textStyle13,
+                  style: textStyle14,
                 ),
               ),
               IconButton(

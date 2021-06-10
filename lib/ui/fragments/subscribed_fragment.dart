@@ -332,7 +332,7 @@ class SubscribedFragment extends StatelessWidget {
             padding: edgeH16V8,
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 108.0,
+                maxCrossAxisExtent: 128.0,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
                 childAspectRatio: 0.8,
@@ -486,7 +486,7 @@ class SubscribedFragment extends StatelessWidget {
           records.first.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: textStyle14B500,
+          style: textStyle15B500,
         )
       ],
     );
