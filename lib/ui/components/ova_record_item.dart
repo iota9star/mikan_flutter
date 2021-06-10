@@ -29,7 +29,7 @@ class OVARecordItem extends StatelessWidget {
       theme.primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
     );
     return TapScaleContainer(
-      width: 375.0,
+      width: 340.0,
       onTap: onTap,
       margin: edgeR16,
       decoration: BoxDecoration(

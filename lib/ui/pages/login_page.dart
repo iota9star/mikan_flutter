@@ -73,7 +73,7 @@ class LoginPage extends StatelessWidget {
                                 shape: circleShape,
                                 color: theme.backgroundColor,
                               ),
-                              sizedBoxW12,
+                              sizedBoxW16,
                               Expanded(child: _buildLoginButton(theme)),
                             ],
                           ),

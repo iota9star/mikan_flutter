@@ -3,7 +3,7 @@ import 'package:mikan_flutter/internal/hive.dart';
 
 part 'subgroup.g.dart';
 
-@HiveType(typeId: MyHive.MIAKN_SUBGROUP)
+@HiveType(typeId: MyHive.MIKAN_SUBGROUP)
 class Subgroup extends HiveObject {
   @HiveField(0)
   String? id;

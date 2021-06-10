@@ -4,7 +4,7 @@ import 'package:mikan_flutter/internal/hive.dart';
 
 part 'user.g.dart';
 
-@HiveType(typeId: MyHive.MIAKN_USER)
+@HiveType(typeId: MyHive.MIKAN_USER)
 class User extends HiveObject {
   @HiveField(0)
   String? name;

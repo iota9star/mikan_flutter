@@ -20,16 +20,16 @@ class MyHive {
 
   static const int THEME_ITEM = 1;
 
-  static const int MIAKN_BANGUMI = 2;
-  static const int MIAKN_BANGUMI_ROW = 3;
-  static const int MIAKN_CAROUSEL = 4;
-  static const int MIAKN_INDEX = 5;
-  static const int MIAKN_USER = 6;
-  static const int MIAKN_SUBGROUP = 7;
-  static const int MIAKN_SEASON = 8;
-  static const int MIAKN_YEARSEASON = 9;
-  static const int MIAKN_RECORD_ITEM = 10;
-  static const int MIAKN_ITEM_LOCATION = 11;
+  static const int MIKAN_BANGUMI = THEME_ITEM + 1;
+  static const int MIKAN_BANGUMI_ROW = MIKAN_BANGUMI + 1;
+  static const int MIKAN_CAROUSEL = MIKAN_BANGUMI_ROW + 1;
+  static const int MIKAN_INDEX = MIKAN_CAROUSEL + 1;
+  static const int MIKAN_USER = MIKAN_INDEX + 1;
+  static const int MIKAN_SUBGROUP = MIKAN_USER + 1;
+  static const int MIKAN_SEASON = MIKAN_SUBGROUP + 1;
+  static const int MIKAN_YEAR_SEASON = MIKAN_SEASON + 1;
+  static const int MIKAN_RECORD_ITEM = MIKAN_YEAR_SEASON + 1;
+  static const int MIKAN_ITEM_LOCATION = MIKAN_RECORD_ITEM + 1;
 
   static late Box<ThemeItem> themeItemBox;
   static late Box<Index> indexBox;
@@ -55,12 +55,12 @@ class MyHive {
         ..canDelete = false
         ..autoMode = true
         ..isDark = false
-        ..primaryColor = HexColor.fromHex("#3bc0c3").value
-        ..accentColor = HexColor.fromHex("#fe9b36").value
+        ..primaryColor = HexColor.fromHex("#39c7a5").value
+        ..accentColor = HexColor.fromHex("#f94800").value
         ..lightBackgroundColor = Colors.white.value
-        ..darkBackgroundColor = HexColor.fromHex("#293444").value
+        ..darkBackgroundColor = HexColor.fromHex("#132149").value
         ..lightScaffoldBackgroundColor = HexColor.fromHex("#f1f2f7").value
-        ..darkScaffoldBackgroundColor = HexColor.fromHex("#1c262f").value;
+        ..darkScaffoldBackgroundColor = HexColor.fromHex("#000000").value;
       themeItemBox.add(defaultTheme);
     }
     db = await Hive.openBox("DB");

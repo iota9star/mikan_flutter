@@ -6,7 +6,7 @@ import 'package:mikan_flutter/model/subgroup.dart';
 
 part 'record_item.g.dart';
 
-@HiveType(typeId: MyHive.MIAKN_RECORD_ITEM)
+@HiveType(typeId: MyHive.MIKAN_RECORD_ITEM)
 class RecordItem {
   @HiveField(0)
   String? id;

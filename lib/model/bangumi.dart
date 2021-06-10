@@ -6,7 +6,7 @@ import 'package:mikan_flutter/internal/hive.dart';
 
 part 'bangumi.g.dart';
 
-@HiveType(typeId: MyHive.MIAKN_BANGUMI)
+@HiveType(typeId: MyHive.MIKAN_BANGUMI)
 class Bangumi extends HiveObject {
   // 番剧的id
   @HiveField(0)

@@ -81,10 +81,10 @@ class ThemePanelFragment extends StatelessWidget {
                         if (themeItem.id == 1) return "默认主题不可修改".toast();
                         this._showEditThemePanel(context, themeItem: themeItem);
                       },
-                      margin: EdgeInsets.all(8.0),
-                      padding: EdgeInsets.all(2.0),
+                      margin: edge8,
+                      padding: edge2,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24.0),
+                        borderRadius: borderRadius24,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
@@ -115,7 +115,7 @@ class ThemePanelFragment extends StatelessWidget {
                       margin: edge8,
                       padding: EdgeInsets.zero,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24.0),
+                        borderRadius: borderRadius24,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),

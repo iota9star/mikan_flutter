@@ -71,7 +71,7 @@ class RegisterPage extends StatelessWidget {
                                 shape: circleShape,
                                 color: theme.backgroundColor,
                               ),
-                              sizedBoxW12,
+                              sizedBoxW16,
                               Expanded(
                                 child: _buildRegisterButton(theme),
                               )

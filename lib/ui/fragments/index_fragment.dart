@@ -432,7 +432,7 @@ class _IndexFragmentState extends State<IndexFragment> {
         if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
         return SliverToBoxAdapter(
           child: Container(
-            height: 146.0,
+            height: 154.0,
             padding: const EdgeInsets.only(bottom: 12.0, top: 12.0),
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),

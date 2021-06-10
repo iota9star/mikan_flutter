@@ -46,7 +46,6 @@ class NormalRecordItem extends StatelessWidget {
         borderRadius: borderRadius16,
       ),
       margin: edgeB16,
-      height: 164.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -68,11 +67,11 @@ class NormalRecordItem extends StatelessWidget {
                 record.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: textStyle14B500,
+                style: textStyle15B500,
               ),
             ),
           ),
-          spacer,
+          sizedBoxH4,
           Container(
             margin: edgeH16T4,
             width: double.infinity,

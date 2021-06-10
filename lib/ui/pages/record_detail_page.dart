@@ -183,7 +183,7 @@ class RecordDetailPage extends StatelessWidget {
               style: TextStyle(
                 color: theme.accentColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 24.0,
+                fontSize: 20.0,
               ),
             ),
           if (recordDetail.name.isNotBlank) sizedBoxH8,
@@ -352,7 +352,7 @@ class RecordDetailPage extends StatelessWidget {
                             theme.primaryColor,
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(24.0),
+                        borderRadius: borderRadius24,
                       ),
                       child: Icon(
                         FluentIcons.clipboard_link_24_regular,

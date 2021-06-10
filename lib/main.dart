@@ -126,7 +126,7 @@ class MikanApp extends StatelessWidget {
           ),
         ],
         child: Consumer<ThemeModel>(
-          builder: (context, themeModel, child) {
+          builder: (context, themeModel, _) {
             final firebaseModel = isMobile
                 ? Provider.of<FirebaseModel>(
                     context,
@@ -160,7 +160,7 @@ class MikanApp extends StatelessWidget {
     final ThemeModel themeModel,
     final FirebaseModel? firebaseModel,
   ) {
-    final ThemeData theme = themeModel.theme();
+    final ThemeData theme = themeModel.theme(darkTheme: !isMobile);
     return Theme(
       data: theme,
       child: OKToast(

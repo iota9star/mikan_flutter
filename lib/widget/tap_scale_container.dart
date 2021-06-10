@@ -91,7 +91,7 @@ class _TapScaleContainerState extends State<TapScaleContainer> {
   _tapStart() {
     _clickTime = DateTime.now();
     setState(() {
-      _transform = Matrix4.diagonal3Values(0.9, 0.9, 1);
+      _transform = Matrix4.diagonal3Values(0.92, 0.92, 1);
     });
   }
 }

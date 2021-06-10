@@ -3,7 +3,7 @@ import 'package:mikan_flutter/internal/hive.dart';
 
 part 'carousel.g.dart';
 
-@HiveType(typeId: MyHive.MIAKN_CAROUSEL)
+@HiveType(typeId: MyHive.MIKAN_CAROUSEL)
 class Carousel extends HiveObject {
   @HiveField(0)
   late String id;

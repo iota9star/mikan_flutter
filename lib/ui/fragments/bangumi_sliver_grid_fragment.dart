@@ -47,7 +47,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
           crossAxisSpacing: 12.0,
           mainAxisSpacing: 12.0,
           maxCrossAxisExtent: 156.0,
-          childAspectRatio: 0.6,
+          childAspectRatio: 0.56,
         ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {

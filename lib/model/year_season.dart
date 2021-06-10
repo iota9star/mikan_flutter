@@ -4,7 +4,7 @@ import 'package:mikan_flutter/model/season.dart';
 
 part 'year_season.g.dart';
 
-@HiveType(typeId: MyHive.MIAKN_YEARSEASON)
+@HiveType(typeId: MyHive.MIKAN_YEAR_SEASON)
 class YearSeason extends HiveObject {
   @HiveField(0)
   late String year;

@@ -9,32 +9,63 @@ class ThemeItem extends HiveObject {
   late int id;
 
   @HiveField(1)
-  bool canDelete = true;
+  late bool canDelete = true;
 
   @HiveField(2)
-  bool autoMode = true;
+  late bool autoMode = true;
 
   @HiveField(4)
-  bool isDark = false;
+  late bool isDark = false;
 
   @HiveField(5)
-  int primaryColor = 0;
+  late int primaryColor = 0;
 
   @HiveField(6)
-  int accentColor = 0;
+  late int accentColor = 0;
 
   @HiveField(7)
-  int lightBackgroundColor = 0;
+  late int lightBackgroundColor = 0;
 
   @HiveField(8)
-  int darkBackgroundColor = 0;
+  late int darkBackgroundColor = 0;
 
   @HiveField(9)
-  int lightScaffoldBackgroundColor = 0;
+  late int lightScaffoldBackgroundColor = 0;
 
   @HiveField(10)
-  int darkScaffoldBackgroundColor = 0;
+  late int darkScaffoldBackgroundColor = 0;
 
   @HiveField(11)
   String? fontFamily;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ThemeItem &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          canDelete == other.canDelete &&
+          autoMode == other.autoMode &&
+          isDark == other.isDark &&
+          primaryColor == other.primaryColor &&
+          accentColor == other.accentColor &&
+          lightBackgroundColor == other.lightBackgroundColor &&
+          darkBackgroundColor == other.darkBackgroundColor &&
+          lightScaffoldBackgroundColor == other.lightScaffoldBackgroundColor &&
+          darkScaffoldBackgroundColor == other.darkScaffoldBackgroundColor &&
+          fontFamily == other.fontFamily;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      canDelete.hashCode ^
+      autoMode.hashCode ^
+      isDark.hashCode ^
+      primaryColor.hashCode ^
+      accentColor.hashCode ^
+      lightBackgroundColor.hashCode ^
+      darkBackgroundColor.hashCode ^
+      lightScaffoldBackgroundColor.hashCode ^
+      darkScaffoldBackgroundColor.hashCode ^
+      fontFamily.hashCode;
 }
