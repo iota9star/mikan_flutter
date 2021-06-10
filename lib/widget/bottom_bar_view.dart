@@ -63,7 +63,7 @@ class _BottomBarViewState extends State<BottomBarView>
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: borderRadiusT16,
+      borderRadius: borderRadius16,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
         child: Container(

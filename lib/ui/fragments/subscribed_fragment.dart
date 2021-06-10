@@ -84,7 +84,7 @@ class SubscribedFragment extends StatelessWidget {
                   ],
                 ),
                 _buildSeeMore(theme, subscribedModel),
-                sliverSizedBoxH64,
+                sliverSizedBoxH80,
               ],
             ),
           ),

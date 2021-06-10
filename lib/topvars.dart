@@ -205,8 +205,8 @@ const sizedBoxH4 = const SizedBox(height: 4.0);
 const sizedBoxH56 = const SizedBox(height: 56.0);
 const sizedBoxH42 = const SizedBox(height: 42.0);
 
-const sliverSizedBoxH64 = const SliverToBoxAdapter(
-  child: const SizedBox(height: 64.0),
+const sliverSizedBoxH80 = const SliverToBoxAdapter(
+  child: const SizedBox(height: 80.0),
 );
 
 const spacer = const Spacer();

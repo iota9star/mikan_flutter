@@ -106,7 +106,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                       );
                     },
                   ),
-                  sliverSizedBoxH64,
+                  sliverSizedBoxH80,
                 ],
               ),
             );
