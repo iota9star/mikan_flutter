@@ -43,8 +43,8 @@ class HomePage extends StatelessWidget {
             ),
             Positioned(
               bottom: 16.0,
-              left: 16.0,
-              right: 16.0,
+              left: 24.0,
+              right: 24.0,
               child: Selector<HomeModel, int>(
                 selector: (_, model) => model.selectedIndex,
                 shouldRebuild: (pre, next) => pre != next,
