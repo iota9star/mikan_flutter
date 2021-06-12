@@ -5,7 +5,7 @@ on:
     tags:
       - v*
 env:
-  FLUTTER_VERSION: "2.2.1"
+  FLUTTER_VERSION: "2.2.1-stable"
   JAVA_VERSION: "11.x"
   GRADLE_VERSION: "gradle-6.9-all"
 jobs:
