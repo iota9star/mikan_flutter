@@ -1,28 +1,42 @@
 name: daily build
 on:
+  workflow_dispatch:
   push:
     tags:
       - v*
 jobs:
   build:
-    name: release build
+    name: Release build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - name: setup jdk
+      - name: Cache Gradle
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-env
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Setup JDK
         uses: actions/setup-java@v1
         with:
           java-version: '8.x'
-      - name: setup flutter
+      - name: Setup flutter
         uses: subosito/flutter-action@v1
         with:
           channel: "stable"
-      - name: build apk
+      - name: Build apk
         run: |
           flutter pub get
-          flutter build apk
-          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
-      - name: sign build apk
+          flutter build -v apk --release
+          flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
+          dir
+          dir build/app/outputs/flutter-apk
+      - name: Sign build apk
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: build/app/outputs/flutter-apk
@@ -32,13 +46,13 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "30.0.3"
-      - name: build windows
+      - name: Build windows
         run: |
           flutter config --enable-windows-desktop
-          flutter build windows
+          flutter build -v windows --release
           Compress-Archive -Path build/windows/runner/Release/* windows-release.zip
-      - name: release build
+      - name: Release build
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "release-apk/*release-signed.apk,build/windows/runner/windows-release.zip"
+          artifacts: "build/app/outputs/flutter-apk/*release-signed.apk,build/windows/runner/windows-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
