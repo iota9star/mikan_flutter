@@ -34,20 +34,20 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ env.JAVA_VERSION }}
-#      - name: Cache Flutter
-#        uses: actions/cache@v2
-#        env:
-#          cache-name: cache-flutter
-#        with:
-#          path: |
-#            C:\hostedtoolcache\windows\flutter\${{ env.FLUTTER_VERSION }}-stable
-#          key: ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}-stable
-#          restore-keys: |
-#            ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
+      - name: Cache Flutter
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-flutter
+        with:
+          path: |
+            C:\hostedtoolcache\windows\flutter\${{ env.FLUTTER_VERSION }}-stable
+          key: ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}-stable
+          restore-keys: |
+            ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
       - name: Setup flutter
         uses: subosito/flutter-action@v1
         with:
-#          flutter-version: ${{ env.flutter_version }}
+          flutter-version: ${{ env.flutter_version }}
           channel: stable
       - name: Cache Build
         uses: actions/cache@v2
@@ -82,11 +82,11 @@ jobs:
           flutter config --enable-windows-desktop
           flutter build -v windows --release
           dir build/windows/runner/Release
-          Compress-Archive -Path build/windows/runner/Release/* build/windows/runner/windows-release.zip
+          Compress-Archive -Path build/windows/runner/Release/* windows-release.zip
       - name: Release build
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "build/app/outputs/flutter-apk/*release*.apk,build/windows/runner/windows-release.zip"
+          artifacts: "build/app/outputs/flutter-apk/*release*.apk,windows-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
