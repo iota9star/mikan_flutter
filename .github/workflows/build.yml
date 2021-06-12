@@ -12,7 +12,8 @@ jobs:
       - name: setup jdk
         uses: actions/setup-java@v1
         with:
-          java-version: '11.x'
+          java-version: '8.x'
+        run: java -version
       - name: setup flutter
         uses: subosito/flutter-action@v1
         with:
@@ -40,5 +41,5 @@ jobs:
       - name: release build
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "release-apk/*release*-signed.apk,build/windows/runner/windows-release.zip"
+          artifacts: "release-apk/*release-signed.apk,build/windows/runner/windows-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
