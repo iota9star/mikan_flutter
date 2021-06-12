@@ -13,7 +13,7 @@ jobs:
       - name: Cache Gradle
         uses: actions/cache@v2
         env:
-          cache-name: cache-env
+          cache-name: cache-gradle
         with:
           path: |
             ~/.gradle/caches
@@ -24,11 +24,31 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
-          java-version: '8.x'
+          java-version: '11.x'
+      - name: Cache Flutter
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-flutter
+        with:
+          path: |
+            C:\hostedtoolcache\windows\flutter
+          key: ${{ runner.os }}-flutter
+          restore-keys: |
+            ${{ runner.os }}-flutter
       - name: Setup flutter
         uses: subosito/flutter-action@v1
         with:
           channel: "stable"
+      - name: Cache Build
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-build
+        with:
+          path: |
+            ${{ env.GITHUB_WORKSPACE }}/build
+          key: ${{ runner.os }}-build
+          restore-keys: |
+            ${{ runner.os }}-build
       - name: Build apk
         run: |
           flutter pub get
