@@ -54,7 +54,7 @@ jobs:
           cache-name: cache-build
         with:
           path: |
-            ${{ env.GITHUB_WORKSPACE }}\build
+            D:\a\mikan_flutter\mikan_flutter\build
           key: ${{ runner.os }}-build
           restore-keys: |
             ${{ runner.os }}-build
@@ -80,7 +80,8 @@ jobs:
         run: |
           flutter config --enable-windows-desktop
           flutter build -v windows --release
-          Compress-Archive -Path build/windows/runner/Release/* windows-release.zip
+          dir build/windows/runner/Release
+          Compress-Archive -Path build/windows/runner/Release/* build/windows/runner/windows-release.zip
       - name: Release build
         uses: ncipollo/release-action@v1
         with:
