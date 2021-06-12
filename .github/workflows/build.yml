@@ -13,7 +13,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '8.x'
-        run: java -version
       - name: setup flutter
         uses: subosito/flutter-action@v1
         with:
