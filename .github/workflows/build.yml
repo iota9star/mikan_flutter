@@ -1,6 +1,11 @@
 name: build app
 on:
   workflow_dispatch:
+    inputs:
+      TAG:
+        description: 'Set a Tag'
+        required: true
+        default: ''
   push:
     tags:
       - v*
@@ -42,7 +47,7 @@ jobs:
       - name: Setup flutter
         uses: subosito/flutter-action@v1
         with:
-          channel: "stable"
+          flutter-version: ${{ env.flutter_version }}
       - name: Cache Build
         uses: actions/cache@v2
         env:
@@ -55,10 +60,11 @@ jobs:
             ${{ runner.os }}-build
       - name: Build apk
         run: |
+          dir
           flutter pub get
           flutter build -v apk --release
+          dir build/app/outputs/flutter-apk
           flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
-          dir
           dir build/app/outputs/flutter-apk
 #      - name: Sign build apk
 #        uses: r0adkll/sign-android-release@v1
@@ -80,3 +86,4 @@ jobs:
         with:
           artifacts: "build/app/outputs/flutter-apk/*release*.apk,build/windows/runner/windows-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
+          tag: ${{ github.event.inputs.TAG }}
