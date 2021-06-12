@@ -1,9 +1,13 @@
-name: daily build
+name: build app
 on:
   workflow_dispatch:
   push:
     tags:
       - v*
+env:
+  FLUTTER_VERSION: "2.2.1"
+  JAVA_VERSION: "11.x"
+  GRADLE_VERSION: "gradle-6.9-all"
 jobs:
   build:
     name: Release build
@@ -16,25 +20,25 @@ jobs:
           cache-name: cache-gradle
         with:
           path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            ~\.gradle\caches
+            ~\.gradle\wrapper
+          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
-          java-version: '11.x'
+          java-version: ${{ env.JAVA_VERSION }}
       - name: Cache Flutter
         uses: actions/cache@v2
         env:
           cache-name: cache-flutter
         with:
           path: |
-            C:\hostedtoolcache\windows\flutter
-          key: ${{ runner.os }}-flutter
+            C:\hostedtoolcache\windows\flutter\${{ env.FLUTTER_VERSION }}
+          key: ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
           restore-keys: |
-            ${{ runner.os }}-flutter
+            ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
       - name: Setup flutter
         uses: subosito/flutter-action@v1
         with:
@@ -45,7 +49,7 @@ jobs:
           cache-name: cache-build
         with:
           path: |
-            ${{ env.GITHUB_WORKSPACE }}/build
+            ${{ env.GITHUB_WORKSPACE }}\build
           key: ${{ runner.os }}-build
           restore-keys: |
             ${{ runner.os }}-build
@@ -56,16 +60,16 @@ jobs:
           flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           dir
           dir build/app/outputs/flutter-apk
-      - name: Sign build apk
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: build/app/outputs/flutter-apk
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.3"
+#      - name: Sign build apk
+#        uses: r0adkll/sign-android-release@v1
+#        with:
+#          releaseDirectory: build/app/outputs/flutter-apk
+#          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+#          alias: ${{ secrets.ALIAS }}
+#          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+#          keyPassword: ${{ secrets.KEY_PASSWORD }}
+#        env:
+#          BUILD_TOOLS_VERSION: "30.0.3"
       - name: Build windows
         run: |
           flutter config --enable-windows-desktop
@@ -74,5 +78,5 @@ jobs:
       - name: Release build
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/flutter-apk/*release-signed.apk,build/windows/runner/windows-release.zip"
+          artifacts: "build/app/outputs/flutter-apk/*release*.apk,build/windows/runner/windows-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
