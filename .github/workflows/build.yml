@@ -10,7 +10,7 @@ on:
     tags:
       - v*
 env:
-  FLUTTER_VERSION: "2.2.1-stable"
+  FLUTTER_VERSION: "2.2.1"
   JAVA_VERSION: "11.x"
   GRADLE_VERSION: "gradle-6.9-all"
 jobs:
@@ -40,8 +40,8 @@ jobs:
           cache-name: cache-flutter
         with:
           path: |
-            C:\hostedtoolcache\windows\flutter\${{ env.FLUTTER_VERSION }}
-          key: ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
+            C:\hostedtoolcache\windows\flutter\${{ env.FLUTTER_VERSION }}-stable
+          key: ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}-stable
           restore-keys: |
             ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
       - name: Setup flutter
