@@ -86,6 +86,7 @@ jobs:
       - name: Release build
         uses: ncipollo/release-action@v1
         with:
+          allowUpdates: true
           artifacts: "build/app/outputs/flutter-apk/*release*.apk,build/windows/runner/windows-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
