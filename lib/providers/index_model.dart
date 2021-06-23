@@ -107,7 +107,11 @@ class IndexModel extends CancelableBaseModel {
     if (index == null) return;
     this._years = index.years;
     this._subscribedModel.years = this._years;
-    this._selectedSeason = this._years.getOrNull(0)?.seasons.getOrNull(0);
+    this._selectedSeason = this
+        ._years
+        .getOrNull(0)
+        ?.seasons
+        .firstWhere((element) => element.active);
     this._bangumiRows = index.bangumiRows;
     this._selectedBangumiRow = this._bangumiRows[0];
     this._carousels = index.carousels;
