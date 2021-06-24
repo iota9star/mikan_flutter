@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/topvars.dart';
 
 class BarItem {
@@ -68,7 +67,6 @@ class _BottomBarViewState extends State<BottomBarView>
         filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
         child: Container(
           height: widget.height,
-          padding: EdgeInsets.only(bottom: Screen.navBarHeight),
           decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor.withOpacity(0.72),
           ),

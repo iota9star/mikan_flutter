@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/providers/home_model.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/list_fragment.dart';
@@ -42,7 +45,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: 16.0,
+              bottom: math.max(Screen.navBarHeight, 16),
               left: 24.0,
               right: 24.0,
               child: Selector<HomeModel, int>(
