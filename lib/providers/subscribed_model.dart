@@ -24,7 +24,8 @@ class SubscribedModel extends CancelableBaseModel {
   set years(List<YearSeason>? years) {
     this._years = years;
     if (years.isSafeNotEmpty) {
-      this._loadMySubscribedSeasonBangumi(years![0].seasons.first);
+      final active = years![0].seasons.firstWhere((element) => element.active);
+      this._loadMySubscribedSeasonBangumi(active);
     }
   }
 
