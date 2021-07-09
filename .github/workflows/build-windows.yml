@@ -1,0 +1,38 @@
+name: build app
+on:
+  workflow_dispatch:
+    inputs:
+      TAG:
+        description: 'Set a Tag'
+        required: true
+        default: ''
+  push:
+    tags:
+      - v*
+jobs:
+  build:
+    name: Release build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11.x'
+      - name: Setup flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+      - name: Build windows
+        run: |
+          flutter config --enable-windows-desktop
+          flutter build -v windows --release
+          dir build/windows/runner/Release
+          Compress-Archive -Path build/windows/runner/Release/* windows-release.zip
+      - name: Release build
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "windows-release.zip"
+          token: ${{ secrets.ACTION_TOKEN }}
+          tag: ${{ github.event.inputs.TAG }}
