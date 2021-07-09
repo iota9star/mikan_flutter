@@ -104,4 +104,27 @@ class BangumiModel extends CancelableBaseModel {
     }
     notifyListeners();
   }
+
+  Future<void> changeSubscribe() async {
+    if (_bangumiDetail == null) return;
+    final bangumiId = _bangumiDetail!.id;
+    if (bangumiId.isNullOrBlank) {
+      return "番组id为空，忽略当前订阅".toast();
+    }
+    final int? bid = int.tryParse(bangumiId);
+    if (bid == null) {
+      return "番组id为空，忽略当前订阅".toast();
+    }
+    final Resp resp = await (this +
+        Repo.subscribeBangumi(
+          bid,
+          _bangumiDetail!.subscribed,
+        ));
+    if (resp.success) {
+      _bangumiDetail!.subscribed = !_bangumiDetail!.subscribed;
+    } else {
+      return resp.msg.toast();
+    }
+    notifyListeners();
+  }
 }

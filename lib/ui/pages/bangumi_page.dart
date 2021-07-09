@@ -84,7 +84,7 @@ class BangumiPage extends StatelessWidget {
                   ),
                 ),
                 Positioned.fill(
-                  child: _buildList(context, theme, model),
+                  child: _buildList(theme, model),
                 ),
                 Positioned(
                   left: 16.0,
@@ -113,14 +113,13 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildList(
-    final BuildContext context,
     final ThemeData theme,
     final BangumiModel model,
   ) {
     return Selector<BangumiModel, bool>(
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (_, loading, __) {
+      builder: (context, loading, __) {
         final detail = model.bangumiDetail;
         final notNull = detail != null;
         final subgroups = detail?.subgroupBangumis;
@@ -128,6 +127,7 @@ class BangumiPage extends StatelessWidget {
         final items = loading
             ? [
                 _buildTop(
+                  context,
                   theme,
                   model,
                 ),
@@ -135,6 +135,7 @@ class BangumiPage extends StatelessWidget {
               ]
             : [
                 _buildTop(
+                  context,
                   theme,
                   model,
                 ),
@@ -446,7 +447,8 @@ class BangumiPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTop(final ThemeData theme, final BangumiModel model) {
+  Widget _buildTop(final BuildContext context, final ThemeData theme,
+      final BangumiModel model) {
     return Stack(
       fit: StackFit.loose,
       children: [
@@ -477,15 +479,31 @@ class BangumiPage extends StatelessWidget {
           child: Row(
             children: [
               _buildCover(cover, model),
-              // Spacer(flex: 3),
-              // MaterialButton(
-              //   onPressed: () {},
-              //   child: Icon(FluentIcons.thumb_like_24_filled),
-              //   color: Colors.pinkAccent,
-              //   padding: edge12,
-              //   minWidth: 0,
-              //   shape: circleShape,
-              // ),
+              spacer,
+              MaterialButton(
+                onPressed: () {
+                  model.changeSubscribe();
+                },
+                child: Selector<BangumiModel, bool>(
+                  selector: (_, model) =>
+                      model.bangumiDetail?.subscribed == true,
+                  shouldRebuild: (pre, next) => pre != next,
+                  builder: (_, subscribed, __) {
+                    return Icon(
+                      subscribed
+                          ? FluentIcons.heart_24_filled
+                          : FluentIcons.heart_24_regular,
+                      color: theme.accentColor.computeLuminance() < 0.5
+                          ? Colors.white
+                          : Colors.black,
+                    );
+                  },
+                ),
+                color: theme.accentColor,
+                padding: edge16,
+                minWidth: 0,
+                shape: circleShape,
+              ),
               // spacer,
               // MaterialButton(
               //   onPressed: () {},
