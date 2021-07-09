@@ -28,7 +28,7 @@ jobs:
           ls
           flutter pub get
           flutter build -v apk --release
-          dir build/app/outputs/flutter-apk
+          ls build/app/outputs/flutter-apk
           flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           ls build/app/outputs/flutter-apk
       - name: Sign build apk
