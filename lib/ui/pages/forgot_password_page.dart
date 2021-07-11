@@ -85,8 +85,7 @@ class ForgotPasswordPage extends StatelessWidget {
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, loading, __) {
         final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
-        final Color iconColor =
-            btnColor.computeLuminance() < 0.5 ? Colors.white : Colors.black;
+        final Color iconColor = btnColor.isDark ? Colors.white : Colors.black;
         return ElevatedButton(
           onPressed: () {
             if (loading) return;

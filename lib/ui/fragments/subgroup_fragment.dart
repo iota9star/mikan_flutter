@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/topvars.dart';
@@ -46,7 +47,7 @@ class SubgroupFragment extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12.0,
                               height: 1.25,
-                              color: theme.primaryColor.computeLuminance() < 0.5
+                              color: theme.primaryColor.isDark
                                   ? Colors.white
                                   : Colors.black,
                             ),

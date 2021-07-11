@@ -239,8 +239,11 @@ class _InfiniteScrollable extends Scrollable {
 
 class _InfiniteScrollableState extends ScrollableState {
   double get itemExtent => (widget as _InfiniteScrollable).itemExtent;
+
   int get itemCount => (widget as _InfiniteScrollable).itemCount;
+
   bool get loop => (widget as _InfiniteScrollable).loop;
+
   double get velocityFactor => (widget as _InfiniteScrollable).velocityFactor;
 }
 
@@ -403,21 +406,25 @@ class _InfiniteScrollPosition extends ScrollPositionWithSingleContext
         );
 
   double get itemExtent => _getItemExtentFromScrollContext(context);
+
   static double _getItemExtentFromScrollContext(ScrollContext context) {
     return (context as _InfiniteScrollableState).itemExtent;
   }
 
   int get itemCount => _getItemCountFromScrollContext(context);
+
   static int _getItemCountFromScrollContext(ScrollContext context) {
     return (context as _InfiniteScrollableState).itemCount;
   }
 
   bool get loop => _getLoopFromScrollContext(context);
+
   static bool _getLoopFromScrollContext(ScrollContext context) {
     return (context as _InfiniteScrollableState).loop;
   }
 
   double get velocityFactor => _getVelocityFactorFromScrollContext(context);
+
   static double _getVelocityFactorFromScrollContext(ScrollContext context) {
     return (context as _InfiniteScrollableState).velocityFactor;
   }

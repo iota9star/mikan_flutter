@@ -234,7 +234,7 @@ class RecordDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 10,
                         height: 1.25,
-                        color: theme.primaryColor.computeLuminance() < 0.5
+                        color: theme.primaryColor.isDark
                             ? Colors.white
                             : Colors.black,
                       ),
@@ -271,12 +271,10 @@ class RecordDetailPage extends StatelessWidget {
     final ThemeData theme,
     final RecordDetail detail,
   ) {
-    final Color accentTextColor = theme.accentColor.computeLuminance() < 0.5
-        ? Colors.white
-        : Colors.black;
-    final Color primaryTextColor = theme.primaryColor.computeLuminance() < 0.5
-        ? Colors.white
-        : Colors.black;
+    final Color accentTextColor =
+        theme.accentColor.isDark ? Colors.white : Colors.black;
+    final Color primaryTextColor =
+        theme.primaryColor.isDark ? Colors.white : Colors.black;
     return Column(
       children: [
         Stack(

@@ -5,7 +5,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/model/record_item.dart';
-import 'package:flutter/material.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';

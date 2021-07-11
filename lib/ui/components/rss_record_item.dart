@@ -24,10 +24,10 @@ class RssRecordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle fileTagStyle = textStyle10WithColor(
-      theme.accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+      theme.accentColor.isDark ? Colors.white : Colors.black,
     );
     final TextStyle titleTagStyle = textStyle10WithColor(
-      theme.primaryColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+      theme.primaryColor.isDark ? Colors.white : Colors.black,
     );
     final List<String> tags = record.tags;
     final heroTag = "rss:${record.id}:${record.cover}:${record.torrent}";

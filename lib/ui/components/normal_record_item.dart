@@ -28,16 +28,12 @@ class NormalRecordItem extends StatelessWidget {
     final TextStyle fileTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
-      color: theme.accentColor.computeLuminance() < 0.5
-          ? Colors.white
-          : Colors.black,
+      color: theme.accentColor.isDark ? Colors.white : Colors.black,
     );
     final TextStyle titleTagStyle = TextStyle(
       fontSize: 10,
       height: 1.25,
-      color: theme.primaryColor.computeLuminance() < 0.5
-          ? Colors.white
-          : Colors.black,
+      color: theme.primaryColor.isDark ? Colors.white : Colors.black,
     );
     return TapScaleContainer(
       onTap: onTap,
@@ -154,10 +150,9 @@ class NormalRecordItem extends StatelessWidget {
                               subgroups[index].name[0],
                               style: TextStyle(
                                 fontSize: 12.0,
-                                color:
-                                    theme.primaryColor.computeLuminance() < 0.5
-                                        ? Colors.white
-                                        : Colors.black,
+                                color: theme.primaryColor.isDark
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                             ),
                           ),

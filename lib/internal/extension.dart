@@ -123,9 +123,7 @@ extension NullableStringExt on String? {
                 child: Text(
                   this!,
                   style: TextStyle(
-                    color: bgc.computeLuminance() < 0.5
-                        ? Colors.white
-                        : Colors.black,
+                    color: bgc.isDark ? Colors.white : Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -466,9 +464,7 @@ const SystemUiOverlayStyle _dark = SystemUiOverlayStyle(
 
 extension BuildContextExt on BuildContext {
   SystemUiOverlayStyle get fitSystemUiOverlayStyle {
-    return Theme.of(this).scaffoldBackgroundColor.computeLuminance() < 0.5
-        ? _light
-        : _dark;
+    return Theme.of(this).scaffoldBackgroundColor.isDark ? _light : _dark;
   }
 }
 
@@ -495,6 +491,12 @@ extension BrightnessColor on Color {
     final hslLight =
         hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
     return hslLight.toColor();
+  }
+}
+
+extension ColorExt on Color {
+  bool get isDark {
+    return this.computeLuminance() < 0.5;
   }
 }
 

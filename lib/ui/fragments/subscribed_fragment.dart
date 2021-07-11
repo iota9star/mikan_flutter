@@ -50,9 +50,7 @@ class SubscribedFragment extends StatelessWidget {
           child: SmartRefresher(
             header: WaterDropMaterialHeader(
               backgroundColor: theme.accentColor,
-              color: theme.accentColor.computeLuminance() < 0.5
-                  ? Colors.white
-                  : Colors.black,
+              color: theme.accentColor.isDark ? Colors.white : Colors.black,
               distance: Screen.statusBarHeight + 42.0,
             ),
             controller: subscribedModel.refreshController,
@@ -65,7 +63,7 @@ class SubscribedFragment extends StatelessWidget {
                 MultiSliver(
                   pushPinnedChildren: true,
                   children: [
-                    _buildRssSection(context, theme, subscribedModel),
+                    _buildRssSection(context, theme),
                     _buildRssList(theme, subscribedModel),
                   ],
                 ),
@@ -260,7 +258,6 @@ class SubscribedFragment extends StatelessWidget {
   Widget _buildRssSection(
     final BuildContext context,
     final ThemeData theme,
-    final SubscribedModel subscribedModel,
   ) {
     return SliverPinnedToBoxAdapter(
       child: Transform.translate(
@@ -276,19 +273,28 @@ class SubscribedFragment extends StatelessWidget {
                   style: textStyle20B,
                 ),
               ),
-              MaterialButton(
-                onPressed: () {
-                  _toRecentSubscribedPage(context);
+              Selector<SubscribedModel, bool>(
+                shouldRebuild: (pre, next) => pre != next,
+                selector: (_, model) => model.rss.isNullOrEmpty,
+                builder: (_, nullOrEmpty, __) {
+                  if (nullOrEmpty) {
+                    return sizedBox;
+                  }
+                  return MaterialButton(
+                    onPressed: () {
+                      _toRecentSubscribedPage(context);
+                    },
+                    color: theme.backgroundColor,
+                    minWidth: 36.0,
+                    padding: EdgeInsets.zero,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: circleShape,
+                    child: Icon(
+                      FluentIcons.chevron_right_24_regular,
+                      size: 16.0,
+                    ),
+                  );
                 },
-                color: theme.backgroundColor,
-                minWidth: 36.0,
-                padding: EdgeInsets.zero,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: circleShape,
-                child: Icon(
-                  FluentIcons.chevron_right_24_regular,
-                  size: 16.0,
-                ),
               ),
             ],
           ),

@@ -157,7 +157,7 @@ class SubgroupBangumisFragment extends StatelessWidget {
             IconButton(
               padding: EdgeInsets.zero,
               tooltip: "查看字幕组详情",
-              icon: Icon(FluentIcons.group_24_regular),
+              icon: Icon(FluentIcons.people_team_24_regular),
               onPressed: () {
                 final List<Subgroup> subgroups = subgroupBangumi.subgroups;
                 if (subgroups.length == 1) {

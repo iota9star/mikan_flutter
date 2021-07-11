@@ -1,6 +1,7 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -33,9 +34,7 @@ class ListFragment extends StatelessWidget {
         child: SmartRefresher(
           header: WaterDropMaterialHeader(
             backgroundColor: theme.accentColor,
-            color: theme.accentColor.computeLuminance() < 0.5
-                ? Colors.white
-                : Colors.black,
+            color: theme.accentColor.isDark ? Colors.white : Colors.black,
             distance: Screen.statusBarHeight + 42.0,
           ),
           footer: Indicator.footer(

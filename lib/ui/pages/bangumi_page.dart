@@ -493,7 +493,7 @@ class BangumiPage extends StatelessWidget {
                       subscribed
                           ? FluentIcons.heart_24_filled
                           : FluentIcons.heart_24_regular,
-                      color: theme.accentColor.computeLuminance() < 0.5
+                      color: theme.accentColor.isDark
                           ? Colors.white
                           : Colors.black,
                     );

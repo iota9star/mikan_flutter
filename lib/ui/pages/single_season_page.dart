@@ -59,9 +59,8 @@ class SingleSeasonPage extends StatelessWidget {
                   enablePullDown: true,
                   header: WaterDropMaterialHeader(
                     backgroundColor: theme.accentColor,
-                    color: theme.accentColor.computeLuminance() < 0.5
-                        ? Colors.white
-                        : Colors.black,
+                    color:
+                        theme.accentColor.isDark ? Colors.white : Colors.black,
                     distance: Screen.statusBarHeight + 42.0,
                   ),
                   onRefresh: seasonModel.refresh,

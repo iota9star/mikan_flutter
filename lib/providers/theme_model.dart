@@ -28,13 +28,11 @@ class ThemeModel extends BaseModel {
     final bool isDark = _themeItem.autoMode ? darkTheme : _themeItem.isDark;
     final Brightness brightness = isDark ? Brightness.dark : Brightness.light;
     final primaryColor = Color(_themeItem.primaryColor);
-    final primaryColorBrightness = primaryColor.computeLuminance() < 0.5
-        ? Brightness.dark
-        : Brightness.light;
+    final primaryColorBrightness =
+        primaryColor.isDark ? Brightness.dark : Brightness.light;
     final accentColor = Color(_themeItem.accentColor);
-    final accentColorBrightness = accentColor.computeLuminance() < 0.5
-        ? Brightness.dark
-        : Brightness.light;
+    final accentColorBrightness =
+        accentColor.isDark ? Brightness.dark : Brightness.light;
     final scaffoldBackgroundColor = Color(
       isDark
           ? _themeItem.darkScaffoldBackgroundColor

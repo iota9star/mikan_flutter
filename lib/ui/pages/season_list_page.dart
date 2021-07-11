@@ -64,7 +64,7 @@ class SeasonListPage extends StatelessWidget {
                     controller: seasonListModel.refreshController,
                     header: WaterDropMaterialHeader(
                       backgroundColor: theme.accentColor,
-                      color: theme.accentColor.computeLuminance() < 0.5
+                      color: theme.accentColor.isDark
                           ? Colors.white
                           : Colors.black,
                       distance: Screen.statusBarHeight + 42.0,
