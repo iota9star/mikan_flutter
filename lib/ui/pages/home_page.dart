@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 
 @FFRoute(
   name: "home",
-  routeName: "home",
+  routeName: "/",
 )
 @immutable
 class HomePage extends StatelessWidget {

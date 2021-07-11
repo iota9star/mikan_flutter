@@ -24,7 +24,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 @FFRoute(
   name: "bangumi",
-  routeName: "bangumi",
+  routeName: "/bangumi",
 )
 @immutable
 class BangumiPage extends StatelessWidget {

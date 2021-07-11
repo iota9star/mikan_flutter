@@ -12,6 +12,7 @@ const edgeH16T8B16 =
 const edgeHB16T8 =
     const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0);
 const edgeHB24 = const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0);
+const edgeL16R8 = const EdgeInsets.only(left: 16.0, right: 8.0);
 const edgeH16T24B8 =
     const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 24.0);
 const edge16 = const EdgeInsets.all(16.0);

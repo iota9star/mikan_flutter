@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 @FFRoute(
   name: "splash",
-  routeName: "splash",
+  routeName: "/splash",
 )
 @immutable
 class SplashPage extends StatelessWidget {

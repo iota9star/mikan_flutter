@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/model/record_item.dart';
+import 'package:flutter/material.dart';
 import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
@@ -12,6 +13,7 @@ import 'package:mikan_flutter/model/year_season.dart';
 
 const List<String> routeNames = <String>[
   'bangumi',
+  'forget-password',
   'home',
   'login',
   'recent-subscribed',
@@ -27,105 +29,112 @@ const List<String> routeNames = <String>[
 class Routes {
   const Routes._();
 
-  /// 'bangumi'
+  /// '/bangumi'
   ///
   /// [name] : 'bangumi'
   ///
-  /// [routeName] : 'bangumi'
+  /// [routeName] : '/bangumi'
   ///
   /// [constructors] :
   ///
   /// BangumiPage : [Key? key, String(required) bangumiId, String(required) cover, String(required) heroTag]
   static const _Bangumi bangumi = _Bangumi();
 
-  /// 'home'
+  /// '/forget-password'
+  ///
+  /// [name] : 'forget-password'
+  ///
+  /// [routeName] : '/forget-password'
+  static const String forgetPassword = 'forget-password';
+
+  /// '/'
   ///
   /// [name] : 'home'
   ///
-  /// [routeName] : 'home'
+  /// [routeName] : '/'
   static const String home = 'home';
 
-  /// 'login'
+  /// '/login'
   ///
   /// [name] : 'login'
   ///
-  /// [routeName] : 'login'
+  /// [routeName] : '/login'
   static const String login = 'login';
 
-  /// 'recent-subscribed'
+  /// '/recent-subscribed'
   ///
   /// [name] : 'recent-subscribed'
   ///
-  /// [routeName] : 'recent-subscribed'
+  /// [routeName] : '/recent-subscribed'
   ///
   /// [constructors] :
   ///
   /// RecentSubscribedPage : [Key? key, List<RecordItem>(required) loaded]
   static const _RecentSubscribed recentSubscribed = _RecentSubscribed();
 
-  /// 'record-detail'
+  /// '/record-detail'
   ///
   /// [name] : 'record-detail'
   ///
-  /// [routeName] : 'record-detail'
+  /// [routeName] : '/record-detail'
   ///
   /// [constructors] :
   ///
   /// RecordDetailPage : [Key? key, String(required) url]
   static const _RecordDetail recordDetail = _RecordDetail();
 
-  /// 'register'
+  /// '/register'
   ///
   /// [name] : 'register'
   ///
-  /// [routeName] : 'register'
+  /// [routeName] : '/register'
   static const String register = 'register';
 
-  /// 'season'
+  /// '/season'
   ///
   /// [name] : 'season'
   ///
-  /// [routeName] : 'season'
+  /// [routeName] : '/season'
   ///
   /// [constructors] :
   ///
   /// SingleSeasonPage : [Key? key, Season(required) season]
   static const _Season season = _Season();
 
-  /// 'season-list'
+  /// '/season-list'
   ///
   /// [name] : 'season-list'
   ///
-  /// [routeName] : 'season-list'
+  /// [routeName] : '/season-list'
   ///
   /// [constructors] :
   ///
   /// SeasonListPage : [Key? key, List<YearSeason>(required) years]
   static const _SeasonList seasonList = _SeasonList();
 
-  /// 'splash'
+  /// '/splash'
   ///
   /// [name] : 'splash'
   ///
-  /// [routeName] : 'splash'
+  /// [routeName] : '/splash'
   static const String splash = 'splash';
 
-  /// 'subgroup'
+  /// '/subgroup'
   ///
   /// [name] : 'subgroup'
   ///
-  /// [routeName] : 'subgroup'
+  /// [routeName] : '/subgroup'
   ///
   /// [constructors] :
   ///
   /// SubgroupPage : [Key? key, Subgroup(required) subgroup]
   static const _Subgroup subgroup = _Subgroup();
 
-  /// 'subscribed-season'
+  /// '/subscribed-season'
   ///
   /// [name] : 'subscribed-season'
   ///
-  /// [routeName] : 'subscribed-season'
+  /// [routeName] : '/subscribed-season'
   ///
   /// [constructors] :
   ///

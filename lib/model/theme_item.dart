@@ -6,7 +6,7 @@ part 'theme_item.g.dart';
 @HiveType(typeId: MyHive.THEME_ITEM)
 class ThemeItem extends HiveObject {
   @HiveField(0)
-  late int id;
+  int? id;
 
   @HiveField(1)
   late bool canDelete = true;

@@ -5,19 +5,17 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/mikan_flutter_routes.dart';
-import 'package:mikan_flutter/providers/index_model.dart';
-import 'package:mikan_flutter/providers/login_model.dart';
-import 'package:mikan_flutter/providers/subscribed_model.dart';
+import 'package:mikan_flutter/providers/forgot_password_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
-  name: "login",
-  routeName: "/login",
+  name: "forget-password",
+  routeName: "/forget-password",
 )
 @immutable
-class LoginPage extends StatelessWidget {
+class ForgotPasswordPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -25,10 +23,11 @@ class LoginPage extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
-      child: ChangeNotifierProvider<LoginModel>(
-        create: (_) => LoginModel(),
+      child: ChangeNotifierProvider<ForgotPasswordModel>(
+        create: (_) => ForgotPasswordModel(),
         child: Builder(builder: (context) {
-          final loginModel = Provider.of<LoginModel>(context, listen: false);
+          final forgotModel =
+              Provider.of<ForgotPasswordModel>(context, listen: false);
           return Scaffold(
             body: Center(
               child: ConstrainedBox(
@@ -43,19 +42,8 @@ class LoginPage extends StatelessWidget {
                         children: <Widget>[
                           normalFormHeader,
                           sizedBoxH42,
-                          _buildUserNameField(theme, loginModel),
-                          sizedBoxH16,
-                          _buildPasswordField(theme, loginModel),
-                          sizedBoxH16,
-                          _buildRememberRow(context, theme, loginModel),
-                          sizedBoxH16,
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, Routes.register);
-                            },
-                            child: Text("还没有账号？赶紧来注册一个吧~"),
-                          ),
-                          sizedBoxH16,
+                          _buildEmailField(theme, forgotModel),
+                          sizedBoxH56,
                           Row(
                             children: [
                               MaterialButton(
@@ -74,7 +62,7 @@ class LoginPage extends StatelessWidget {
                                 color: theme.backgroundColor,
                               ),
                               sizedBoxW16,
-                              Expanded(child: _buildLoginButton(theme)),
+                              Expanded(child: _buildSubmitButton(theme)),
                             ],
                           ),
                           sizedBoxH56,
@@ -91,8 +79,8 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton(final ThemeData theme) {
-    return Selector<LoginModel, bool>(
+  Widget _buildSubmitButton(final ThemeData theme) {
+    return Selector<ForgotPasswordModel, bool>(
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, loading, __) {
@@ -103,13 +91,8 @@ class LoginPage extends StatelessWidget {
           onPressed: () {
             if (loading) return;
             if (_formKey.currentState!.validate()) {
-              context.read<LoginModel>().submit(() {
-                context.read<IndexModel>().refresh();
-                context.read<SubscribedModel>().refresh();
-                Navigator.popUntil(
-                  context,
-                  (route) => route.settings.name == Routes.home,
-                );
+              context.read<ForgotPasswordModel>().submit(() {
+                _showForgotPasswordConfirmationPanel(context, theme);
               });
             }
           },
@@ -124,7 +107,7 @@ class LoginPage extends StatelessWidget {
                 ),
               sizedBoxW12,
               Text(
-                loading ? "登录中..." : "登录",
+                loading ? "提交中..." : "提交",
                 style: TextStyle(
                   color: iconColor,
                   fontSize: 16.0,
@@ -145,56 +128,27 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRememberRow(
-    final BuildContext context,
+  Widget _buildEmailField(
     final ThemeData theme,
-    final LoginModel loginModel,
-  ) {
-    return Row(
-      children: <Widget>[
-        Selector<LoginModel, bool>(
-          selector: (_, model) => model.rememberMe,
-          shouldRebuild: (pre, next) => pre != next,
-          builder: (_, checked, __) {
-            return Checkbox(
-              value: checked,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              activeColor: theme.accentColor,
-              onChanged: (val) {
-                loginModel.rememberMe = val ?? false;
-              },
-            );
-          },
-        ),
-        Expanded(child: Text("记住密码")),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed(Routes.forgetPassword);
-          },
-          child: Text("忘记密码"),
-        )
-      ],
-    );
-  }
-
-  Widget _buildUserNameField(
-    final ThemeData theme,
-    final LoginModel loginModel,
+    final ForgotPasswordModel model,
   ) {
     return TextFormField(
-      controller: loginModel.accountController,
+      controller: model.emailController,
       cursorColor: theme.accentColor,
       decoration: InputDecoration(
         border: InputBorder.none,
-        labelText: '用户名',
-        hintText: '请输入用户名',
+        labelText: '您的邮箱',
+        hintText: '请输入邮箱地址',
         hintStyle: TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
-          FluentIcons.person_24_regular,
+          FluentIcons.mail_24_regular,
           color: theme.accentColor,
         ),
       ),
       validator: (value) {
+        if (value.isNullOrBlank) {
+          return "请填写邮箱地址";
+        }
         return value.isNullOrBlank ? "用户名不能为空" : null;
       },
       textInputAction: TextInputAction.next,
@@ -202,49 +156,47 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPasswordField(
+  _showForgotPasswordConfirmationPanel(
+    final BuildContext context,
     final ThemeData theme,
-    final LoginModel loginModel,
   ) {
-    return Selector<LoginModel, bool>(
-      selector: (_, model) => model.showPassword,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (_, showPassword, __) {
-        return TextFormField(
-          obscureText: !showPassword,
-          cursorColor: theme.accentColor,
-          controller: loginModel.passwordController,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: '密码',
-            hintText: '请输入密码',
-            hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
-            prefixIcon: Icon(
-              FluentIcons.password_24_regular,
-              color: theme.accentColor,
+    showCupertinoModalBottomSheet(
+      context: context,
+      topRadius: radius16,
+      backgroundColor: theme.backgroundColor,
+      builder: (context) {
+        return Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: edge24,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+                  theme.backgroundColor.withOpacity(0.72),
+                  theme.backgroundColor.withOpacity(0.9),
+                ],
+              ),
             ),
-            suffixIcon: IconButton(
-              icon: showPassword
-                  ? Icon(
-                      FluentIcons.eye_show_24_regular,
-                      color: theme.accentColor,
-                    )
-                  : Icon(
-                      FluentIcons.eye_show_24_filled,
-                      color: theme.accentColor,
-                    ),
-              onPressed: () {
-                loginModel.showPassword = !showPassword;
-              },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "忘记密码",
+                  textAlign: TextAlign.justify,
+                  style: textStyle18B,
+                ),
+                sizedBoxH16,
+                Text("如果您填入的邮箱已在本网站注册，则您会在几分钟内收到重置密码邮件，如果长时间等待后仍收不到邮件请确认"),
+                sizedBoxH12,
+                Text("1）您是否已经注册"),
+                sizedBoxH4,
+                Text("2）邮件是否输入正确"),
+              ],
             ),
           ),
-          validator: (value) {
-            if (value.isNullOrBlank) return "密码不能为空";
-            if (value!.length < 6) return "密码最少6位";
-            return null;
-          },
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.visiblePassword,
         );
       },
     );

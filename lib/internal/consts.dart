@@ -16,6 +16,8 @@ class MikanFunc {
   static const String SUBSCRIBED_SEASON = "SUBSCRIBED_SEASON";
   static const String REFRESH_LOGIN_TOKEN = "REFRESH_LOGIN_TOKEN";
   static const String REFRESH_REGISTER_TOKEN = "REFRESH_REGISTER_TOKEN";
+  static const String REFRESH_FORGOTPASSWORD_TOKEN =
+      "REFRESH_FORGOTPASSWORD_TOKEN";
 }
 
 class MikanUrl {
@@ -49,6 +51,9 @@ class MikanUrl {
 
   /// [注册](https://mikanani.me/Account/Register)
   static const String REGISTER = "/Account/Register";
+
+  ///[忘记密码](https://mikanani.me/Account/ForgotPassword)
+  static const String FORGOT_PASSWORD = "/Account/ForgotPassword";
 
   /// [订阅](https://mikanani.me/Home/SubscribeBangumi)
   static const String SUBSCRIBE_BANGUMI = "/Home/SubscribeBangumi";

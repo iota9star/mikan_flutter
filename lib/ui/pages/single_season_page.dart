@@ -18,7 +18,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 @FFRoute(
   name: "season",
-  routeName: "season",
+  routeName: "/season",
   argumentImports: [
     "import 'package:mikan_flutter/model/season.dart';",
     "import 'package:flutter/material.dart';",

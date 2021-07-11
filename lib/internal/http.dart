@@ -23,8 +23,9 @@ class _BaseInterceptor extends InterceptorsWrapper {
     options.receiveTimeout = timeout;
     options.headers["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/86.0.4240.75 Safari/537.36 "
-        "MikanFlutter/0.0.1";
+        "Chrome/86.0.4240.75 "
+        "Safari/537.36 "
+        "MikanFlutter/x.x.x";
     options.headers['client'] = "mikan_flutter";
     options.headers['os'] = Platform.operatingSystem;
     options.headers['osv'] = Platform.operatingSystemVersion;
@@ -69,6 +70,8 @@ class MikanTransformer extends DefaultTransformer {
           return await Resolver.parseRefreshLoginToken(document);
         case MikanFunc.REFRESH_REGISTER_TOKEN:
           return await Resolver.parseRefreshRegisterToken(document);
+        case MikanFunc.REFRESH_FORGOTPASSWORD_TOKEN:
+          return await Resolver.parseRefreshForgotPasswordToken(document);
       }
     }
     return transformResponse;
@@ -204,7 +207,8 @@ class _Fetcher {
             e.response?.statusCode == 302 &&
             proto.method == _RequestMethod.POST_FORM &&
             (e.requestOptions.path == MikanUrl.LOGIN ||
-                e.requestOptions.path == MikanUrl.REGISTER)) {
+                e.requestOptions.path == MikanUrl.REGISTER ||
+                e.requestOptions.path == MikanUrl.FORGOT_PASSWORD)) {
           proto._sendPort.send(Resp(true));
         } else {
           "请求出错：$e".error();

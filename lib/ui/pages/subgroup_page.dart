@@ -18,7 +18,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 @FFRoute(
   name: "subgroup",
-  routeName: "subgroup",
+  routeName: "/subgroup",
   argumentImports: [
     "import 'package:mikan_flutter/model/subgroup.dart';",
     "import 'package:flutter/material.dart';",

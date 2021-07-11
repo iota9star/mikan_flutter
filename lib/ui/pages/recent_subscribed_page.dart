@@ -20,7 +20,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @FFRoute(
   name: "recent-subscribed",
-  routeName: "recent-subscribed",
+  routeName: "/recent-subscribed",
 )
 @immutable
 class RecentSubscribedPage extends StatelessWidget {

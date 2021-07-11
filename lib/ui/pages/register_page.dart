@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 @FFRoute(
   name: "register",
-  routeName: "register",
+  routeName: "/register",
 )
 @immutable
 class RegisterPage extends StatelessWidget {

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
@@ -28,6 +29,7 @@ class ThemeEditModel extends BaseModel {
   }
 
   apply(final bool isAdd, final VoidCallback afterApply) {
+    isAdd.debug();
     if (isAdd) {
       MyHive.themeItemBox.add(this._themeItem);
     } else {

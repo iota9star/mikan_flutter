@@ -33,13 +33,10 @@ class ThemeEditFragment extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildHeader(context, theme, model),
-            const SizedBox(height: 12.0),
+            sizedBoxH12,
             MaterialButton(
               onPressed: () {},
-              padding: EdgeInsets.only(
-                left: 16.0,
-                right: 8.0,
-              ),
+              padding: edgeL16R8,
               height: 56.0,
               child: Row(
                 children: [
@@ -63,10 +60,7 @@ class ThemeEditFragment extends StatelessWidget {
             if (!themeItem.autoMode)
               MaterialButton(
                 onPressed: () {},
-                padding: EdgeInsets.only(
-                  left: 16.0,
-                  right: 8.0,
-                ),
+                padding: edgeL16R8,
                 height: 56.0,
                 child: Row(
                   children: [

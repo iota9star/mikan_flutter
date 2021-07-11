@@ -207,6 +207,16 @@ class Resolver {
     return token;
   }
 
+  static Future<String?> parseRefreshForgotPasswordToken(
+      final Document document) async {
+    final String? token = document
+        .querySelector(
+            "#resetpasswordform input[name=__RequestVerificationToken]")
+        ?.attributes["value"]
+        ?.trim();
+    return token;
+  }
+
   static Future<SearchResult> parseSearch(final Document document) async {
     List<Element> eles = document.querySelectorAll(
         "div.leftbar-container .leftbar-item .subgroup-longname");

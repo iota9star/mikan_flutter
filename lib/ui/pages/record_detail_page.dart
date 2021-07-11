@@ -20,7 +20,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 @FFRoute(
   name: "record-detail",
-  routeName: "record-detail",
+  routeName: "/record-detail",
   argumentImports: [
     "import 'package:mikan_flutter/model/year_season.dart';",
     "import 'package:mikan_flutter/model/season_gallery.dart';",

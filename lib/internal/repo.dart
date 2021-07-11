@@ -152,12 +152,34 @@ class Repo {
     );
   }
 
+  static Future<Resp> forgotPassword(final Map<String, dynamic> params) async {
+    final Options options = Options(
+      contentType: Headers.formUrlEncodedContentType,
+      responseType: ResponseType.plain,
+    );
+    return await Http.postForm(
+      MikanUrl.FORGOT_PASSWORD,
+      data: params,
+      options: options,
+    );
+  }
+
   static Future<Resp> refreshLoginToken() async {
     final Options options = Options(
       extra: {"$MikanFunc": MikanFunc.REFRESH_LOGIN_TOKEN},
     );
     return await Http.get(
       MikanUrl.MY_SUBSCRIBED,
+      options: options,
+    );
+  }
+
+  static Future<Resp> refreshForgotPasswordToken() async {
+    final Options options = Options(
+      extra: {"$MikanFunc": MikanFunc.REFRESH_FORGOTPASSWORD_TOKEN},
+    );
+    return await Http.get(
+      MikanUrl.FORGOT_PASSWORD,
       options: options,
     );
   }
