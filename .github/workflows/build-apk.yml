@@ -32,9 +32,10 @@ jobs:
           flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           ls build/app/outputs/flutter-apk
       - name: Sign build apk
-        uses: r0adkll/sign-android-release@v1
+        uses: iota9star/sign-android-release@v1.0.5
         with:
           releaseDirectory: build/app/outputs/flutter-apk
+          fileRex: .*-release.apk
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -45,6 +46,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "build/app/outputs/flutter-apk/*release*.apk"
+          artifacts: "build/app/outputs/flutter-apk/*-release-signed.apk"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
