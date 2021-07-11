@@ -35,7 +35,7 @@ jobs:
         uses: iota9star/sign-android-release@v1.0.5
         with:
           releaseDirectory: build/app/outputs/flutter-apk
-          fileRex: .*-release.apk
+          fileRegex: .*-release.apk
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
