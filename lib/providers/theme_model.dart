@@ -115,6 +115,7 @@ class ThemeModel extends BaseModel {
           minimumSize: const Size(0, 48.0),
         ),
       ),
+      visualDensity: VisualDensity.standard,
     );
     return themeData;
   }
