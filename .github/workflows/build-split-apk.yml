@@ -1,4 +1,4 @@
-name: build apk
+name: build split apk
 on:
   workflow_dispatch:
     inputs:
