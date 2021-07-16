@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'dart:isolate';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,6 +11,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/screen.dart';
@@ -72,11 +74,7 @@ Future _initFirebase() async {
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
   Isolate.current.addErrorListener(RawReceivePort((pair) async {
-    final List<dynamic> errorAndStacktrace = pair;
-    await FirebaseCrashlytics.instance.recordError(
-      errorAndStacktrace.first,
-      errorAndStacktrace.last,
-    );
+    await FirebaseCrashlytics.instance.recordError(pair.first, pair.last);
   }).sendPort);
 }
 
@@ -85,6 +83,11 @@ Future _initDependencies() async {
   await MyHive.init();
   if (isMobile) {
     await _initFirebase();
+  }
+  if (Platform.isAndroid) {
+    FlutterDisplayMode.setHighRefreshRate().catchError((e) {
+      e.error();
+    });
   }
 }
 
