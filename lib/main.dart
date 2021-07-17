@@ -175,7 +175,7 @@ class MikanApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: theme,
           darkTheme: themeModel.theme(darkTheme: true),
-          initialRoute: Routes.home,
+          initialRoute: Routes.splash,
           onGenerateRoute: (RouteSettings settings) {
             return onGenerateRoute(
               settings: settings,
