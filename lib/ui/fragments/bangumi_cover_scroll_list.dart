@@ -1,8 +1,8 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/internal/state.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
@@ -17,23 +17,39 @@ class BangumiCoverScrollListFragment extends StatefulWidget {
   const BangumiCoverScrollListFragment();
 }
 
+const _kRate = 60;
+const _kScrollOffset = 360;
+const _kScrollDuration =
+    const Duration(milliseconds: 1000 ~/ _kRate * _kScrollOffset);
+
 class _BangumiCoverScrollListFragmentState
     extends PageState<BangumiCoverScrollListFragment> {
   final ScrollController _scrollController = ScrollController();
 
+  final ValueNotifier<double> _scrollNotifier = ValueNotifier(0);
+
+  bool _animating = false;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((callback) {
-      WidgetsBinding.instance!.addPersistentFrameCallback((callback) {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.offset + 1,
-            duration: Duration(milliseconds: 1000 ~/ 60),
-            curve: Curves.linear,
-          );
-        }
-      });
+    WidgetsBinding.instance!.addPersistentFrameCallback((callback) {
+      if (_animating) return;
+      if (_scrollController.hasClients) {
+        _animating = true;
+        _scrollController
+            .animateTo(
+          _scrollController.offset + _kScrollOffset,
+          duration: _kScrollDuration,
+          curve: Curves.linear,
+        )
+            .whenComplete(() {
+          _animating = false;
+        });
+      }
+    });
+    _scrollController.addListener(() {
+      _scrollNotifier.value = _scrollController.offset;
     });
   }
 
@@ -45,10 +61,12 @@ class _BangumiCoverScrollListFragmentState
 
   @override
   Widget build(BuildContext context) {
-    return _buildList(context);
-  }
-
-  Widget _buildList(final BuildContext context) {
+    final maxCrossAxisExtent = 208.0;
+    final contentWidth = Screen.screenWidth - 16.0;
+    final crossAxisCount = ((contentWidth) / (maxCrossAxisExtent + 8.0)).ceil();
+    final itemSize =
+        (Screen.screenWidth - (crossAxisCount + 1) * 8.0) / crossAxisCount;
+    final theme = Theme.of(context);
     return Container(
       foregroundDecoration: BoxDecoration(
         gradient: LinearGradient(
@@ -56,6 +74,13 @@ class _BangumiCoverScrollListFragmentState
           end: Alignment.bottomCenter,
           colors: [Colors.black54, Colors.black12, Colors.black87],
           stops: [0, 0.72, 1.0],
+        ),
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.transparent, theme.backgroundColor],
         ),
       ),
       child: Selector<IndexModel, List<BangumiRow>>(
@@ -70,9 +95,12 @@ class _BangumiCoverScrollListFragmentState
           final length = bangumis.length;
           return GridView.builder(
             controller: _scrollController,
+            padding: edge8,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 160.0,
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: maxCrossAxisExtent,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
             ),
             itemBuilder: (_, index) {
               final bangumi = bangumis[index % length];
@@ -88,6 +116,9 @@ class _BangumiCoverScrollListFragmentState
                       child = _buildBackgroundCover(
                         bangumi,
                         state.imageProvider,
+                        index,
+                        crossAxisCount,
+                        itemSize,
                       );
                       break;
                     case LoadState.failed:
@@ -129,14 +160,31 @@ class _BangumiCoverScrollListFragmentState
   Widget _buildBackgroundCover(
     final Bangumi bangumi,
     final ImageProvider imageProvider,
+    final int index,
+    final int crossAxisCount,
+    final double itemSize,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: imageProvider,
-          fit: BoxFit.fitWidth,
-        ),
-      ),
+    return ValueListenableBuilder(
+      valueListenable: _scrollNotifier,
+      builder: (_, double value, __) {
+        final double scrolledRowHeight =
+            index / crossAxisCount * (itemSize + 8.0);
+        final double align =
+            ((value + Screen.screenHeight - scrolledRowHeight) /
+                            Screen.screenHeight)
+                        .clamp(0.0, 1.0) *
+                    2 -
+                1;
+        return Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              alignment: Alignment(align, align),
+              image: imageProvider,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
     );
   }
 }

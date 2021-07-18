@@ -2,10 +2,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_cover_scroll_list.dart';
+import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @FFRoute(
   name: "splash",
@@ -15,8 +17,11 @@ import 'package:mikan_flutter/ui/fragments/bangumi_cover_scroll_list.dart';
 class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildSplash(context),
+    return AnnotatedRegion(
+      value: lightSystemUiOverlayStyle,
+      child: Scaffold(
+        body: _buildSplash(context),
+      ),
     );
   }
 
@@ -29,7 +34,7 @@ class SplashPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            GestureDetector(
+            TapScaleContainer(
               child: ExtendedImage.asset(
                 "assets/mikan.png",
                 width: 108,

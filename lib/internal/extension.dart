@@ -444,7 +444,7 @@ extension HexColor on Color {
       '${blue.toRadixString(16).padLeft(2, '0')}';
 }
 
-const SystemUiOverlayStyle _light = SystemUiOverlayStyle(
+const SystemUiOverlayStyle lightSystemUiOverlayStyle = SystemUiOverlayStyle(
   systemNavigationBarColor: Colors.transparent,
   systemNavigationBarDividerColor: Colors.transparent,
   statusBarColor: Colors.transparent,
@@ -453,7 +453,7 @@ const SystemUiOverlayStyle _light = SystemUiOverlayStyle(
   statusBarBrightness: Brightness.dark,
 );
 
-const SystemUiOverlayStyle _dark = SystemUiOverlayStyle(
+const SystemUiOverlayStyle darkSystemUiOverlayStyle = SystemUiOverlayStyle(
   systemNavigationBarColor: Colors.transparent,
   systemNavigationBarDividerColor: Colors.transparent,
   statusBarColor: Colors.transparent,
@@ -464,7 +464,9 @@ const SystemUiOverlayStyle _dark = SystemUiOverlayStyle(
 
 extension BuildContextExt on BuildContext {
   SystemUiOverlayStyle get fitSystemUiOverlayStyle {
-    return Theme.of(this).scaffoldBackgroundColor.isDark ? _light : _dark;
+    return Theme.of(this).scaffoldBackgroundColor.isDark
+        ? lightSystemUiOverlayStyle
+        : darkSystemUiOverlayStyle;
   }
 }
 
