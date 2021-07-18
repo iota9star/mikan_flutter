@@ -14,6 +14,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @immutable
 class ListFragment extends StatelessWidget {
+  const ListFragment();
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);

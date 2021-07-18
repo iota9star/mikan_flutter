@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,9 +33,9 @@ class HomePage extends StatelessWidget {
                 builder: (_, selectIndex, __) {
                   return IndexedStack(
                     children: [
-                      ListFragment(),
-                      IndexFragment(),
-                      SubscribedFragment(),
+                      const ListFragment(),
+                      const IndexFragment(),
+                      const SubscribedFragment(),
                     ],
                     index: selectIndex,
                   );
@@ -45,7 +43,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: math.max(Screen.navBarHeight, 16),
+              bottom: 16 + Screen.navBarHeight,
               left: 24.0,
               right: 24.0,
               child: Selector<HomeModel, int>(

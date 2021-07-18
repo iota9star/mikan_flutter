@@ -30,6 +30,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 class IndexFragment extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _IndexFragmentState();
+
+  const IndexFragment();
 }
 
 class _IndexFragmentState extends State<IndexFragment> {
@@ -417,7 +419,7 @@ class _IndexFragmentState extends State<IndexFragment> {
       context: context,
       topRadius: radius16,
       builder: (_) {
-        return SelectSeasonFragment();
+        return const SelectSeasonFragment();
       },
     );
   }
@@ -467,7 +469,7 @@ class _IndexFragmentState extends State<IndexFragment> {
       enableDrag: false,
       topRadius: radius16,
       builder: (_) {
-        return SearchFragment();
+        return const SearchFragment();
       },
     );
   }
@@ -477,7 +479,7 @@ class _IndexFragmentState extends State<IndexFragment> {
       context: context,
       topRadius: radius16,
       builder: (_) {
-        return SettingsFragment();
+        return const SettingsFragment();
       },
     );
   }

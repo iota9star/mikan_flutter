@@ -117,7 +117,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: SplashPage(),
+        widget: const SplashPage(),
         routeName: '/splash',
       );
     case 'subgroup':

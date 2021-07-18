@@ -20,6 +20,8 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 @immutable
 class SearchFragment extends StatelessWidget {
+  const SearchFragment();
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -70,16 +72,16 @@ class SearchFragment extends StatelessWidget {
     final ThemeData theme,
     final SearchModel searchModel,
   ) {
-    return Selector<SearchModel, List<RecordItem>?>(
-      selector: (_, model) => model.searchResult?.records,
-      shouldRebuild: (pre, next) => pre.ne(next),
-      builder: (context, records, __) {
-        if (records.isNullOrEmpty) {
-          return emptySliverToBoxAdapter;
-        }
-        return SliverPadding(
-          padding: edgeH16T8B16,
-          sliver: SliverGrid(
+    return SliverPadding(
+      padding: edgeH16T8B16,
+      sliver: Selector<SearchModel, List<RecordItem>?>(
+        selector: (_, model) => model.searchResult?.records,
+        shouldRebuild: (pre, next) => pre.ne(next),
+        builder: (context, records, __) {
+          if (records.isNullOrEmpty) {
+            return emptySliverToBoxAdapter;
+          }
+          return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (_, index) {
                 final RecordItem record = records![index];
@@ -104,9 +106,9 @@ class SearchFragment extends StatelessWidget {
               crossAxisSpacing: 16.0,
               mainAxisExtent: 156.0,
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

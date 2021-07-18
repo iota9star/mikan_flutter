@@ -22,7 +22,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final HandleSubscribe handleSubscribe;
 
-  BangumiSliverGridFragment({
+  const BangumiSliverGridFragment({
     Key? key,
     this.flag,
     required this.bangumis,

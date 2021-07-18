@@ -15,6 +15,8 @@ import 'package:mikan_flutter/widget/tap_scale_container.dart';
 )
 @immutable
 class SplashPage extends StatelessWidget {
+  const SplashPage();
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(

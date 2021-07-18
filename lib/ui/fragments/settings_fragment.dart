@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 
 @immutable
 class SettingsFragment extends StatelessWidget {
+  const SettingsFragment();
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -51,7 +53,7 @@ class SettingsFragment extends StatelessWidget {
 
   Widget _buildThemeList() {
     return SliverToBoxAdapter(
-      child: ThemePanelFragment(),
+      child: const ThemePanelFragment(),
     );
   }
 

@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 
 @immutable
 class SelectSeasonFragment extends StatelessWidget {
+  const SelectSeasonFragment();
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);

@@ -27,6 +27,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 @immutable
 class SubscribedFragment extends StatelessWidget {
+  const SubscribedFragment();
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);

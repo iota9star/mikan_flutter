@@ -15,12 +15,6 @@ class ListModel extends CancelableBaseModel {
 
   int get changeFlag => _changeFlag;
 
-  @override
-  void notifyListeners() {
-    this._changeFlag++;
-    super.notifyListeners();
-  }
-
   bool _hasScrolled = false;
 
   bool get hasScrolled => _hasScrolled;
@@ -62,10 +56,12 @@ class ListModel extends CancelableBaseModel {
         } else {
           "更新数据${length - this._records.length}条".toast();
           this._records = newList.toList();
+          this._changeFlag++;
           notifyListeners();
         }
       } else {
         this._records.addAll(records);
+        this._changeFlag++;
         notifyListeners();
       }
       this._page++;

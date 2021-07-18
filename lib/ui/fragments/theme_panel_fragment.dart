@@ -16,6 +16,8 @@ import 'package:provider/provider.dart';
 
 @immutable
 class ThemePanelFragment extends StatelessWidget {
+  const ThemePanelFragment();
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
