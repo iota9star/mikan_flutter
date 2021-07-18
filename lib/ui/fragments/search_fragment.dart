@@ -406,6 +406,7 @@ class SearchFragment extends StatelessWidget {
           color: theme.backgroundColor,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: circleShape,
+          padding: EdgeInsets.zero,
           child: Icon(
             FluentIcons.chevron_left_24_regular,
             size: 16.0,

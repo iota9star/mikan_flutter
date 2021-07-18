@@ -408,6 +408,7 @@ class ThemeEditFragment extends StatelessWidget {
               size: 16.0,
             ),
             minWidth: 36.0,
+            padding: EdgeInsets.zero,
             color: theme.scaffoldBackgroundColor,
             shape: circleShape,
           ),

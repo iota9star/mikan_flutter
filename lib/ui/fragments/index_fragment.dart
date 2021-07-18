@@ -369,7 +369,7 @@ class _IndexFragmentState extends State<IndexFragment> {
           color: hasScrolled
               ? theme.scaffoldBackgroundColor
               : theme.backgroundColor,
-          padding: edge8,
+          padding: EdgeInsets.zero,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: circleShape,
         ),

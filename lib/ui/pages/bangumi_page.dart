@@ -390,7 +390,10 @@ class BangumiPage extends StatelessWidget {
             detail.intro,
             textAlign: TextAlign.justify,
             softWrap: true,
-            style: textStyle14,
+            style: const TextStyle(
+              fontSize: 14.0,
+              height: 1.5,
+            ),
           ),
         ],
       ),
@@ -564,18 +567,46 @@ class BangumiPage extends StatelessWidget {
             ),
           ),
           sizedBoxH12,
-          ...detail.more.entries
-              .map((e) => Text(
-                    "${e.key}: ${e.value}",
-                    softWrap: true,
-                    style: TextStyle(
-                      height: 1.6,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
-                      color: theme.textTheme.subtitle1?.color,
-                    ),
-                  ))
-              .toList(),
+          ...detail.more.entries.map((e) {
+            return Row(
+              children: [
+                Text(
+                  "${e.key}：",
+                  softWrap: true,
+                  style: TextStyle(
+                    height: 1.8,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                e.value.startsWith("http")
+                    ? InkWell(
+                        onTap: () {
+                          e.value.launchAppAndCopy();
+                        },
+                        child: Text(
+                          "链接",
+                          softWrap: true,
+                          style: TextStyle(
+                            color: theme.accentColor,
+                            height: 1.8,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        e.value,
+                        softWrap: true,
+                        style: TextStyle(
+                          height: 1.8,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+              ],
+            );
+          }).toList(),
         ],
       ),
     );

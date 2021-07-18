@@ -147,6 +147,7 @@ class RecentSubscribedPage extends StatelessWidget {
                     size: 16.0,
                   ),
                   minWidth: 36.0,
+                  padding: EdgeInsets.zero,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: circleShape,
                   color: hasScrolled

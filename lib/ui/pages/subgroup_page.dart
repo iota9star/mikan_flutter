@@ -174,6 +174,7 @@ class SubgroupPage extends StatelessWidget {
                   ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   minWidth: 36.0,
+                  padding: EdgeInsets.zero,
                   shape: circleShape,
                   color: hasScrolled
                       ? theme.scaffoldBackgroundColor
