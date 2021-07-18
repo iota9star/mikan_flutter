@@ -17,7 +17,7 @@ class ThemeItemAdapter extends TypeAdapter<ThemeItem> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ThemeItem()
-      ..id = fields[0] as int
+      ..id = fields[0] as int?
       ..canDelete = fields[1] as bool
       ..autoMode = fields[2] as bool
       ..isDark = fields[4] as bool

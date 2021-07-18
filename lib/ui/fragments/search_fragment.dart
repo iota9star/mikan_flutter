@@ -508,10 +508,8 @@ class SearchFragment extends StatelessWidget {
             ),
           );
         } else {
-          bangumi.coverSize = Size(
-            value.extendedImageInfo!.image.width.toDouble(),
-            value.extendedImageInfo!.image.height.toDouble(),
-          );
+          bangumi.aspectRatio = value.extendedImageInfo!.image.width /
+              value.extendedImageInfo!.image.height;
           cover = Container(
             decoration: BoxDecoration(
               borderRadius: borderRadius8,
@@ -523,9 +521,8 @@ class SearchFragment extends StatelessWidget {
           );
         }
         return AspectRatio(
-          aspectRatio: bangumi.coverSize == null
-              ? 3 / 4
-              : bangumi.coverSize!.width / bangumi.coverSize!.height,
+          aspectRatio:
+              bangumi.aspectRatio == null ? 3 / 4 : bangumi.aspectRatio!,
           child: Stack(
             children: [
               Positioned.fill(

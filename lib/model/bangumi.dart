@@ -1,6 +1,3 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 
@@ -35,8 +32,7 @@ class Bangumi extends HiveObject {
   @HiveField(6)
   late bool grey = false;
 
-  @HiveField(7)
-  Size? coverSize;
+  double? aspectRatio;
 
   @HiveField(8)
   late String week = "";
@@ -53,7 +49,7 @@ class Bangumi extends HiveObject {
           cover == other.cover &&
           subscribed == other.subscribed &&
           grey == other.grey &&
-          coverSize == other.coverSize &&
+          aspectRatio == other.aspectRatio &&
           week == other.week;
 
   @override
@@ -65,6 +61,6 @@ class Bangumi extends HiveObject {
       cover.hashCode ^
       subscribed.hashCode ^
       grey.hashCode ^
-      coverSize.hashCode ^
+      aspectRatio.hashCode ^
       week.hashCode;
 }
