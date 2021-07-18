@@ -49,7 +49,7 @@ class IndexModel extends CancelableBaseModel {
   List<RecordItem> get ovas => _ovas;
 
   final RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: false);
 
   RefreshController get refreshController => _refreshController;
 
@@ -60,11 +60,15 @@ class IndexModel extends CancelableBaseModel {
   SubscribedModel _subscribedModel;
 
   IndexModel(this._subscribedModel) {
-    this._ovas = (MyHive.db
-            .get(HiveDBKey.MIKAN_OVA, defaultValue: <RecordItem>[]) as List)
-        .cast<RecordItem>();
-    final Index? index = MyHive.db.get(HiveDBKey.MIKAN_INDEX);
-    this._bindIndexData(index);
+    // 延迟执行
+    Future.delayed(const Duration(milliseconds: 500), () {
+      this._ovas = (MyHive.db
+              .get(HiveDBKey.MIKAN_OVA, defaultValue: <RecordItem>[]) as List)
+          .cast<RecordItem>();
+      final Index? index = MyHive.db.get(HiveDBKey.MIKAN_INDEX);
+      this._bindIndexData(index);
+      this._loadIndex();
+    });
   }
 
   refresh() async {

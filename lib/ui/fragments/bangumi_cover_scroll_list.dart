@@ -87,12 +87,12 @@ class _BangumiCoverScrollListFragmentState
         selector: (_, model) => model.bangumiRows,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, bangumiRows, __) {
-          final bangumis = bangumiRows
-              .map((e) => e.bangumis)
-              .expand((element) => element)
-              .toList()
-                ..shuffle();
+          final bangumis =
+              bangumiRows.map((e) => e.bangumis).expand((element) => element);
           final length = bangumis.length;
+          if (length == 0) {
+            return sizedBox;
+          }
           return GridView.builder(
             controller: _scrollController,
             padding: edge8,
@@ -103,14 +103,14 @@ class _BangumiCoverScrollListFragmentState
               mainAxisSpacing: 8.0,
             ),
             itemBuilder: (_, index) {
-              final bangumi = bangumis[index % length];
+              final bangumi = bangumis.elementAt(index % length);
               return ExtendedImage.network(
                 bangumi.cover,
                 loadStateChanged: (state) {
                   Widget child;
                   switch (state.extendedImageLoadState) {
                     case LoadState.loading:
-                      child = _buildBangumiItemPlaceholder();
+                      child = sizedBox;
                       break;
                     case LoadState.completed:
                       child = _buildBackgroundCover(
@@ -122,7 +122,7 @@ class _BangumiCoverScrollListFragmentState
                       );
                       break;
                     case LoadState.failed:
-                      child = _buildBangumiItemError();
+                      child = sizedBox;
                       break;
                   }
                   return child;
@@ -131,28 +131,6 @@ class _BangumiCoverScrollListFragmentState
             },
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildBangumiItemPlaceholder() {
-    return Container(
-      padding: edge28,
-      child: Center(
-        child: ExtendedImage.asset(
-          "assets/mikan.png",
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBangumiItemError() {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: ExtendedAssetImageProvider("assets/mikan.png"),
-          fit: BoxFit.cover,
-        ),
       ),
     );
   }
@@ -167,14 +145,13 @@ class _BangumiCoverScrollListFragmentState
     return ValueListenableBuilder(
       valueListenable: _scrollNotifier,
       builder: (_, double value, __) {
-        final double scrolledRowHeight =
-            index / crossAxisCount * (itemSize + 8.0);
-        final double align =
-            ((value + Screen.screenHeight - scrolledRowHeight) /
-                            Screen.screenHeight)
-                        .clamp(0.0, 1.0) *
-                    2 -
-                1;
+        final double align = ((value +
+                            Screen.screenHeight -
+                            index / crossAxisCount * (itemSize + 8.0)) /
+                        Screen.screenHeight)
+                    .clamp(0.0, 1.0) *
+                2 -
+            1;
         return Container(
           decoration: BoxDecoration(
             image: DecorationImage(
