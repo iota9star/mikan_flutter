@@ -206,7 +206,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                 itemBuilder: (context, index, realIndex) {
                   final carousel = carousels[index];
                   final String currFlag =
-                      "carousel:$index:${carousel.id}:${carousel.cover}";
+                      "carousel:$realIndex:${carousel.id}:${carousel.cover}";
                   final currentOffset = 300 * realIndex;
                   return AnimatedBuilder(
                     animation: _infiniteScrollController,
