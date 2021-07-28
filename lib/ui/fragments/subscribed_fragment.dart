@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
@@ -340,10 +341,9 @@ class SubscribedFragment extends StatelessWidget {
             padding: edgeH16V8,
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 128.0,
+                maxCrossAxisExtent: 160.0,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
-                childAspectRatio: 0.8,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -430,7 +430,7 @@ class SubscribedFragment extends StatelessWidget {
                     child: Hero(
                       tag: currFlag,
                       child: ExtendedImage(
-                        image: ExtendedNetworkImageProvider(bangumiCover),
+                        image: FastCacheImage(bangumiCover),
                         fit: BoxFit.cover,
                         loadStateChanged: (state) {
                           switch (state.extendedImageLoadState) {
@@ -579,7 +579,7 @@ class SubscribedFragment extends StatelessWidget {
               minCrossAxisExtent: 360.0,
               crossAxisSpacing: 12.0,
               mainAxisSpacing: 12.0,
-              mainAxisExtent: 180.0,
+              mainAxisExtent: 166.0,
             ),
           );
         },

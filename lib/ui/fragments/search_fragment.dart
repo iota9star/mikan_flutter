@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -444,7 +445,7 @@ class SearchFragment extends StatelessWidget {
     final Bangumi bangumi,
   ) {
     return ExtendedImage(
-      image: ExtendedNetworkImageProvider(bangumi.cover),
+      image: FastCacheImage(bangumi.cover),
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {
         Widget child = Row(

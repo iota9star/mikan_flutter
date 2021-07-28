@@ -2,8 +2,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/internal/state.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
@@ -23,7 +23,7 @@ const _kScrollDuration =
     const Duration(milliseconds: 1000 ~/ _kRate * _kScrollOffset);
 
 class _BangumiCoverScrollListFragmentState
-    extends PageState<BangumiCoverScrollListFragment> {
+    extends State<BangumiCoverScrollListFragment> {
   final ScrollController _scrollController = ScrollController();
 
   final _ScrollItemModel _scrollItemModel = _ScrollItemModel();
@@ -102,8 +102,8 @@ class _BangumiCoverScrollListFragmentState
               ),
               itemBuilder: (_, index) {
                 final bangumi = bangumis.elementAt(index % length);
-                return ExtendedImage.network(
-                  bangumi.cover,
+                return ExtendedImage(
+                  image: FastCacheImage(bangumi.cover),
                   loadStateChanged: (state) {
                     switch (state.extendedImageLoadState) {
                       case LoadState.loading:

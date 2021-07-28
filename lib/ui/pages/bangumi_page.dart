@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
@@ -56,7 +57,7 @@ class BangumiPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: ExtendedNetworkImageProvider(this.cover),
+                        image: FastCacheImage(this.cover),
                       ),
                     ),
                     child: ClipRect(
@@ -614,7 +615,7 @@ class BangumiPage extends StatelessWidget {
 
   Widget _buildCover(final String cover, final BangumiModel model) {
     return ExtendedImage(
-      image: ExtendedNetworkImageProvider(cover),
+      image: FastCacheImage(cover),
       width: 136.0,
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {

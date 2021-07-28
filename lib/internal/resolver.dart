@@ -378,7 +378,8 @@ class Resolver {
           MikanUrl.BASE_URL + (tempElement.attributes['href']?.trim() ?? "");
       record.magnet =
           tempElements[1].attributes['data-clipboard-text']?.trim() ?? "";
-      record.size = elements[3].text.trim();
+      final String _size = elements[3].text.trim();
+      record.size = _size.contains(r"^\d+.*") ? _size : "";
       record.torrent = MikanUrl.BASE_URL +
           (elements[4].children[0].attributes['href']?.trim() ?? "");
       records.add(record);

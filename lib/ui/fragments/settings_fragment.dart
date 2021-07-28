@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
@@ -141,7 +142,7 @@ class SettingsFragment extends StatelessWidget {
     return user?.hasLogin == true
         ? ClipOval(
             child: ExtendedImage(
-              image: ExtendedNetworkImageProvider(user!.avatar ?? ""),
+              image: FastCacheImage(user!.avatar ?? ""),
               width: 36.0,
               height: 36.0,
               loadStateChanged: (state) {

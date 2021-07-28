@@ -76,25 +76,26 @@ class NormalRecordItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: edgeR4,
-                    padding: edgeH4V2,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          theme.accentColor,
-                          theme.accentColor.withOpacity(0.56),
-                        ],
+                  if (record.size.isNotBlank)
+                    Container(
+                      margin: edgeR4,
+                      padding: edgeH4V2,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            theme.accentColor,
+                            theme.accentColor.withOpacity(0.56),
+                          ],
+                        ),
+                        borderRadius: borderRadius2,
                       ),
-                      borderRadius: borderRadius2,
+                      child: Text(
+                        record.size,
+                        style: fileTagStyle,
+                      ),
                     ),
-                    child: Text(
-                      record.size,
-                      style: fileTagStyle,
-                    ),
-                  ),
                   if (!record.tags.isNullOrEmpty)
                     ...List.generate(record.tags.length, (index) {
                       return Container(

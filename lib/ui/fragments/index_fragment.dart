@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
@@ -253,8 +254,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                             ],
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image:
-                                  ExtendedNetworkImageProvider(carousel.cover),
+                              image: FastCacheImage(carousel.cover),
                             ),
                           ),
                         ),
@@ -389,7 +389,7 @@ class _IndexFragmentState extends State<IndexFragment> {
         return user?.hasLogin == true
             ? ClipOval(
                 child: ExtendedImage(
-                  image: ExtendedNetworkImageProvider(user!.avatar ?? ""),
+                  image: FastCacheImage(user!.avatar ?? ""),
                   width: 36.0,
                   height: 36.0,
                   loadStateChanged: (state) {

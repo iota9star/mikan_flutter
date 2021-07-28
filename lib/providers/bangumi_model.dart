@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
@@ -51,7 +51,7 @@ class BangumiModel extends CancelableBaseModel {
 
   _loadCoverMainColor() {
     PaletteGenerator.fromImageProvider(
-      ExtendedNetworkImageProvider(this.cover),
+      FastCacheImage(this.cover),
       maximumColorCount: 3,
       targets: [
         PaletteTarget.lightVibrant,

@@ -10,6 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/record_details.dart';
 import 'package:mikan_flutter/providers/op_model.dart';
@@ -89,7 +90,7 @@ class RecordDetailPage extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: ExtendedNetworkImageProvider(recordDetail.cover),
+                  image: FastCacheImage(recordDetail.cover),
                 ),
               ),
               child: BackdropFilter(
@@ -420,7 +421,7 @@ class RecordDetailPage extends StatelessWidget {
     final RecordDetail recordDetail,
   ) {
     return ExtendedImage(
-      image: ExtendedNetworkImageProvider(recordDetail.cover),
+      image: FastCacheImage(recordDetail.cover),
       width: 136.0,
       shape: BoxShape.rectangle,
       loadStateChanged: (state) {
@@ -562,7 +563,7 @@ class RecordDetailPage extends StatelessWidget {
 
   Widget _buildImageWidget(final String url) {
     return ExtendedImage(
-      image: ExtendedNetworkImageProvider(url),
+      image: FastCacheImage(url),
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:

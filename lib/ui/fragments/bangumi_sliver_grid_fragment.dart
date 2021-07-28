@@ -6,6 +6,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/providers/op_model.dart';
@@ -241,8 +242,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final String currFlag,
     final Bangumi bangumi,
   ) {
-    return ExtendedImage.network(
-      bangumi.cover,
+    return ExtendedImage(
+      image: FastCacheImage(bangumi.cover),
       loadStateChanged: (state) {
         Widget child;
         switch (state.extendedImageLoadState) {
