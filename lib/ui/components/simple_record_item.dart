@@ -60,7 +60,7 @@ class SimpleRecordItem extends StatelessWidget {
           ),
           spacer,
           Container(
-            margin: edgeH16T4,
+            margin: edgeH16,
             width: double.infinity,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,

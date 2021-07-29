@@ -205,14 +205,14 @@ class _IndexFragmentState extends State<IndexFragment> {
         if (carousels.isNotEmpty)
           return SliverToBoxAdapter(
             child: Container(
-              margin: edgeB16,
+              margin: edgeV8,
               height: 148.0,
               child: InfiniteCarousel.builder(
                 itemBuilder: (context, index, realIndex) {
                   final carousel = carousels[index];
                   final String currFlag =
                       "carousel:$realIndex:${carousel.id}:${carousel.cover}";
-                  final currentOffset = 300 * realIndex;
+                  final currentOffset = 328 * realIndex;
                   return AnimatedBuilder(
                     animation: _infiniteScrollController,
                     builder: (_, __) {
@@ -263,7 +263,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                   );
                 },
                 controller: _infiniteScrollController,
-                itemExtent: 300.0,
+                itemExtent: 328.0,
                 itemCount: carousels.length,
                 center: true,
                 velocityFactor: 0.8,
@@ -367,9 +367,9 @@ class _IndexFragmentState extends State<IndexFragment> {
           },
           child: Icon(
             FluentIcons.chevron_down_24_regular,
-            size: 16.0,
+            size: 14.0,
           ),
-          minWidth: 32.0,
+          minWidth: 24.0,
           color: hasScrolled
               ? theme.scaffoldBackgroundColor
               : theme.backgroundColor,

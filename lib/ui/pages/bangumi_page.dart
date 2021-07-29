@@ -100,7 +100,7 @@ class BangumiPage extends StatelessWidget {
                     ),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     color: theme.backgroundColor,
-                    minWidth: 36.0,
+                    minWidth: 28.0,
                     padding: EdgeInsets.zero,
                     shape: circleShape,
                   ),

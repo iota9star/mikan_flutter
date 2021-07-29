@@ -92,9 +92,9 @@ class RecentSubscribedPage extends StatelessWidget {
           return SliverGrid(
             gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 360.0,
-              crossAxisSpacing: 12.0,
-              mainAxisSpacing: 12.0,
-              mainAxisExtent: 180.0,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              mainAxisExtent: 166.0,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -146,7 +146,7 @@ class RecentSubscribedPage extends StatelessWidget {
                     FluentIcons.chevron_left_24_regular,
                     size: 16.0,
                   ),
-                  minWidth: 36.0,
+                  minWidth: 28.0,
                   padding: EdgeInsets.zero,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: circleShape,

@@ -47,7 +47,7 @@ class ThemePanelFragment extends StatelessWidget {
                     onPressed: () {
                       this._showEditThemePanel(context);
                     },
-                    minWidth: 36.0,
+                    minWidth: 28.0,
                     shape: circleShape,
                     color: theme.scaffoldBackgroundColor,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

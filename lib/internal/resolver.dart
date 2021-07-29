@@ -273,7 +273,8 @@ class Resolver {
         record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
         record.title = temp;
       }
-      record.size = elements[1].text.trim();
+      final String size = elements[1].text.trim();
+      record.size = RegExp("\\d+.*").hasMatch(size) ? size : "";
       temp = elements[2].text.trim();
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
@@ -378,8 +379,8 @@ class Resolver {
           MikanUrl.BASE_URL + (tempElement.attributes['href']?.trim() ?? "");
       record.magnet =
           tempElements[1].attributes['data-clipboard-text']?.trim() ?? "";
-      final String _size = elements[3].text.trim();
-      record.size = _size.contains(r"^\d+.*") ? _size : "";
+      final String size = elements[3].text.trim();
+      record.size = RegExp("\\d+.*").hasMatch(size) ? size : "";
       record.torrent = MikanUrl.BASE_URL +
           (elements[4].children[0].attributes['href']?.trim() ?? "");
       records.add(record);
@@ -638,7 +639,8 @@ class Resolver {
             record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
           }
           record.url = MikanUrl.BASE_URL + (element.attributes["href"] ?? "");
-          record.size = ele.children[1].text.trim();
+          final String size = ele.children[1].text.trim();
+          record.size = RegExp("\\d+.*").hasMatch(size) ? size : "";
           temp = ele.children[2].text.trim();
           if (temp.isNotBlank &&
               RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
@@ -769,7 +771,8 @@ class Resolver {
         record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
       }
       record.url = MikanUrl.BASE_URL + (element.attributes["href"] ?? "");
-      record.size = ele.children[1].text.trim();
+      final String size = ele.children[1].text.trim();
+      record.size = RegExp("\\d+.*").hasMatch(size) ? size : "";
       temp = ele.children[2].text.trim();
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {

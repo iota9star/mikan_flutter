@@ -105,7 +105,7 @@ class SearchFragment extends StatelessWidget {
               minCrossAxisExtent: 360.0,
               mainAxisSpacing: 16.0,
               crossAxisSpacing: 16.0,
-              mainAxisExtent: 156.0,
+              mainAxisExtent: 150.0,
             ),
           );
         },
@@ -405,7 +405,7 @@ class SearchFragment extends StatelessWidget {
     return Row(
       children: [
         MaterialButton(
-          minWidth: 36.0,
+          minWidth: 28.0,
           color: theme.backgroundColor,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: circleShape,

@@ -114,7 +114,7 @@ class SubgroupBangumisFragment extends StatelessWidget {
                 minCrossAxisExtent: 360.0,
                 mainAxisSpacing: 16.0,
                 crossAxisSpacing: 16.0,
-                mainAxisExtent: 156.0,
+                mainAxisExtent: 150.0,
               ),
             ),
           );

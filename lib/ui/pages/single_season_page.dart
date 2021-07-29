@@ -134,7 +134,7 @@ class SingleSeasonPage extends StatelessWidget {
                     size: 16.0,
                   ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  minWidth: 36.0,
+                  minWidth: 28.0,
                   padding: EdgeInsets.zero,
                   shape: circleShape,
                   color: hasScrolled

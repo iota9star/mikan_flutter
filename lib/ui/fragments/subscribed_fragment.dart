@@ -240,7 +240,7 @@ class SubscribedFragment extends StatelessWidget {
                       );
                     },
                     color: theme.backgroundColor,
-                    minWidth: 36.0,
+                    minWidth: 28.0,
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: circleShape,
@@ -288,7 +288,7 @@ class SubscribedFragment extends StatelessWidget {
                       _toRecentSubscribedPage(context);
                     },
                     color: theme.backgroundColor,
-                    minWidth: 36.0,
+                    minWidth: 28.0,
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: circleShape,
@@ -528,7 +528,7 @@ class SubscribedFragment extends StatelessWidget {
                       _toRecentSubscribedPage(context);
                     },
                     color: theme.backgroundColor,
-                    minWidth: 36.0,
+                    minWidth: 28.0,
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: circleShape,

@@ -407,7 +407,7 @@ class ThemeEditFragment extends StatelessWidget {
               FluentIcons.save_24_regular,
               size: 16.0,
             ),
-            minWidth: 36.0,
+            minWidth: 28.0,
             padding: EdgeInsets.zero,
             color: theme.scaffoldBackgroundColor,
             shape: circleShape,
