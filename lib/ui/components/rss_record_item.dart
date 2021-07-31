@@ -23,10 +23,10 @@ class RssRecordItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle fileTagStyle = textStyle10WithColor(
+    final TextStyle accentTagStyle = textStyle10WithColor(
       theme.accentColor.isDark ? Colors.white : Colors.black,
     );
-    final TextStyle titleTagStyle = textStyle10WithColor(
+    final TextStyle primaryTagStyle = textStyle10WithColor(
       theme.primaryColor.isDark ? Colors.white : Colors.black,
     );
     final List<String> tags = record.tags;
@@ -133,7 +133,7 @@ class RssRecordItem extends StatelessWidget {
                             ),
                             child: Text(
                               record.size,
-                              style: fileTagStyle,
+                              style: accentTagStyle,
                             ),
                           ),
                         if (!tags.isNullOrEmpty)
@@ -154,7 +154,7 @@ class RssRecordItem extends StatelessWidget {
                               ),
                               child: Text(
                                 tags[index],
-                                style: titleTagStyle,
+                                style: primaryTagStyle,
                               ),
                             );
                           }),

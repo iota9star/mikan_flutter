@@ -7,6 +7,7 @@ import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/settings_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/ui/fragments/fonts_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/theme_panel_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,7 @@ class SettingsFragment extends StatelessWidget {
                 _buildHeader(theme),
                 _buildThemeSection(),
                 _buildThemeList(),
+                _buildFontManager(context),
               ],
             ),
           ),
@@ -53,7 +55,7 @@ class SettingsFragment extends StatelessWidget {
   }
 
   Widget _buildThemeList() {
-    return SliverToBoxAdapter(
+    return const SliverToBoxAdapter(
       child: const ThemePanelFragment(),
     );
   }
@@ -157,5 +159,38 @@ class SettingsFragment extends StatelessWidget {
             ),
           )
         : placeholder;
+  }
+
+  Widget _buildFontManager(final BuildContext context) {
+    return SliverToBoxAdapter(
+      child: MaterialButton(
+        onPressed: () {
+          _showFontManageModal(context);
+        },
+        padding: edgeH16,
+        height: 56.0,
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "字体管理",
+                style: textStyle16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _showFontManageModal(final BuildContext context) {
+    showCupertinoModalBottomSheet(
+      context: context,
+      expand: true,
+      topRadius: radius16,
+      builder: (context) {
+        return const FontsFragment();
+      },
+    );
   }
 }

@@ -21,10 +21,10 @@ class SimpleRecordItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle fileTagStyle = textStyle10WithColor(
+    final TextStyle accentTagStyle = textStyle10WithColor(
       theme.accentColor.isDark ? Colors.white : Colors.black,
     );
-    final TextStyle titleTagStyle = textStyle10WithColor(
+    final TextStyle primaryTagStyle = textStyle10WithColor(
       theme.primaryColor.isDark ? Colors.white : Colors.black,
     );
     return TapScaleContainer(
@@ -84,7 +84,7 @@ class SimpleRecordItem extends StatelessWidget {
                       ),
                       child: Text(
                         record.size,
-                        style: fileTagStyle,
+                        style: accentTagStyle,
                       ),
                     ),
                   if (!record.tags.isNullOrEmpty)
@@ -105,7 +105,7 @@ class SimpleRecordItem extends StatelessWidget {
                         ),
                         child: Text(
                           record.tags[index],
-                          style: titleTagStyle,
+                          style: primaryTagStyle,
                         ),
                       );
                     }),

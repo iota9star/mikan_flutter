@@ -193,4 +193,10 @@ class Repo {
       options: options,
     );
   }
+
+  static Future<Resp> fonts() async {
+    return await Http.get(
+      Extra.FONTS_MANIFEST,
+    );
+  }
 }

@@ -25,15 +25,11 @@ class NormalRecordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Subgroup> subgroups = record.groups;
-    final TextStyle fileTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: theme.accentColor.isDark ? Colors.white : Colors.black,
+    final TextStyle accentTagStyle = textStyle10WithColor(
+      theme.accentColor.isDark ? Colors.white : Colors.black,
     );
-    final TextStyle titleTagStyle = TextStyle(
-      fontSize: 10,
-      height: 1.25,
-      color: theme.primaryColor.isDark ? Colors.white : Colors.black,
+    final TextStyle primaryTagStyle = textStyle10WithColor(
+      theme.primaryColor.isDark ? Colors.white : Colors.black,
     );
     return TapScaleContainer(
       onTap: onTap,
@@ -93,7 +89,7 @@ class NormalRecordItem extends StatelessWidget {
                       ),
                       child: Text(
                         record.size,
-                        style: fileTagStyle,
+                        style: accentTagStyle,
                       ),
                     ),
                   if (!record.tags.isNullOrEmpty)
@@ -114,7 +110,7 @@ class NormalRecordItem extends StatelessWidget {
                         ),
                         child: Text(
                           record.tags[index],
-                          style: titleTagStyle,
+                          style: primaryTagStyle,
                         ),
                       );
                     }),

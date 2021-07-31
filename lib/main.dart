@@ -13,7 +13,9 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/fonts.dart';
 import 'package:mikan_flutter/internal/hive.dart';
+import 'package:mikan_flutter/internal/http_cache_manager.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/internal/store.dart';
 import 'package:mikan_flutter/mikan_flutter_route.dart';
@@ -81,6 +83,8 @@ Future _initFirebase() async {
 Future _initDependencies() async {
   await Store.init();
   await MyHive.init();
+  FontManager.init();
+  HttpCacheManager.init();
   if (isMobile) {
     await _initFirebase();
   }

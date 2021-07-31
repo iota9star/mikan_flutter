@@ -67,3 +67,9 @@ class MikanUrl {
   /// [我的订阅页 用于刷新token](https://mikanani.me/Home/MyBangumi)
   static const String MY_SUBSCRIBED = "/Home/MyBangumi";
 }
+
+class Extra {
+  static const String FONTS_BASE_URL =
+      "https://cdn.jsdelivr.net/gh/iota9star/fonts@master";
+  static const String FONTS_MANIFEST = "$FONTS_BASE_URL/manifest.json";
+}

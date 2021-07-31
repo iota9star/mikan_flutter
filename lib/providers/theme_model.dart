@@ -119,4 +119,9 @@ class ThemeModel extends BaseModel {
     );
     return themeData;
   }
+
+  void applyFont(String fontFamily) {
+    this._themeItem.fontFamily = fontFamily;
+    this.themeItem = this._themeItem;
+  }
 }

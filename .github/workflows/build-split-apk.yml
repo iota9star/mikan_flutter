@@ -53,6 +53,6 @@ jobs:
           packageName: io.nichijou.flutter.mikan
           releaseFiles: 'build/app/outputs/flutter-apk/*-release-signed.apk'
           track: production
-          inAppUpdatePriority: 2
-          userFraction: 0.33
+          inAppUpdatePriority: 5
+          userFraction: 1.0
           mappingFile: build/app/outputs/mapping/release/mapping.txt

@@ -358,7 +358,7 @@ class SearchFragment extends StatelessWidget {
     return SliverPinnedToBoxAdapter(
       child: Container(
         color: theme.scaffoldBackgroundColor,
-        padding: edgeH16T24B8,
+        padding: edgeHT16B8,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
