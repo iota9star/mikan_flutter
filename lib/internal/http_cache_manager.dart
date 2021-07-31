@@ -287,8 +287,6 @@ class HttpCacheManager {
     );
   }
 
-  late StreamSubscription<List<int>> _subscription;
-
   Future<File> _rw(
     HttpClientResponse response,
     File rawFile,
@@ -304,27 +302,19 @@ class HttpCacheManager {
     final int? total = compressed || response.contentLength < 0
         ? null
         : response.contentLength;
-    final RandomAccessFile raf = await tempFile.open(mode: fileMode);
-    _subscription = response.listen(
+    final IOSink ioSink = tempFile.openWrite(mode: fileMode);
+    response.listen(
       (List<int> bytes) {
-        _subscription.pause();
-        raf.setPositionSync(received);
-        raf.writeFrom(bytes).then((RandomAccessFile _raf) {
-          received += bytes.length;
-          chunkEvents?.add(ProgressChunkEvent(
-            progress: received,
-            total: total,
-          ));
-          _subscription.resume();
-        }).catchError((dynamic err, StackTrace stackTrace) async {
-          print(err);
-          print(stackTrace);
-          await _subscription.cancel();
-        });
+        ioSink.add(bytes);
+        received += bytes.length;
+        chunkEvents?.add(ProgressChunkEvent(
+          progress: received,
+          total: total,
+        ));
       },
       onDone: () async {
         try {
-          await raf.close();
+          await ioSink.close();
           Uint8List buffer = await tempFile.readAsBytes();
           if (compressed) {
             final List<int> convert = gzip.decoder.convert(buffer);
@@ -336,14 +326,14 @@ class HttpCacheManager {
             ));
           }
           await tempFile.rename(rawFile.path);
-          completer.complete(tempFile);
+          completer.complete(rawFile);
         } catch (e) {
           completer.completeError(e);
         }
       },
-      onError: (Object err, StackTrace stackTrace) async {
+      onError: (dynamic err, StackTrace stackTrace) async {
         try {
-          await raf.close();
+          await ioSink.close();
         } finally {
           completer.completeError(err, stackTrace);
         }
