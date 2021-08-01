@@ -191,7 +191,7 @@ TextStyle textStyle10WithColor(final Color color) => TextStyle(
       color: color,
     );
 
-const sizedBox = const SizedBox();
+const sizedBox = const SizedBox.shrink();
 const sizedBoxW24 = const SizedBox(width: 24.0);
 const sizedBoxW16 = const SizedBox(width: 16.0);
 const sizedBoxH16 = const SizedBox(height: 16.0);
