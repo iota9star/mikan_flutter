@@ -1,4 +1,4 @@
-name: build apk
+name: build split apk
 on:
   workflow_dispatch:
     inputs:
@@ -23,10 +23,11 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: stable
-      - name: Build apk
+      - name: Build split apk
         run: |
           flutter pub get
           flutter build -v apk --release
+          flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           ls build/app/outputs/flutter-apk
       - name: Sign build apk
         uses: iota9star/sign-android-release@v1.0.5

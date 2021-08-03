@@ -51,7 +51,7 @@ class CancelableBaseModel extends BaseModel {
       completer.completeError(err, stackTrace);
     }).whenComplete(() {
       _jobs.remove(completer);
-      "执行完了一个任务".debug(level: 3);
+      "执行完了一个任务".debug();
     });
     return completer.operation.value;
   }

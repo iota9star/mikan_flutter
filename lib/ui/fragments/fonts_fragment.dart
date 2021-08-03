@@ -6,7 +6,6 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http_cache_manager.dart';
 import 'package:mikan_flutter/model/fonts.dart';
 import 'package:mikan_flutter/providers/fonts_model.dart';
-import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -18,56 +17,57 @@ class FontsFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ThemeModel themeModel = Provider.of(context, listen: false);
+    final FontsModel fontsModel =
+        Provider.of<FontsModel>(context, listen: false);
+
     final TextStyle accentTagStyle = textStyle10WithColor(
       theme.accentColor.isDark ? Colors.white : Colors.black,
     );
     final TextStyle primaryTagStyle = textStyle10WithColor(
       theme.primaryColor.isDark ? Colors.white : Colors.black,
     );
-    return ChangeNotifierProvider(
-      create: (_) => FontsModel(themeModel),
-      child: Builder(builder: (context) {
-        final model = Provider.of<FontsModel>(context, listen: false);
-        return Scaffold(
-          body: NotificationListener(
-            onNotification: (notification) {
-              if (notification is OverscrollIndicatorNotification) {
-                notification.disallowGlow();
-              } else if (notification is ScrollUpdateNotification) {
-                if (notification.depth == 0) {
-                  final double offset = notification.metrics.pixels;
-                }
-              }
-              return true;
-            },
-            child: Column(
-              children: [
-                _buildHeader(theme, context, model),
-                _buildList(
-                  model,
-                  context,
-                  theme,
-                  primaryTagStyle,
-                  accentTagStyle,
-                ),
-              ],
+    return Scaffold(
+      body: NotificationListener(
+        onNotification: (notification) {
+          if (notification is OverscrollIndicatorNotification) {
+            notification.disallowGlow();
+          } else if (notification is ScrollUpdateNotification) {
+            if (notification.depth == 0) {
+              final double offset = notification.metrics.pixels;
+            }
+          }
+          return true;
+        },
+        child: Column(
+          children: [
+            _buildHeader(context, theme, fontsModel),
+            _buildList(
+              context,
+              theme,
+              primaryTagStyle,
+              accentTagStyle,
+              fontsModel,
             ),
-          ),
-        );
-      }),
+          ],
+        ),
+      ),
     );
   }
 
-  Expanded _buildList(FontsModel model, BuildContext context, ThemeData theme,
-      TextStyle primaryTagStyle, TextStyle accentTagStyle) {
+  Expanded _buildList(
+    BuildContext context,
+    ThemeData theme,
+    TextStyle primaryTagStyle,
+    TextStyle accentTagStyle,
+    FontsModel model,
+  ) {
     return Expanded(
       child: Selector<FontsModel, List<Font>>(
         shouldRebuild: (pre, next) => pre.ne(next),
         selector: (_, model) => model.fonts,
         builder: (_, fonts, __) {
           if (model.fonts.length == 0) {
-            return CupertinoActivityIndicator();
+            return centerLoading;
           }
           return GridView.builder(
             controller: ModalScrollController.of(context),
@@ -76,18 +76,18 @@ class FontsFragment extends StatelessWidget {
             itemBuilder: (_, index) {
               final Font font = fonts[index];
               return _buildFontItem(
-                model,
-                font,
                 theme,
                 primaryTagStyle,
                 accentTagStyle,
+                model,
+                font,
               );
             },
             gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
               mainAxisSpacing: 16.0,
               crossAxisSpacing: 16.0,
-              mainAxisExtent: 90.0,
+              mainAxisExtent: 102.0,
             ),
           );
         },
@@ -96,8 +96,8 @@ class FontsFragment extends StatelessWidget {
   }
 
   Padding _buildHeader(
-    ThemeData theme,
     BuildContext context,
+    ThemeData theme,
     FontsModel model,
   ) {
     return Padding(
@@ -145,11 +145,11 @@ class FontsFragment extends StatelessWidget {
   }
 
   TapScaleContainer _buildFontItem(
-    FontsModel model,
-    Font font,
     ThemeData theme,
     TextStyle primaryTagStyle,
     TextStyle accentTagStyle,
+    FontsModel model,
+    Font font,
   ) {
     return TapScaleContainer(
       onTap: () {
@@ -204,7 +204,7 @@ class FontsFragment extends StatelessWidget {
                   children: [
                     Text(
                       font.name,
-                      style: textStyle16B,
+                      style: textStyle18B,
                     ),
                     sizedBoxW12,
                     TapScaleContainer(
@@ -267,9 +267,16 @@ class FontsFragment extends StatelessWidget {
                         style: accentTagStyle,
                       ),
                     ),
+                    spacer,
+                    if (model.enableFontFamily == font.id)
+                      Icon(
+                        FluentIcons.checkmark_starburst_16_filled,
+                        color: theme.accentColor,
+                        size: 24.0,
+                      )
                   ],
                 ),
-                sizedBoxH4,
+                sizedBoxH8,
                 Tooltip(
                   message: font.desc,
                   padding: edgeH12V8,
@@ -278,7 +285,7 @@ class FontsFragment extends StatelessWidget {
                     font.desc,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: textStyle13,
+                    style: textStyle14,
                   ),
                 ),
               ],

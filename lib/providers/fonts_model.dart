@@ -23,6 +23,8 @@ class FontsModel extends CancelableBaseModel {
 
   ThemeModel _themeModel;
 
+  String? get enableFontFamily => this._themeModel.themeItem.fontFamily;
+
   late DateTime _lastUpdate;
 
   final Map<String, ProgressChunkEvent> fontProgress =
@@ -46,6 +48,11 @@ class FontsModel extends CancelableBaseModel {
           })
           .toList()
           .cast<Font>();
+      final String? fontFamily = this._themeModel.themeItem.fontFamily;
+      if (fontFamily.isNotBlank) {
+        final Font font = this._fonts.firstWhere((it) => it.id == fontFamily);
+        this.enableFont(font);
+      }
     } else {
       "获取字体列表失败：${resp.msg}".toast();
     }

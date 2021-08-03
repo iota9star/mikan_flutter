@@ -21,6 +21,7 @@ import 'package:mikan_flutter/internal/store.dart';
 import 'package:mikan_flutter/mikan_flutter_route.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/providers/firebase_model.dart';
+import 'package:mikan_flutter/providers/fonts_model.dart';
 import 'package:mikan_flutter/providers/home_model.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/list_model.dart';
@@ -111,6 +112,10 @@ class MikanApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider<ThemeModel>(
             create: (_) => ThemeModel(),
+          ),
+          ChangeNotifierProvider<FontsModel>(
+            create: (context) => FontsModel(context.read<ThemeModel>()),
+            lazy: false,
           ),
           if (isMobile)
             ChangeNotifierProvider<FirebaseModel>(
