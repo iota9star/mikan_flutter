@@ -26,13 +26,13 @@ jobs:
       - name: Build split apk
         run: |
           flutter pub get
-          flutter build -v appbundle --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
+          flutter build -v appbundle --target-platform android-arm,android-arm64,android-x64 --release
           ls build/app/outputs/flutter-apk
       - name: Sign build apk
         uses: iota9star/sign-android-release@v1.0.5
         with:
-          releaseDirectory: build/app/outputs/flutter-apk
-          fileRegex: .*-release.apk
+          releaseDirectory: build/app/outputs/bundle/release
+          fileRegex: .*-release.aab
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -43,7 +43,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "build/app/outputs/flutter-apk/*-release-signed.aab"
+          artifacts: "build/app/outputs/bundle/release/*-release-signed.aab"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
       - name: Release to GP
@@ -51,7 +51,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: io.nichijou.flutter.mikan
-          releaseFiles: 'build/app/outputs/flutter-apk/*-release-signed.aab'
+          releaseFiles: 'build/app/outputs/bundle/release/*-release-signed.aab'
           track: production
           inAppUpdatePriority: 5
           userFraction: 1.0
