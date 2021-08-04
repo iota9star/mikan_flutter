@@ -199,7 +199,9 @@ class FontsFragment extends StatelessWidget {
                 ),
               ),
               TapScaleContainer(
-                onTap: () {},
+                onTap: () {
+                  font.official.launchAppAndCopy();
+                },
                 margin: edgeR4,
                 padding: edgeH4V2,
                 decoration: BoxDecoration(
@@ -219,7 +221,9 @@ class FontsFragment extends StatelessWidget {
                 ),
               ),
               TapScaleContainer(
-                onTap: () {},
+                onTap: () {
+                  font.license.url.launchAppAndCopy();
+                },
                 margin: edgeR4,
                 padding: edgeH4V2,
                 decoration: BoxDecoration(
