@@ -27,7 +27,6 @@ jobs:
         run: |
           flutter pub get
           flutter build -v appbundle --target-platform android-arm,android-arm64,android-x64 --release
-          ls build/app/outputs/flutter-apk
       - name: Sign build aab
         uses: iota9star/sign-android-release@v1.0.5
         with:
