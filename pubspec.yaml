@@ -1,7 +1,7 @@
 name: mikan_flutter
 description: mikanani.me
 
-version: 1.0.0-RC15+37
+version: 1.0.0-RC16+38
 
 publish_to: none
 
@@ -21,7 +21,7 @@ dependencies:
   dio_http2_adapter: ^2.0.0
   html: ^0.15.0
   provider: ^5.0.0
-  oktoast: ^3.1.0
+  oktoast: ^3.1.1
   pull_to_refresh: ^2.0.0
   hive: ^2.0.4
   hive_flutter: ^1.1.0
