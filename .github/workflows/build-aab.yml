@@ -23,12 +23,12 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: stable
-      - name: Build split apk
+      - name: Build aab
         run: |
           flutter pub get
           flutter build -v appbundle --target-platform android-arm,android-arm64,android-x64 --release
           ls build/app/outputs/flutter-apk
-      - name: Sign build apk
+      - name: Sign build aab
         uses: iota9star/sign-android-release@v1.0.5
         with:
           releaseDirectory: build/app/outputs/bundle/release
