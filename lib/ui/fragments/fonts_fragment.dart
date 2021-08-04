@@ -155,6 +155,7 @@ class FontsFragment extends StatelessWidget {
       onTap: () {
         model.enableFont(font);
       },
+      padding: edge16,
       decoration: BoxDecoration(
         borderRadius: borderRadius16,
         gradient: LinearGradient(
@@ -167,132 +168,131 @@ class FontsFragment extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
       ),
-      child: Stack(
-        fit: StackFit.loose,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Selector<FontsModel, ProgressChunkEvent?>(
-            selector: (_, model) => model.fontProgress[font.id],
-            shouldRebuild: (pre, next) => pre?.progress != next?.progress,
-            builder: (_, event, __) {
-              if (event == null) {
-                return sizedBox;
-              }
-              return Positioned.fill(
-                child: ClipRRect(
-                  child: LinearProgressIndicator(
-                    value: event.percent,
-                    minHeight: double.infinity,
-                    backgroundColor: theme.accentColor.withOpacity(0.05),
-                    valueColor: AlwaysStoppedAnimation(
-                      theme.accentColor.withOpacity(0.1),
-                    ),
+          Row(
+            children: [
+              Text(
+                font.name,
+                style: textStyle18B,
+              ),
+              sizedBoxW12,
+              TapScaleContainer(
+                onTap: () {},
+                margin: edgeR4,
+                padding: edgeH4V2,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      theme.primaryColor,
+                      theme.primaryColor.withOpacity(0.56),
+                    ],
                   ),
-                  borderRadius: borderRadius16,
+                  borderRadius: borderRadius2,
                 ),
-              );
-            },
+                child: Text(
+                  "${font.files.length}个字体",
+                  style: primaryTagStyle,
+                ),
+              ),
+              TapScaleContainer(
+                onTap: () {},
+                margin: edgeR4,
+                padding: edgeH4V2,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      theme.accentColor,
+                      theme.accentColor.withOpacity(0.56),
+                    ],
+                  ),
+                  borderRadius: borderRadius2,
+                ),
+                child: Text(
+                  "官网",
+                  style: primaryTagStyle,
+                ),
+              ),
+              TapScaleContainer(
+                onTap: () {},
+                margin: edgeR4,
+                padding: edgeH4V2,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      theme.accentColor,
+                      theme.accentColor.withOpacity(0.56),
+                    ],
+                  ),
+                  borderRadius: borderRadius2,
+                ),
+                child: Text(
+                  font.license.name,
+                  style: accentTagStyle,
+                ),
+              ),
+              spacer,
+              _buildLoadingOrChecked(theme, model, font)
+            ],
           ),
-          Positioned(
-            left: 16.0,
-            top: 16.0,
-            right: 16.0,
-            bottom: 16.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      font.name,
-                      style: textStyle18B,
-                    ),
-                    sizedBoxW12,
-                    TapScaleContainer(
-                      onTap: () {},
-                      margin: edgeR4,
-                      padding: edgeH4V2,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            theme.primaryColor,
-                            theme.primaryColor.withOpacity(0.56),
-                          ],
-                        ),
-                        borderRadius: borderRadius2,
-                      ),
-                      child: Text(
-                        "${font.files.length}个字体",
-                        style: primaryTagStyle,
-                      ),
-                    ),
-                    TapScaleContainer(
-                      onTap: () {},
-                      margin: edgeR4,
-                      padding: edgeH4V2,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            theme.accentColor,
-                            theme.accentColor.withOpacity(0.56),
-                          ],
-                        ),
-                        borderRadius: borderRadius2,
-                      ),
-                      child: Text(
-                        "官网",
-                        style: primaryTagStyle,
-                      ),
-                    ),
-                    TapScaleContainer(
-                      onTap: () {},
-                      margin: edgeR4,
-                      padding: edgeH4V2,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            theme.accentColor,
-                            theme.accentColor.withOpacity(0.56),
-                          ],
-                        ),
-                        borderRadius: borderRadius2,
-                      ),
-                      child: Text(
-                        font.license.name,
-                        style: accentTagStyle,
-                      ),
-                    ),
-                    spacer,
-                    if (model.enableFontFamily == font.id)
-                      Icon(
-                        FluentIcons.checkmark_starburst_16_filled,
-                        color: theme.accentColor,
-                        size: 24.0,
-                      )
-                  ],
-                ),
-                sizedBoxH8,
-                Tooltip(
-                  message: font.desc,
-                  padding: edgeH12V8,
-                  margin: edgeH16,
-                  child: Text(
-                    font.desc,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: textStyle14,
-                  ),
-                ),
-              ],
+          sizedBoxH8,
+          Tooltip(
+            message: font.desc,
+            padding: edgeH12V8,
+            margin: edgeH16,
+            child: Text(
+              font.desc,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: textStyle14,
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLoadingOrChecked(
+    ThemeData theme,
+    FontsModel model,
+    Font font,
+  ) {
+    return Selector<FontsModel, ProgressChunkEvent?>(
+      selector: (_, model) => model.fontProgress[font.id],
+      shouldRebuild: (pre, next) => pre?.progress != next?.progress,
+      builder: (_, event, __) {
+        if (event == null) {
+          return sizedBox;
+        }
+        if (event.percent == 1) {
+          if (model.enableFontFamily == font.id) {
+            return Icon(
+              FluentIcons.checkmark_starburst_16_filled,
+              color: theme.accentColor,
+              size: 24.0,
+            );
+          } else {
+            return sizedBox;
+          }
+        }
+
+        return SizedBox(
+          width: 16.0,
+          height: 16.0,
+          child: CircularProgressIndicator(
+            value: event.percent,
+            strokeWidth: 2.0,
+            valueColor: AlwaysStoppedAnimation(theme.accentColor),
+          ),
+        );
+      },
     );
   }
 }

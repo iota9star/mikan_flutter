@@ -100,7 +100,7 @@ class FontsModel extends CancelableBaseModel {
         cancelable: _loadingTask[font.id],
       );
       if (_lastEnableFont == font.id) {
-        this._themeModel.applyFont(font.id);
+        this._themeModel.applyFont(font);
       }
     } catch (e) {
       e.debug();

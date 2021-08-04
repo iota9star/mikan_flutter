@@ -6,6 +6,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/settings_model.dart';
+import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/fonts_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/theme_panel_fragment.dart';
@@ -45,7 +46,8 @@ class SettingsFragment extends StatelessWidget {
                 _buildHeader(theme),
                 _buildThemeSection(),
                 _buildThemeList(),
-                _buildFontManager(context),
+                _buildFontManager(context, theme),
+                sliverSizedBoxH24,
               ],
             ),
           ),
@@ -161,23 +163,37 @@ class SettingsFragment extends StatelessWidget {
         : placeholder;
   }
 
-  Widget _buildFontManager(final BuildContext context) {
+  Widget _buildFontManager(final BuildContext context, ThemeData theme) {
+    final ThemeModel themeModel =
+        Provider.of<ThemeModel>(context, listen: false);
     return SliverToBoxAdapter(
-      child: MaterialButton(
-        onPressed: () {
-          _showFontManageModal(context);
-        },
-        padding: edgeH16,
-        height: 56.0,
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                "字体管理",
-                style: textStyle16,
+      child: Container(
+        margin: edgeH16T8,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius16,
+          color: theme.backgroundColor,
+        ),
+        child: MaterialButton(
+          onPressed: () {
+            _showFontManageModal(context);
+          },
+          padding: edgeH16,
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
+          height: 48.0,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "字体管理",
+                  style: textStyle16B500,
+                ),
               ),
-            ),
-          ],
+              Text(
+                themeModel.themeItem.fontFamilyName ?? "默认",
+                style: textStyle14,
+              )
+            ],
+          ),
         ),
       ),
     );

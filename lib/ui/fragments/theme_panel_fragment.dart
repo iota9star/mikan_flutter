@@ -23,11 +23,7 @@ class ThemePanelFragment extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final themeModel = Provider.of<ThemeModel>(context, listen: false);
     return Container(
-      margin: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        bottom: 24.0,
-      ),
+      margin: edgeH16,
       decoration: BoxDecoration(
         borderRadius: borderRadius16,
         color: theme.backgroundColor,

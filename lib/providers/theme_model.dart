@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Theme;
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
+import 'package:mikan_flutter/model/fonts.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
 import 'package:mikan_flutter/topvars.dart';
@@ -120,9 +121,11 @@ class ThemeModel extends BaseModel {
     return themeData;
   }
 
-  void applyFont(String? fontFamily) {
+  void applyFont(Font? font) {
+    final String? fontFamily = font?.id;
     if (this._themeItem.fontFamily != fontFamily) {
       this._themeItem.fontFamily = fontFamily;
+      this._themeItem.fontFamilyName = font?.name;
       this._themeItem.save();
       this.themeItem = this._themeItem;
     }

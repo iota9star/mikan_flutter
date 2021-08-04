@@ -289,7 +289,12 @@ class _IndexFragmentState extends State<IndexFragment> {
               borderRadius: scrollHeaderBorderRadius(hasScrolled),
               boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            padding: edge16WithStatusBar,
+            padding: EdgeInsets.only(
+              top: 12.0 + Screen.statusBarHeight,
+              left: 16.0,
+              right: 16.0,
+              bottom: 8.0,
+            ),
             duration: dur240,
             child: Row(
               children: [
@@ -305,7 +310,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                               user == null || user.name.isNullOrBlank;
                           return Text(
                             withoutName ? "Mikan Project" : "Hi, ${user!.name}",
-                            style: textStyle14B,
+                            style: textStyle14B500,
                           );
                         },
                       ),
@@ -319,8 +324,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                   },
                   child: Icon(FluentIcons.search_24_regular),
                   minWidth: 48.0,
-                  height: 48.0,
-                  padding: edge10,
+                  padding: edge8,
                   shape: circleShape,
                 ),
                 sizedBoxW8,
@@ -330,7 +334,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                   },
                   child: _buildAvatar(),
                   minWidth: 48.0,
-                  padding: edge10,
+                  padding: edge8,
                   shape: circleShape,
                 ),
               ],
@@ -370,6 +374,7 @@ class _IndexFragmentState extends State<IndexFragment> {
             size: 14.0,
           ),
           minWidth: 24.0,
+          height: 24.0,
           color: hasScrolled
               ? theme.scaffoldBackgroundColor
               : theme.backgroundColor,

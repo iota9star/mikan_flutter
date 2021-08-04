@@ -39,7 +39,7 @@ main() async {
   runApp(MikanApp());
   if (!isMobile) {
     doWhenWindowReady(() {
-      appWindow.minSize = const Size(360, 640);
+      appWindow.minSize = const Size(400, 640);
       appWindow.size = const Size(1280, 720);
       appWindow.alignment = Alignment.center;
       appWindow.title = "蜜柑计划";

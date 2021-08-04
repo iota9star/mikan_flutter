@@ -38,6 +38,8 @@ class ThemeItem extends HiveObject {
   @HiveField(11)
   String? fontFamily;
 
+  String? fontFamilyName;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

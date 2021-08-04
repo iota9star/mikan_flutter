@@ -210,6 +210,10 @@ final sliverSizedBoxH80 = SliverToBoxAdapter(
   child: SizedBox(height: 80.0 + Screen.navBarHeight),
 );
 
+final sliverSizedBoxH24 = SliverToBoxAdapter(
+  child: SizedBox(height: 24.0 + Screen.navBarHeight),
+);
+
 const spacer = const Spacer();
 
 const dur240 = const Duration(milliseconds: 240);
