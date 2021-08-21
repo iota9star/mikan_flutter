@@ -76,7 +76,7 @@ class BangumiModel extends CancelableBaseModel {
         Repo.bangumiMore(
           this.id,
           sb?.dataId ?? "",
-          sb?.records.length ?? 0 + 20,
+          (sb?.records.length ?? 0) + 20,
         ));
     if (resp.success) {
       if (sb?.records.length == resp.data.length) {
