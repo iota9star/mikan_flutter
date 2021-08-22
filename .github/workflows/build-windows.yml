@@ -46,4 +46,3 @@ jobs:
           commit_message: ":bookmark: Release binary files."
           branch: master
           file_pattern: "releases/*-release.zip,releases/meta.json"
-          repository: releases
