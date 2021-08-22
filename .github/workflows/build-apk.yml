@@ -25,14 +25,19 @@ jobs:
           channel: stable
       - name: Build split apk
         run: |
+          cp -a pubspec.yaml assets
           flutter pub get
           flutter build -v apk --release
           flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           ls build/app/outputs/flutter-apk
+          cp -a build/app/outputs/flutter-apk/*-release.apk releases
+          ls releases
+          mv -f releases/app-release.apk releases/app-universal-release.apk
+          ls releases
       - name: Sign build apk
         uses: iota9star/sign-android-release@v1.0.5
         with:
-          releaseDirectory: build/app/outputs/flutter-apk
+          releaseDirectory: releases
           fileRegex: .*-release.apk
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
@@ -40,10 +45,26 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "30.0.3"
+      - name: Rename signed apk
+        run: |
+          ls releases
+          for name in $(ls releases/*-signed.apk);do mv -f $name ${name%-signed.apk}.apk ;done
+          ls releases
       - name: Release to github
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "build/app/outputs/flutter-apk/*-release-signed.apk"
+          artifacts: "*-release.apk"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
+      - name: Write meta file
+        run: |
+          dart scripts/releases.dart
+      - name: Commit binary files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ":bookmark: Release binary files."
+          branch: master
+          file_pattern: "releases/*-release.apk,releases/meta.json"
+          repository: releases
+

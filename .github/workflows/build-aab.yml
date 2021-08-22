@@ -25,8 +25,10 @@ jobs:
           channel: stable
       - name: Build aab
         run: |
+          cp -a pubspec.yaml assets
           flutter pub get
-          flutter build -v appbundle --target-platform android-arm,android-arm64,android-x64 --release
+          flutter build -v appbundle --release
+          ls build/app/outputs/bundle/release
       - name: Sign build aab
         uses: iota9star/sign-android-release@v1.0.5
         with:

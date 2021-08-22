@@ -25,14 +25,25 @@ jobs:
           channel: stable
       - name: Build windows
         run: |
+          cp -a pubspec.yaml assets
           flutter config --enable-windows-desktop
           flutter build -v windows --release
           dir build/windows/runner/Release
-          Compress-Archive -Path build/windows/runner/Release/* windows-release.zip
+          Compress-Archive -Path build/windows/runner/Release/* releases/windows-win32-release.zip
       - name: Release build
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "windows-release.zip"
+          artifacts: "releases/*-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
+      - name: Write meta file
+        run: |
+          dart scripts/releases.dart
+      - name: Commit binary files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ":bookmark: Release binary files."
+          branch: master
+          file_pattern: "releases/*-release.zip,releases/meta.json"
+          repository: releases
