@@ -27,7 +27,7 @@ jobs:
         run: |
           \cp -f pubspec.yaml assets
           flutter pub get
-          flutter build -v appbundle --release
+          flutter build appbundle --release
           ls build/app/outputs/bundle/release
       - name: Sign build aab
         uses: iota9star/sign-android-release@v1.0.5

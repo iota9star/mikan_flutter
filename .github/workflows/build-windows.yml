@@ -27,7 +27,7 @@ jobs:
         run: |
           Copy-Item -Path pubspec.yaml -Destination assets -Force
           flutter config --enable-windows-desktop
-          flutter build -v windows --release
+          flutter build windows --release
           dir build/windows/runner/Release
           Compress-Archive -Path build/windows/runner/Release/* releases/windows-win32-release.zip
       - name: Release build
