@@ -36,7 +36,7 @@ Future<void> main() async {
       })
     ];
     var meta = {
-      "name": result["tag_name"],
+      "tag": result["tag_name"],
       "url": result["html_url"],
       "publishedAt": result["published_at"],
       "zip": result["zipball_url"],
