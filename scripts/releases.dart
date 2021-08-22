@@ -41,7 +41,7 @@ Future<void> main() async {
     var meta = {
       "tag": result["tag_name"],
       "url": result["html_url"],
-      "publishedAt": Jiffy(result["published_at"]).yMMMMEEEEdjm,
+      "publishedAt": Jiffy(result["published_at"])..add(hours: 8).yMMMMEEEEdjm,
       "zip": result["zipball_url"],
       "files": files,
     };
