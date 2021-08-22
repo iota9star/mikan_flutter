@@ -195,8 +195,14 @@ class Repo {
   }
 
   static Future<Resp> fonts() async {
-    return await Http.get(
-      Extra.FONTS_MANIFEST,
-    );
+    return await Http.get(Extra.FONTS_MANIFEST);
+  }
+
+  static Future<Resp> release() async {
+    return await Http.get(Extra.RELEASE_VERSION);
+  }
+
+  static Future<Resp> releaseMeta() async {
+    return await Http.get(Extra.MIKAN_RELEASES_META);
   }
 }

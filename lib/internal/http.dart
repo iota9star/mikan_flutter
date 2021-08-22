@@ -40,38 +40,40 @@ class MikanTransformer extends DefaultTransformer {
     ResponseBody response,
   ) async {
     final transformResponse = await super.transformResponse(options, response);
-    final String? func = options.extra["$MikanFunc"];
-    if (func.isNotBlank && transformResponse is String) {
-      final Document document = parse(transformResponse);
-      switch (func) {
-        case MikanFunc.SEASON:
-          return await Resolver.parseSeason(document);
-        case MikanFunc.DAY:
-          return await Resolver.parseDay(document);
-        case MikanFunc.SEARCH:
-          return await Resolver.parseSearch(document);
-        case MikanFunc.USER:
-          return await Resolver.parseUser(document);
-        case MikanFunc.LIST:
-          return await Resolver.parseList(document);
-        case MikanFunc.INDEX:
-          return await Resolver.parseIndex(document);
-        case MikanFunc.SUBGROUP:
-          return await Resolver.parseSubgroup(document);
-        case MikanFunc.BANGUMI:
-          return await Resolver.parseBangumi(document);
-        case MikanFunc.BANGUMI_MORE:
-          return await Resolver.parseBangumiMore(document);
-        case MikanFunc.DETAILS:
-          return await Resolver.parseRecordDetail(document);
-        case MikanFunc.SUBSCRIBED_SEASON:
-          return await Resolver.parseMySubscribed(document);
-        case MikanFunc.REFRESH_LOGIN_TOKEN:
-          return await Resolver.parseRefreshLoginToken(document);
-        case MikanFunc.REFRESH_REGISTER_TOKEN:
-          return await Resolver.parseRefreshRegisterToken(document);
-        case MikanFunc.REFRESH_FORGOTPASSWORD_TOKEN:
-          return await Resolver.parseRefreshForgotPasswordToken(document);
+    if (transformResponse is String) {
+      final String? func = options.extra["$MikanFunc"];
+      if (func.isNotBlank) {
+        final Document document = parse(transformResponse);
+        switch (func) {
+          case MikanFunc.SEASON:
+            return await Resolver.parseSeason(document);
+          case MikanFunc.DAY:
+            return await Resolver.parseDay(document);
+          case MikanFunc.SEARCH:
+            return await Resolver.parseSearch(document);
+          case MikanFunc.USER:
+            return await Resolver.parseUser(document);
+          case MikanFunc.LIST:
+            return await Resolver.parseList(document);
+          case MikanFunc.INDEX:
+            return await Resolver.parseIndex(document);
+          case MikanFunc.SUBGROUP:
+            return await Resolver.parseSubgroup(document);
+          case MikanFunc.BANGUMI:
+            return await Resolver.parseBangumi(document);
+          case MikanFunc.BANGUMI_MORE:
+            return await Resolver.parseBangumiMore(document);
+          case MikanFunc.DETAILS:
+            return await Resolver.parseRecordDetail(document);
+          case MikanFunc.SUBSCRIBED_SEASON:
+            return await Resolver.parseMySubscribed(document);
+          case MikanFunc.REFRESH_LOGIN_TOKEN:
+            return await Resolver.parseRefreshLoginToken(document);
+          case MikanFunc.REFRESH_REGISTER_TOKEN:
+            return await Resolver.parseRefreshRegisterToken(document);
+          case MikanFunc.REFRESH_FORGOTPASSWORD_TOKEN:
+            return await Resolver.parseRefreshForgotPasswordToken(document);
+        }
       }
     }
     return transformResponse;

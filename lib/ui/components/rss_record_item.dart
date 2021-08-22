@@ -137,8 +137,8 @@ class RssRecordItem extends StatelessWidget {
                             ),
                           ),
                         if (!tags.isNullOrEmpty)
-                          ...List.generate(tags.length, (index) {
-                            return Container(
+                          for (final tag in tags)
+                            Container(
                               margin: edgeR4,
                               padding: edgeH4V2,
                               decoration: BoxDecoration(
@@ -153,11 +153,10 @@ class RssRecordItem extends StatelessWidget {
                                 borderRadius: borderRadius2,
                               ),
                               child: Text(
-                                tags[index],
+                                tag,
                                 style: primaryTagStyle,
                               ),
-                            );
-                          }),
+                            ),
                       ],
                     ),
                   ),

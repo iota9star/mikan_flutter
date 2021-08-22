@@ -94,7 +94,7 @@ class RecentSubscribedPage extends StatelessWidget {
               minCrossAxisExtent: 360.0,
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
-              mainAxisExtent: 166.0,
+              mainAxisExtent: 170.0,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {

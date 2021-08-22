@@ -43,7 +43,8 @@ class RecentSubscribedModel extends CancelableBaseModel {
     final Resp resp = await (this + Repo.day(next, 1));
     if (resp.success) {
       final List<RecordItem> data = resp.data ?? [];
-      if (next > 12 && data.length == this._records.length) {
+      // recent 14 days.
+      if (next > 14 && data.length == this._records.length) {
         this._refreshController.loadNoData();
       } else {
         this._refreshController.loadComplete();

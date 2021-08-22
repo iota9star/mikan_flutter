@@ -7,7 +7,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -165,6 +164,9 @@ class MikanApp extends StatelessWidget {
         case ConnectivityResult.none:
           "您已断开网络".toast();
           break;
+        case ConnectivityResult.ethernet:
+          "您正在使用以太网".toast();
+          break;
       }
     });
   }
@@ -307,20 +309,3 @@ class MikanApp extends StatelessWidget {
     );
   }
 }
-
-final controlButtonColors = [
-  HexColor.fromHex("#fbb43a"),
-  HexColor.fromHex("#3ec544"),
-  HexColor.fromHex("#fa625c")
-];
-const controlButtonIcons = const [
-  FluentIcons.subtract_24_regular,
-  FluentIcons.add_24_regular,
-  FluentIcons.dismiss_24_regular
-];
-const controlButtonTooltips = const ["最小化", "最大化", "关闭"];
-final controlButtonActions = [
-  () => appWindow.minimize(),
-  () => appWindow.maximizeOrRestore(),
-  () => appWindow.close(),
-];

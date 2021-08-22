@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:jiffy/jiffy.dart';
+
 Future<void> main() async {
   var metaFile = File("releases/meta.json");
   var httpClient = HttpClient();
@@ -35,10 +37,11 @@ Future<void> main() async {
         };
       })
     ];
+    await Jiffy.locale("zh_cn");
     var meta = {
       "tag": result["tag_name"],
       "url": result["html_url"],
-      "publishedAt": result["published_at"],
+      "publishedAt": Jiffy(result["published_at"]).yMMMMEEEEdjm,
       "zip": result["zipball_url"],
       "files": files,
     };

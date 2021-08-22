@@ -579,7 +579,7 @@ class SubscribedFragment extends StatelessWidget {
               minCrossAxisExtent: 360.0,
               crossAxisSpacing: 12.0,
               mainAxisSpacing: 12.0,
-              mainAxisExtent: 166.0,
+              mainAxisExtent: 170.0,
             ),
           );
         },

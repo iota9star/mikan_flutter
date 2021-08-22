@@ -1,9 +1,11 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/user.dart';
+import 'package:mikan_flutter/providers/home_model.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/settings_model.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
@@ -44,9 +46,11 @@ class SettingsFragment extends StatelessWidget {
               controller: ModalScrollController.of(context),
               slivers: [
                 _buildHeader(theme),
-                _buildThemeSection(),
+                _buildSection("主题"),
                 _buildThemeList(),
                 _buildFontManager(context, theme),
+                _buildSection("更新"),
+                _buildCheckUpdate(context, theme),
                 sliverSizedBoxH24,
               ],
             ),
@@ -62,7 +66,7 @@ class SettingsFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildThemeSection() {
+  Widget _buildSection(final String title) {
     return SliverToBoxAdapter(
       child: Container(
         padding: edge16,
@@ -72,7 +76,7 @@ class SettingsFragment extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: Text(
-                "主题",
+                title,
                 style: textStyle20B,
               ),
             ),
@@ -192,6 +196,48 @@ class SettingsFragment extends StatelessWidget {
                 themeModel.themeItem.fontFamilyName ?? "默认",
                 style: textStyle14,
               )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCheckUpdate(final BuildContext context, ThemeData theme) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: edgeH16,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius16,
+          color: theme.backgroundColor,
+        ),
+        child: MaterialButton(
+          onPressed: () {
+            final HomeModel homeModel =
+                Provider.of<HomeModel>(context, listen: false);
+            homeModel.checkAppVersion();
+          },
+          padding: edgeH16,
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
+          height: 48.0,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "检测更新",
+                  style: textStyle16B500,
+                ),
+              ),
+              Selector<HomeModel, bool>(
+                selector: (_, model) => model.checkingUpgrade,
+                shouldRebuild: (pre, next) => pre != next,
+                builder: (_, checking, __) {
+                  if (checking) {
+                    return CupertinoActivityIndicator();
+                  }
+                  return sizedBox;
+                },
+              ),
             ],
           ),
         ),

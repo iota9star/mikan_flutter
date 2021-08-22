@@ -72,4 +72,10 @@ class Extra {
   static const String FONTS_BASE_URL =
       "https://cdn.jsdelivr.net/gh/iota9star/fonts@master";
   static const String FONTS_MANIFEST = "$FONTS_BASE_URL/manifest.json";
+  static const String RELEASE_VERSION =
+      "https://data.jsdelivr.com/v1/package/gh/iota9star/mikan_flutter";
+  static const String MIKAN_REPO_URL =
+      "https://cdn.jsdelivr.net/gh/iota9star/mikan_flutter@master";
+  static const String MIKAN_RELEASES_META =
+      "https://cdn.jsdelivr.net/gh/iota9star/mikan_flutter@master/releases/meta.json";
 }

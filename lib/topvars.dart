@@ -1,6 +1,9 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 
 const edgeH16V8 = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
@@ -72,6 +75,13 @@ final edgeH16T90B24WithStatusBar = EdgeInsets.only(
   left: 16.0,
   right: 16.0,
   bottom: 24.0,
+);
+
+final edgeHT16B24WithNavbarHeight = EdgeInsets.only(
+  top: 16.0,
+  left: 16.0,
+  right: 16.0,
+  bottom: 24.0 + Screen.navBarHeight,
 );
 
 const borderRadiusT16 = const BorderRadius.only(
@@ -163,10 +173,17 @@ const textStyle13 = const TextStyle(
   fontSize: 13.0,
   height: 1.25,
 );
+
 const textStyle12 = const TextStyle(
   fontSize: 12.0,
   height: 1.25,
 );
+
+const textStyle10 = const TextStyle(
+  fontSize: 10.0,
+  height: 1.25,
+);
+
 const textStyle13B500 = const TextStyle(
   fontSize: 13.0,
   height: 1.25,
@@ -257,3 +274,20 @@ const offsetY_1 = const Offset(0, -1);
 const offsetY_2 = const Offset(0, -2);
 
 final navKey = GlobalKey<NavigatorState>();
+
+final controlButtonColors = [
+  HexColor.fromHex("#fbb43a"),
+  HexColor.fromHex("#3ec544"),
+  HexColor.fromHex("#fa625c")
+];
+const controlButtonIcons = const [
+  FluentIcons.subtract_24_regular,
+  FluentIcons.add_24_regular,
+  FluentIcons.dismiss_24_regular
+];
+const controlButtonTooltips = const ["最小化", "最大化", "关闭"];
+final controlButtonActions = [
+  () => appWindow.minimize(),
+  () => appWindow.maximizeOrRestore(),
+  () => appWindow.close(),
+];
