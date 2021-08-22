@@ -38,10 +38,11 @@ Future<void> main() async {
       })
     ];
     await Jiffy.locale("zh_cn");
+    var jiffy = Jiffy(result["published_at"])..add(hours: 8);
     var meta = {
       "tag": result["tag_name"],
       "url": result["html_url"],
-      "publishedAt": Jiffy(result["published_at"])..add(hours: 8).yMMMMEEEEdjm,
+      "publishedAt": jiffy.yMMMMEEEEdjm,
       "zip": result["zipball_url"],
       "files": files,
     };
