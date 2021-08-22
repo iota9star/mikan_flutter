@@ -25,12 +25,12 @@ jobs:
           channel: stable
       - name: Build split apk
         run: |
-          cp -a pubspec.yaml assets
+          \cp -f pubspec.yaml assets
           flutter pub get
           flutter build -v apk --release
           flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           ls build/app/outputs/flutter-apk
-          cp -a build/app/outputs/flutter-apk/*-release.apk releases
+          mv -f build/app/outputs/flutter-apk/*-release.apk releases
           ls releases
           mv -f releases/app-release.apk releases/app-universal-release.apk
           ls releases

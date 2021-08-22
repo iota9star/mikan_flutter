@@ -25,7 +25,7 @@ jobs:
           channel: stable
       - name: Build windows
         run: |
-          cp -a pubspec.yaml assets
+          \cp -f pubspec.yaml assets
           flutter config --enable-windows-desktop
           flutter build -v windows --release
           dir build/windows/runner/Release
