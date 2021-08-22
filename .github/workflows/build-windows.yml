@@ -44,5 +44,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: ":bookmark: Release binary files."
-          branch: master
-          file_pattern: "releases/*-release.zip,releases/meta.json"
+          file_pattern: releases/*-release.zip releases/meta.json
