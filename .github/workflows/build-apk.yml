@@ -55,7 +55,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "*-release.apk"
+          artifacts: "releases/*-release.apk"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
       - name: Write meta file
