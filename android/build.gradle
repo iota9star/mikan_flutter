@@ -2,22 +2,30 @@ buildscript {
     ext.kotlin_version = '1.5.0'
     repositories {
         google()
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'https://download.flutter.io' }
         maven { url 'https://jitpack.io' }
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:4.2.2'
 //        classpath 'com.android.tools.build:gradle:7.0.0-beta03'
-        classpath 'com.google.gms:google-services:4.3.8'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.0'
+        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
     }
 }
 
 allprojects {
     repositories {
         google()
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'https://download.flutter.io' }
         maven { url 'https://jitpack.io' }
         mavenCentral()
