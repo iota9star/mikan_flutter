@@ -25,7 +25,7 @@ jobs:
           channel: stable
       - name: Build split apk
         run: |
-          mv -f pubspec.yaml assets/
+          \cp -f pubspec.yaml assets/
           ls assets
           flutter pub get
           flutter build -v apk --release
