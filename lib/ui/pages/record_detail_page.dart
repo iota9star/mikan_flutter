@@ -71,7 +71,7 @@ class RecordDetailPage extends StatelessWidget {
           size: 16.0,
         ),
         color: theme.backgroundColor,
-        minWidth: 28.0,
+        minWidth: 32.0,
         padding: EdgeInsets.zero,
         shape: circleShape,
       ),

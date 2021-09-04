@@ -21,7 +21,7 @@ class SelectSeasonFragment extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final indexModel = Provider.of<IndexModel>(context, listen: false);
     return Material(
-      color: theme.scaffoldBackgroundColor,
+      color: theme.backgroundColor,
       child: NotificationListener(
         onNotification: (notification) {
           if (notification is OverscrollIndicatorNotification) {
@@ -47,19 +47,7 @@ class SelectSeasonFragment extends StatelessWidget {
     final IndexModel indexModel,
   ) {
     return SliverPinnedToBoxAdapter(
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.backgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.024),
-              offset: Offset(0, 1),
-              blurRadius: 3.0,
-              spreadRadius: 3.0,
-            ),
-          ],
-          borderRadius: borderRadiusB16,
-        ),
+      child: Padding(
         padding: edge16,
         child: Row(
           children: <Widget>[
@@ -82,7 +70,7 @@ class SelectSeasonFragment extends StatelessWidget {
                 FluentIcons.chevron_right_24_regular,
                 size: 16.0,
               ),
-              minWidth: 28.0,
+              minWidth: 32.0,
               padding: EdgeInsets.zero,
               color: theme.scaffoldBackgroundColor,
               shape: circleShape,
@@ -147,7 +135,7 @@ class SelectSeasonFragment extends StatelessWidget {
     final IndexModel indexModel,
   ) {
     return SliverPadding(
-      padding: edgeHB16T8,
+      padding: edgeH16B24WithNavbarHeight,
       sliver: Selector<IndexModel, List<YearSeason>>(
         selector: (_, model) => model.years,
         shouldRebuild: (pre, next) => pre.ne(next),

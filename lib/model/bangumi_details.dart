@@ -1,3 +1,4 @@
+import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 
 class BangumiDetail {
@@ -8,6 +9,10 @@ class BangumiDetail {
   late Map<String, String> more;
   late String intro;
   late Map<String, SubgroupBangumi> subgroupBangumis;
+
+  String get shareString {
+    return "$name：${MikanUrl.BASE_URL}/${MikanUrl.BANGUMI}/$id";
+  }
 
   @override
   bool operator ==(Object other) =>

@@ -105,7 +105,7 @@ class FontsFragment extends StatelessWidget {
       child: Row(
         children: [
           MaterialButton(
-            minWidth: 28.0,
+            minWidth: 32.0,
             color: theme.backgroundColor,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: circleShape,
@@ -126,7 +126,7 @@ class FontsFragment extends StatelessWidget {
             ),
           ),
           MaterialButton(
-            minWidth: 28.0,
+            minWidth: 32.0,
             color: theme.backgroundColor,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: circleShape,

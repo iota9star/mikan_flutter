@@ -29,6 +29,7 @@ import 'ui/pages/subscribed_season_page.dart';
 FFRouteSettings getRouteSettings({
   required String name,
   Map<String, dynamic>? arguments,
+  Widget? notFoundWidget,
 }) {
   final Map<String, dynamic> safeArguments =
       arguments ?? const <String, dynamic>{};
@@ -142,6 +143,10 @@ FFRouteSettings getRouteSettings({
         routeName: '/subscribed-season',
       );
     default:
-      return const FFRouteSettings(name: '404', routeName: '404_page');
+      return FFRouteSettings(
+        name: '404',
+        routeName: '404_page',
+        widget: notFoundWidget,
+      );
   }
 }

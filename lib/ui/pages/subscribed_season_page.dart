@@ -207,7 +207,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                   );
                 },
                 color: theme.backgroundColor,
-                minWidth: 28.0,
+                minWidth: 32.0,
                 padding: EdgeInsets.zero,
                 shape: circleShape,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -250,7 +250,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                     size: 16.0,
                   ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  minWidth: 28.0,
+                  minWidth: 32.0,
                   padding: EdgeInsets.zero,
                   shape: circleShape,
                   color: hasScrolled

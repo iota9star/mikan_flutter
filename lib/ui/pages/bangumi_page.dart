@@ -100,7 +100,7 @@ class BangumiPage extends StatelessWidget {
                     ),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     color: theme.backgroundColor,
-                    minWidth: 28.0,
+                    minWidth: 32.0,
                     padding: EdgeInsets.zero,
                     shape: circleShape,
                   ),
@@ -465,6 +465,8 @@ class BangumiPage extends StatelessWidget {
   ) {
     final Color accentTextColor =
         theme.accentColor.isDark ? Colors.white : Colors.black;
+    final Color primaryTextColor =
+        theme.primaryColor.isDark ? Colors.white : Colors.black;
     return Stack(
       fit: StackFit.loose,
       children: [
@@ -498,6 +500,34 @@ class BangumiPage extends StatelessWidget {
               spacer,
               MaterialButton(
                 onPressed: () {
+                  model.bangumiDetail?.shareString.share();
+                },
+                child: Container(
+                  width: 42.0,
+                  height: 42.0,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.accentColor.withOpacity(0.78),
+                        theme.accentColor,
+                      ],
+                    ),
+                    borderRadius: borderRadius24,
+                  ),
+                  child: Icon(
+                    FluentIcons.share_24_regular,
+                    color: accentTextColor,
+                  ),
+                ),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minWidth: 0,
+                color: accentTextColor,
+                padding: EdgeInsets.zero,
+                shape: circleShape,
+              ),
+              sizedBoxW16,
+              MaterialButton(
+                onPressed: () {
                   model.changeSubscribe();
                 },
                 child: Container(
@@ -506,8 +536,8 @@ class BangumiPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        theme.accentColor.withOpacity(0.78),
-                        theme.accentColor,
+                        theme.primaryColor.withOpacity(0.78),
+                        theme.primaryColor,
                       ],
                     ),
                     borderRadius: borderRadius24,
@@ -521,16 +551,14 @@ class BangumiPage extends StatelessWidget {
                         subscribed
                             ? FluentIcons.heart_24_filled
                             : FluentIcons.heart_24_regular,
-                        color: theme.accentColor.isDark
-                            ? Colors.white
-                            : Colors.black,
+                        color: primaryTextColor,
                       );
                     },
                   ),
                 ),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 minWidth: 0,
-                color: accentTextColor,
+                color: primaryTextColor,
                 padding: EdgeInsets.zero,
                 shape: circleShape,
               ),

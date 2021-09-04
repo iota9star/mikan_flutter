@@ -373,8 +373,8 @@ class _IndexFragmentState extends State<IndexFragment> {
             FluentIcons.chevron_down_24_regular,
             size: 14.0,
           ),
-          minWidth: 24.0,
-          height: 24.0,
+          minWidth: 28.0,
+          height: 28.0,
           color: hasScrolled
               ? theme.scaffoldBackgroundColor
               : theme.backgroundColor,

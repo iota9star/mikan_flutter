@@ -116,6 +116,10 @@ class Routes {
   /// [name] : 'splash'
   ///
   /// [routeName] : '/splash'
+  ///
+  /// [constructors] :
+  ///
+  /// SplashPage : []
   static const String splash = 'splash';
 
   /// '/subgroup'

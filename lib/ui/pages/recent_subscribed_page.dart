@@ -146,7 +146,7 @@ class RecentSubscribedPage extends StatelessWidget {
                     FluentIcons.chevron_left_24_regular,
                     size: 16.0,
                   ),
-                  minWidth: 28.0,
+                  minWidth: 32.0,
                   padding: EdgeInsets.zero,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: circleShape,

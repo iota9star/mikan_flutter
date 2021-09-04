@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 
+const edgeH16V4 = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0);
 const edgeH16V8 = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
 const edgeHT16 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0);
 const edgeH16T4 = const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0);
@@ -79,6 +80,12 @@ final edgeH16T90B24WithStatusBar = EdgeInsets.only(
 
 final edgeHT16B24WithNavbarHeight = EdgeInsets.only(
   top: 16.0,
+  left: 16.0,
+  right: 16.0,
+  bottom: 24.0 + Screen.navBarHeight,
+);
+
+final edgeH16B24WithNavbarHeight = EdgeInsets.only(
   left: 16.0,
   right: 16.0,
   bottom: 24.0 + Screen.navBarHeight,
