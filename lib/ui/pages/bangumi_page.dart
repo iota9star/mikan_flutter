@@ -392,7 +392,7 @@ class BangumiPage extends StatelessWidget {
             textAlign: TextAlign.justify,
             softWrap: true,
             style: const TextStyle(
-              fontSize: 14.0,
+              fontSize: 15.0,
               height: 1.5,
             ),
           ),

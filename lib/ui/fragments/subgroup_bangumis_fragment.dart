@@ -147,6 +147,21 @@ class SubgroupBangumisFragment extends StatelessWidget {
       },
       child: Row(
         children: [
+          MaterialButton(
+            minWidth: 32.0,
+            color: theme.backgroundColor,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: circleShape,
+            padding: EdgeInsets.zero,
+            child: Icon(
+              FluentIcons.chevron_left_24_regular,
+              size: 16.0,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          sizedBoxW12,
           Expanded(
             child: Text(
               subgroupBangumi.name,
@@ -175,14 +190,6 @@ class SubgroupBangumisFragment extends StatelessWidget {
                 }
               },
             ),
-          IconButton(
-            padding: EdgeInsets.zero,
-            tooltip: "返回上一页",
-            icon: Icon(FluentIcons.dismiss_24_regular),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
         ],
       ),
     );
