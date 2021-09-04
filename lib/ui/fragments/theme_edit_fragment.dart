@@ -1,6 +1,6 @@
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/theme_edit_model.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
@@ -18,7 +18,7 @@ class ThemeEditFragment extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => ThemeEditModel(this.themeItem, context.read<ThemeModel>()),
       child: Material(
-        color: theme.scaffoldBackgroundColor,
+        color: theme.backgroundColor,
         child: _buildThemeFactoryWrapper(theme),
       ),
     );
@@ -33,289 +33,307 @@ class ThemeEditFragment extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildHeader(context, theme, model),
-            sizedBoxH12,
-            MaterialButton(
-              onPressed: () {},
-              padding: edgeL16R8,
-              height: 56.0,
-              child: Row(
+            Container(
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+                borderRadius: borderRadiusT16,
+              ),
+              child: Column(
                 children: [
-                  Expanded(
-                    child: Text(
-                      "跟随系统",
-                      style: textStyle16,
+                  MaterialButton(
+                    onPressed: () {},
+                    padding: edgeL16R8,
+                    height: 56.0,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "跟随系统",
+                            style: textStyle16,
+                          ),
+                        ),
+                        Switch(
+                          value: themeItem.autoMode,
+                          activeColor: theme.accentColor,
+                          onChanged: (value) {
+                            model.themeItem.autoMode = value;
+                            model.notifyListeners();
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  Switch(
-                    value: themeItem.autoMode,
-                    activeColor: theme.accentColor,
-                    onChanged: (value) {
-                      model.themeItem.autoMode = value;
-                      model.notifyListeners();
-                    },
-                  ),
-                ],
-              ),
-            ),
-            if (!themeItem.autoMode)
-              MaterialButton(
-                onPressed: () {},
-                padding: edgeL16R8,
-                height: 56.0,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "暗色模式",
-                        style: textStyle16,
+                  if (!themeItem.autoMode)
+                    MaterialButton(
+                      onPressed: () {},
+                      padding: edgeL16R8,
+                      height: 56.0,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "暗色模式",
+                              style: textStyle16,
+                            ),
+                          ),
+                          Switch(
+                            value: themeItem.isDark,
+                            activeColor: theme.accentColor,
+                            onChanged: (value) {
+                              model.themeItem.isDark = value;
+                              model.notifyListeners();
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                    Switch(
-                      value: themeItem.isDark,
-                      activeColor: theme.accentColor,
-                      onChanged: (value) {
-                        model.themeItem.isDark = value;
-                        model.notifyListeners();
+                  MaterialButton(
+                    onPressed: () {
+                      _showColorPicker(
+                        context,
+                        theme,
+                        Color(themeItem.primaryColor),
+                        (color) {
+                          themeItem.primaryColor = color.value;
+                          model.notifyListeners();
+                        },
+                      );
+                    },
+                    padding: edgeH16,
+                    height: 56.0,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "主色调",
+                            style: textStyle16,
+                          ),
+                        ),
+                        Container(
+                          width: 24.0,
+                          height: 24.0,
+                          decoration: BoxDecoration(
+                            color: Color(themeItem.primaryColor),
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 4.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      _showColorPicker(
+                        context,
+                        theme,
+                        Color(themeItem.accentColor),
+                        (color) {
+                          themeItem.accentColor = color.value;
+                          model.notifyListeners();
+                        },
+                      );
+                    },
+                    padding: edgeH16,
+                    height: 56.0,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "强调色",
+                            style: textStyle16,
+                          ),
+                        ),
+                        Container(
+                          width: 24.0,
+                          height: 24.0,
+                          decoration: BoxDecoration(
+                            color: Color(themeItem.accentColor),
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 4.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (themeItem.autoMode || !themeItem.isDark)
+                    MaterialButton(
+                      onPressed: () {
+                        _showColorPicker(
+                          context,
+                          theme,
+                          Color(themeItem.lightScaffoldBackgroundColor),
+                          (color) {
+                            themeItem.lightScaffoldBackgroundColor =
+                                color.value;
+                            model.notifyListeners();
+                          },
+                        );
                       },
+                      padding: edgeH16,
+                      height: 56.0,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "背景色",
+                              style: textStyle16,
+                            ),
+                          ),
+                          Container(
+                            width: 24.0,
+                            height: 24.0,
+                            decoration: BoxDecoration(
+                              color:
+                                  Color(themeItem.lightScaffoldBackgroundColor),
+                              borderRadius: BorderRadius.circular(12.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 4.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            MaterialButton(
-              onPressed: () {
-                _showColorPicker(
-                  context,
-                  Color(themeItem.primaryColor),
-                  (color) {
-                    themeItem.primaryColor = color.value;
-                    model.notifyListeners();
-                  },
-                );
-              },
-              padding: edgeH16,
-              height: 56.0,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "主色调",
-                      style: textStyle16,
+                  if (themeItem.autoMode || !themeItem.isDark)
+                    MaterialButton(
+                      onPressed: () {
+                        _showColorPicker(
+                          context,
+                          theme,
+                          Color(themeItem.lightBackgroundColor),
+                          (color) {
+                            themeItem.lightBackgroundColor = color.value;
+                            model.notifyListeners();
+                          },
+                        );
+                      },
+                      padding: edgeH16,
+                      height: 56.0,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "前景色",
+                              style: textStyle16,
+                            ),
+                          ),
+                          Container(
+                            width: 24.0,
+                            height: 24.0,
+                            decoration: BoxDecoration(
+                              color: Color(themeItem.lightBackgroundColor),
+                              borderRadius: BorderRadius.circular(12.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 4.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    width: 24.0,
-                    height: 24.0,
-                    decoration: BoxDecoration(
-                      color: Color(themeItem.primaryColor),
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 4.0,
-                        ),
-                      ],
+                  if (themeItem.autoMode || themeItem.isDark)
+                    MaterialButton(
+                      onPressed: () {
+                        _showColorPicker(
+                          context,
+                          theme,
+                          Color(themeItem.darkScaffoldBackgroundColor),
+                          (color) {
+                            themeItem.darkScaffoldBackgroundColor = color.value;
+                            model.notifyListeners();
+                          },
+                        );
+                      },
+                      padding: edgeH16,
+                      height: 56.0,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "背景色 暗色",
+                              style: textStyle16,
+                            ),
+                          ),
+                          Container(
+                            width: 24.0,
+                            height: 24.0,
+                            decoration: BoxDecoration(
+                              color:
+                                  Color(themeItem.darkScaffoldBackgroundColor),
+                              borderRadius: BorderRadius.circular(12.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 4.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                  if (themeItem.autoMode || themeItem.isDark)
+                    MaterialButton(
+                      onPressed: () {
+                        _showColorPicker(
+                          context,
+                          theme,
+                          Color(themeItem.darkBackgroundColor),
+                          (color) {
+                            themeItem.darkBackgroundColor = color.value;
+                            model.notifyListeners();
+                          },
+                        );
+                      },
+                      padding: edgeH16,
+                      height: 56.0,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "前景色 暗色",
+                              style: textStyle16,
+                            ),
+                          ),
+                          Container(
+                            width: 24.0,
+                            height: 24.0,
+                            decoration: BoxDecoration(
+                              color: Color(themeItem.darkBackgroundColor),
+                              borderRadius: BorderRadius.circular(12.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 4.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  SizedBox(
+                    height: 12.0,
                   ),
                 ],
               ),
-            ),
-            MaterialButton(
-              onPressed: () {
-                _showColorPicker(
-                  context,
-                  Color(themeItem.accentColor),
-                  (color) {
-                    themeItem.accentColor = color.value;
-                    model.notifyListeners();
-                  },
-                );
-              },
-              padding: edgeH16,
-              height: 56.0,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "强调色",
-                      style: textStyle16,
-                    ),
-                  ),
-                  Container(
-                    width: 24.0,
-                    height: 24.0,
-                    decoration: BoxDecoration(
-                      color: Color(themeItem.accentColor),
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 4.0,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (themeItem.autoMode || !themeItem.isDark)
-              MaterialButton(
-                onPressed: () {
-                  _showColorPicker(
-                    context,
-                    Color(themeItem.lightScaffoldBackgroundColor),
-                    (color) {
-                      themeItem.lightScaffoldBackgroundColor = color.value;
-                      model.notifyListeners();
-                    },
-                  );
-                },
-                padding: edgeH16,
-                height: 56.0,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "背景色",
-                        style: textStyle16,
-                      ),
-                    ),
-                    Container(
-                      width: 24.0,
-                      height: 24.0,
-                      decoration: BoxDecoration(
-                        color: Color(themeItem.lightScaffoldBackgroundColor),
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 4.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            if (themeItem.autoMode || !themeItem.isDark)
-              MaterialButton(
-                onPressed: () {
-                  _showColorPicker(
-                    context,
-                    Color(themeItem.lightBackgroundColor),
-                    (color) {
-                      themeItem.lightBackgroundColor = color.value;
-                      model.notifyListeners();
-                    },
-                  );
-                },
-                padding: edgeH16,
-                height: 56.0,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "前景色",
-                        style: textStyle16,
-                      ),
-                    ),
-                    Container(
-                      width: 24.0,
-                      height: 24.0,
-                      decoration: BoxDecoration(
-                        color: Color(themeItem.lightBackgroundColor),
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 4.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            if (themeItem.autoMode || themeItem.isDark)
-              MaterialButton(
-                onPressed: () {
-                  _showColorPicker(
-                    context,
-                    Color(themeItem.darkScaffoldBackgroundColor),
-                    (color) {
-                      themeItem.darkScaffoldBackgroundColor = color.value;
-                      model.notifyListeners();
-                    },
-                  );
-                },
-                padding: edgeH16,
-                height: 56.0,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "背景色 暗色",
-                        style: textStyle16,
-                      ),
-                    ),
-                    Container(
-                      width: 24.0,
-                      height: 24.0,
-                      decoration: BoxDecoration(
-                        color: Color(themeItem.darkScaffoldBackgroundColor),
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 4.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            if (themeItem.autoMode || themeItem.isDark)
-              MaterialButton(
-                onPressed: () {
-                  _showColorPicker(
-                    context,
-                    Color(themeItem.darkBackgroundColor),
-                    (color) {
-                      themeItem.darkBackgroundColor = color.value;
-                      model.notifyListeners();
-                    },
-                  );
-                },
-                padding: edgeH16,
-                height: 56.0,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "前景色 暗色",
-                        style: textStyle16,
-                      ),
-                    ),
-                    Container(
-                      width: 24.0,
-                      height: 24.0,
-                      decoration: BoxDecoration(
-                        color: Color(themeItem.darkBackgroundColor),
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 4.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            SizedBox(
-              height: 12.0,
-            ),
+            )
           ],
         );
       },
@@ -324,6 +342,7 @@ class ThemeEditFragment extends StatelessWidget {
 
   _showColorPicker(
     final BuildContext context,
+    final ThemeData theme,
     final Color color,
     final ValueChanged<Color> onColorChanged,
   ) {
@@ -336,32 +355,32 @@ class ThemeEditFragment extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: borderRadius16,
           ),
+          backgroundColor: theme.backgroundColor,
           content: SingleChildScrollView(
-            // child: ColorPicker(
-            //   pickerColor: color,
-            //   onColorChanged: onColorChanged,
-            //   colorPickerWidth: 300.0,
-            //   pickerAreaHeightPercent: 0.7,
-            //   enableAlpha: true,
-            //   displayThumbColor: true,
-            //   showLabel: true,
-            //   paletteType: PaletteType.hsv,
-            //   pickerAreaBorderRadius: const BorderRadius.only(
-            //     topLeft: const Radius.circular(2.0),
-            //     topRight: const Radius.circular(2.0),
-            //   ),
-            // ),
-            child: SlidePicker(
-              pickerColor: color,
-              onColorChanged: onColorChanged,
-              paletteType: PaletteType.rgb,
-              enableAlpha: false,
-              displayThumbColor: false,
-              showLabel: false,
-              showIndicator: true,
-              indicatorBorderRadius: const BorderRadius.vertical(
-                top: radius16,
+            child: ColorPicker(
+              color: color,
+              onColorChangeEnd: onColorChanged,
+              pickersEnabled: {
+                ColorPickerType.primary: true,
+                ColorPickerType.accent: true,
+                ColorPickerType.bw: true,
+                ColorPickerType.wheel: true,
+              },
+              pickerTypeLabels: {
+                ColorPickerType.primary: "主色调",
+                ColorPickerType.accent: "强调色",
+                ColorPickerType.bw: "黑&白",
+                ColorPickerType.wheel: "自定义",
+              },
+              pickerTypeTextStyle: textStyle15B500,
+              selectedPickerTypeColor: theme.scaffoldBackgroundColor,
+              enableOpacity: true,
+              title: Text(
+                "请选择",
+                style: textStyle20B,
               ),
+              enableTooltips: true,
+              onColorChanged: (Color value) {},
             ),
           ),
         );
@@ -374,19 +393,7 @@ class ThemeEditFragment extends StatelessWidget {
     final ThemeData theme,
     final ThemeEditModel themeEditModel,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.backgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.024),
-            offset: Offset(0, 1),
-            blurRadius: 3.0,
-            spreadRadius: 3.0,
-          ),
-        ],
-        borderRadius: borderRadiusB16,
-      ),
+    return Padding(
       padding: edge16,
       child: Row(
         children: <Widget>[
@@ -407,7 +414,7 @@ class ThemeEditFragment extends StatelessWidget {
               FluentIcons.save_24_regular,
               size: 16.0,
             ),
-            minWidth: 28.0,
+            minWidth: 32.0,
             padding: EdgeInsets.zero,
             color: theme.scaffoldBackgroundColor,
             shape: circleShape,
