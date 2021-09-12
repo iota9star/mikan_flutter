@@ -182,7 +182,7 @@ class RecordDetailPage extends StatelessWidget {
             Text(
               recordDetail.name,
               style: TextStyle(
-                color: theme.accentColor,
+                color: theme.secondary,
                 fontWeight: FontWeight.bold,
                 fontSize: 20.0,
               ),
@@ -224,8 +224,8 @@ class RecordDetailPage extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          theme.primaryColor,
-                          theme.primaryColor.withOpacity(0.56),
+                          theme.primary,
+                          theme.primary.withOpacity(0.56),
                         ],
                       ),
                       borderRadius: borderRadius2,
@@ -235,9 +235,8 @@ class RecordDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 10,
                         height: 1.25,
-                        color: theme.primaryColor.isDark
-                            ? Colors.white
-                            : Colors.black,
+                        color:
+                            theme.primary.isDark ? Colors.white : Colors.black,
                       ),
                     ),
                   );
@@ -273,9 +272,9 @@ class RecordDetailPage extends StatelessWidget {
     final RecordDetail detail,
   ) {
     final Color accentTextColor =
-        theme.accentColor.isDark ? Colors.white : Colors.black;
+        theme.secondary.isDark ? Colors.white : Colors.black;
     final Color primaryTextColor =
-        theme.primaryColor.isDark ? Colors.white : Colors.black;
+        theme.primary.isDark ? Colors.white : Colors.black;
     return Column(
       children: [
         Stack(
@@ -319,8 +318,8 @@ class RecordDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            theme.accentColor.withOpacity(0.78),
-                            theme.accentColor,
+                            theme.secondary.withOpacity(0.78),
+                            theme.secondary,
                           ],
                         ),
                         borderRadius: borderRadius24,
@@ -347,8 +346,8 @@ class RecordDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            theme.primaryColor.withOpacity(0.78),
-                            theme.primaryColor,
+                            theme.primary.withOpacity(0.78),
+                            theme.primary,
                           ],
                         ),
                         borderRadius: borderRadius24,

@@ -14,6 +14,7 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/recent_subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -55,24 +56,26 @@ class RecentSubscribedPage extends StatelessWidget {
               child: SmartRefresher(
                 controller: model.refreshController,
                 header: WaterDropMaterialHeader(
-                  backgroundColor: theme.accentColor,
-                  color: theme.accentColor.isDark ? Colors.white : Colors.black,
+                  backgroundColor: theme.secondary,
+                  color: theme.secondary.isDark ? Colors.white : Colors.black,
                   distance: Screen.statusBarHeight + 42.0,
                 ),
                 footer: Indicator.footer(
                   context,
-                  theme.accentColor,
+                  theme.secondary,
                   bottom: 16.0,
                 ),
                 enablePullDown: true,
                 enablePullUp: true,
                 onRefresh: model.refresh,
                 onLoading: model.loadMore,
-                child: CustomScrollView(
-                  slivers: [
-                    _buildHeader(theme),
-                    _buildList(theme),
-                  ],
+                child: NormalScrollConfiguration(
+                  child: CustomScrollView(
+                    slivers: [
+                      _buildHeader(theme),
+                      _buildList(theme),
+                    ],
+                  ),
                 ),
               ),
             ),

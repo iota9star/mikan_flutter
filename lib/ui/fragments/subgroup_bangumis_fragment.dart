@@ -12,6 +12,7 @@ import 'package:mikan_flutter/providers/bangumi_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -88,33 +89,35 @@ class SubgroupBangumisFragment extends StatelessWidget {
             onLoading: () => bangumiModel.loadSubgroupList(this.dataId),
             footer: Indicator.footer(
               context,
-              theme.accentColor,
+              theme.secondary,
               bottom: 16.0,
             ),
-            child: GridView.builder(
-              padding: edgeH16V8,
-              controller: ModalScrollController.of(context),
-              itemCount: records.length,
-              itemBuilder: (context, ind) {
-                final RecordItem record = records[ind];
-                return SimpleRecordItem(
-                  index: ind,
-                  theme: theme,
-                  record: record,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.recordDetail.name,
-                      arguments: Routes.recordDetail.d(url: record.url),
-                    );
-                  },
-                );
-              },
-              gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-                minCrossAxisExtent: 360.0,
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 16.0,
-                mainAxisExtent: 150.0,
+            child: NormalScrollConfiguration(
+              child: GridView.builder(
+                padding: edgeH16V8,
+                controller: ModalScrollController.of(context),
+                itemCount: records.length,
+                itemBuilder: (context, ind) {
+                  final RecordItem record = records[ind];
+                  return SimpleRecordItem(
+                    index: ind,
+                    theme: theme,
+                    record: record,
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        Routes.recordDetail.name,
+                        arguments: Routes.recordDetail.d(url: record.url),
+                      );
+                    },
+                  );
+                },
+                gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+                  minCrossAxisExtent: 360.0,
+                  mainAxisSpacing: 16.0,
+                  crossAxisSpacing: 16.0,
+                  mainAxisExtent: 150.0,
+                ),
               ),
             ),
           );

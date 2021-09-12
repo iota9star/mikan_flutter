@@ -96,7 +96,7 @@ class RegisterPage extends StatelessWidget {
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, loading, __) {
-        final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
+        final Color btnColor = loading ? theme.primary : theme.secondary;
         final Color iconColor = btnColor.isDark ? Colors.white : Colors.black;
         return ElevatedButton(
           onPressed: () {
@@ -150,7 +150,7 @@ class RegisterPage extends StatelessWidget {
   ) {
     return TextFormField(
       controller: registerModel.userNameController,
-      cursorColor: theme.accentColor,
+      cursorColor: theme.secondary,
       decoration: InputDecoration(
         isDense: true,
         border: InputBorder.none,
@@ -159,7 +159,7 @@ class RegisterPage extends StatelessWidget {
         hintStyle: TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.person_24_regular,
-          color: theme.accentColor,
+          color: theme.secondary,
         ),
       ),
       validator: (value) {
@@ -176,7 +176,7 @@ class RegisterPage extends StatelessWidget {
   ) {
     return TextFormField(
       controller: registerModel.emailController,
-      cursorColor: theme.accentColor,
+      cursorColor: theme.secondary,
       decoration: InputDecoration(
         isDense: true,
         border: InputBorder.none,
@@ -185,7 +185,7 @@ class RegisterPage extends StatelessWidget {
         hintStyle: TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.mail_24_regular,
-          color: theme.accentColor,
+          color: theme.secondary,
         ),
       ),
       validator: (value) {
@@ -204,7 +204,7 @@ class RegisterPage extends StatelessWidget {
   ) {
     return TextFormField(
       controller: registerModel.qqController,
-      cursorColor: theme.accentColor,
+      cursorColor: theme.secondary,
       decoration: InputDecoration(
         isDense: true,
         border: InputBorder.none,
@@ -213,7 +213,7 @@ class RegisterPage extends StatelessWidget {
         hintStyle: TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.emoji_surprise_24_regular,
-          color: theme.accentColor,
+          color: theme.secondary,
         ),
       ),
       validator: (value) {
@@ -240,7 +240,7 @@ class RegisterPage extends StatelessWidget {
       builder: (_, showPassword, __) {
         return TextFormField(
           obscureText: !showPassword,
-          cursorColor: theme.accentColor,
+          cursorColor: theme.secondary,
           controller: registerModel.passwordController,
           decoration: InputDecoration(
             isDense: true,
@@ -250,17 +250,17 @@ class RegisterPage extends StatelessWidget {
             hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
               FluentIcons.password_24_regular,
-              color: theme.accentColor,
+              color: theme.secondary,
             ),
             suffixIcon: IconButton(
               icon: showPassword
                   ? Icon(
                       FluentIcons.eye_show_24_regular,
-                      color: theme.accentColor,
+                      color: theme.secondary,
                     )
                   : Icon(
                       FluentIcons.eye_show_24_filled,
-                      color: theme.accentColor,
+                      color: theme.secondary,
                     ),
               onPressed: () {
                 registerModel.showPassword = !showPassword;
@@ -289,7 +289,7 @@ class RegisterPage extends StatelessWidget {
       builder: (_, showPassword, __) {
         return TextFormField(
           obscureText: !showPassword,
-          cursorColor: theme.accentColor,
+          cursorColor: theme.secondary,
           controller: registerModel.confirmPasswordController,
           decoration: InputDecoration(
             isDense: true,
@@ -299,17 +299,17 @@ class RegisterPage extends StatelessWidget {
             hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
               FluentIcons.key_multiple_20_regular,
-              color: theme.accentColor,
+              color: theme.secondary,
             ),
             suffixIcon: IconButton(
               icon: showPassword
                   ? Icon(
                       FluentIcons.eye_show_24_regular,
-                      color: theme.accentColor,
+                      color: theme.secondary,
                     )
                   : Icon(
                       FluentIcons.eye_show_24_filled,
-                      color: theme.accentColor,
+                      color: theme.secondary,
                     ),
               onPressed: () {
                 registerModel.showPassword = !showPassword;

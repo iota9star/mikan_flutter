@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -39,7 +40,7 @@ main() async {
   if (!isMobile) {
     doWhenWindowReady(() {
       appWindow.minSize = const Size(400, 640);
-      appWindow.size = const Size(1280, 720);
+      appWindow.size = const Size(640, 720);
       appWindow.alignment = Alignment.center;
       appWindow.title = "蜜柑计划";
       appWindow.show();

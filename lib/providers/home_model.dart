@@ -81,7 +81,7 @@ class HomeModel extends BaseModel {
     final Color backgroundColor = theme.backgroundColor;
     final Color scaffoldBackgroundColor = theme.scaffoldBackgroundColor;
     final Color accentTextColor =
-        theme.accentColor.isDark ? Colors.white : Colors.black;
+        theme.secondary.isDark ? Colors.white : Colors.black;
     final TextStyle accentTagStyle = textStyle10WithColor(accentTextColor);
     return Material(
       color: Colors.transparent,
@@ -125,8 +125,8 @@ class HomeModel extends BaseModel {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                theme.accentColor,
-                                theme.accentColor.withOpacity(0.56),
+                                theme.secondary,
+                                theme.secondary.withOpacity(0.56),
                               ],
                             ),
                             borderRadius: borderRadius2,
@@ -185,7 +185,7 @@ class HomeModel extends BaseModel {
                             FluentIcons.arrow_download_24_regular,
                             size: 14.0,
                           ),
-                          color: theme.accentColor,
+                          color: theme.secondary,
                           minWidth: 32.0,
                           height: 20.0,
                           padding: EdgeInsets.zero,
@@ -205,8 +205,8 @@ class HomeModel extends BaseModel {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                theme.primaryColor,
-                                theme.primaryColor.withOpacity(0.56),
+                                theme.primary,
+                                theme.primary.withOpacity(0.56),
                               ],
                             ),
                             borderRadius: borderRadius2,

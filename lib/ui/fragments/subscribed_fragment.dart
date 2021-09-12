@@ -21,6 +21,7 @@ import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -52,41 +53,43 @@ class SubscribedFragment extends StatelessWidget {
           },
           child: SmartRefresher(
             header: WaterDropMaterialHeader(
-              backgroundColor: theme.accentColor,
-              color: theme.accentColor.isDark ? Colors.white : Colors.black,
+              backgroundColor: theme.secondary,
+              color: theme.secondary.isDark ? Colors.white : Colors.black,
               distance: Screen.statusBarHeight + 42.0,
             ),
             controller: subscribedModel.refreshController,
             enablePullDown: true,
             enablePullUp: false,
             onRefresh: subscribedModel.refresh,
-            child: CustomScrollView(
-              slivers: [
-                _buildHeader(theme),
-                MultiSliver(
-                  pushPinnedChildren: true,
-                  children: [
-                    _buildRssSection(context, theme),
-                    _buildRssList(theme, subscribedModel),
-                  ],
-                ),
-                MultiSliver(
-                  pushPinnedChildren: true,
-                  children: [
-                    _buildSeasonRssSection(theme, subscribedModel),
-                    _buildSeasonRssList(theme, subscribedModel),
-                  ],
-                ),
-                MultiSliver(
-                  pushPinnedChildren: true,
-                  children: [
-                    _buildRssRecordsSection(context, theme),
-                    _buildRssRecordsList(theme),
-                  ],
-                ),
-                _buildSeeMore(theme, subscribedModel),
-                sliverSizedBoxH80,
-              ],
+            child: NormalScrollConfiguration(
+              child: CustomScrollView(
+                slivers: [
+                  _buildHeader(theme),
+                  MultiSliver(
+                    pushPinnedChildren: true,
+                    children: [
+                      _buildRssSection(context, theme),
+                      _buildRssList(theme, subscribedModel),
+                    ],
+                  ),
+                  MultiSliver(
+                    pushPinnedChildren: true,
+                    children: [
+                      _buildSeasonRssSection(theme, subscribedModel),
+                      _buildSeasonRssList(theme, subscribedModel),
+                    ],
+                  ),
+                  MultiSliver(
+                    pushPinnedChildren: true,
+                    children: [
+                      _buildRssRecordsSection(context, theme),
+                      _buildRssRecordsList(theme),
+                    ],
+                  ),
+                  _buildSeeMore(theme, subscribedModel),
+                  sliverSizedBoxH80,
+                ],
+              ),
             ),
           ),
         ),
@@ -605,9 +608,9 @@ class SubscribedFragment extends StatelessWidget {
               },
               style: TextButton.styleFrom(
                 textStyle: TextStyle(
-                  color: theme.accentColor,
+                  color: theme.secondary,
                 ),
-                shadowColor: theme.accentColor.withOpacity(0.87),
+                shadowColor: theme.secondary.withOpacity(0.87),
               ),
               child: Text(
                 "- _ - _ -  查看更多  - _ - _ -",

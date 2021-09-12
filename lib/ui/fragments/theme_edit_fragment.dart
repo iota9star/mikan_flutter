@@ -1,6 +1,7 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/theme_edit_model.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
@@ -54,7 +55,7 @@ class ThemeEditFragment extends StatelessWidget {
                         ),
                         Switch(
                           value: themeItem.autoMode,
-                          activeColor: theme.accentColor,
+                          activeColor: theme.secondary,
                           onChanged: (value) {
                             model.themeItem.autoMode = value;
                             model.notifyListeners();
@@ -78,7 +79,7 @@ class ThemeEditFragment extends StatelessWidget {
                           ),
                           Switch(
                             value: themeItem.isDark,
-                            activeColor: theme.accentColor,
+                            activeColor: theme.secondary,
                             onChanged: (value) {
                               model.themeItem.isDark = value;
                               model.notifyListeners();

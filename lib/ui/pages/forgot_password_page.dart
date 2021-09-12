@@ -84,7 +84,7 @@ class ForgotPasswordPage extends StatelessWidget {
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, loading, __) {
-        final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
+        final Color btnColor = loading ? theme.primary : theme.secondary;
         final Color iconColor = btnColor.isDark ? Colors.white : Colors.black;
         return ElevatedButton(
           onPressed: () {
@@ -133,7 +133,7 @@ class ForgotPasswordPage extends StatelessWidget {
   ) {
     return TextFormField(
       controller: model.emailController,
-      cursorColor: theme.accentColor,
+      cursorColor: theme.secondary,
       decoration: InputDecoration(
         border: InputBorder.none,
         labelText: '您的邮箱',
@@ -141,7 +141,7 @@ class ForgotPasswordPage extends StatelessWidget {
         hintStyle: TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.mail_24_regular,
-          color: theme.accentColor,
+          color: theme.secondary,
         ),
       ),
       validator: (value) {

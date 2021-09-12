@@ -24,6 +24,7 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -70,50 +71,52 @@ class _IndexFragmentState extends State<IndexFragment> {
               enablePullUp: false,
               enablePullDown: true,
               header: WaterDropMaterialHeader(
-                backgroundColor: theme.accentColor,
-                color: theme.accentColor.isDark ? Colors.white : Colors.black,
+                backgroundColor: theme.secondary,
+                color: theme.secondary.isDark ? Colors.white : Colors.black,
                 distance: Screen.statusBarHeight + 42.0,
               ),
               onRefresh: indexModel.refresh,
-              child: CustomScrollView(
-                slivers: [
-                  _buildHeader(context, theme),
-                  _buildCarousels(theme),
-                  _buildOVASection(),
-                  _buildOVAList(theme),
-                  ...List.generate(
-                    bangumiRows.length,
-                    (index) {
-                      final BangumiRow bangumiRow = bangumiRows[index];
-                      return MultiSliver(
-                        pushPinnedChildren: true,
-                        children: [
-                          _buildWeekSection(theme, bangumiRow),
-                          BangumiSliverGridFragment(
-                            padding: edgeHB16T4,
-                            bangumis: bangumiRow.bangumis,
-                            handleSubscribe: (bangumi, flag) {
-                              context.read<OpModel>().subscribeBangumi(
-                                bangumi.id,
-                                bangumi.subscribed,
-                                onSuccess: () {
-                                  bangumi.subscribed = !bangumi.subscribed;
-                                  context
-                                      .read<OpModel>()
-                                      .subscribeChanged(flag);
-                                },
-                                onError: (msg) {
-                                  "订阅失败：$msg".toast();
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  sliverSizedBoxH80,
-                ],
+              child: NormalScrollConfiguration(
+                child: CustomScrollView(
+                  slivers: [
+                    _buildHeader(context, theme),
+                    _buildCarousels(theme),
+                    _buildOVASection(),
+                    _buildOVAList(theme),
+                    ...List.generate(
+                      bangumiRows.length,
+                      (index) {
+                        final BangumiRow bangumiRow = bangumiRows[index];
+                        return MultiSliver(
+                          pushPinnedChildren: true,
+                          children: [
+                            _buildWeekSection(theme, bangumiRow),
+                            BangumiSliverGridFragment(
+                              padding: edgeHB16T4,
+                              bangumis: bangumiRow.bangumis,
+                              handleSubscribe: (bangumi, flag) {
+                                context.read<OpModel>().subscribeBangumi(
+                                  bangumi.id,
+                                  bangumi.subscribed,
+                                  onSuccess: () {
+                                    bangumi.subscribed = !bangumi.subscribed;
+                                    context
+                                        .read<OpModel>()
+                                        .subscribeChanged(flag);
+                                  },
+                                  onError: (msg) {
+                                    "订阅失败：$msg".toast();
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    sliverSizedBoxH80,
+                  ],
+                ),
               ),
             );
           },

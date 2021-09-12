@@ -9,6 +9,7 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -29,13 +30,15 @@ class SelectSeasonFragment extends StatelessWidget {
           }
           return true;
         },
-        child: CustomScrollView(
-          shrinkWrap: true,
-          controller: ModalScrollController.of(context),
-          slivers: [
-            _buildHeader(context, theme, indexModel),
-            _buildSeasonItemList(theme, indexModel),
-          ],
+        child: NormalScrollConfiguration(
+          child: CustomScrollView(
+            shrinkWrap: true,
+            controller: ModalScrollController.of(context),
+            slivers: [
+              _buildHeader(context, theme, indexModel),
+              _buildSeasonItemList(theme, indexModel),
+            ],
+          ),
         ),
       ),
     );
@@ -96,8 +99,8 @@ class SelectSeasonFragment extends StatelessWidget {
             shouldRebuild: (pre, next) => pre != next,
             builder: (context, selectedSeason, _) {
               final Color color = season.title == selectedSeason?.title
-                  ? theme.primaryColor
-                  : theme.accentColor;
+                  ? theme.primary
+                  : theme.secondary;
               return Tooltip(
                 message: season.title,
                 child: MaterialButton(

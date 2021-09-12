@@ -26,10 +26,10 @@ class NormalRecordItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Subgroup> subgroups = record.groups;
     final TextStyle accentTagStyle = textStyle10WithColor(
-      theme.accentColor.isDark ? Colors.white : Colors.black,
+      theme.secondary.isDark ? Colors.white : Colors.black,
     );
     final TextStyle primaryTagStyle = textStyle10WithColor(
-      theme.primaryColor.isDark ? Colors.white : Colors.black,
+      theme.primary.isDark ? Colors.white : Colors.black,
     );
     return TapScaleContainer(
       onTap: onTap,
@@ -81,8 +81,8 @@ class NormalRecordItem extends StatelessWidget {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            theme.accentColor,
-                            theme.accentColor.withOpacity(0.56),
+                            theme.secondary,
+                            theme.secondary.withOpacity(0.56),
                           ],
                         ),
                         borderRadius: borderRadius2,
@@ -102,8 +102,8 @@ class NormalRecordItem extends StatelessWidget {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              theme.primaryColor,
-                              theme.primaryColor.withOpacity(0.56),
+                              theme.primary,
+                              theme.primary.withOpacity(0.56),
                             ],
                           ),
                           borderRadius: borderRadius2,
@@ -147,7 +147,7 @@ class NormalRecordItem extends StatelessWidget {
                               subgroups[index].name[0],
                               style: TextStyle(
                                 fontSize: 12.0,
-                                color: theme.primaryColor.isDark
+                                color: theme.primary.isDark
                                     ? Colors.white
                                     : Colors.black,
                               ),
@@ -159,8 +159,8 @@ class NormalRecordItem extends StatelessWidget {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                theme.primaryColor,
-                                theme.primaryColor.withOpacity(0.56),
+                                theme.primary,
+                                theme.primary.withOpacity(0.56),
                               ],
                             ),
                           ),
@@ -173,7 +173,7 @@ class NormalRecordItem extends StatelessWidget {
               IconButton(
                 icon: Icon(FluentIcons.cloud_download_24_regular),
                 tooltip: "复制并尝试打开种子链接",
-                color: theme.accentColor,
+                color: theme.secondary,
                 iconSize: 20.0,
                 onPressed: () {
                   record.torrent.launchAppAndCopy();
@@ -181,7 +181,7 @@ class NormalRecordItem extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(FluentIcons.clipboard_link_24_regular),
-                color: theme.accentColor,
+                color: theme.secondary,
                 tooltip: "复制并尝试打开磁力链接",
                 iconSize: 20.0,
                 onPressed: () {
@@ -190,7 +190,7 @@ class NormalRecordItem extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(FluentIcons.share_24_regular),
-                color: theme.accentColor,
+                color: theme.secondary,
                 tooltip: "分享",
                 iconSize: 20.0,
                 onPressed: () {

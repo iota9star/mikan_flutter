@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -298,3 +300,13 @@ final controlButtonActions = [
   () => appWindow.maximizeOrRestore(),
   () => appWindow.close(),
 ];
+
+final normalScrollBehavior = const ScrollBehavior().copyWith(
+  scrollbars: false,
+  dragDevices: {
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.touch,
+  },
+  physics: const BouncingScrollPhysics(),
+  platform: TargetPlatform.iOS,
+);

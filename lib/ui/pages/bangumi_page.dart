@@ -204,7 +204,7 @@ class BangumiPage extends StatelessWidget {
                   child: Text(
                     e.name,
                     style: TextStyle(
-                      color: theme.accentColor,
+                      color: theme.secondary,
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                       height: 1.25,
@@ -218,7 +218,7 @@ class BangumiPage extends StatelessWidget {
                     child: Icon(
                       FluentIcons.chevron_right_24_regular,
                       size: 20.0,
-                      color: theme.accentColor,
+                      color: theme.secondary,
                     ),
                     style: TextButton.styleFrom(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -276,7 +276,7 @@ class BangumiPage extends StatelessWidget {
                               child: Icon(
                                 FluentIcons.cloud_download_24_regular,
                                 size: 20.0,
-                                color: theme.accentColor,
+                                color: theme.secondary,
                               ),
                               style: TextButton.styleFrom(
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -295,7 +295,7 @@ class BangumiPage extends StatelessWidget {
                               child: Icon(
                                 FluentIcons.clipboard_link_24_regular,
                                 size: 20.0,
-                                color: theme.accentColor,
+                                color: theme.secondary,
                               ),
                               style: TextButton.styleFrom(
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -314,7 +314,7 @@ class BangumiPage extends StatelessWidget {
                               child: Icon(
                                 FluentIcons.share_24_regular,
                                 size: 20.0,
-                                color: theme.accentColor,
+                                color: theme.secondary,
                               ),
                               style: TextButton.styleFrom(
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -443,10 +443,10 @@ class BangumiPage extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: theme.accentColor,
+                    color: theme.secondary,
                   ),
                 ),
-                backgroundColor: theme.accentColor.withOpacity(0.18),
+                backgroundColor: theme.secondary.withOpacity(0.18),
                 onPressed: () {
                   _showSubgroupPanel(context, model, entry.key);
                 },
@@ -464,9 +464,9 @@ class BangumiPage extends StatelessWidget {
     final BangumiModel model,
   ) {
     final Color accentTextColor =
-        theme.accentColor.isDark ? Colors.white : Colors.black;
+        theme.secondary.isDark ? Colors.white : Colors.black;
     final Color primaryTextColor =
-        theme.primaryColor.isDark ? Colors.white : Colors.black;
+        theme.primary.isDark ? Colors.white : Colors.black;
     return Stack(
       fit: StackFit.loose,
       children: [
@@ -508,8 +508,8 @@ class BangumiPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        theme.accentColor.withOpacity(0.78),
-                        theme.accentColor,
+                        theme.secondary.withOpacity(0.78),
+                        theme.secondary,
                       ],
                     ),
                     borderRadius: borderRadius24,
@@ -536,8 +536,8 @@ class BangumiPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        theme.primaryColor.withOpacity(0.78),
-                        theme.primaryColor,
+                        theme.primary.withOpacity(0.78),
+                        theme.primary,
                       ],
                     ),
                     borderRadius: borderRadius24,
@@ -590,7 +590,7 @@ class BangumiPage extends StatelessWidget {
           Text(
             detail.name,
             style: TextStyle(
-              color: theme.accentColor,
+              color: theme.secondary,
               fontWeight: FontWeight.bold,
               fontSize: 20.0,
             ),
@@ -617,7 +617,7 @@ class BangumiPage extends StatelessWidget {
                           "链接",
                           softWrap: true,
                           style: TextStyle(
-                            color: theme.accentColor,
+                            color: theme.secondary,
                             height: 1.8,
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,

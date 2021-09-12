@@ -7,6 +7,7 @@ import 'package:mikan_flutter/internal/http_cache_manager.dart';
 import 'package:mikan_flutter/model/fonts.dart';
 import 'package:mikan_flutter/providers/fonts_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -21,10 +22,10 @@ class FontsFragment extends StatelessWidget {
         Provider.of<FontsModel>(context, listen: false);
 
     final TextStyle accentTagStyle = textStyle10WithColor(
-      theme.accentColor.isDark ? Colors.white : Colors.black,
+      theme.secondary.isDark ? Colors.white : Colors.black,
     );
     final TextStyle primaryTagStyle = textStyle10WithColor(
-      theme.primaryColor.isDark ? Colors.white : Colors.black,
+      theme.primary.isDark ? Colors.white : Colors.black,
     );
     return Scaffold(
       body: NotificationListener(
@@ -69,25 +70,27 @@ class FontsFragment extends StatelessWidget {
           if (model.fonts.length == 0) {
             return centerLoading;
           }
-          return GridView.builder(
-            controller: ModalScrollController.of(context),
-            itemCount: fonts.length,
-            padding: edge16,
-            itemBuilder: (_, index) {
-              final Font font = fonts[index];
-              return _buildFontItem(
-                theme,
-                primaryTagStyle,
-                accentTagStyle,
-                model,
-                font,
-              );
-            },
-            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 400.0,
-              mainAxisSpacing: 16.0,
-              crossAxisSpacing: 16.0,
-              mainAxisExtent: 102.0,
+          return NormalScrollConfiguration(
+            child: GridView.builder(
+              controller: ModalScrollController.of(context),
+              itemCount: fonts.length,
+              padding: edge16,
+              itemBuilder: (_, index) {
+                final Font font = fonts[index];
+                return _buildFontItem(
+                  theme,
+                  primaryTagStyle,
+                  accentTagStyle,
+                  model,
+                  font,
+                );
+              },
+              gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+                minCrossAxisExtent: 400.0,
+                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 16.0,
+                mainAxisExtent: 102.0,
+              ),
             ),
           );
         },
@@ -187,8 +190,8 @@ class FontsFragment extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      theme.primaryColor,
-                      theme.primaryColor.withOpacity(0.56),
+                      theme.primary,
+                      theme.primary.withOpacity(0.56),
                     ],
                   ),
                   borderRadius: borderRadius2,
@@ -209,8 +212,8 @@ class FontsFragment extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      theme.accentColor,
-                      theme.accentColor.withOpacity(0.56),
+                      theme.secondary,
+                      theme.secondary.withOpacity(0.56),
                     ],
                   ),
                   borderRadius: borderRadius2,
@@ -231,8 +234,8 @@ class FontsFragment extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      theme.accentColor,
-                      theme.accentColor.withOpacity(0.56),
+                      theme.secondary,
+                      theme.secondary.withOpacity(0.56),
                     ],
                   ),
                   borderRadius: borderRadius2,
@@ -279,7 +282,7 @@ class FontsFragment extends StatelessWidget {
           if (model.enableFontFamily == font.id) {
             return Icon(
               FluentIcons.checkmark_starburst_16_filled,
-              color: theme.accentColor,
+              color: theme.secondary,
               size: 24.0,
             );
           } else {
@@ -293,7 +296,7 @@ class FontsFragment extends StatelessWidget {
           child: CircularProgressIndicator(
             value: event.percent,
             strokeWidth: 2.0,
-            valueColor: AlwaysStoppedAnimation(theme.accentColor),
+            valueColor: AlwaysStoppedAnimation(theme.secondary),
           ),
         );
       },

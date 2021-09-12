@@ -47,7 +47,7 @@ class SubgroupFragment extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12.0,
                               height: 1.25,
-                              color: theme.primaryColor.isDark
+                              color: theme.primary.isDark
                                   ? Colors.white
                                   : Colors.black,
                             ),
@@ -59,8 +59,8 @@ class SubgroupFragment extends StatelessWidget {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              theme.primaryColor,
-                              theme.primaryColor.withOpacity(0.56),
+                              theme.primary,
+                              theme.primary.withOpacity(0.56),
                             ],
                           ),
                         ),

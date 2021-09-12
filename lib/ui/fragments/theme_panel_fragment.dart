@@ -10,6 +10,7 @@ import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/theme_edit_fragment.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -32,107 +33,111 @@ class ThemePanelFragment extends StatelessWidget {
         valueListenable: Hive.box<ThemeItem>(HiveBoxKey.THEMES).listenable(),
         builder: (context, Box<ThemeItem> box, widget) {
           final int themeNum = box.values.length;
-          return GridView.builder(
-            padding: edge8,
-            shrinkWrap: true,
-            itemBuilder: (_, index) {
-              if (index == themeNum) {
-                return Padding(
-                  padding: edge8,
-                  child: MaterialButton(
-                    onPressed: () {
-                      this._showEditThemePanel(context);
-                    },
-                    minWidth: 32.0,
-                    shape: circleShape,
-                    color: theme.scaffoldBackgroundColor,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: EdgeInsets.zero,
-                    child: Icon(
-                      FluentIcons.add_24_regular,
-                      size: 16.0,
-                    ),
-                  ),
-                );
-              }
-              final ThemeItem themeItem = box.getAt(index)!;
-              final List<Color> outerColors = [
-                Color(themeItem.primaryColor),
-                Color(themeItem.accentColor),
-                if (themeItem.autoMode || !themeItem.isDark)
-                  Color(themeItem.lightScaffoldBackgroundColor),
-                if (themeItem.autoMode || themeItem.isDark)
-                  Color(themeItem.darkScaffoldBackgroundColor),
-                if (themeItem.autoMode || !themeItem.isDark)
-                  Color(themeItem.lightBackgroundColor),
-                if (themeItem.autoMode || themeItem.isDark)
-                  Color(themeItem.darkBackgroundColor),
-              ];
-              final List<Color> innerColors = themeItem.autoMode
-                  ? [Colors.white, Colors.black]
-                  : themeItem.isDark
-                      ? [Colors.black]
-                      : [Colors.white];
-              return themeModel.themeItem.id == themeItem.id
-                  ? TapScaleContainer(
-                      onTap: () {
-                        if (themeItem.id == 1) return "默认主题不可修改".toast();
-                        this._showEditThemePanel(context, themeItem: themeItem);
+          return NormalScrollConfiguration(
+            child: GridView.builder(
+              padding: edge8,
+              shrinkWrap: true,
+              itemBuilder: (_, index) {
+                if (index == themeNum) {
+                  return Padding(
+                    padding: edge8,
+                    child: MaterialButton(
+                      onPressed: () {
+                        this._showEditThemePanel(context);
                       },
-                      margin: edge8,
-                      padding: edge2,
-                      decoration: BoxDecoration(
-                        borderRadius: borderRadius24,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 6.0,
-                          ),
-                        ],
-                        border: Border.all(
-                          color: theme.accentColor,
-                          width: 2.0,
-                        ),
-                      ),
-                      child: CustomPaint(
-                        size: Size.square(36.0),
-                        painter: ColorPiePainter(
-                          outerColors: outerColors,
-                          innerColors: innerColors,
-                        ),
-                      ),
-                    )
-                  : TapScaleContainer(
-                      onTap: () {
-                        themeModel.themeItem = themeItem;
-                      },
-                      onLongPress: () {
-                        if (themeItem.id == 1) return "默认主题不可修改".toast();
-                        this._showEditThemePanel(context, themeItem: themeItem);
-                      },
-                      margin: edge8,
+                      minWidth: 32.0,
+                      shape: circleShape,
+                      color: theme.scaffoldBackgroundColor,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       padding: EdgeInsets.zero,
-                      decoration: BoxDecoration(
-                        borderRadius: borderRadius24,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 6.0,
+                      child: Icon(
+                        FluentIcons.add_24_regular,
+                        size: 16.0,
+                      ),
+                    ),
+                  );
+                }
+                final ThemeItem themeItem = box.getAt(index)!;
+                final List<Color> outerColors = [
+                  Color(themeItem.primaryColor),
+                  Color(themeItem.accentColor),
+                  if (themeItem.autoMode || !themeItem.isDark)
+                    Color(themeItem.lightScaffoldBackgroundColor),
+                  if (themeItem.autoMode || themeItem.isDark)
+                    Color(themeItem.darkScaffoldBackgroundColor),
+                  if (themeItem.autoMode || !themeItem.isDark)
+                    Color(themeItem.lightBackgroundColor),
+                  if (themeItem.autoMode || themeItem.isDark)
+                    Color(themeItem.darkBackgroundColor),
+                ];
+                final List<Color> innerColors = themeItem.autoMode
+                    ? [Colors.white, Colors.black]
+                    : themeItem.isDark
+                        ? [Colors.black]
+                        : [Colors.white];
+                return themeModel.themeItem.id == themeItem.id
+                    ? TapScaleContainer(
+                        onTap: () {
+                          if (themeItem.id == 1) return "默认主题不可修改".toast();
+                          this._showEditThemePanel(context,
+                              themeItem: themeItem);
+                        },
+                        margin: edge8,
+                        padding: edge2,
+                        decoration: BoxDecoration(
+                          borderRadius: borderRadius24,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                          border: Border.all(
+                            color: theme.secondary,
+                            width: 2.0,
                           ),
-                        ],
-                      ),
-                      child: CustomPaint(
-                        size: Size.square(40.0),
-                        painter: ColorPiePainter(
-                          outerColors: outerColors,
-                          innerColors: innerColors,
                         ),
-                      ),
-                    );
-            },
-            itemCount: themeNum + 1,
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 56.0,
+                        child: CustomPaint(
+                          size: Size.square(36.0),
+                          painter: ColorPiePainter(
+                            outerColors: outerColors,
+                            innerColors: innerColors,
+                          ),
+                        ),
+                      )
+                    : TapScaleContainer(
+                        onTap: () {
+                          themeModel.themeItem = themeItem;
+                        },
+                        onLongPress: () {
+                          if (themeItem.id == 1) return "默认主题不可修改".toast();
+                          this._showEditThemePanel(context,
+                              themeItem: themeItem);
+                        },
+                        margin: edge8,
+                        padding: EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                          borderRadius: borderRadius24,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                        ),
+                        child: CustomPaint(
+                          size: Size.square(40.0),
+                          painter: ColorPiePainter(
+                            outerColors: outerColors,
+                            innerColors: innerColors,
+                          ),
+                        ),
+                      );
+              },
+              itemCount: themeNum + 1,
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 56.0,
+              ),
             ),
           );
         },

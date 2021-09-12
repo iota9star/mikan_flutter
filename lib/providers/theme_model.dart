@@ -48,6 +48,7 @@ class ThemeModel extends BaseModel {
       borderRadius: borderRadius16,
     );
     ThemeData themeData = ThemeData(
+      platform: TargetPlatform.iOS,
       brightness: brightness,
       cupertinoOverrideTheme: CupertinoThemeData(
         primaryColor: primaryColor,
@@ -55,9 +56,7 @@ class ThemeModel extends BaseModel {
         brightness: brightness,
       ),
       primaryColorBrightness: primaryColorBrightness,
-      accentColorBrightness: accentColorBrightness,
       primaryColor: primaryColor,
-      accentColor: accentColor,
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       fontFamily: fontFamily,
       backgroundColor: backgroundColor,

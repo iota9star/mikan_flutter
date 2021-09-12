@@ -163,8 +163,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      bangumi.grey == true ? Colors.grey : theme.accentColor,
-                      theme.accentColor.withOpacity(0.1),
+                      bangumi.grey == true ? Colors.grey : theme.secondary,
+                      theme.secondary.withOpacity(0.1),
                     ],
                   ),
                   borderRadius: borderRadius2,

@@ -97,7 +97,7 @@ extension NullableStringExt on String? {
     showToastWidget(
       Builder(
         builder: (context) {
-          final Color bgc = Theme.of(context).accentColor;
+          final Color bgc = Theme.of(context).secondary;
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -500,6 +500,12 @@ extension ColorExt on Color {
   bool get isDark {
     return this.computeLuminance() < 0.5;
   }
+}
+
+extension ThemeDataExt on ThemeData {
+  Color get primary => this.colorScheme.primary;
+
+  Color get secondary => this.colorScheme.secondary;
 }
 
 eee() {}

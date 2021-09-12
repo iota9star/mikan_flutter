@@ -13,6 +13,7 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/season_list_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -63,15 +64,14 @@ class SeasonListPage extends StatelessWidget {
                   return SmartRefresher(
                     controller: seasonListModel.refreshController,
                     header: WaterDropMaterialHeader(
-                      backgroundColor: theme.accentColor,
-                      color: theme.accentColor.isDark
-                          ? Colors.white
-                          : Colors.black,
+                      backgroundColor: theme.secondary,
+                      color:
+                          theme.secondary.isDark ? Colors.white : Colors.black,
                       distance: Screen.statusBarHeight + 42.0,
                     ),
                     footer: Indicator.footer(
                       context,
-                      theme.accentColor,
+                      theme.secondary,
                       bottom: 16.0,
                     ),
                     enablePullDown: true,
@@ -94,50 +94,53 @@ class SeasonListPage extends StatelessWidget {
     final ThemeData theme,
     final List<SeasonBangumis> seasons,
   ) {
-    return CustomScrollView(
-      slivers: [
-        _buildHeader(theme),
-        ...List.generate(seasons.length, (index) {
-          final SeasonBangumis seasonBangumis = seasons[index];
-          final String seasonTitle = seasonBangumis.season.title;
-          return MultiSliver(
-            pushPinnedChildren: true,
-            children: <Widget>[
-              _buildSeasonSection(theme, seasonTitle),
-              ...List.generate(
-                seasonBangumis.bangumiRows.length,
-                (ind) {
-                  final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
-                  return MultiSliver(
-                    pushPinnedChildren: true,
-                    children: <Widget>[
-                      _buildBangumiRowSection(theme, bangumiRow),
-                      BangumiSliverGridFragment(
-                        flag: seasonTitle,
-                        padding: edge16,
-                        bangumis: bangumiRow.bangumis,
-                        handleSubscribe: (bangumi, flag) {
-                          context.read<OpModel>().subscribeBangumi(
-                            bangumi.id,
-                            bangumi.subscribed,
-                            onSuccess: () {
-                              bangumi.subscribed = !bangumi.subscribed;
-                              context.read<OpModel>().subscribeChanged(flag);
-                            },
-                            onError: (msg) {
-                              "订阅失败：$msg".toast();
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          );
-        }),
-      ],
+    return NormalScrollConfiguration(
+      child: CustomScrollView(
+        slivers: [
+          _buildHeader(theme),
+          ...List.generate(seasons.length, (index) {
+            final SeasonBangumis seasonBangumis = seasons[index];
+            final String seasonTitle = seasonBangumis.season.title;
+            return MultiSliver(
+              pushPinnedChildren: true,
+              children: <Widget>[
+                _buildSeasonSection(theme, seasonTitle),
+                ...List.generate(
+                  seasonBangumis.bangumiRows.length,
+                  (ind) {
+                    final BangumiRow bangumiRow =
+                        seasonBangumis.bangumiRows[ind];
+                    return MultiSliver(
+                      pushPinnedChildren: true,
+                      children: <Widget>[
+                        _buildBangumiRowSection(theme, bangumiRow),
+                        BangumiSliverGridFragment(
+                          flag: seasonTitle,
+                          padding: edge16,
+                          bangumis: bangumiRow.bangumis,
+                          handleSubscribe: (bangumi, flag) {
+                            context.read<OpModel>().subscribeBangumi(
+                              bangumi.id,
+                              bangumi.subscribed,
+                              onSuccess: () {
+                                bangumi.subscribed = !bangumi.subscribed;
+                                context.read<OpModel>().subscribeChanged(flag);
+                              },
+                              onError: (msg) {
+                                "订阅失败：$msg".toast();
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            );
+          }),
+        ],
+      ),
     );
   }
 

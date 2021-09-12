@@ -12,6 +12,7 @@ import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/fonts_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/theme_panel_fragment.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -41,18 +42,20 @@ class SettingsFragment extends StatelessWidget {
               }
               return true;
             },
-            child: CustomScrollView(
-              shrinkWrap: true,
-              controller: ModalScrollController.of(context),
-              slivers: [
-                _buildHeader(theme),
-                _buildSection("主题"),
-                _buildThemeList(),
-                _buildFontManager(context, theme),
-                _buildSection("更新"),
-                _buildCheckUpdate(context, theme),
-                sliverSizedBoxH24,
-              ],
+            child: NormalScrollConfiguration(
+              child: CustomScrollView(
+                shrinkWrap: true,
+                controller: ModalScrollController.of(context),
+                slivers: [
+                  _buildHeader(theme),
+                  _buildSection("主题"),
+                  _buildThemeList(),
+                  _buildFontManager(context, theme),
+                  _buildSection("更新"),
+                  _buildCheckUpdate(context, theme),
+                  sliverSizedBoxH24,
+                ],
+              ),
             ),
           ),
         );

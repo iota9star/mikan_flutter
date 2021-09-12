@@ -14,6 +14,7 @@ import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/search_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
+import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -55,17 +56,19 @@ class SearchFragment extends StatelessWidget {
     final ThemeData theme,
     final SearchModel searchModel,
   ) {
-    return CustomScrollView(
-      controller: ModalScrollController.of(context),
-      slivers: [
-        _buildHeader(context, theme, searchModel),
-        _buildSubgroupSection(theme),
-        _buildSubgroupList(theme, searchModel),
-        _buildRecommendSection(theme),
-        _buildRecommendList(theme),
-        _buildSearchResultSection(theme),
-        _buildSearchResultList(theme, searchModel),
-      ],
+    return NormalScrollConfiguration(
+      child: CustomScrollView(
+        controller: ModalScrollController.of(context),
+        slivers: [
+          _buildHeader(context, theme, searchModel),
+          _buildSubgroupSection(theme),
+          _buildSubgroupList(theme, searchModel),
+          _buildRecommendSection(theme),
+          _buildRecommendList(theme),
+          _buildSearchResultSection(theme),
+          _buildSearchResultList(theme, searchModel),
+        ],
+      ),
     );
   }
 
@@ -302,7 +305,7 @@ class SearchFragment extends StatelessWidget {
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, subgroupId, __) {
         final Color color =
-            subgroup.id == subgroupId ? theme.primaryColor : theme.accentColor;
+            subgroup.id == subgroupId ? theme.primary : theme.secondary;
         return MaterialButton(
           minWidth: 0,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -378,7 +381,7 @@ class SearchFragment extends StatelessWidget {
         labelText: '请输入关键字',
         prefixIcon: Icon(
           FluentIcons.search_24_regular,
-          color: theme.accentColor,
+          color: theme.secondary,
         ),
         contentPadding: EdgeInsets.only(
           left: 14.0,
@@ -386,7 +389,7 @@ class SearchFragment extends StatelessWidget {
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
-      cursorColor: theme.accentColor,
+      cursorColor: theme.secondary,
       textAlign: TextAlign.left,
       autofocus: true,
       maxLines: 1,
@@ -461,8 +464,8 @@ class SearchFragment extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    theme.accentColor,
-                    theme.accentColor.withOpacity(0.1),
+                    theme.secondary,
+                    theme.secondary.withOpacity(0.1),
                   ],
                 ),
                 borderRadius: borderRadius2,

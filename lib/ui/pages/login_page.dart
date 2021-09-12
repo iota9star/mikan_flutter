@@ -96,7 +96,7 @@ class LoginPage extends StatelessWidget {
       selector: (_, model) => model.loading,
       shouldRebuild: (pre, next) => pre != next,
       builder: (context, loading, __) {
-        final Color btnColor = loading ? theme.primaryColor : theme.accentColor;
+        final Color btnColor = loading ? theme.primary : theme.secondary;
         final Color iconColor = btnColor.isDark ? Colors.white : Colors.black;
         return ElevatedButton(
           onPressed: () {
@@ -158,7 +158,7 @@ class LoginPage extends StatelessWidget {
             return Checkbox(
               value: checked,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              activeColor: theme.accentColor,
+              activeColor: theme.secondary,
               onChanged: (val) {
                 loginModel.rememberMe = val ?? false;
               },
@@ -182,7 +182,7 @@ class LoginPage extends StatelessWidget {
   ) {
     return TextFormField(
       controller: loginModel.accountController,
-      cursorColor: theme.accentColor,
+      cursorColor: theme.secondary,
       decoration: InputDecoration(
         border: InputBorder.none,
         labelText: '用户名',
@@ -190,7 +190,7 @@ class LoginPage extends StatelessWidget {
         hintStyle: TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.person_24_regular,
-          color: theme.accentColor,
+          color: theme.secondary,
         ),
       ),
       validator: (value) {
@@ -211,7 +211,7 @@ class LoginPage extends StatelessWidget {
       builder: (_, showPassword, __) {
         return TextFormField(
           obscureText: !showPassword,
-          cursorColor: theme.accentColor,
+          cursorColor: theme.secondary,
           controller: loginModel.passwordController,
           decoration: InputDecoration(
             border: InputBorder.none,
@@ -220,17 +220,17 @@ class LoginPage extends StatelessWidget {
             hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
               FluentIcons.password_24_regular,
-              color: theme.accentColor,
+              color: theme.secondary,
             ),
             suffixIcon: IconButton(
               icon: showPassword
                   ? Icon(
                       FluentIcons.eye_show_24_regular,
-                      color: theme.accentColor,
+                      color: theme.secondary,
                     )
                   : Icon(
                       FluentIcons.eye_show_24_filled,
-                      color: theme.accentColor,
+                      color: theme.secondary,
                     ),
               onPressed: () {
                 loginModel.showPassword = !showPassword;

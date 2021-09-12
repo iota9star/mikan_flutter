@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/topvars.dart';
 
 class BarItem {
@@ -158,7 +159,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
           : Icon(
               barItem.selectedIcon,
               size: barItem._size + 10,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).secondary,
             );
     }
     return barItem.icon == null
@@ -211,7 +212,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
                         ),
                       ),
                     ),
-                    child: _toBarIcon(theme.accentColor, widget.barItem),
+                    child: _toBarIcon(theme.secondary, widget.barItem),
                   ),
                   ..._buildPointWidgets(theme),
                 ],
@@ -227,7 +228,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
   List<Widget> _buildPointWidgets(final ThemeData theme) {
     return List.generate(
       this._points!.length,
-      (index) => _buildPointWidget(this._points![index], theme.accentColor),
+      (index) => _buildPointWidget(this._points![index], theme.secondary),
     );
   }
 
@@ -268,7 +269,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     final double offset = 360 / count;
     final out = (offset / 4).floor();
     final always = offset - out;
-    final Color color = Theme.of(context).accentColor;
+    final Color color = Theme.of(context).secondary;
     color.withOpacity((random.nextDouble() + 0.1).clamp(0.1, 1.0));
     double angle;
     double size;
