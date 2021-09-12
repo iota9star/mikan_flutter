@@ -6,14 +6,14 @@ version: 1.0.0-RC19+41
 publish_to: none
 
 environment:
-  sdk: ">=2.13.0"
-  flutter: ">=2.2.0"
+  sdk: ">=2.14.0"
+  flutter: ">=2.5.0"
 
 dependencies:
   flutter:
     sdk: flutter
   firebase_core: ^1.6.0
-  firebase_analytics: ^8.3.1
+  firebase_analytics: ^8.3.2
   firebase_crashlytics: ^2.2.1
   path_provider: ^2.0.3
   dio: ^4.0.0
@@ -32,8 +32,8 @@ dependencies:
   url_launcher: ^6.0.10
   share_plus: ^2.1.4
   flutter_widget_from_html: ^0.7.0
-  extended_sliver: ^2.0.0
-  extended_image: ^4.1.0
+  extended_sliver: ^2.0.1
+  extended_image: ^4.2.1
   waterfall_flow: ^3.0.1
   modal_bottom_sheet: ^2.0.0
   jiffy: ^4.1.0
@@ -51,7 +51,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.1.1
-  json_serializable: ^4.1.4
+  json_serializable: ^5.0.0
   hive_generator: ^1.1.0
   flutter_launcher_icons: ^0.9.1
   yaml: ^3.1.0
