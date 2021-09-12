@@ -29,7 +29,7 @@ class BangumiModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
+    if (_hasScrolled != value) {
       _hasScrolled = value;
       notifyListeners();
     }
@@ -40,9 +40,9 @@ class BangumiModel extends CancelableBaseModel {
   RefreshController get refreshController => _refreshController;
 
   BangumiModel(this.id, this.cover) {
-    this._loadBangumiDetail();
-    Future.delayed(Duration(milliseconds: 640))
-        .whenComplete(() => this._loadCoverMainColor());
+    _loadBangumiDetail();
+    Future.delayed(const Duration(milliseconds: 640))
+        .whenComplete(() => _loadCoverMainColor());
   }
 
   Color? _coverMainColor;
@@ -51,7 +51,7 @@ class BangumiModel extends CancelableBaseModel {
 
   _loadCoverMainColor() {
     PaletteGenerator.fromImageProvider(
-      FastCacheImage(this.cover),
+      FastCacheImage(cover),
       maximumColorCount: 3,
       targets: [
         PaletteTarget.lightVibrant,
@@ -74,7 +74,7 @@ class BangumiModel extends CancelableBaseModel {
     }
     final Resp resp = await (this +
         Repo.bangumiMore(
-          this.id,
+          id,
           sb?.dataId ?? "",
           (sb?.records.length ?? 0) + 20,
         ));
@@ -93,10 +93,10 @@ class BangumiModel extends CancelableBaseModel {
   }
 
   _loadBangumiDetail() async {
-    this._loading = true;
+    _loading = true;
     notifyListeners();
-    final resp = await (this + Repo.bangumi(this.id));
-    this._loading = false;
+    final resp = await (this + Repo.bangumi(id));
+    _loading = false;
     if (resp.success) {
       _bangumiDetail = resp.data;
     } else {

@@ -18,6 +18,8 @@ import 'package:provider/provider.dart';
 )
 @immutable
 class RegisterPage extends StatelessWidget {
+  RegisterPage({Key? key}) : super(key: key);
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -60,7 +62,7 @@ class RegisterPage extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Icon(
+                                child: const Icon(
                                   FluentIcons.chevron_left_24_regular,
                                   size: 16.0,
                                 ),
@@ -156,7 +158,7 @@ class RegisterPage extends StatelessWidget {
         border: InputBorder.none,
         labelText: '用户名',
         hintText: '请输入用户名',
-        hintStyle: TextStyle(fontSize: 14.0),
+        hintStyle: const TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.person_24_regular,
           color: theme.secondary,
@@ -182,7 +184,7 @@ class RegisterPage extends StatelessWidget {
         border: InputBorder.none,
         labelText: '邮箱',
         hintText: '请输入邮箱',
-        hintStyle: TextStyle(fontSize: 14.0),
+        hintStyle: const TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.mail_24_regular,
           color: theme.secondary,
@@ -210,7 +212,7 @@ class RegisterPage extends StatelessWidget {
         border: InputBorder.none,
         labelText: 'QQ',
         hintText: '请输入QQ号码',
-        hintStyle: TextStyle(fontSize: 14.0),
+        hintStyle: const TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.emoji_surprise_24_regular,
           color: theme.secondary,
@@ -247,7 +249,7 @@ class RegisterPage extends StatelessWidget {
             border: InputBorder.none,
             labelText: '密码',
             hintText: '请输入密码',
-            hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
+            hintStyle: const TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
               FluentIcons.password_24_regular,
               color: theme.secondary,
@@ -296,7 +298,7 @@ class RegisterPage extends StatelessWidget {
             border: InputBorder.none,
             labelText: '确认密码',
             hintText: '请输入确认密码',
-            hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
+            hintStyle: const TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
               FluentIcons.key_multiple_20_regular,
               color: theme.secondary,
@@ -318,8 +320,9 @@ class RegisterPage extends StatelessWidget {
           ),
           validator: (value) {
             if (value.isNullOrBlank) return "确认密码不能为空";
-            if (value != registerModel.passwordController.text)
+            if (value != registerModel.passwordController.text) {
               return "确认密码与密码不一致，请重新输入";
+            }
             return null;
           },
           textInputAction: TextInputAction.next,

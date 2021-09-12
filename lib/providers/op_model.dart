@@ -45,7 +45,7 @@ class OpModel extends CancelableBaseModel {
   String get flag => _flag;
 
   subscribeChanged(String flag) {
-    this._flag = flag;
+    _flag = flag;
     notifyListeners();
   }
 }

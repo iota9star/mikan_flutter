@@ -14,7 +14,6 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/recent_subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -36,7 +35,7 @@ class RecentSubscribedPage extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
-        create: (_) => RecentSubscribedModel(this.loaded),
+        create: (_) => RecentSubscribedModel(loaded),
         child: Builder(builder: (context) {
           final model =
               Provider.of<RecentSubscribedModel>(context, listen: false);
@@ -69,13 +68,11 @@ class RecentSubscribedPage extends StatelessWidget {
                 enablePullUp: true,
                 onRefresh: model.refresh,
                 onLoading: model.loadMore,
-                child: NormalScrollConfiguration(
-                  child: CustomScrollView(
-                    slivers: [
-                      _buildHeader(theme),
-                      _buildList(theme),
-                    ],
-                  ),
+                child: CustomScrollView(
+                  slivers: [
+                    _buildHeader(theme),
+                    _buildList(theme),
+                  ],
                 ),
               ),
             ),
@@ -145,7 +142,7 @@ class RecentSubscribedPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(
+                  child: const Icon(
                     FluentIcons.chevron_left_24_regular,
                     size: 16.0,
                   ),
@@ -158,7 +155,7 @@ class RecentSubscribedPage extends StatelessWidget {
                       : theme.backgroundColor,
                 ),
                 sizedBoxW12,
-                Expanded(
+                const Expanded(
                   child: Text(
                     "最近更新",
                     style: textStyle24B,

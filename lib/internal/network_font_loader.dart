@@ -85,7 +85,7 @@ class NetworkFontLoader {
         });
       }
       final FontLoader fontLoader = FontLoader(fontFamily);
-      urls.forEach((url) {
+      for (String url in urls) {
         final Future<ByteData> bytes = _loadFont(
           url,
           headers: headers,
@@ -94,7 +94,7 @@ class NetworkFontLoader {
           cancelable: cancelable,
         );
         fontLoader.addFont(bytes);
-      });
+      }
       await fontLoader.load();
     } finally {
       eventBus?.close();

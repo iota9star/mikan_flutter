@@ -37,17 +37,17 @@ class RegisterModel extends CancelableBaseModel {
   }
 
   submit(VoidCallback registerSuccess) async {
-    this._loading = true;
+    _loading = true;
     notifyListeners();
     final Resp tokenResp = await (this + Repo.refreshRegisterToken());
     if (!tokenResp.success) {
-      this._loading = false;
+      _loading = false;
       notifyListeners();
       return "获取注册参数失败".toast();
     }
     final String token = tokenResp.data;
     if (token.isNullOrBlank) {
-      this._loading = false;
+      _loading = false;
       notifyListeners();
       return "获取注册参数为空，请稍候重试".toast();
     }
@@ -60,7 +60,7 @@ class RegisterModel extends CancelableBaseModel {
       "__RequestVerificationToken": token
     };
     final Resp resp = await (this + Repo.register(registerParams));
-    this._loading = false;
+    _loading = false;
     notifyListeners();
     if (resp.success) {
       "注册成功".toast();

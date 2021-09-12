@@ -20,15 +20,15 @@ class Store {
   }
 
   static setLogin(final Map<String, dynamic> login) {
-    MyHive.db.put(HiveBoxKey.LOGIN, login);
+    MyHive.db.put(HiveBoxKey.login, login);
   }
 
   static removeLogin() {
-    MyHive.db.delete(HiveBoxKey.LOGIN);
+    MyHive.db.delete(HiveBoxKey.login);
   }
 
   static Map<String, dynamic> getLogin() {
-    return MyHive.db.get(HiveBoxKey.LOGIN,
+    return MyHive.db.get(HiveBoxKey.login,
         defaultValue: <String, dynamic>{}).cast<String, dynamic>();
   }
 

@@ -15,14 +15,14 @@ class ThemeModel extends BaseModel {
   ThemeItem get themeItem => _themeItem;
 
   set themeItem(ThemeItem value) {
-    this._themeItem = value;
-    MyHive.db.put(HiveDBKey.THEME_ID, this._themeItem.id);
+    _themeItem = value;
+    MyHive.db.put(HiveDBKey.themeId, _themeItem.id);
     notifyListeners();
   }
 
   ThemeModel() {
     _themeItem = MyHive.themeItemBox.values.firstWhere((element) =>
-        element.id == MyHive.db.get(HiveDBKey.THEME_ID, defaultValue: 1));
+        element.id == MyHive.db.get(HiveDBKey.themeId, defaultValue: 1));
   }
 
   theme({bool darkTheme = false}) {
@@ -32,8 +32,6 @@ class ThemeModel extends BaseModel {
     final primaryColorBrightness =
         primaryColor.isDark ? Brightness.dark : Brightness.light;
     final accentColor = Color(_themeItem.accentColor);
-    final accentColorBrightness =
-        accentColor.isDark ? Brightness.dark : Brightness.light;
     final scaffoldBackgroundColor = Color(
       isDark
           ? _themeItem.darkScaffoldBackgroundColor
@@ -43,7 +41,7 @@ class ThemeModel extends BaseModel {
       isDark ? _themeItem.darkBackgroundColor : _themeItem.lightBackgroundColor,
     );
     final fontFamily = _themeItem.fontFamily;
-    final underlineInputBorder = UnderlineInputBorder(
+    const underlineInputBorder = UnderlineInputBorder(
       borderSide: BorderSide.none,
       borderRadius: borderRadius16,
     );
@@ -89,7 +87,7 @@ class ThemeModel extends BaseModel {
         prefixStyle: TextStyle(color: accentColor),
         suffixStyle: TextStyle(color: accentColor),
         focusColor: accentColor,
-        contentPadding: EdgeInsets.symmetric(horizontal: 14.0),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14.0),
         hintStyle: TextStyle(height: 1.4, color: accentColor),
         labelStyle: TextStyle(fontSize: 16.0, color: accentColor),
       ),
@@ -121,11 +119,11 @@ class ThemeModel extends BaseModel {
   }
 
   void applyFont(Font? font) {
-    this._themeItem.fontFamilyName = font?.name;
-    if (this._themeItem.fontFamily != font?.id) {
-      this._themeItem.fontFamily = font?.id;
-      this._themeItem.save();
-      this.themeItem = this._themeItem;
+    _themeItem.fontFamilyName = font?.name;
+    if (_themeItem.fontFamily != font?.id) {
+      _themeItem.fontFamily = font?.id;
+      _themeItem.save();
+      themeItem = _themeItem;
     }
   }
 }

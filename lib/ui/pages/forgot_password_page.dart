@@ -18,6 +18,8 @@ import 'package:provider/provider.dart';
 class ForgotPasswordPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  ForgotPasswordPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -50,7 +52,7 @@ class ForgotPasswordPage extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Icon(
+                                child: const Icon(
                                   FluentIcons.chevron_left_24_regular,
                                   size: 16.0,
                                 ),
@@ -138,7 +140,7 @@ class ForgotPasswordPage extends StatelessWidget {
         border: InputBorder.none,
         labelText: '您的邮箱',
         hintText: '请输入邮箱地址',
-        hintStyle: TextStyle(fontSize: 14.0),
+        hintStyle: const TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.mail_24_regular,
           color: theme.secondary,
@@ -181,7 +183,7 @@ class ForgotPasswordPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
-              children: [
+              children: const [
                 Text(
                   "忘记密码",
                   textAlign: TextAlign.justify,

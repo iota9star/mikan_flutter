@@ -14,17 +14,17 @@ class ForgotPasswordModel extends CancelableBaseModel {
   bool get loading => _loading;
 
   submit(VoidCallback onSuccess) async {
-    this._loading = true;
+    _loading = true;
     notifyListeners();
     final Resp tokenResp = await (this + Repo.refreshForgotPasswordToken());
     if (!tokenResp.success) {
-      this._loading = false;
+      _loading = false;
       notifyListeners();
       return "获取重置密码参数失败".toast();
     }
     final String token = tokenResp.data;
     if (token.isNullOrBlank) {
-      this._loading = false;
+      _loading = false;
       notifyListeners();
       return "获取重置密码参数为空，请稍候重试".toast();
     }
@@ -33,7 +33,7 @@ class ForgotPasswordModel extends CancelableBaseModel {
       "__RequestVerificationToken": token
     };
     final Resp resp = await (this + Repo.forgotPassword(params));
-    this._loading = false;
+    _loading = false;
     notifyListeners();
     if (resp.success) {
       "重置密码邮件发送成功".toast();

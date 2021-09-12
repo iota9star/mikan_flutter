@@ -18,9 +18,9 @@ class SubgroupFragment extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          const Padding(
             padding: edgeHT16B8,
-            child: const Text("请选择字幕组"),
+            child: Text("请选择字幕组"),
           ),
           ...List.generate(
             subgroups.length,

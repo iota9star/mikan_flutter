@@ -13,8 +13,8 @@ class SeasonListModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
@@ -30,10 +30,10 @@ class SeasonListModel extends CancelableBaseModel {
   int _loadIndex = 0;
 
   SeasonListModel(this._years) {
-    this._seasons =
-        this._years.map((e) => e.seasons).expand((element) => element).toList();
-    Future.delayed(Duration(milliseconds: 250), () {
-      this._refreshController.requestRefresh();
+    _seasons =
+        _years.map((e) => e.seasons).expand((element) => element).toList();
+    Future.delayed(const Duration(milliseconds: 250), () {
+      _refreshController.requestRefresh();
     });
   }
 
@@ -47,40 +47,40 @@ class SeasonListModel extends CancelableBaseModel {
   RefreshController get refreshController => _refreshController;
 
   _loadSeasonBangumis() async {
-    if (this._loadIndex >= this._seasons.length) {
+    if (_loadIndex >= _seasons.length) {
       return _refreshController.loadNoData();
     }
-    this._loading = true;
-    final Season season = this._seasons[this._loadIndex];
+    _loading = true;
+    final Season season = _seasons[_loadIndex];
     final Resp resp = await (this + Repo.season(season.year, season.season));
-    this._loading = false;
+    _loading = false;
     if (resp.success) {
       final SeasonBangumis seasonBangumis = SeasonBangumis(
         season: season,
         bangumiRows: resp.data ?? [],
       );
-      if (this._loadIndex == 0) {
-        this._seasonBangumis = [seasonBangumis];
+      if (_loadIndex == 0) {
+        _seasonBangumis = [seasonBangumis];
       } else {
-        this._seasonBangumis = [...this._seasonBangumis, seasonBangumis];
+        _seasonBangumis = [..._seasonBangumis, seasonBangumis];
       }
-      this._loadIndex++;
-      this._refreshController.completed();
+      _loadIndex++;
+      _refreshController.completed();
       notifyListeners();
     } else {
-      this._refreshController.failed();
+      _refreshController.failed();
       "获取${season.title}失败：${resp.msg}".toast();
     }
   }
 
   refresh() async {
-    if (this._loading) return "加载中，请等待加载完成";
-    this._loadIndex = 0;
+    if (_loading) return "加载中，请等待加载完成";
+    _loadIndex = 0;
     await _loadSeasonBangumis();
   }
 
   loadMore() async {
-    if (this._loading) return "加载中，请等待加载完成";
+    if (_loading) return "加载中，请等待加载完成";
     await _loadSeasonBangumis();
   }
 }

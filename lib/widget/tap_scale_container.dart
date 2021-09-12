@@ -23,7 +23,7 @@ class TapScaleContainer extends StatefulWidget {
   final double? height;
   final Clip clipBehavior;
 
-  TapScaleContainer({
+  const TapScaleContainer({
     Key? key,
     this.onTap,
     this.onLongPress,
@@ -84,7 +84,7 @@ class _TapScaleContainerState extends State<TapScaleContainer> {
       await Future.delayed(_kDuration - diff);
     }
     setState(() {
-      this._transform = Matrix4.identity();
+      _transform = Matrix4.identity();
     });
   }
 

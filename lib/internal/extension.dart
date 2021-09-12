@@ -19,10 +19,10 @@ import 'package:url_launcher/url_launcher.dart';
 extension IterableExt<T> on Iterable<T>? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
 
-  bool get isSafeNotEmpty => !this.isNullOrEmpty;
+  bool get isSafeNotEmpty => !isNullOrEmpty;
 
   T? getOrNull(final int index) {
-    if (this.isNullOrEmpty) return null;
+    if (isNullOrEmpty) return null;
     return this!.elementAt(index);
   }
 
@@ -35,7 +35,7 @@ extension IterableExt<T> on Iterable<T>? {
     return true;
   }
 
-  bool ne(Iterable<T> other) => !this.eq(other);
+  bool ne(Iterable<T> other) => !eq(other);
 }
 
 extension BoolExt on bool {
@@ -45,10 +45,10 @@ extension BoolExt on bool {
 extension ListExt<T> on List<T>? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
 
-  bool get isSafeNotEmpty => !this.isNullOrEmpty;
+  bool get isSafeNotEmpty => !isNullOrEmpty;
 
   T? getOrNull(final int index) {
-    if (this.isNullOrEmpty) return null;
+    if (isNullOrEmpty) return null;
     return this![index];
   }
 
@@ -61,13 +61,13 @@ extension ListExt<T> on List<T>? {
     return true;
   }
 
-  bool ne(List<T>? other) => !this.eq(other);
+  bool ne(List<T>? other) => !eq(other);
 }
 
 extension MapExt<K, V> on Map<K, V>? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
 
-  bool get isSafeNotEmpty => !this.isNullOrEmpty;
+  bool get isSafeNotEmpty => !isNullOrEmpty;
 
   bool eq(Map<K, V>? other) {
     if (this == null) return other == null;
@@ -80,7 +80,7 @@ extension MapExt<K, V> on Map<K, V>? {
     return true;
   }
 
-  bool ne(Map<K, V>? other) => !this.eq(other);
+  bool ne(Map<K, V>? other) => !eq(other);
 }
 
 extension NullableStringExt on String? {
@@ -91,7 +91,7 @@ extension NullableStringExt on String? {
   bool get isNotBlank => this != null && !this!.isBlank;
 
   toast() async {
-    if (this.isNullOrBlank) {
+    if (isNullOrBlank) {
       return;
     }
     showToastWidget(
@@ -114,7 +114,7 @@ extension NullableStringExt on String? {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.024),
-                      offset: Offset(0, 1),
+                      offset: const Offset(0, 1),
                       blurRadius: 3.0,
                       spreadRadius: 3.0,
                     ),
@@ -136,7 +136,7 @@ extension NullableStringExt on String? {
   }
 
   launchAppAndCopy() async {
-    if (this.isNullOrBlank) return "内容为空，取消操作".toast();
+    if (isNullOrBlank) return "内容为空，取消操作".toast();
     Future _doOtherAction() async {
       if (await canLaunch(this!)) {
         await launch(this!);
@@ -163,12 +163,12 @@ extension NullableStringExt on String? {
   }
 
   copy() {
-    if (this.isNullOrBlank) return "内容为空，取消操作".toast();
+    if (isNullOrBlank) return "内容为空，取消操作".toast();
     FlutterClipboard.copy(this!).then((_) => "成功复制到剪切板".toast());
   }
 
   share() {
-    if (this.isNullOrBlank) return "内容为空，取消操作".toast();
+    if (isNullOrBlank) return "内容为空，取消操作".toast();
     Share.share(this!);
     FlutterClipboard.copy(this!).then((_) => "尝试分享，并复制到剪切板".toast());
   }
@@ -176,11 +176,11 @@ extension NullableStringExt on String? {
 
 extension StringExt on String {
   bool get isBlank {
-    if (this.length == 0) {
+    if (length == 0) {
       return true;
     }
-    for (var value in this.runes) {
-      if (!this._isWhitespace(value)) {
+    for (int value in runes) {
+      if (!_isWhitespace(value)) {
         return false;
       }
     }
@@ -203,8 +203,8 @@ extension StringExt on String {
       rune == 0xFEFF;
 
   String fillChar(String value, String char) {
-    var offset = value.length - this.length;
-    var newVal = this;
+    int offset = value.length - length;
+    String newVal = this;
     if (offset > 0) {
       for (int i = 0; i < offset; i++) {
         newVal = char + newVal;
@@ -351,12 +351,16 @@ Iterable<String> _debugWordWrap(String message, int width,
     switch (mode) {
       case _WordWrapParseMode
           .inSpace: // at start of break point (or start of line); can't break until next break
-        while ((index < message.length) && (message[index] == ' ')) index += 1;
+        while ((index < message.length) && (message[index] == ' ')) {
+          index += 1;
+        }
         lastWordStart = index;
         mode = _WordWrapParseMode.inWord;
         break;
       case _WordWrapParseMode.inWord: // looking for a good break point
-        while ((index < message.length) && (message[index] != ' ')) index += 1;
+        while ((index < message.length) && (message[index] != ' ')) {
+          index += 1;
+        }
         mode = _WordWrapParseMode.atBreak;
         break;
       case _WordWrapParseMode.atBreak: // at start of break point
@@ -380,8 +384,9 @@ Iterable<String> _debugWordWrap(String message, int width,
           if (lastWordEnd == index) {
             // we broke at current position
             // eat all the spaces, then set our start point
-            while ((index < message.length) && (message[index] == ' '))
+            while ((index < message.length) && (message[index] == ' ')) {
               index += 1;
+            }
             start = index;
             mode = _WordWrapParseMode.inWord;
           } else {
@@ -406,22 +411,22 @@ Iterable<String> _debugWordWrap(String message, int width,
 
 extension RefreshControllerExt on RefreshController {
   completed({bool noMore = false}) {
-    if (this.isRefresh) {
-      this.refreshCompleted();
-    } else if (this.isLoading) {
+    if (isRefresh) {
+      refreshCompleted();
+    } else if (isLoading) {
       if (noMore) {
-        this.loadNoData();
+        loadNoData();
       } else {
-        this.loadComplete();
+        loadComplete();
       }
     }
   }
 
   failed() {
-    if (this.isRefresh) {
-      this.refreshFailed();
-    } else if (this.isLoading) {
-      this.loadFailed();
+    if (isRefresh) {
+      refreshFailed();
+    } else if (isLoading) {
+      loadFailed();
     }
   }
 }
@@ -498,14 +503,14 @@ extension BrightnessColor on Color {
 
 extension ColorExt on Color {
   bool get isDark {
-    return this.computeLuminance() < 0.5;
+    return computeLuminance() < 0.5;
   }
 }
 
 extension ThemeDataExt on ThemeData {
-  Color get primary => this.colorScheme.primary;
+  Color get primary => colorScheme.primary;
 
-  Color get secondary => this.colorScheme.secondary;
+  Color get secondary => colorScheme.secondary;
 }
 
 eee() {}

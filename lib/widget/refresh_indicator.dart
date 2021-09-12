@@ -23,7 +23,7 @@ class Indicator {
           children: <Widget>[
             spin,
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 msg,
                 style: textStyle18B,
@@ -74,7 +74,7 @@ class Indicator {
             height: 32.0,
           );
         },
-        duration: Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 800),
       ),
       "加载中，请稍候...",
       height,

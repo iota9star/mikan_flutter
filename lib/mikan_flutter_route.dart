@@ -57,7 +57,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: HomePage(),
+        widget: const HomePage(),
         routeName: '/',
       );
     case 'login':

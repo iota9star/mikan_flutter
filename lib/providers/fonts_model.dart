@@ -21,9 +21,9 @@ class FontsModel extends CancelableBaseModel {
 
   bool get loading => _loading;
 
-  ThemeModel _themeModel;
+  final ThemeModel _themeModel;
 
-  String? get enableFontFamily => this._themeModel.themeItem.fontFamily;
+  String? get enableFontFamily => _themeModel.themeItem.fontFamily;
 
   late DateTime _lastUpdate;
 
@@ -32,26 +32,26 @@ class FontsModel extends CancelableBaseModel {
   final Map<String, Cancelable> _loadingTask = <String, Cancelable>{};
 
   FontsModel(this._themeModel) {
-    this._load();
+    _load();
   }
 
   _load() async {
     final Resp resp = await (this + Repo.fonts());
-    this._loading = false;
+    _loading = false;
     if (resp.success) {
-      this._fonts = resp.data
+      _fonts = resp.data
           .map((it) {
             final Font font = Font.fromJson(it);
             font.files =
-                font.files.map((e) => Extra.FONTS_BASE_URL + "/" + e).toList();
+                font.files.map((e) => ExtraUrl.fontsBaseUrl + "/" + e).toList();
             return font;
           })
           .toList()
           .cast<Font>();
-      final String? fontFamily = this._themeModel.themeItem.fontFamily;
+      final String? fontFamily = _themeModel.themeItem.fontFamily;
       if (fontFamily.isNotBlank) {
-        final Font font = this._fonts.firstWhere((it) => it.id == fontFamily);
-        this.enableFont(font);
+        final Font font = _fonts.firstWhere((it) => it.id == fontFamily);
+        enableFont(font);
       }
     } else {
       "获取字体列表失败：${resp.msg}".toast();
@@ -60,7 +60,7 @@ class FontsModel extends CancelableBaseModel {
   }
 
   Future<void> enableFont(Font font) async {
-    this._lastEnableFont = font.id;
+    _lastEnableFont = font.id;
     if (_loadingTask.containsKey(font.id)) {
       return;
     }
@@ -86,8 +86,8 @@ class FontsModel extends CancelableBaseModel {
       );
       final DateTime now = DateTime.now();
       if (now.isAfter(_lastUpdate)) {
-        _lastUpdate = now.add(Duration(milliseconds: 500));
-        Future.delayed(Duration(milliseconds: 100), () {
+        _lastUpdate = now.add(const Duration(milliseconds: 500));
+        Future.delayed(const Duration(milliseconds: 100), () {
           notifyListeners();
         });
       }
@@ -100,7 +100,7 @@ class FontsModel extends CancelableBaseModel {
         cancelable: _loadingTask[font.id],
       );
       if (_lastEnableFont == font.id) {
-        this._themeModel.applyFont(font);
+        _themeModel.applyFont(font);
       }
     } catch (e) {
       e.debug();
@@ -112,13 +112,14 @@ class FontsModel extends CancelableBaseModel {
 
   @override
   void dispose() {
-    _loadingTask.values
-        .forEach((cancelable) => cancelable.cancel("on disposed..."));
+    for (Cancelable cancelable in _loadingTask.values) {
+      cancelable.cancel("on disposed...");
+    }
     _loadingTask.clear();
     super.dispose();
   }
 
   void resetDefaultFont() {
-    this._themeModel.applyFont(null);
+    _themeModel.applyFont(null);
   }
 }

@@ -12,8 +12,8 @@ class SubgroupModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
@@ -24,8 +24,8 @@ class SubgroupModel extends CancelableBaseModel {
   bool get loading => _loading;
 
   SubgroupModel(this.subgroup) {
-    this._loading = true;
-    this._loadBangumis();
+    _loading = true;
+    _loadBangumis();
   }
 
   List<SeasonGallery> _galleries = [];
@@ -37,10 +37,10 @@ class SubgroupModel extends CancelableBaseModel {
   RefreshController get refreshController => _refreshController;
 
   _loadBangumis() async {
-    final Resp resp = await (this + Repo.subgroup(this.subgroup.id));
-    this._loading = false;
+    final Resp resp = await (this + Repo.subgroup(subgroup.id));
+    _loading = false;
     if (resp.success) {
-      this._galleries = resp.data;
+      _galleries = resp.data;
     } else {
       "加载字幕组作品年表失败：${resp.msg}".toast();
     }
@@ -48,7 +48,7 @@ class SubgroupModel extends CancelableBaseModel {
   }
 
   refresh() async {
-    if (this._loading) return _refreshController.refreshCompleted();
+    if (_loading) return _refreshController.refreshCompleted();
     await _loadBangumis();
     _refreshController.refreshCompleted();
   }

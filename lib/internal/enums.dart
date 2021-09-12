@@ -4,16 +4,16 @@ class WeekSection {
 
   const WeekSection._(this.name, this.shortName);
 
-  static final WeekSection mon = const WeekSection._("星期一", "月");
-  static final WeekSection tue = const WeekSection._("星期二", "火");
-  static final WeekSection wed = const WeekSection._("星期三", "水");
-  static final WeekSection thu = const WeekSection._("星期四", "木");
-  static final WeekSection fri = const WeekSection._("星期五", "金");
-  static final WeekSection sat = const WeekSection._("星期六", "土");
-  static final WeekSection sun = const WeekSection._("星期日", "日");
-  static final WeekSection mv = const WeekSection._("剧场版", "剧");
-  static final WeekSection ova = const WeekSection._("OVA", "O");
-  static final List<WeekSection> values = [
+  static const WeekSection mon = WeekSection._("星期一", "月");
+  static const WeekSection tue = WeekSection._("星期二", "火");
+  static const WeekSection wed = WeekSection._("星期三", "水");
+  static const WeekSection thu = WeekSection._("星期四", "木");
+  static const WeekSection fri = WeekSection._("星期五", "金");
+  static const WeekSection sat = WeekSection._("星期六", "土");
+  static const WeekSection sun = WeekSection._("星期日", "日");
+  static const WeekSection mv = WeekSection._("剧场版", "剧");
+  static const WeekSection ova = WeekSection._("OVA", "O");
+  static const List<WeekSection> values = [
     mon,
     tue,
     wed,

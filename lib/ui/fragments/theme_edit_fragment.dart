@@ -17,7 +17,7 @@ class ThemeEditFragment extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return ChangeNotifierProvider(
-      create: (_) => ThemeEditModel(this.themeItem, context.read<ThemeModel>()),
+      create: (_) => ThemeEditModel(themeItem, context.read<ThemeModel>()),
       child: Material(
         color: theme.backgroundColor,
         child: _buildThemeFactoryWrapper(theme),
@@ -47,7 +47,7 @@ class ThemeEditFragment extends StatelessWidget {
                     height: 56.0,
                     child: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: Text(
                             "跟随系统",
                             style: textStyle16,
@@ -71,7 +71,7 @@ class ThemeEditFragment extends StatelessWidget {
                       height: 56.0,
                       child: Row(
                         children: [
-                          Expanded(
+                          const Expanded(
                             child: Text(
                               "暗色模式",
                               style: textStyle16,
@@ -104,7 +104,7 @@ class ThemeEditFragment extends StatelessWidget {
                     height: 56.0,
                     child: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: Text(
                             "主色调",
                             style: textStyle16,
@@ -143,7 +143,7 @@ class ThemeEditFragment extends StatelessWidget {
                     height: 56.0,
                     child: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: Text(
                             "强调色",
                             style: textStyle16,
@@ -184,7 +184,7 @@ class ThemeEditFragment extends StatelessWidget {
                       height: 56.0,
                       child: Row(
                         children: [
-                          Expanded(
+                          const Expanded(
                             child: Text(
                               "背景色",
                               style: textStyle16,
@@ -225,7 +225,7 @@ class ThemeEditFragment extends StatelessWidget {
                       height: 56.0,
                       child: Row(
                         children: [
-                          Expanded(
+                          const Expanded(
                             child: Text(
                               "前景色",
                               style: textStyle16,
@@ -265,7 +265,7 @@ class ThemeEditFragment extends StatelessWidget {
                       height: 56.0,
                       child: Row(
                         children: [
-                          Expanded(
+                          const Expanded(
                             child: Text(
                               "背景色 暗色",
                               style: textStyle16,
@@ -306,7 +306,7 @@ class ThemeEditFragment extends StatelessWidget {
                       height: 56.0,
                       child: Row(
                         children: [
-                          Expanded(
+                          const Expanded(
                             child: Text(
                               "前景色 暗色",
                               style: textStyle16,
@@ -329,7 +329,7 @@ class ThemeEditFragment extends StatelessWidget {
                         ],
                       ),
                     ),
-                  SizedBox(
+                  const SizedBox(
                     height: 12.0,
                   ),
                 ],
@@ -353,7 +353,7 @@ class ThemeEditFragment extends StatelessWidget {
         return AlertDialog(
           titlePadding: EdgeInsets.zero,
           contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: borderRadius16,
           ),
           backgroundColor: theme.backgroundColor,
@@ -361,13 +361,13 @@ class ThemeEditFragment extends StatelessWidget {
             child: ColorPicker(
               color: color,
               onColorChangeEnd: onColorChanged,
-              pickersEnabled: {
+              pickersEnabled: const {
                 ColorPickerType.primary: true,
                 ColorPickerType.accent: true,
                 ColorPickerType.bw: true,
                 ColorPickerType.wheel: true,
               },
-              pickerTypeLabels: {
+              pickerTypeLabels: const {
                 ColorPickerType.primary: "主色调",
                 ColorPickerType.accent: "强调色",
                 ColorPickerType.bw: "黑&白",
@@ -376,7 +376,7 @@ class ThemeEditFragment extends StatelessWidget {
               pickerTypeTextStyle: textStyle15B500,
               selectedPickerTypeColor: theme.scaffoldBackgroundColor,
               enableOpacity: true,
-              title: Text(
+              title: const Text(
                 "请选择",
                 style: textStyle20B,
               ),
@@ -398,7 +398,7 @@ class ThemeEditFragment extends StatelessWidget {
       padding: edge16,
       child: Row(
         children: <Widget>[
-          Expanded(
+          const Expanded(
             child: Text(
               "编辑主题",
               style: textStyle20B,
@@ -406,12 +406,12 @@ class ThemeEditFragment extends StatelessWidget {
           ),
           MaterialButton(
             onPressed: () {
-              themeEditModel.apply(this.themeItem == null, () {
+              themeEditModel.apply(themeItem == null, () {
                 Navigator.pop(context);
               });
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            child: Icon(
+            child: const Icon(
               FluentIcons.save_24_regular,
               size: 16.0,
             ),

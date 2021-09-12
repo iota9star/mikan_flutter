@@ -24,7 +24,6 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -32,10 +31,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class IndexFragment extends StatefulWidget {
+  const IndexFragment({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _IndexFragmentState();
-
-  const IndexFragment();
 }
 
 class _IndexFragmentState extends State<IndexFragment> {
@@ -76,47 +75,45 @@ class _IndexFragmentState extends State<IndexFragment> {
                 distance: Screen.statusBarHeight + 42.0,
               ),
               onRefresh: indexModel.refresh,
-              child: NormalScrollConfiguration(
-                child: CustomScrollView(
-                  slivers: [
-                    _buildHeader(context, theme),
-                    _buildCarousels(theme),
-                    _buildOVASection(),
-                    _buildOVAList(theme),
-                    ...List.generate(
-                      bangumiRows.length,
-                      (index) {
-                        final BangumiRow bangumiRow = bangumiRows[index];
-                        return MultiSliver(
-                          pushPinnedChildren: true,
-                          children: [
-                            _buildWeekSection(theme, bangumiRow),
-                            BangumiSliverGridFragment(
-                              padding: edgeHB16T4,
-                              bangumis: bangumiRow.bangumis,
-                              handleSubscribe: (bangumi, flag) {
-                                context.read<OpModel>().subscribeBangumi(
-                                  bangumi.id,
-                                  bangumi.subscribed,
-                                  onSuccess: () {
-                                    bangumi.subscribed = !bangumi.subscribed;
-                                    context
-                                        .read<OpModel>()
-                                        .subscribeChanged(flag);
-                                  },
-                                  onError: (msg) {
-                                    "订阅失败：$msg".toast();
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    sliverSizedBoxH80,
-                  ],
-                ),
+              child: CustomScrollView(
+                slivers: [
+                  _buildHeader(context, theme),
+                  _buildCarousels(theme),
+                  _buildOVASection(),
+                  _buildOVAList(theme),
+                  ...List.generate(
+                    bangumiRows.length,
+                    (index) {
+                      final BangumiRow bangumiRow = bangumiRows[index];
+                      return MultiSliver(
+                        pushPinnedChildren: true,
+                        children: [
+                          _buildWeekSection(theme, bangumiRow),
+                          BangumiSliverGridFragment(
+                            padding: edgeHB16T4,
+                            bangumis: bangumiRow.bangumis,
+                            handleSubscribe: (bangumi, flag) {
+                              context.read<OpModel>().subscribeBangumi(
+                                bangumi.id,
+                                bangumi.subscribed,
+                                onSuccess: () {
+                                  bangumi.subscribed = !bangumi.subscribed;
+                                  context
+                                      .read<OpModel>()
+                                      .subscribeChanged(flag);
+                                },
+                                onError: (msg) {
+                                  "订阅失败：$msg".toast();
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  sliverSizedBoxH80,
+                ],
               ),
             );
           },
@@ -188,7 +185,7 @@ class _IndexFragmentState extends State<IndexFragment> {
         if (ovas.isSafeNotEmpty) return child!;
         return emptySliverToBoxAdapter;
       },
-      child: SliverToBoxAdapter(
+      child: const SliverToBoxAdapter(
         child: Padding(
           padding: edgeH16T8,
           child: Text(
@@ -205,7 +202,7 @@ class _IndexFragmentState extends State<IndexFragment> {
       selector: (_, model) => model.carousels,
       shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, carousels, __) {
-        if (carousels.isNotEmpty)
+        if (carousels.isNotEmpty) {
           return SliverToBoxAdapter(
             child: Container(
               margin: edgeV8,
@@ -222,7 +219,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                       final diff =
                           (_infiniteScrollController.offset - currentOffset);
                       final ver = (diff / 36).abs();
-                      var hor = (diff / 72).abs();
+                      double hor = (diff / 72).abs();
                       if (hor < 8.0) {
                         hor = 8.0;
                       } else if (hor > 12.0) {
@@ -273,6 +270,7 @@ class _IndexFragmentState extends State<IndexFragment> {
               ),
             ),
           );
+        }
         return emptySliverToBoxAdapter;
       },
     );
@@ -325,7 +323,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                   onPressed: () {
                     _showSearchPanel(context);
                   },
-                  child: Icon(FluentIcons.search_24_regular),
+                  child: const Icon(FluentIcons.search_24_regular),
                   minWidth: 48.0,
                   padding: edge8,
                   shape: circleShape,
@@ -372,7 +370,7 @@ class _IndexFragmentState extends State<IndexFragment> {
           onPressed: () {
             _showYearSeasonBottomSheet(context);
           },
-          child: Icon(
+          child: const Icon(
             FluentIcons.chevron_down_24_regular,
             size: 14.0,
           ),

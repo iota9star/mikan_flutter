@@ -40,7 +40,7 @@ String getScreenshots() {
   for (var i = 0; i < length; i++) {
     var file = screenshots.elementAt(i);
     sb.write("| ![](");
-    sb.write(file.path.replaceAll(new RegExp(r'\\'), r'/'));
+    sb.write(file.path.replaceAll(RegExp(r'\\'), r'/'));
     sb.write(") ");
     if ((i + 1) % 3 == 0 || i == length - 1) {
       sb.write("|  \n");

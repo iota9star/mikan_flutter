@@ -3,7 +3,7 @@ import 'package:mikan_flutter/internal/hive.dart';
 
 part 'theme_item.g.dart';
 
-@HiveType(typeId: MyHive.THEME_ITEM)
+@HiveType(typeId: MyHive.themeItem)
 class ThemeItem extends HiveObject {
   @HiveField(0)
   int? id;

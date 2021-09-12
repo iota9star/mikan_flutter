@@ -14,7 +14,6 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subscribed_season_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -47,7 +46,7 @@ class SubscribedSeasonPage extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
-        create: (_) => SubscribedSeasonModel(this.years, this.galleries),
+        create: (_) => SubscribedSeasonModel(years, galleries),
         child: Builder(builder: (context) {
           final model =
               Provider.of<SubscribedSeasonModel>(context, listen: false);
@@ -105,47 +104,43 @@ class SubscribedSeasonPage extends StatelessWidget {
     final ThemeData theme,
     final List<SeasonGallery> galleries,
   ) {
-    return NormalScrollConfiguration(
-      child: CustomScrollView(
-        slivers: [
-          _buildHeader(theme),
-          if (galleries.isSafeNotEmpty)
-            ...List.generate(
-              galleries.length,
-              (index) {
-                final SeasonGallery gallery = galleries[index];
-                return MultiSliver(
-                  pushPinnedChildren: true,
-                  children: <Widget>[
-                    _buildSeasonSection(context, theme, gallery),
-                    gallery.bangumis.isNullOrEmpty
-                        ? _buildEmptySubscribedContainer(theme)
-                        : BangumiSliverGridFragment(
-                            flag: gallery.title,
-                            padding: edge16,
-                            bangumis: gallery.bangumis,
-                            handleSubscribe: (bangumi, flag) {
-                              context.read<OpModel>().subscribeBangumi(
-                                bangumi.id,
-                                bangumi.subscribed,
-                                onSuccess: () {
-                                  bangumi.subscribed = !bangumi.subscribed;
-                                  context
-                                      .read<OpModel>()
-                                      .subscribeChanged(flag);
-                                },
-                                onError: (msg) {
-                                  "订阅失败：$msg".toast();
-                                },
-                              );
-                            },
-                          ),
-                  ],
-                );
-              },
-            ),
-        ],
-      ),
+    return CustomScrollView(
+      slivers: [
+        _buildHeader(theme),
+        if (galleries.isSafeNotEmpty)
+          ...List.generate(
+            galleries.length,
+            (index) {
+              final SeasonGallery gallery = galleries[index];
+              return MultiSliver(
+                pushPinnedChildren: true,
+                children: <Widget>[
+                  _buildSeasonSection(context, theme, gallery),
+                  gallery.bangumis.isNullOrEmpty
+                      ? _buildEmptySubscribedContainer(theme)
+                      : BangumiSliverGridFragment(
+                          flag: gallery.title,
+                          padding: edge16,
+                          bangumis: gallery.bangumis,
+                          handleSubscribe: (bangumi, flag) {
+                            context.read<OpModel>().subscribeBangumi(
+                              bangumi.id,
+                              bangumi.subscribed,
+                              onSuccess: () {
+                                bangumi.subscribed = !bangumi.subscribed;
+                                context.read<OpModel>().subscribeChanged(flag);
+                              },
+                              onError: (msg) {
+                                "订阅失败：$msg".toast();
+                              },
+                            );
+                          },
+                        ),
+                ],
+              );
+            },
+          ),
+      ],
     );
   }
 
@@ -167,7 +162,7 @@ class SubscribedSeasonPage extends StatelessWidget {
           ),
           borderRadius: borderRadius16,
         ),
-        child: Center(
+        child: const Center(
           child: Text(
             ">_< 您还没有订阅当前季度番组，快去添加订阅吧",
           ),
@@ -215,7 +210,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 shape: circleShape,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Icon(
+                child: const Icon(
                   FluentIcons.chevron_right_24_regular,
                   size: 16.0,
                 ),
@@ -249,7 +244,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(
+                  child: const Icon(
                     FluentIcons.chevron_left_24_regular,
                     size: 16.0,
                   ),
@@ -262,7 +257,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                       : theme.backgroundColor,
                 ),
                 sizedBoxW12,
-                Expanded(
+                const Expanded(
                   child: Text(
                     "季度订阅",
                     style: textStyle24B,

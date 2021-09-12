@@ -4,7 +4,7 @@ import 'package:mikan_flutter/model/bangumi.dart';
 
 part 'bangumi_row.g.dart';
 
-@HiveType(typeId: MyHive.MIKAN_BANGUMI_ROW)
+@HiveType(typeId: MyHive.mikanBangumiRow)
 class BangumiRow extends HiveObject {
   // 周几或者剧场版之类的名称
   @HiveField(0)

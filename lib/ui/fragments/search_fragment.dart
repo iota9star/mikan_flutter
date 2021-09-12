@@ -14,7 +14,6 @@ import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/search_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +21,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 @immutable
 class SearchFragment extends StatelessWidget {
-  const SearchFragment();
+  const SearchFragment({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,19 +55,17 @@ class SearchFragment extends StatelessWidget {
     final ThemeData theme,
     final SearchModel searchModel,
   ) {
-    return NormalScrollConfiguration(
-      child: CustomScrollView(
-        controller: ModalScrollController.of(context),
-        slivers: [
-          _buildHeader(context, theme, searchModel),
-          _buildSubgroupSection(theme),
-          _buildSubgroupList(theme, searchModel),
-          _buildRecommendSection(theme),
-          _buildRecommendList(theme),
-          _buildSearchResultSection(theme),
-          _buildSearchResultList(theme, searchModel),
-        ],
-      ),
+    return CustomScrollView(
+      controller: ModalScrollController.of(context),
+      slivers: [
+        _buildHeader(context, theme, searchModel),
+        _buildSubgroupSection(theme),
+        _buildSubgroupList(theme, searchModel),
+        _buildRecommendSection(theme),
+        _buildRecommendList(theme),
+        _buildSearchResultSection(theme),
+        _buildSearchResultList(theme, searchModel),
+      ],
     );
   }
 
@@ -150,7 +147,7 @@ class SearchFragment extends StatelessWidget {
           return emptySliverToBoxAdapter;
         }
         return SliverToBoxAdapter(
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             height: 220,
             child: ListView.builder(
@@ -309,7 +306,7 @@ class SearchFragment extends StatelessWidget {
         return MaterialButton(
           minWidth: 0,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shape: RoundedRectangleBorder(borderRadius: borderRadius10),
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
           child: Text(
             subgroup.name,
             style: TextStyle(
@@ -383,7 +380,7 @@ class SearchFragment extends StatelessWidget {
           FluentIcons.search_24_regular,
           color: theme.secondary,
         ),
-        contentPadding: EdgeInsets.only(
+        contentPadding: const EdgeInsets.only(
           left: 14.0,
           right: 14.0,
         ),
@@ -413,7 +410,7 @@ class SearchFragment extends StatelessWidget {
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: circleShape,
           padding: EdgeInsets.zero,
-          child: Icon(
+          child: const Icon(
             FluentIcons.chevron_left_24_regular,
             size: 16.0,
           ),
@@ -422,7 +419,7 @@ class SearchFragment extends StatelessWidget {
           },
         ),
         sizedBoxW12,
-        Expanded(
+        const Expanded(
           child: Text(
             "搜索",
             style: textStyle24B,
@@ -433,7 +430,7 @@ class SearchFragment extends StatelessWidget {
           shouldRebuild: (pre, next) => pre != next,
           builder: (_, loading, __) {
             if (loading) {
-              return CupertinoActivityIndicator(radius: 12.0);
+              return const CupertinoActivityIndicator(radius: 12.0);
             }
             return sizedBox;
           },
@@ -458,7 +455,7 @@ class SearchFragment extends StatelessWidget {
             Container(
               width: 4,
               height: 12,
-              margin: EdgeInsets.only(top: 2.0),
+              margin: const EdgeInsets.only(top: 2.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -477,7 +474,7 @@ class SearchFragment extends StatelessWidget {
                 bangumi.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14.0,
                   height: 1.25,
                   color: Colors.white,
@@ -491,12 +488,12 @@ class SearchFragment extends StatelessWidget {
         if (value.extendedImageLoadState == LoadState.loading) {
           cover = Container(
             padding: edge28,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: borderRadius8,
             ),
             child: Center(
               child: SpinKitPumpingHeart(
-                duration: Duration(milliseconds: 960),
+                duration: const Duration(milliseconds: 960),
                 itemBuilder: (_, __) => ExtendedImage.asset(
                   "assets/mikan.png",
                 ),
@@ -505,7 +502,7 @@ class SearchFragment extends StatelessWidget {
           );
         } else if (value.extendedImageLoadState == LoadState.failed) {
           cover = Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: borderRadius8,
               image: DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
@@ -540,7 +537,7 @@ class SearchFragment extends StatelessWidget {
               ),
               Positioned.fill(
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,

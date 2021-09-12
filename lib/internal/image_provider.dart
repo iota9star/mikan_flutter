@@ -67,8 +67,9 @@ class FastCacheImage extends painting.ImageProvider<painting.NetworkImage>
   static HttpClient get _httpClient {
     HttpClient client = _sharedHttpClient;
     assert(() {
-      if (debugNetworkImageHttpClientProvider != null)
+      if (debugNetworkImageHttpClientProvider != null) {
         client = debugNetworkImageHttpClientProvider!();
+      }
       return true;
     }());
     return client;
@@ -139,8 +140,9 @@ class FastCacheImage extends painting.ImageProvider<painting.NetworkImage>
           ));
         },
       );
-      if (bytes.lengthInBytes == 0)
+      if (bytes.lengthInBytes == 0) {
         throw Exception('NetworkImage is an empty file: $resolved');
+      }
 
       await cacheFile.writeAsBytes(bytes);
       return decode(bytes);

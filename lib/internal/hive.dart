@@ -18,18 +18,18 @@ import 'package:mikan_flutter/model/year_season.dart';
 class MyHive {
   const MyHive._();
 
-  static const int THEME_ITEM = 1;
+  static const int themeItem = 1;
 
-  static const int MIKAN_BANGUMI = THEME_ITEM + 1;
-  static const int MIKAN_BANGUMI_ROW = MIKAN_BANGUMI + 1;
-  static const int MIKAN_CAROUSEL = MIKAN_BANGUMI_ROW + 1;
-  static const int MIKAN_INDEX = MIKAN_CAROUSEL + 1;
-  static const int MIKAN_USER = MIKAN_INDEX + 1;
-  static const int MIKAN_SUBGROUP = MIKAN_USER + 1;
-  static const int MIKAN_SEASON = MIKAN_SUBGROUP + 1;
-  static const int MIKAN_YEAR_SEASON = MIKAN_SEASON + 1;
-  static const int MIKAN_RECORD_ITEM = MIKAN_YEAR_SEASON + 1;
-  static const int MIKAN_ITEM_LOCATION = MIKAN_RECORD_ITEM + 1;
+  static const int mikanBangumi = themeItem + 1;
+  static const int mikanBangumiRow = mikanBangumi + 1;
+  static const int mikanCarousel = mikanBangumiRow + 1;
+  static const int mikanIndex = mikanCarousel + 1;
+  static const int mikanUser = mikanIndex + 1;
+  static const int mikanSubgroup = mikanUser + 1;
+  static const int mikanSeason = mikanSubgroup + 1;
+  static const int mikanYearSeason = mikanSeason + 1;
+  static const int mikanRecordItem = mikanYearSeason + 1;
+  static const int mikanItemLocation = mikanRecordItem + 1;
 
   static late Box<ThemeItem> themeItemBox;
   static late Box<Index> indexBox;
@@ -48,7 +48,7 @@ class MyHive {
     Hive.registerAdapter(YearSeasonAdapter());
     Hive.registerAdapter(RecordItemAdapter());
 
-    themeItemBox = await Hive.openBox<ThemeItem>(HiveBoxKey.THEMES);
+    themeItemBox = await Hive.openBox<ThemeItem>(HiveBoxKey.themes);
     if (themeItemBox.isEmpty) {
       final ThemeItem defaultTheme = ThemeItem()
         ..id = 1
@@ -68,12 +68,16 @@ class MyHive {
 }
 
 class HiveDBKey {
-  static const String THEME_ID = "THEME_ID";
-  static const String MIKAN_INDEX = "MIKAN_INDEX";
-  static const String MIKAN_OVA = "MIKAN_OVA";
+  const HiveDBKey._();
+
+  static const String themeId = "THEME_ID";
+  static const String mikanIndex = "MIKAN_INDEX";
+  static const String mikanOva = "MIKAN_OVA";
 }
 
 class HiveBoxKey {
-  static const String THEMES = "KEY_THEMES";
-  static const String LOGIN = "KEY_LOGIN";
+  const HiveBoxKey._();
+
+  static const String themes = "KEY_THEMES";
+  static const String login = "KEY_LOGIN";
 }

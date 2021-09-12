@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
@@ -21,7 +21,6 @@ import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -29,7 +28,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 @immutable
 class SubscribedFragment extends StatelessWidget {
-  const SubscribedFragment();
+  const SubscribedFragment({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,35 +60,33 @@ class SubscribedFragment extends StatelessWidget {
             enablePullDown: true,
             enablePullUp: false,
             onRefresh: subscribedModel.refresh,
-            child: NormalScrollConfiguration(
-              child: CustomScrollView(
-                slivers: [
-                  _buildHeader(theme),
-                  MultiSliver(
-                    pushPinnedChildren: true,
-                    children: [
-                      _buildRssSection(context, theme),
-                      _buildRssList(theme, subscribedModel),
-                    ],
-                  ),
-                  MultiSliver(
-                    pushPinnedChildren: true,
-                    children: [
-                      _buildSeasonRssSection(theme, subscribedModel),
-                      _buildSeasonRssList(theme, subscribedModel),
-                    ],
-                  ),
-                  MultiSliver(
-                    pushPinnedChildren: true,
-                    children: [
-                      _buildRssRecordsSection(context, theme),
-                      _buildRssRecordsList(theme),
-                    ],
-                  ),
-                  _buildSeeMore(theme, subscribedModel),
-                  sliverSizedBoxH80,
-                ],
-              ),
+            child: CustomScrollView(
+              slivers: [
+                _buildHeader(theme),
+                MultiSliver(
+                  pushPinnedChildren: true,
+                  children: [
+                    _buildRssSection(context, theme),
+                    _buildRssList(theme, subscribedModel),
+                  ],
+                ),
+                MultiSliver(
+                  pushPinnedChildren: true,
+                  children: [
+                    _buildSeasonRssSection(theme, subscribedModel),
+                    _buildSeasonRssList(theme, subscribedModel),
+                  ],
+                ),
+                MultiSliver(
+                  pushPinnedChildren: true,
+                  children: [
+                    _buildRssRecordsSection(context, theme),
+                    _buildRssRecordsList(theme),
+                  ],
+                ),
+                _buildSeeMore(theme, subscribedModel),
+                sliverSizedBoxH80,
+              ],
             ),
           ),
         ),
@@ -114,7 +111,7 @@ class SubscribedFragment extends StatelessWidget {
             padding: edge16WithStatusBar,
             duration: dur240,
             child: Row(
-              children: <Widget>[
+              children: const <Widget>[
                 Text(
                   "我的订阅",
                   style: textStyle24B,
@@ -175,7 +172,7 @@ class SubscribedFragment extends StatelessWidget {
                 ),
                 borderRadius: borderRadius16,
               ),
-              child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
+              child: const Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
             ),
           );
         }
@@ -213,7 +210,7 @@ class SubscribedFragment extends StatelessWidget {
           padding: edgeH16V8,
           child: Row(
             children: [
-              Expanded(
+              const Expanded(
                 child: Text(
                   "季度订阅",
                   style: textStyle20B,
@@ -247,7 +244,7 @@ class SubscribedFragment extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: circleShape,
-                    child: Icon(
+                    child: const Icon(
                       FluentIcons.chevron_right_24_regular,
                       size: 16.0,
                     ),
@@ -273,7 +270,7 @@ class SubscribedFragment extends StatelessWidget {
           padding: edgeH16V8,
           child: Row(
             children: [
-              Expanded(
+              const Expanded(
                 child: Text(
                   "最近更新",
                   style: textStyle20B,
@@ -295,7 +292,7 @@ class SubscribedFragment extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: circleShape,
-                    child: Icon(
+                    child: const Icon(
                       FluentIcons.chevron_right_24_regular,
                       size: 16.0,
                     ),
@@ -339,7 +336,7 @@ class SubscribedFragment extends StatelessWidget {
             ),
           );
         }
-        if (rss.isSafeNotEmpty)
+        if (rss.isSafeNotEmpty) {
           return SliverPadding(
             padding: edgeH16V8,
             sliver: SliverGrid(
@@ -357,6 +354,7 @@ class SubscribedFragment extends StatelessWidget {
               ),
             ),
           );
+        }
         return SliverToBoxAdapter(
           child: Container(
             width: double.infinity,
@@ -373,7 +371,7 @@ class SubscribedFragment extends StatelessWidget {
               ),
               borderRadius: borderRadius16,
             ),
-            child: Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
+            child: const Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
           ),
         );
       },
@@ -468,14 +466,14 @@ class SubscribedFragment extends StatelessWidget {
                     right: -10,
                     top: 4,
                     child: Transform.rotate(
-                      angle: Math.pi / 4.0,
+                      angle: math.pi / 4.0,
                       child: Container(
                         width: 42.0,
                         color: Colors.redAccent,
                         child: Text(
                           badge,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 10.0,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -520,7 +518,7 @@ class SubscribedFragment extends StatelessWidget {
               padding: edgeH16V8,
               child: Row(
                 children: [
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       "更新列表",
                       style: textStyle20B,
@@ -535,7 +533,7 @@ class SubscribedFragment extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: circleShape,
-                    child: Icon(
+                    child: const Icon(
                       FluentIcons.chevron_right_24_regular,
                       size: 16.0,
                     ),
@@ -612,7 +610,7 @@ class SubscribedFragment extends StatelessWidget {
                 ),
                 shadowColor: theme.secondary.withOpacity(0.87),
               ),
-              child: Text(
+              child: const Text(
                 "- _ - _ -  查看更多  - _ - _ -",
               ),
             ),

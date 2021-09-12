@@ -10,7 +10,7 @@ Future<void> main() async {
       "https://api.github.com/repos/iota9star/mikan_flutter/releases/latest"));
   var response = await request.close();
   if (response.statusCode == HttpStatus.ok) {
-    var join = await response.transform(Utf8Decoder()).join();
+    var join = await response.transform(const Utf8Decoder()).join();
     var result = jsonDecode(join);
     var arches = <String?>{
       "arm64-v8a",

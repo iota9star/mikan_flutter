@@ -21,7 +21,7 @@ class RecordDetailModel extends CancelableBaseModel {
   RecordDetail? get recordDetail => _recordDetail;
 
   RecordDetailModel(this.url) {
-    this.refresh();
+    refresh();
   }
 
   Color? _coverMainColor;
@@ -29,9 +29,9 @@ class RecordDetailModel extends CancelableBaseModel {
   Color? get coverMainColor => _coverMainColor;
 
   _loadCoverMainColor() {
-    if (this._recordDetail?.cover.isNullOrBlank == true) return;
+    if (_recordDetail?.cover.isNullOrBlank == true) return;
     PaletteGenerator.fromImageProvider(
-      FastCacheImage(this._recordDetail!.cover),
+      FastCacheImage(_recordDetail!.cover),
       maximumColorCount: 3,
       targets: [
         PaletteTarget.lightVibrant,
@@ -48,13 +48,13 @@ class RecordDetailModel extends CancelableBaseModel {
   }
 
   refresh() async {
-    if (this._loading) return;
-    this._loading = true;
+    if (_loading) return;
+    _loading = true;
     final Resp resp = await (this + Repo.details(url));
-    this._loading = false;
+    _loading = false;
     if (resp.success) {
-      this._recordDetail = resp.data;
-      this._loadCoverMainColor();
+      _recordDetail = resp.data;
+      _loadCoverMainColor();
     } else {
       "获取详情失败：${resp.msg}".toast();
     }

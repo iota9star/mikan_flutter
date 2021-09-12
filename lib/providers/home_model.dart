@@ -32,7 +32,7 @@ class HomeModel extends BaseModel {
 
   Future<void> checkAppVersion([bool autoCheck = true]) async {
     if (_checkingUpgrade) return;
-    this._checkingUpgrade = true;
+    _checkingUpgrade = true;
     notifyListeners();
     try {
       final String pubspec = await rootBundle.loadString("assets/pubspec.yaml");
@@ -68,7 +68,7 @@ class HomeModel extends BaseModel {
     } catch (e) {
       e.debug();
     } finally {
-      this._checkingUpgrade = false;
+      _checkingUpgrade = false;
       notifyListeners();
     }
   }
@@ -112,7 +112,7 @@ class HomeModel extends BaseModel {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "发现新版本，嘿嘿嘿...",
                       style: textStyle16B500,
                     ),
@@ -157,7 +157,7 @@ class HomeModel extends BaseModel {
                 color: theme.scaffoldBackgroundColor,
                 borderRadius: borderRadius8,
               ),
-              child: Text("* 点击列表右侧下载按钮速度很快哦..."),
+              child: const Text("* 点击列表右侧下载按钮速度很快哦..."),
             ),
             sizedBoxH8,
             for (final item in meta["files"])
@@ -181,7 +181,7 @@ class HomeModel extends BaseModel {
                           onPressed: () {
                             item["cdl"].toString().launchAppAndCopy();
                           },
-                          child: Icon(
+                          child: const Icon(
                             FluentIcons.arrow_download_24_regular,
                             size: 14.0,
                           ),
@@ -235,7 +235,7 @@ class HomeModel extends BaseModel {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(96.0, 36.0),
+                    minimumSize: const Size(96.0, 36.0),
                     shape: const RoundedRectangleBorder(
                       borderRadius: borderRadius8,
                     ),
@@ -256,7 +256,7 @@ class HomeModel extends BaseModel {
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(96.0, 36.0),
+                    minimumSize: const Size(96.0, 36.0),
                     shape: const RoundedRectangleBorder(
                       borderRadius: borderRadius8,
                     ),

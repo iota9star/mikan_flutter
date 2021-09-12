@@ -11,7 +11,6 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/season_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -34,7 +33,7 @@ class SingleSeasonPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return ChangeNotifierProvider(
-      create: (_) => SeasonModel(this.season),
+      create: (_) => SeasonModel(season),
       child: Builder(builder: (context) {
         final seasonModel = Provider.of<SeasonModel>(context, listen: false);
         return Scaffold(
@@ -64,41 +63,39 @@ class SingleSeasonPage extends StatelessWidget {
                     distance: Screen.statusBarHeight + 42.0,
                   ),
                   onRefresh: seasonModel.refresh,
-                  child: NormalScrollConfiguration(
-                    child: CustomScrollView(
-                      controller: ModalScrollController.of(context),
-                      slivers: [
-                        _buildHeader(theme),
-                        ...List.generate(bangumiRows.length, (index) {
-                          final BangumiRow bangumiRow = bangumiRows[index];
-                          return MultiSliver(
-                            pushPinnedChildren: true,
-                            children: [
-                              _buildWeekSection(theme, bangumiRow),
-                              BangumiSliverGridFragment(
-                                padding: edge16,
-                                bangumis: bangumiRow.bangumis,
-                                handleSubscribe: (bangumi, flag) {
-                                  context.read<OpModel>().subscribeBangumi(
-                                    bangumi.id,
-                                    bangumi.subscribed,
-                                    onSuccess: () {
-                                      bangumi.subscribed = !bangumi.subscribed;
-                                      context
-                                          .read<OpModel>()
-                                          .subscribeChanged(flag);
-                                    },
-                                    onError: (msg) {
-                                      "订阅失败：$msg".toast();
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        }),
-                      ],
-                    ),
+                  child: CustomScrollView(
+                    controller: ModalScrollController.of(context),
+                    slivers: [
+                      _buildHeader(theme),
+                      ...List.generate(bangumiRows.length, (index) {
+                        final BangumiRow bangumiRow = bangumiRows[index];
+                        return MultiSliver(
+                          pushPinnedChildren: true,
+                          children: [
+                            _buildWeekSection(theme, bangumiRow),
+                            BangumiSliverGridFragment(
+                              padding: edge16,
+                              bangumis: bangumiRow.bangumis,
+                              handleSubscribe: (bangumi, flag) {
+                                context.read<OpModel>().subscribeBangumi(
+                                  bangumi.id,
+                                  bangumi.subscribed,
+                                  onSuccess: () {
+                                    bangumi.subscribed = !bangumi.subscribed;
+                                    context
+                                        .read<OpModel>()
+                                        .subscribeChanged(flag);
+                                  },
+                                  onError: (msg) {
+                                    "订阅失败：$msg".toast();
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }),
+                    ],
                   ),
                 );
               },
@@ -131,7 +128,7 @@ class SingleSeasonPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(
+                  child: const Icon(
                     FluentIcons.chevron_left_24_regular,
                     size: 16.0,
                   ),
@@ -145,7 +142,7 @@ class SingleSeasonPage extends StatelessWidget {
                 ),
                 sizedBoxW12,
                 Text(
-                  this.season.title,
+                  season.title,
                   style: textStyle24B,
                 ),
               ],

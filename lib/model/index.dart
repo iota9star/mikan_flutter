@@ -8,7 +8,7 @@ import 'package:mikan_flutter/model/year_season.dart';
 
 part 'index.g.dart';
 
-@HiveType(typeId: MyHive.MIKAN_INDEX)
+@HiveType(typeId: MyHive.mikanIndex)
 class Index extends HiveObject {
   @HiveField(0)
   final List<YearSeason> years;

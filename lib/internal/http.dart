@@ -17,8 +17,8 @@ import 'package:mikan_flutter/internal/store.dart';
 class _BaseInterceptor extends InterceptorsWrapper {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final int timeout = 60 * 1000;
-    options.baseUrl = MikanUrl.BASE_URL;
+    const int timeout = 60 * 1000;
+    options.baseUrl = MikanUrl.baseUrl;
     options.connectTimeout = timeout;
     options.receiveTimeout = timeout;
     options.headers["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -45,33 +45,33 @@ class MikanTransformer extends DefaultTransformer {
       if (func.isNotBlank) {
         final Document document = parse(transformResponse);
         switch (func) {
-          case MikanFunc.SEASON:
+          case MikanFunc.season:
             return await Resolver.parseSeason(document);
-          case MikanFunc.DAY:
+          case MikanFunc.day:
             return await Resolver.parseDay(document);
-          case MikanFunc.SEARCH:
+          case MikanFunc.search:
             return await Resolver.parseSearch(document);
-          case MikanFunc.USER:
+          case MikanFunc.user:
             return await Resolver.parseUser(document);
-          case MikanFunc.LIST:
+          case MikanFunc.list:
             return await Resolver.parseList(document);
-          case MikanFunc.INDEX:
+          case MikanFunc.index:
             return await Resolver.parseIndex(document);
-          case MikanFunc.SUBGROUP:
+          case MikanFunc.subgroup:
             return await Resolver.parseSubgroup(document);
-          case MikanFunc.BANGUMI:
+          case MikanFunc.bangumi:
             return await Resolver.parseBangumi(document);
-          case MikanFunc.BANGUMI_MORE:
+          case MikanFunc.bangumiMore:
             return await Resolver.parseBangumiMore(document);
-          case MikanFunc.DETAILS:
+          case MikanFunc.details:
             return await Resolver.parseRecordDetail(document);
-          case MikanFunc.SUBSCRIBED_SEASON:
+          case MikanFunc.subscribedSeason:
             return await Resolver.parseMySubscribed(document);
-          case MikanFunc.REFRESH_LOGIN_TOKEN:
+          case MikanFunc.refreshLoginToken:
             return await Resolver.parseRefreshLoginToken(document);
-          case MikanFunc.REFRESH_REGISTER_TOKEN:
+          case MikanFunc.refreshRegisterToken:
             return await Resolver.parseRefreshRegisterToken(document);
-          case MikanFunc.REFRESH_FORGOTPASSWORD_TOKEN:
+          case MikanFunc.refreshForgotPasswordToken:
             return await Resolver.parseRefreshForgotPasswordToken(document);
         }
       }
@@ -100,7 +100,7 @@ class _Http extends DioForNative {
     //   // you can also create a HttpClient to dio
     //   // return HttpClient();
     // };
-    this.interceptors
+    interceptors
       ..add(_BaseInterceptor())
       ..add(
         LogInterceptor(
@@ -115,7 +115,7 @@ class _Http extends DioForNative {
       )
       ..add(CookieManager(PersistCookieJar(storage: FileStorage(cookiesDir))));
 
-    this.transformer = MikanTransformer();
+    transformer = MikanTransformer();
   }
 }
 
@@ -129,9 +129,7 @@ class _Fetcher {
   factory _Fetcher({
     String? cookiesDir,
   }) {
-    if (_fetcher == null) {
-      _fetcher = _Fetcher._(cookiesDir: cookiesDir);
-    }
+    _fetcher ??= _Fetcher._(cookiesDir: cookiesDir);
     return _fetcher!;
   }
 
@@ -159,20 +157,20 @@ class _Fetcher {
       try {
         final _Http http = _Fetcher(cookiesDir: proto.cookiesDir)._http;
         Response resp;
-        if (proto.method == _RequestMethod.GET) {
+        if (proto.method == _RequestMethod.get) {
           resp = await http.get(
             proto.url,
             queryParameters: proto.queryParameters,
             options: proto.options,
           );
-        } else if (proto.method == _RequestMethod.POST_FORM) {
+        } else if (proto.method == _RequestMethod.postForm) {
           resp = await http.post(
             proto.url,
             data: FormData.fromMap(proto.data),
             queryParameters: proto.queryParameters,
             options: proto.options,
           );
-        } else if (proto.method == _RequestMethod.POST_JSON) {
+        } else if (proto.method == _RequestMethod.postJson) {
           resp = await http.post(
             proto.url,
             data: proto.data,
@@ -184,12 +182,12 @@ class _Fetcher {
               .send(Resp(false, msg: "Not support request method."));
         }
         if (resp.statusCode == HttpStatus.ok) {
-          if (proto.method == _RequestMethod.POST_FORM &&
-              (resp.requestOptions.path == MikanUrl.LOGIN ||
-                  resp.requestOptions.path == MikanUrl.REGISTER)) {
+          if (proto.method == _RequestMethod.postForm &&
+              (resp.requestOptions.path == MikanUrl.login ||
+                  resp.requestOptions.path == MikanUrl.register)) {
             proto._sendPort.send(Resp(
               false,
-              msg: resp.requestOptions.path == MikanUrl.LOGIN
+              msg: resp.requestOptions.path == MikanUrl.login
                   ? "登录失败，请稍后重试"
                   : "注册失败，请稍后重试",
             ));
@@ -207,10 +205,10 @@ class _Fetcher {
       } catch (e) {
         if (e is DioError &&
             e.response?.statusCode == 302 &&
-            proto.method == _RequestMethod.POST_FORM &&
-            (e.requestOptions.path == MikanUrl.LOGIN ||
-                e.requestOptions.path == MikanUrl.REGISTER ||
-                e.requestOptions.path == MikanUrl.FORGOT_PASSWORD)) {
+            proto.method == _RequestMethod.postForm &&
+            (e.requestOptions.path == MikanUrl.login ||
+                e.requestOptions.path == MikanUrl.register ||
+                e.requestOptions.path == MikanUrl.forgotPassword)) {
           proto._sendPort.send(Resp(true));
         } else {
           "请求出错：$e".error();
@@ -231,7 +229,7 @@ class Http {
   }) async {
     final _Protocol proto = _Protocol(
       url,
-      _RequestMethod.GET,
+      _RequestMethod.get,
       queryParameters: queryParameters,
       options: options,
       cookiesDir: Store.cookiesPath,
@@ -247,7 +245,7 @@ class Http {
   }) async {
     final _Protocol proto = _Protocol(
       url,
-      _RequestMethod.POST_FORM,
+      _RequestMethod.postForm,
       data: data,
       queryParameters: queryParameters,
       options: options,
@@ -264,7 +262,7 @@ class Http {
   }) async {
     final _Protocol proto = _Protocol(
       url,
-      _RequestMethod.POST_JSON,
+      _RequestMethod.postJson,
       data: data,
       queryParameters: queryParameters,
       options: options,
@@ -274,12 +272,12 @@ class Http {
   }
 }
 
-enum _RequestMethod { POST_FORM, POST_JSON, GET }
+enum _RequestMethod { postForm, postJson, get }
 
 class _Protocol {
   final String url;
   final _RequestMethod method;
-  final data;
+  final dynamic data;
   final Map<String, dynamic>? queryParameters;
   final Options? options;
 

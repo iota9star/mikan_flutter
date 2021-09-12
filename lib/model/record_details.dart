@@ -31,22 +31,32 @@ class RecordDetail {
   String get shareString {
     final StringBuffer sb = StringBuffer();
     if (name.isNotBlank) {
-      sb..write("番组名称：")..write(name)..write("\n");
+      sb
+        ..write("番组名称：")
+        ..write(name)
+        ..write("\n");
     }
     if (id.isNotBlank) {
       sb
         ..write("番组地址：")
-        ..write(MikanUrl.BASE_URL)
-        ..write(MikanUrl.BANGUMI)
+        ..write(MikanUrl.baseUrl)
+        ..write(MikanUrl.bangumi)
         ..write(id)
         ..write("\n");
     }
     if (title.isNotBlank) {
-      sb..write("标题：")..write(title)..write("\n");
+      sb
+        ..write("标题：")
+        ..write(title)
+        ..write("\n");
     }
     if (more.isSafeNotEmpty) {
       more.forEach((key, value) {
-        sb..write(key)..write("：")..write(value)..write("\n");
+        sb
+          ..write(key)
+          ..write("：")
+          ..write(value)
+          ..write("\n");
       });
     }
     if (subgroups.isSafeNotEmpty) {
@@ -56,19 +66,34 @@ class RecordDetail {
         ..write("\n");
     }
     if (url.isNotBlank) {
-      sb..write("详情地址：")..write(url)..write("\n");
+      sb
+        ..write("详情地址：")
+        ..write(url)
+        ..write("\n");
     }
     if (tags.isSafeNotEmpty) {
-      sb..write("标签：")..write(tags.join("，"))..write("\n");
+      sb
+        ..write("标签：")
+        ..write(tags.join("，"))
+        ..write("\n");
     }
     if (cover.isNotBlank) {
-      sb..write("封面地址：")..write(cover)..write("\n");
+      sb
+        ..write("封面地址：")
+        ..write(cover)
+        ..write("\n");
     }
     if (magnet.isNotBlank) {
-      sb..write("磁链地址：")..write(magnet)..write("\n");
+      sb
+        ..write("磁链地址：")
+        ..write(magnet)
+        ..write("\n");
     }
     if (torrent.isNotBlank) {
-      sb..write("种子地址：")..write(torrent)..write("\n");
+      sb
+        ..write("种子地址：")
+        ..write(torrent)
+        ..write("\n");
     }
     return sb.toString();
   }

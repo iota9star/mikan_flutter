@@ -12,31 +12,31 @@ class ThemeEditModel extends BaseModel {
   ThemeItem get themeItem => _themeItem;
 
   ThemeEditModel(ThemeItem? themeItem, this._themeModel) {
-    this._themeItem = themeItem ?? ThemeItem()
+    _themeItem = themeItem ?? ThemeItem()
       ..id = DateTime.now().microsecondsSinceEpoch
       ..canDelete = true
       ..autoMode = true
       ..isDark = false
-      ..primaryColor = this._themeModel.themeItem.primaryColor
-      ..accentColor = this._themeModel.themeItem.accentColor
-      ..lightBackgroundColor = this._themeModel.themeItem.lightBackgroundColor
+      ..primaryColor = _themeModel.themeItem.primaryColor
+      ..accentColor = _themeModel.themeItem.accentColor
+      ..lightBackgroundColor = _themeModel.themeItem.lightBackgroundColor
       ..lightScaffoldBackgroundColor =
-          this._themeModel.themeItem.lightScaffoldBackgroundColor
-      ..darkBackgroundColor = this._themeModel.themeItem.darkBackgroundColor
+          _themeModel.themeItem.lightScaffoldBackgroundColor
+      ..darkBackgroundColor = _themeModel.themeItem.darkBackgroundColor
       ..darkScaffoldBackgroundColor =
-          this._themeModel.themeItem.darkScaffoldBackgroundColor
-      ..fontFamily = this._themeModel.themeItem.fontFamily;
+          _themeModel.themeItem.darkScaffoldBackgroundColor
+      ..fontFamily = _themeModel.themeItem.fontFamily;
   }
 
   apply(final bool isAdd, final VoidCallback afterApply) {
     isAdd.debug();
     if (isAdd) {
-      MyHive.themeItemBox.add(this._themeItem);
+      MyHive.themeItemBox.add(_themeItem);
     } else {
-      this._themeItem.save();
+      _themeItem.save();
     }
-    if (this._themeModel.themeItem.id == this._themeItem.id) {
-      this._themeModel.themeItem = this._themeItem;
+    if (_themeModel.themeItem.id == _themeItem.id) {
+      _themeModel.themeItem = _themeItem;
     }
     afterApply.call();
   }

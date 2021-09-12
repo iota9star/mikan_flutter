@@ -9,13 +9,12 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 @immutable
 class SelectSeasonFragment extends StatelessWidget {
-  const SelectSeasonFragment();
+  const SelectSeasonFragment({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +29,13 @@ class SelectSeasonFragment extends StatelessWidget {
           }
           return true;
         },
-        child: NormalScrollConfiguration(
-          child: CustomScrollView(
-            shrinkWrap: true,
-            controller: ModalScrollController.of(context),
-            slivers: [
-              _buildHeader(context, theme, indexModel),
-              _buildSeasonItemList(theme, indexModel),
-            ],
-          ),
+        child: CustomScrollView(
+          shrinkWrap: true,
+          controller: ModalScrollController.of(context),
+          slivers: [
+            _buildHeader(context, theme, indexModel),
+            _buildSeasonItemList(theme, indexModel),
+          ],
         ),
       ),
     );
@@ -54,7 +51,7 @@ class SelectSeasonFragment extends StatelessWidget {
         padding: edge16,
         child: Row(
           children: <Widget>[
-            Expanded(
+            const Expanded(
               child: Text(
                 "年度番组",
                 style: textStyle20B,
@@ -69,7 +66,7 @@ class SelectSeasonFragment extends StatelessWidget {
                 );
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Icon(
+              child: const Icon(
                 FluentIcons.chevron_right_24_regular,
                 size: 16.0,
               ),
@@ -107,7 +104,7 @@ class SelectSeasonFragment extends StatelessWidget {
                   minWidth: 0,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   padding: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: borderRadius10,
                   ),
                   child: Text(
@@ -169,7 +166,7 @@ class SelectSeasonFragment extends StatelessWidget {
                             indexModel,
                           );
                         } else {
-                          return Flexible(
+                          return const Flexible(
                             child: FractionallySizedBox(widthFactor: 1),
                           );
                         }

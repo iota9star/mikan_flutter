@@ -12,7 +12,6 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subgroup_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -91,44 +90,42 @@ class SubgroupPage extends StatelessWidget {
     final SubgroupModel subgroupModel,
     final List<SeasonGallery> galleries,
   ) {
-    return NormalScrollConfiguration(
-      child: CustomScrollView(
-        slivers: [
-          _buildHeader(theme),
-          if (subgroupModel.loading)
-            SliverFillRemaining(
-              child: centerLoading,
-            ),
-          if (galleries.isSafeNotEmpty)
-            ...List.generate(galleries.length, (index) {
-              final SeasonGallery gallery = galleries[index];
-              return MultiSliver(
-                pushPinnedChildren: true,
-                children: <Widget>[
-                  _buildYearSeasonSection(theme, gallery.title),
-                  BangumiSliverGridFragment(
-                    flag: gallery.title,
-                    padding: edgeHB16T4,
-                    bangumis: gallery.bangumis,
-                    handleSubscribe: (bangumi, flag) {
-                      context.read<OpModel>().subscribeBangumi(
-                        bangumi.id,
-                        bangumi.subscribed,
-                        onSuccess: () {
-                          bangumi.subscribed = !bangumi.subscribed;
-                          context.read<OpModel>().subscribeChanged(flag);
-                        },
-                        onError: (msg) {
-                          "订阅失败：$msg".toast();
-                        },
-                      );
-                    },
-                  ),
-                ],
-              );
-            }),
-        ],
-      ),
+    return CustomScrollView(
+      slivers: [
+        _buildHeader(theme),
+        if (subgroupModel.loading)
+          const SliverFillRemaining(
+            child: centerLoading,
+          ),
+        if (galleries.isSafeNotEmpty)
+          ...List.generate(galleries.length, (index) {
+            final SeasonGallery gallery = galleries[index];
+            return MultiSliver(
+              pushPinnedChildren: true,
+              children: <Widget>[
+                _buildYearSeasonSection(theme, gallery.title),
+                BangumiSliverGridFragment(
+                  flag: gallery.title,
+                  padding: edgeHB16T4,
+                  bangumis: gallery.bangumis,
+                  handleSubscribe: (bangumi, flag) {
+                    context.read<OpModel>().subscribeBangumi(
+                      bangumi.id,
+                      bangumi.subscribed,
+                      onSuccess: () {
+                        bangumi.subscribed = !bangumi.subscribed;
+                        context.read<OpModel>().subscribeChanged(flag);
+                      },
+                      onError: (msg) {
+                        "订阅失败：$msg".toast();
+                      },
+                    );
+                  },
+                ),
+              ],
+            );
+          }),
+      ],
     );
   }
 
@@ -170,7 +167,7 @@ class SubgroupPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(
+                  child: const Icon(
                     FluentIcons.chevron_left_24_regular,
                     size: 16.0,
                   ),

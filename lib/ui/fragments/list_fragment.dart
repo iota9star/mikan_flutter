@@ -1,6 +1,7 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -8,14 +9,13 @@ import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/providers/list_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/normal_record_item.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @immutable
 class ListFragment extends StatelessWidget {
-  const ListFragment();
+  const ListFragment({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +50,11 @@ class ListFragment extends StatelessWidget {
           controller: model.refreshController,
           onRefresh: model.refresh,
           onLoading: model.loadMore,
-          child: NormalScrollConfiguration(
-            child: CustomScrollView(
-              slivers: [
-                _buildHeader(theme),
-                _buildList(theme, model),
-              ],
-            ),
+          child: CustomScrollView(
+            slivers: [
+              _buildHeader(theme),
+              _buildList(theme, model),
+            ],
           ),
         ),
       ),
@@ -74,7 +72,7 @@ class ListFragment extends StatelessWidget {
           if (records.isEmpty) {
             return emptySliverToBoxAdapter;
           }
-          return SliverList(
+          return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final RecordItem record = records[index];
@@ -93,12 +91,12 @@ class ListFragment extends StatelessWidget {
               },
               childCount: records.length,
             ),
-            // gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-            //   minCrossAxisExtent: 360.0,
-            //   mainAxisExtent: 16.0,
-            //   crossAxisSpacing: 16.0,
-            //   mainAxisSpacing: 164.0,
-            // ),
+            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 400.0,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              mainAxisExtent: 160.0,
+            ),
           );
         },
       ),
@@ -122,7 +120,7 @@ class ListFragment extends StatelessWidget {
             padding: edge16WithStatusBar,
             duration: dur240,
             child: Row(
-              children: <Widget>[
+              children: const <Widget>[
                 Text(
                   "最新发布",
                   style: textStyle24B,

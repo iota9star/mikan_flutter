@@ -39,7 +39,7 @@ class RecordDetailPage extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
-        create: (_) => RecordDetailModel(this.url),
+        create: (_) => RecordDetailModel(url),
         child: Scaffold(
           body: Stack(
             children: [
@@ -66,7 +66,7 @@ class RecordDetailPage extends StatelessWidget {
           Navigator.pop(context);
         },
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        child: Icon(
+        child: const Icon(
           FluentIcons.chevron_left_24_regular,
           size: 16.0,
         ),
@@ -101,7 +101,7 @@ class RecordDetailPage extends StatelessWidget {
                   builder: (_, bgColor, __) {
                     final color = bgColor ?? theme.backgroundColor;
                     return AnimatedContainer(
-                      duration: Duration(milliseconds: 640),
+                      duration: const Duration(milliseconds: 640),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -211,11 +211,11 @@ class RecordDetailPage extends StatelessWidget {
               children: [
                 ...List.generate(tags.length, (index) {
                   return Container(
-                    margin: EdgeInsets.only(
+                    margin: const EdgeInsets.only(
                       right: 4.0,
                       bottom: 4.0,
                     ),
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 4.0,
                       vertical: 2.0,
                     ),
@@ -257,7 +257,7 @@ class RecordDetailPage extends StatelessWidget {
           if (loading) return child!;
           return sizedBox;
         },
-        child: SizedBox(
+        child: const SizedBox(
           width: double.infinity,
           height: double.infinity,
           child: centerLoading,
@@ -393,7 +393,7 @@ class RecordDetailPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "概况简介",
             style: textStyle18B,
           ),
@@ -439,7 +439,7 @@ class RecordDetailPage extends StatelessWidget {
             ),
             child: Center(
               child: SpinKitPumpingHeart(
-                duration: Duration(milliseconds: 960),
+                duration: const Duration(milliseconds: 960),
                 itemBuilder: (_, __) => ExtendedImage.asset(
                   "assets/mikan.png",
                 ),
@@ -456,7 +456,7 @@ class RecordDetailPage extends StatelessWidget {
                 )
               ],
               borderRadius: borderRadius8,
-              image: DecorationImage(
+              image: const DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
@@ -511,7 +511,7 @@ class RecordDetailPage extends StatelessWidget {
                 tooltip: "取消订阅",
                 padding: edge4,
                 iconSize: 20.0,
-                icon: Icon(
+                icon: const Icon(
                   FluentIcons.heart_24_filled,
                   color: Colors.redAccent,
                 ),

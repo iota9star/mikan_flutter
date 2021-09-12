@@ -22,10 +22,10 @@ class SubscribedModel extends CancelableBaseModel {
   List<YearSeason>? get years => _years;
 
   set years(List<YearSeason>? years) {
-    this._years = years;
+    _years = years;
     if (years.isSafeNotEmpty) {
       final active = years![0].seasons.firstWhere((element) => element.active);
-      this._loadMySubscribedSeasonBangumi(active);
+      _loadMySubscribedSeasonBangumi(active);
     }
   }
 
@@ -46,8 +46,8 @@ class SubscribedModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
@@ -57,24 +57,24 @@ class SubscribedModel extends CancelableBaseModel {
   RefreshController get refreshController => _refreshController;
 
   SubscribedModel() {
-    this._loadRecentRecords();
+    _loadRecentRecords();
   }
 
   refresh() async {
-    await this._loadRecentRecords();
-    await this._loadMySubscribedSeasonBangumi(this._season);
+    await _loadRecentRecords();
+    await _loadMySubscribedSeasonBangumi(_season);
     _refreshController.refreshCompleted();
   }
 
   _loadMySubscribedSeasonBangumi(final Season? season) async {
     if (season == null) return;
-    this._season = season;
-    this._seasonLoading = true;
+    _season = season;
+    _seasonLoading = true;
     final Resp resp = await (this +
         Repo.mySubscribedSeasonBangumi(season.year, season.season));
-    this._seasonLoading = false;
+    _seasonLoading = false;
     if (resp.success) {
-      this._bangumis = resp.data;
+      _bangumis = resp.data;
     } else {
       "获取季度订阅失败：${resp.msg}".toast();
     }
@@ -82,12 +82,12 @@ class SubscribedModel extends CancelableBaseModel {
   }
 
   _loadRecentRecords() async {
-    this._recordsLoading = true;
+    _recordsLoading = true;
     final Resp resp = await (this + Repo.day(2, 1));
-    this._recordsLoading = false;
+    _recordsLoading = false;
     if (resp.success) {
-      this._records = resp.data ?? [];
-      this._rss = groupBy(resp.data ?? [], (it) => it.id!);
+      _records = resp.data ?? [];
+      _rss = groupBy(resp.data ?? [], (it) => it.id!);
     } else {
       "获取最近更新失败：${resp.msg}".toast();
     }

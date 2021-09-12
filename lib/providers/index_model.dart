@@ -27,8 +27,8 @@ class IndexModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
@@ -57,17 +57,17 @@ class IndexModel extends CancelableBaseModel {
 
   bool get ovaLoading => _ovaLoading;
 
-  SubscribedModel _subscribedModel;
+  final SubscribedModel _subscribedModel;
 
   IndexModel(this._subscribedModel) {
     // 延迟执行
     Future.delayed(const Duration(milliseconds: 500), () {
-      this._ovas = (MyHive.db
-              .get(HiveDBKey.MIKAN_OVA, defaultValue: <RecordItem>[]) as List)
+      _ovas = (MyHive.db.get(HiveDBKey.mikanOva, defaultValue: <RecordItem>[])
+              as List)
           .cast<RecordItem>();
-      final Index? index = MyHive.db.get(HiveDBKey.MIKAN_INDEX);
-      this._bindIndexData(index);
-      this._loadIndex();
+      final Index? index = MyHive.db.get(HiveDBKey.mikanIndex);
+      _bindIndexData(index);
+      _loadIndex();
     });
   }
 
@@ -78,13 +78,13 @@ class IndexModel extends CancelableBaseModel {
   }
 
   _loadOVA() async {
-    this._ovaLoading = true;
+    _ovaLoading = true;
     notifyListeners();
     final Resp resp = await (this + Repo.ova());
-    this._ovaLoading = false;
+    _ovaLoading = false;
     if (resp.success) {
-      this._ovas = resp.data;
-      MyHive.db.put(HiveDBKey.MIKAN_OVA, this._ovas);
+      _ovas = resp.data;
+      MyHive.db.put(HiveDBKey.mikanOva, _ovas);
     } else {
       "获取OVA失败：${resp.msg}".toast();
     }
@@ -92,13 +92,13 @@ class IndexModel extends CancelableBaseModel {
   }
 
   _loadIndex() async {
-    this._seasonLoading = true;
+    _seasonLoading = true;
     notifyListeners();
     final Resp resp = await (this + Repo.index());
-    this._seasonLoading = false;
+    _seasonLoading = false;
     if (resp.success) {
       final Index index = resp.data;
-      MyHive.db.put(HiveDBKey.MIKAN_INDEX, index);
+      MyHive.db.put(HiveDBKey.mikanIndex, index);
       _bindIndexData(index);
       "加载完成".toast();
     } else {
@@ -109,17 +109,14 @@ class IndexModel extends CancelableBaseModel {
 
   void _bindIndexData(final Index? index) {
     if (index == null) return;
-    this._years = index.years;
-    this._subscribedModel.years = this._years;
-    this._selectedSeason = this
-        ._years
-        .getOrNull(0)
-        ?.seasons
-        .firstWhere((element) => element.active);
-    this._bangumiRows = index.bangumiRows;
-    this._selectedBangumiRow = this._bangumiRows[0];
-    this._carousels = index.carousels;
-    this._user = index.user;
+    _years = index.years;
+    _subscribedModel.years = _years;
+    _selectedSeason =
+        _years.getOrNull(0)?.seasons.firstWhere((element) => element.active);
+    _bangumiRows = index.bangumiRows;
+    _selectedBangumiRow = _bangumiRows[0];
+    _carousels = index.carousels;
+    _user = index.user;
   }
 
   List<BangumiRow> get bangumiRows => _bangumiRows;
@@ -131,15 +128,15 @@ class IndexModel extends CancelableBaseModel {
   User? get user => _user;
 
   loadSeason(final Season season) async {
-    if (this._seasonLoading) return "加载中，请稍候".toast();
-    this._selectedSeason = season;
+    if (_seasonLoading) return "加载中，请稍候".toast();
+    _selectedSeason = season;
     notifyListeners();
-    this._seasonLoading = true;
+    _seasonLoading = true;
     final Resp resp = await (this +
-        Repo.season(this._selectedSeason!.year, this._selectedSeason!.season));
-    this._seasonLoading = false;
+        Repo.season(_selectedSeason!.year, _selectedSeason!.season));
+    _seasonLoading = false;
     if (resp.success) {
-      this._bangumiRows = resp.data;
+      _bangumiRows = resp.data;
       "加载完成".toast();
     } else {
       if (resp.msg.isNotBlank) {

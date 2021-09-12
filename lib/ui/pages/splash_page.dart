@@ -15,7 +15,7 @@ import 'package:mikan_flutter/widget/tap_scale_container.dart';
 )
 @immutable
 class SplashPage extends StatelessWidget {
-  const SplashPage();
+  const SplashPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,37 +32,35 @@ class SplashPage extends StatelessWidget {
       left: 0,
       right: 0,
       bottom: 128.0 + Screen.navBarHeight,
-      child: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TapScaleContainer(
-              child: ExtendedImage.asset(
-                "assets/mikan.png",
-                width: 108,
-              ),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, Routes.home);
-              },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TapScaleContainer(
+            child: ExtendedImage.asset(
+              "assets/mikan.png",
+              width: 108,
             ),
-            sizedBoxH4,
-            Text(
-              "蜜柑计划",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-                color: Colors.white.withOpacity(0.87),
-                shadows: [
-                  Shadow(
-                    offset: Offset(1, 1),
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 8.0,
-                  )
-                ],
-              ),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, Routes.home);
+            },
+          ),
+          sizedBoxH4,
+          Text(
+            "蜜柑计划",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18.0,
+              color: Colors.white.withOpacity(0.87),
+              shadows: [
+                Shadow(
+                  offset: const Offset(1, 1),
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 8.0,
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -71,7 +69,7 @@ class SplashPage extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Positioned.fill(child: const BangumiCoverScrollListFragment()),
+        const Positioned.fill(child: BangumiCoverScrollListFragment()),
         _buildAppIcon(context)
       ],
     );

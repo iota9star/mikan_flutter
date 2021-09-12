@@ -102,12 +102,12 @@ class _BottomBarViewState extends State<BottomBarView>
   void setRemoveAllSelection(BarItem item) {
     if (!mounted) return;
     setState(() {
-      widget.items.forEach((BarItem tab) {
+      for (BarItem tab in widget.items) {
         tab.isSelected = false;
         if (item._index == tab._index) {
           tab.isSelected = true;
         }
-      });
+      }
     });
   }
 }
@@ -176,9 +176,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
 
   @override
   Widget build(BuildContext context) {
-    if (this._points == null) {
-      this._points = _buildPoints();
-    }
+    _points ??= _buildPoints();
     final ThemeData theme = Theme.of(context);
     return Container(
       child: AspectRatio(
@@ -205,7 +203,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
                     scale: Tween<double>(begin: 0.88, end: 1.0).animate(
                       CurvedAnimation(
                         parent: _animationController,
-                        curve: Interval(
+                        curve: const Interval(
                           0.1,
                           1.0,
                           curve: Curves.linear,
@@ -221,14 +219,14 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
           ),
         ),
       ),
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
     );
   }
 
   List<Widget> _buildPointWidgets(final ThemeData theme) {
     return List.generate(
-      this._points!.length,
-      (index) => _buildPointWidget(this._points![index], theme.secondary),
+      _points!.length,
+      (index) => _buildPointWidget(_points![index], theme.secondary),
     );
   }
 

@@ -20,6 +20,8 @@ import 'package:provider/provider.dart';
 class LoginPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  LoginPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -53,7 +55,7 @@ class LoginPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.pushNamed(context, Routes.register);
                             },
-                            child: Text("还没有账号？赶紧来注册一个吧~"),
+                            child: const Text("还没有账号？赶紧来注册一个吧~"),
                           ),
                           sizedBoxH16,
                           Row(
@@ -62,7 +64,7 @@ class LoginPage extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Icon(
+                                child: const Icon(
                                   FluentIcons.chevron_left_24_regular,
                                   size: 16.0,
                                 ),
@@ -165,12 +167,12 @@ class LoginPage extends StatelessWidget {
             );
           },
         ),
-        Expanded(child: Text("记住密码")),
+        const Expanded(child: Text("记住密码")),
         TextButton(
           onPressed: () {
             Navigator.of(context).pushNamed(Routes.forgetPassword);
           },
-          child: Text("忘记密码"),
+          child: const Text("忘记密码"),
         )
       ],
     );
@@ -187,7 +189,7 @@ class LoginPage extends StatelessWidget {
         border: InputBorder.none,
         labelText: '用户名',
         hintText: '请输入用户名',
-        hintStyle: TextStyle(fontSize: 14.0),
+        hintStyle: const TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
           FluentIcons.person_24_regular,
           color: theme.secondary,
@@ -217,7 +219,7 @@ class LoginPage extends StatelessWidget {
             border: InputBorder.none,
             labelText: '密码',
             hintText: '请输入密码',
-            hintStyle: TextStyle(fontSize: 14.0, letterSpacing: 0.0),
+            hintStyle: const TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
               FluentIcons.password_24_regular,
               color: theme.secondary,

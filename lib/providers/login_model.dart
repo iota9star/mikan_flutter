@@ -17,7 +17,7 @@ class LoginModel extends CancelableBaseModel {
     final login = Store.getLogin();
     _accountController.text = login["UserName"] ?? "";
     _passwordController.text = login["Password"] ?? "";
-    this._rememberMe = login["RememberMe"] ?? false;
+    _rememberMe = login["RememberMe"] ?? false;
   }
 
   bool _rememberMe = false;
@@ -43,17 +43,17 @@ class LoginModel extends CancelableBaseModel {
   }
 
   submit(VoidCallback loginSuccess) async {
-    this._loading = true;
+    _loading = true;
     notifyListeners();
     final Resp tokenResp = await (this + Repo.refreshLoginToken());
     if (!tokenResp.success) {
-      this._loading = false;
+      _loading = false;
       notifyListeners();
       return "获取登录参数失败".toast();
     }
     final String token = tokenResp.data;
     if (token.isNullOrBlank) {
-      this._loading = false;
+      _loading = false;
       notifyListeners();
       return "获取登录参数为空，请稍候重试".toast();
     }
@@ -64,7 +64,7 @@ class LoginModel extends CancelableBaseModel {
       "__RequestVerificationToken": token
     };
     final Resp resp = await (this + Repo.login(loginParams));
-    this._loading = false;
+    _loading = false;
     notifyListeners();
     if (resp.success) {
       if (_rememberMe) {

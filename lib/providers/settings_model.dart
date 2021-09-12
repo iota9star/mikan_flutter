@@ -6,8 +6,8 @@ class SettingsModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }

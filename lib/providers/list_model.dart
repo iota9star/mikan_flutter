@@ -20,8 +20,8 @@ class ListModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
@@ -36,37 +36,37 @@ class ListModel extends CancelableBaseModel {
   }
 
   Future refresh() async {
-    this._page = 0;
+    _page = 0;
     await (this + _loadList());
   }
 
   Future _loadList() async {
-    final Resp resp = await (this + Repo.list(this._page + 1));
+    final Resp resp = await (this + Repo.list(_page + 1));
     if (resp.success) {
-      this._refreshController.completed();
+      _refreshController.completed();
       final List<RecordItem> records = resp.data;
       if (records.isNullOrEmpty) {
         return "未获取到数据".toast();
       }
-      if (this._page == 0 && this._records.isNotEmpty) {
-        final Set<RecordItem> newList = [...this._records, ...records].toSet();
+      if (_page == 0 && _records.isNotEmpty) {
+        final Set<RecordItem> newList = <RecordItem>{..._records, ...records};
         final int length = newList.length;
-        if (length == this._records.length) {
+        if (length == _records.length) {
           "无内容更新".toast();
         } else {
-          "更新数据${length - this._records.length}条".toast();
-          this._records = newList.toList();
-          this._changeFlag++;
+          "更新数据${length - _records.length}条".toast();
+          _records = newList.toList();
+          _changeFlag++;
           notifyListeners();
         }
       } else {
-        this._records.addAll(records);
-        this._changeFlag++;
+        _records.addAll(records);
+        _changeFlag++;
         notifyListeners();
       }
-      this._page++;
+      _page++;
     } else {
-      this._refreshController.failed();
+      _refreshController.failed();
     }
   }
 

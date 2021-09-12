@@ -7,10 +7,10 @@ class Repo {
 
   static Future<Resp> season(final String year, final String season) async {
     final parameters = {"year": year, "seasonStr": season};
-    final extra = {"$MikanFunc": MikanFunc.SEASON};
+    final extra = {"$MikanFunc": MikanFunc.season};
     final Options options = Options(extra: extra);
     return await Http.get(
-      MikanUrl.SEASON_UPDATE,
+      MikanUrl.seasonUpdate,
       queryParameters: parameters,
       options: options,
     );
@@ -18,10 +18,10 @@ class Repo {
 
   static Future<Resp> day(final int pre, final int end) async {
     final parameters = {"predate": pre, "enddate": end, "maximumitems": 16};
-    final extra = {"$MikanFunc": MikanFunc.DAY};
+    final extra = {"$MikanFunc": MikanFunc.day};
     final Options options = Options(extra: extra);
     return await Http.get(
-      MikanUrl.DAY_UPDATE,
+      MikanUrl.dayUpdate,
       queryParameters: parameters,
       options: options,
     );
@@ -36,37 +36,37 @@ class Repo {
     final String? subgroupId,
   }) async {
     final parameters = {"searchstr": keywords, "subgroupid": subgroupId};
-    final extra = {"$MikanFunc": MikanFunc.SEARCH};
+    final extra = {"$MikanFunc": MikanFunc.search};
     final Options options = Options(extra: extra);
     return await Http.get(
-      MikanUrl.SEARCH,
+      MikanUrl.search,
       queryParameters: parameters,
       options: options,
     );
   }
 
   static Future<Resp> list(final int? page) async {
-    final extra = {"$MikanFunc": MikanFunc.LIST};
+    final extra = {"$MikanFunc": MikanFunc.list};
     final Options options = Options(extra: extra);
-    return await Http.get("${MikanUrl.LIST}/${page ?? ""}", options: options);
+    return await Http.get("${MikanUrl.list}/${page ?? ""}", options: options);
   }
 
   static Future<Resp> index() async {
-    final extra = {"$MikanFunc": MikanFunc.INDEX};
+    final extra = {"$MikanFunc": MikanFunc.index};
     final Options options = Options(extra: extra);
-    return await Http.get(MikanUrl.BASE_URL, options: options);
+    return await Http.get(MikanUrl.baseUrl, options: options);
   }
 
   static Future<Resp> subgroup(final String? subgroupId) async {
-    final extra = {"$MikanFunc": MikanFunc.SUBGROUP};
+    final extra = {"$MikanFunc": MikanFunc.subgroup};
     final Options options = Options(extra: extra);
-    return await Http.get("${MikanUrl.SUBGROUP}/$subgroupId", options: options);
+    return await Http.get("${MikanUrl.subgroup}/$subgroupId", options: options);
   }
 
   static Future<Resp> bangumi(final String id) async {
-    final extra = {"$MikanFunc": MikanFunc.BANGUMI};
+    final extra = {"$MikanFunc": MikanFunc.bangumi};
     final Options options = Options(extra: extra);
-    return await Http.get("${MikanUrl.BANGUMI}/$id", options: options);
+    return await Http.get("${MikanUrl.bangumi}/$id", options: options);
   }
 
   static Future<Resp> bangumiMore(
@@ -74,10 +74,10 @@ class Repo {
     final String subgroupId,
     final int take,
   ) async {
-    final extra = {"$MikanFunc": MikanFunc.BANGUMI_MORE};
+    final extra = {"$MikanFunc": MikanFunc.bangumiMore};
     final Options options = Options(extra: extra);
     return await Http.get(
-      "${MikanUrl.BANGUMI_MORE}",
+      MikanUrl.bangumiMore,
       queryParameters: {
         "bangumiId": bangumiId,
         "subtitleGroupId": subgroupId,
@@ -88,7 +88,7 @@ class Repo {
   }
 
   static Future<Resp> details(final String url) async {
-    final extra = {"$MikanFunc": MikanFunc.DETAILS};
+    final extra = {"$MikanFunc": MikanFunc.details};
     final Options options = Options(extra: extra);
     return await Http.get(url, options: options);
   }
@@ -103,7 +103,7 @@ class Repo {
       responseType: ResponseType.json,
     );
     return await Http.postJSON(
-      subscribe ? MikanUrl.UNSUBSCRIBE_BANGUMI : MikanUrl.SUBSCRIBE_BANGUMI,
+      subscribe ? MikanUrl.unsubscribeBangumi : MikanUrl.subscribeBangumi,
       data: <String, dynamic>{
         "BangumiID": bangumiId,
         "SubtitleGroupID": subgroupId,
@@ -115,10 +115,10 @@ class Repo {
   static Future<Resp> mySubscribedSeasonBangumi(
       final String year, final String season) async {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.SUBSCRIBED_SEASON},
+      extra: {"$MikanFunc": MikanFunc.subscribedSeason},
     );
     return await Http.get(
-      MikanUrl.SUBSCRIBED_SEASON,
+      MikanUrl.subscribedSeason,
       queryParameters: <String, dynamic>{
         "year": year,
         "seasonStr": season,
@@ -133,7 +133,7 @@ class Repo {
       responseType: ResponseType.plain,
     );
     return await Http.postForm(
-      MikanUrl.LOGIN,
+      MikanUrl.login,
       queryParameters: {"ReturnUrl": "/"},
       data: params,
       options: options,
@@ -146,7 +146,7 @@ class Repo {
       responseType: ResponseType.plain,
     );
     return await Http.postForm(
-      MikanUrl.REGISTER,
+      MikanUrl.register,
       data: params,
       options: options,
     );
@@ -158,7 +158,7 @@ class Repo {
       responseType: ResponseType.plain,
     );
     return await Http.postForm(
-      MikanUrl.FORGOT_PASSWORD,
+      MikanUrl.forgotPassword,
       data: params,
       options: options,
     );
@@ -166,43 +166,43 @@ class Repo {
 
   static Future<Resp> refreshLoginToken() async {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.REFRESH_LOGIN_TOKEN},
+      extra: {"$MikanFunc": MikanFunc.refreshLoginToken},
     );
     return await Http.get(
-      MikanUrl.MY_SUBSCRIBED,
+      MikanUrl.mySubscribed,
       options: options,
     );
   }
 
   static Future<Resp> refreshForgotPasswordToken() async {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.REFRESH_FORGOTPASSWORD_TOKEN},
+      extra: {"$MikanFunc": MikanFunc.refreshForgotPasswordToken},
     );
     return await Http.get(
-      MikanUrl.FORGOT_PASSWORD,
+      MikanUrl.forgotPassword,
       options: options,
     );
   }
 
   static Future<Resp> refreshRegisterToken() async {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.REFRESH_REGISTER_TOKEN},
+      extra: {"$MikanFunc": MikanFunc.refreshRegisterToken},
     );
     return await Http.get(
-      MikanUrl.REGISTER,
+      MikanUrl.register,
       options: options,
     );
   }
 
   static Future<Resp> fonts() async {
-    return await Http.get(Extra.FONTS_MANIFEST);
+    return await Http.get(ExtraUrl.fontsManifest);
   }
 
   static Future<Resp> release() async {
-    return await Http.get(Extra.RELEASE_VERSION);
+    return await Http.get(ExtraUrl.releaseVersion);
   }
 
   static Future<Resp> releaseMeta() async {
-    return await Http.get(Extra.MIKAN_RELEASES_META);
+    return await Http.get(ExtraUrl.mikanReleaseMeta);
   }
 }

@@ -6,7 +6,7 @@ import 'package:mikan_flutter/model/subgroup.dart';
 
 part 'record_item.g.dart';
 
-@HiveType(typeId: MyHive.MIKAN_RECORD_ITEM)
+@HiveType(typeId: MyHive.mikanRecordItem)
 class RecordItem {
   @HiveField(0)
   String? id;
@@ -61,27 +61,42 @@ class RecordItem {
   String get shareString {
     final StringBuffer sb = StringBuffer();
     if (name.isNotBlank) {
-      sb..write("番组名称：")..write(name)..write("\n");
+      sb
+        ..write("番组名称：")
+        ..write(name)
+        ..write("\n");
     }
     if (id.isNotBlank) {
       sb
         ..write("番组地址：")
-        ..write(MikanUrl.BASE_URL)
-        ..write(MikanUrl.BANGUMI)
+        ..write(MikanUrl.baseUrl)
+        ..write(MikanUrl.bangumi)
         ..write(id)
         ..write("\n");
     }
     if (title.isNotBlank) {
-      sb..write("标题：")..write(title)..write("\n");
+      sb
+        ..write("标题：")
+        ..write(title)
+        ..write("\n");
     }
     if (url.isNotBlank) {
-      sb..write("详情地址：")..write(url)..write("\n");
+      sb
+        ..write("详情地址：")
+        ..write(url)
+        ..write("\n");
     }
     if (publishAt.isNotBlank) {
-      sb..write("发布时间：")..write(publishAt)..write("\n");
+      sb
+        ..write("发布时间：")
+        ..write(publishAt)
+        ..write("\n");
     }
     if (size.isNotBlank) {
-      sb..write("文件大小：")..write(size)..write("\n");
+      sb
+        ..write("文件大小：")
+        ..write(size)
+        ..write("\n");
     }
     if (groups.isSafeNotEmpty) {
       sb
@@ -90,16 +105,28 @@ class RecordItem {
         ..write("\n");
     }
     if (tags.isSafeNotEmpty) {
-      sb..write("标签：")..write(tags.join("，"))..write("\n");
+      sb
+        ..write("标签：")
+        ..write(tags.join("，"))
+        ..write("\n");
     }
     if (cover.isNotBlank) {
-      sb..write("封面地址：")..write(cover)..write("\n");
+      sb
+        ..write("封面地址：")
+        ..write(cover)
+        ..write("\n");
     }
     if (magnet.isNotBlank) {
-      sb..write("磁链地址：")..write(magnet)..write("\n");
+      sb
+        ..write("磁链地址：")
+        ..write(magnet)
+        ..write("\n");
     }
     if (torrent.isNotBlank) {
-      sb..write("种子地址：")..write(torrent)..write("\n");
+      sb
+        ..write("种子地址：")
+        ..write(torrent)
+        ..write("\n");
     }
     return sb.toString();
   }

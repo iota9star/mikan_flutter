@@ -19,6 +19,8 @@ import 'package:provider/provider.dart';
 )
 @immutable
 class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
@@ -32,10 +34,10 @@ class HomePage extends StatelessWidget {
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (_, selectIndex, __) {
                   return IndexedStack(
-                    children: [
-                      const ListFragment(),
-                      const IndexFragment(),
-                      const SubscribedFragment(),
+                    children: const [
+                      ListFragment(),
+                      IndexFragment(),
+                      SubscribedFragment(),
                     ],
                     index: selectIndex,
                   );

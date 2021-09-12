@@ -388,7 +388,7 @@ class Cancelable {
 
   Future<dynamic> get _token => _completer.future;
 
-  Set<FutureOrVoidCallback> _onBeforeCancels = <FutureOrVoidCallback>{};
+  final Set<FutureOrVoidCallback> _onBeforeCancels = <FutureOrVoidCallback>{};
 
   void onBeforeCancel(FutureOrVoidCallback onBeforeCancel) {
     _onBeforeCancels.add(onBeforeCancel);
@@ -406,7 +406,7 @@ class Cancelable {
       await f.call();
     }
     _completer.complete(reason ?? "Cancel...");
-    this._isCancelled = true;
+    _isCancelled = true;
   }
 }
 
@@ -416,7 +416,7 @@ class ProgressChunkEvent {
   final int progress;
   final int? total;
 
-  ProgressChunkEvent({
+  const ProgressChunkEvent({
     required this.key,
     required this.progress,
     required this.total,

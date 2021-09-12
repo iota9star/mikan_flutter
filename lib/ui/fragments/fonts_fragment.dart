@@ -7,13 +7,13 @@ import 'package:mikan_flutter/internal/http_cache_manager.dart';
 import 'package:mikan_flutter/model/fonts.dart';
 import 'package:mikan_flutter/providers/fonts_model.dart';
 import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
+@immutable
 class FontsFragment extends StatelessWidget {
-  const FontsFragment();
+  const FontsFragment({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,29 +28,17 @@ class FontsFragment extends StatelessWidget {
       theme.primary.isDark ? Colors.white : Colors.black,
     );
     return Scaffold(
-      body: NotificationListener(
-        onNotification: (notification) {
-          if (notification is OverscrollIndicatorNotification) {
-            notification.disallowGlow();
-          } else if (notification is ScrollUpdateNotification) {
-            if (notification.depth == 0) {
-              final double offset = notification.metrics.pixels;
-            }
-          }
-          return true;
-        },
-        child: Column(
-          children: [
-            _buildHeader(context, theme, fontsModel),
-            _buildList(
-              context,
-              theme,
-              primaryTagStyle,
-              accentTagStyle,
-              fontsModel,
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          _buildHeader(context, theme, fontsModel),
+          _buildList(
+            context,
+            theme,
+            primaryTagStyle,
+            accentTagStyle,
+            fontsModel,
+          ),
+        ],
       ),
     );
   }
@@ -67,30 +55,28 @@ class FontsFragment extends StatelessWidget {
         shouldRebuild: (pre, next) => pre.ne(next),
         selector: (_, model) => model.fonts,
         builder: (_, fonts, __) {
-          if (model.fonts.length == 0) {
+          if (model.fonts.isEmpty) {
             return centerLoading;
           }
-          return NormalScrollConfiguration(
-            child: GridView.builder(
-              controller: ModalScrollController.of(context),
-              itemCount: fonts.length,
-              padding: edge16,
-              itemBuilder: (_, index) {
-                final Font font = fonts[index];
-                return _buildFontItem(
-                  theme,
-                  primaryTagStyle,
-                  accentTagStyle,
-                  model,
-                  font,
-                );
-              },
-              gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-                minCrossAxisExtent: 400.0,
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 16.0,
-                mainAxisExtent: 102.0,
-              ),
+          return GridView.builder(
+            controller: ModalScrollController.of(context),
+            itemCount: fonts.length,
+            padding: edge16,
+            itemBuilder: (_, index) {
+              final Font font = fonts[index];
+              return _buildFontItem(
+                theme,
+                primaryTagStyle,
+                accentTagStyle,
+                model,
+                font,
+              );
+            },
+            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 400.0,
+              mainAxisSpacing: 16.0,
+              crossAxisSpacing: 16.0,
+              mainAxisExtent: 102.0,
             ),
           );
         },
@@ -113,7 +99,7 @@ class FontsFragment extends StatelessWidget {
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: circleShape,
             padding: EdgeInsets.zero,
-            child: Icon(
+            child: const Icon(
               FluentIcons.chevron_left_24_regular,
               size: 16.0,
             ),
@@ -122,7 +108,7 @@ class FontsFragment extends StatelessWidget {
             },
           ),
           sizedBoxW12,
-          Expanded(
+          const Expanded(
             child: Text(
               "字体管理",
               style: textStyle24B,
@@ -134,7 +120,7 @@ class FontsFragment extends StatelessWidget {
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: circleShape,
             padding: EdgeInsets.zero,
-            child: Icon(
+            child: const Icon(
               FluentIcons.arrow_reset_24_regular,
               size: 16.0,
             ),

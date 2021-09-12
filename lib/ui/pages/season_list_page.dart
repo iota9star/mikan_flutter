@@ -13,7 +13,6 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/season_list_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -40,7 +39,7 @@ class SeasonListPage extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
-        create: (_) => SeasonListModel(this.years),
+        create: (_) => SeasonListModel(years),
         child: Builder(builder: (context) {
           final seasonListModel =
               Provider.of<SeasonListModel>(context, listen: false);
@@ -94,53 +93,50 @@ class SeasonListPage extends StatelessWidget {
     final ThemeData theme,
     final List<SeasonBangumis> seasons,
   ) {
-    return NormalScrollConfiguration(
-      child: CustomScrollView(
-        slivers: [
-          _buildHeader(theme),
-          ...List.generate(seasons.length, (index) {
-            final SeasonBangumis seasonBangumis = seasons[index];
-            final String seasonTitle = seasonBangumis.season.title;
-            return MultiSliver(
-              pushPinnedChildren: true,
-              children: <Widget>[
-                _buildSeasonSection(theme, seasonTitle),
-                ...List.generate(
-                  seasonBangumis.bangumiRows.length,
-                  (ind) {
-                    final BangumiRow bangumiRow =
-                        seasonBangumis.bangumiRows[ind];
-                    return MultiSliver(
-                      pushPinnedChildren: true,
-                      children: <Widget>[
-                        _buildBangumiRowSection(theme, bangumiRow),
-                        BangumiSliverGridFragment(
-                          flag: seasonTitle,
-                          padding: edge16,
-                          bangumis: bangumiRow.bangumis,
-                          handleSubscribe: (bangumi, flag) {
-                            context.read<OpModel>().subscribeBangumi(
-                              bangumi.id,
-                              bangumi.subscribed,
-                              onSuccess: () {
-                                bangumi.subscribed = !bangumi.subscribed;
-                                context.read<OpModel>().subscribeChanged(flag);
-                              },
-                              onError: (msg) {
-                                "订阅失败：$msg".toast();
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
-            );
-          }),
-        ],
-      ),
+    return CustomScrollView(
+      slivers: [
+        _buildHeader(theme),
+        ...List.generate(seasons.length, (index) {
+          final SeasonBangumis seasonBangumis = seasons[index];
+          final String seasonTitle = seasonBangumis.season.title;
+          return MultiSliver(
+            pushPinnedChildren: true,
+            children: <Widget>[
+              _buildSeasonSection(theme, seasonTitle),
+              ...List.generate(
+                seasonBangumis.bangumiRows.length,
+                (ind) {
+                  final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
+                  return MultiSliver(
+                    pushPinnedChildren: true,
+                    children: <Widget>[
+                      _buildBangumiRowSection(theme, bangumiRow),
+                      BangumiSliverGridFragment(
+                        flag: seasonTitle,
+                        padding: edge16,
+                        bangumis: bangumiRow.bangumis,
+                        handleSubscribe: (bangumi, flag) {
+                          context.read<OpModel>().subscribeBangumi(
+                            bangumi.id,
+                            bangumi.subscribed,
+                            onSuccess: () {
+                              bangumi.subscribed = !bangumi.subscribed;
+                              context.read<OpModel>().subscribeChanged(flag);
+                            },
+                            onError: (msg) {
+                              "订阅失败：$msg".toast();
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          );
+        }),
+      ],
     );
   }
 
@@ -153,7 +149,7 @@ class SeasonListPage extends StatelessWidget {
           padding: edgeH16T8,
           child: Text(
             seasonTitle,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               height: 1.25,
               fontWeight: FontWeight.bold,
@@ -238,7 +234,7 @@ class SeasonListPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(
+                  child: const Icon(
                     FluentIcons.chevron_left_24_regular,
                     size: 16.0,
                   ),
@@ -251,7 +247,7 @@ class SeasonListPage extends StatelessWidget {
                       : theme.backgroundColor,
                 ),
                 sizedBoxW12,
-                Expanded(
+                const Expanded(
                   child: Text(
                     "季度番组",
                     style: textStyle24B,

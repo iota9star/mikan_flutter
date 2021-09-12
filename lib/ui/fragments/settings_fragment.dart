@@ -12,13 +12,12 @@ import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/fonts_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/theme_panel_fragment.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 @immutable
 class SettingsFragment extends StatelessWidget {
-  const SettingsFragment();
+  const SettingsFragment({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,20 +41,18 @@ class SettingsFragment extends StatelessWidget {
               }
               return true;
             },
-            child: NormalScrollConfiguration(
-              child: CustomScrollView(
-                shrinkWrap: true,
-                controller: ModalScrollController.of(context),
-                slivers: [
-                  _buildHeader(theme),
-                  _buildSection("主题"),
-                  _buildThemeList(),
-                  _buildFontManager(context, theme),
-                  _buildSection("更新"),
-                  _buildCheckUpdate(context, theme),
-                  sliverSizedBoxH24,
-                ],
-              ),
+            child: CustomScrollView(
+              shrinkWrap: true,
+              controller: ModalScrollController.of(context),
+              slivers: [
+                _buildHeader(theme),
+                _buildSection("主题"),
+                _buildThemeList(),
+                _buildFontManager(context, theme),
+                _buildSection("更新"),
+                _buildCheckUpdate(context, theme),
+                sliverSizedBoxH24,
+              ],
             ),
           ),
         );
@@ -65,7 +62,7 @@ class SettingsFragment extends StatelessWidget {
 
   Widget _buildThemeList() {
     return const SliverToBoxAdapter(
-      child: const ThemePanelFragment(),
+      child: ThemePanelFragment(),
     );
   }
 
@@ -189,7 +186,7 @@ class SettingsFragment extends StatelessWidget {
           height: 48.0,
           child: Row(
             children: [
-              Expanded(
+              const Expanded(
                 child: Text(
                   "字体管理",
                   style: textStyle16B500,
@@ -225,7 +222,7 @@ class SettingsFragment extends StatelessWidget {
           height: 48.0,
           child: Row(
             children: [
-              Expanded(
+              const Expanded(
                 child: Text(
                   "检测更新",
                   style: textStyle16B500,
@@ -236,7 +233,7 @@ class SettingsFragment extends StatelessWidget {
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (_, checking, __) {
                   if (checking) {
-                    return CupertinoActivityIndicator();
+                    return const CupertinoActivityIndicator();
                   }
                   return sizedBox;
                 },

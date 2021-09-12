@@ -46,7 +46,7 @@ class BangumiPage extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider<BangumiModel>(
-        create: (_) => BangumiModel(this.bangumiId, this.cover),
+        create: (_) => BangumiModel(bangumiId, cover),
         child: Builder(builder: (context) {
           final model = Provider.of<BangumiModel>(context, listen: false);
           return Scaffold(
@@ -57,7 +57,7 @@ class BangumiPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: FastCacheImage(this.cover),
+                        image: FastCacheImage(cover),
                       ),
                     ),
                     child: ClipRect(
@@ -69,7 +69,7 @@ class BangumiPage extends StatelessWidget {
                           builder: (_, bgColor, __) {
                             final color = bgColor ?? theme.backgroundColor;
                             return AnimatedContainer(
-                              duration: Duration(milliseconds: 640),
+                              duration: const Duration(milliseconds: 640),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   begin: Alignment.topCenter,
@@ -94,7 +94,7 @@ class BangumiPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Icon(
+                    child: const Icon(
                       FluentIcons.chevron_left_24_regular,
                       size: 16.0,
                     ),
@@ -332,9 +332,9 @@ class BangumiPage extends StatelessWidget {
                 );
               },
               separatorBuilder: (_, __) {
-                return Padding(
+                return const Padding(
                   padding: edgeV8,
-                  child: const Divider(),
+                  child: Divider(),
                 );
               },
             ),
@@ -382,7 +382,7 @@ class BangumiPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "概况简介",
             style: textStyle18B,
           ),
@@ -424,7 +424,7 @@ class BangumiPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "字幕组",
             style: textStyle18B,
           ),
@@ -602,7 +602,7 @@ class BangumiPage extends StatelessWidget {
                 Text(
                   "${e.key}：",
                   softWrap: true,
-                  style: TextStyle(
+                  style: const TextStyle(
                     height: 1.8,
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold,
@@ -627,7 +627,7 @@ class BangumiPage extends StatelessWidget {
                     : Text(
                         e.value,
                         softWrap: true,
-                        style: TextStyle(
+                        style: const TextStyle(
                           height: 1.8,
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,
@@ -662,7 +662,7 @@ class BangumiPage extends StatelessWidget {
             ),
             child: Center(
               child: SpinKitPumpingHeart(
-                duration: Duration(milliseconds: 960),
+                duration: const Duration(milliseconds: 960),
                 itemBuilder: (_, __) => ExtendedImage.asset(
                   "assets/mikan.png",
                 ),
@@ -679,7 +679,7 @@ class BangumiPage extends StatelessWidget {
                 )
               ],
               borderRadius: borderRadius8,
-              image: DecorationImage(
+              image: const DecorationImage(
                 image: ExtendedAssetImageProvider("assets/mikan.png"),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
@@ -712,7 +712,7 @@ class BangumiPage extends StatelessWidget {
               ? 1
               : model.coverSize!.width / model.coverSize!.height,
           child: Hero(
-            tag: this.heroTag,
+            tag: heroTag,
             child: child,
           ),
         );

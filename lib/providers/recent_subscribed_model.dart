@@ -20,8 +20,8 @@ class RecentSubscribedModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
@@ -33,27 +33,29 @@ class RecentSubscribedModel extends CancelableBaseModel {
   RecentSubscribedModel(this._records);
 
   refresh() async {
-    this._dayOffset = 0;
-    this._records.clear();
-    await this.loadMore();
+    _dayOffset = 0;
+    _records.clear();
+    await loadMore();
   }
 
   loadMore() async {
-    final int next = this._dayOffset + 3;
+    final int next = _dayOffset + 3;
+    _recordsLoading = true;
     final Resp resp = await (this + Repo.day(next, 1));
+    _recordsLoading = false;
     if (resp.success) {
       final List<RecordItem> data = resp.data ?? [];
       // recent 14 days.
-      if (next > 14 && data.length == this._records.length) {
-        this._refreshController.loadNoData();
+      if (next > 14 && data.length == _records.length) {
+        _refreshController.loadNoData();
       } else {
-        this._refreshController.loadComplete();
+        _refreshController.loadComplete();
       }
-      this._dayOffset = next;
-      this._records = data;
+      _dayOffset = next;
+      _records = data;
       notifyListeners();
     } else {
-      this._refreshController.failed();
+      _refreshController.failed();
       "获取最近更新失败：${resp.msg}".toast();
     }
   }

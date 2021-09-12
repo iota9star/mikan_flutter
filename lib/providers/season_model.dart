@@ -19,8 +19,8 @@ class SeasonModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
@@ -30,14 +30,13 @@ class SeasonModel extends CancelableBaseModel {
   SeasonModel(this._season);
 
   refresh() async {
-    final Resp resp =
-        await (this + Repo.season(this._season.year, this._season.season));
+    final Resp resp = await (this + Repo.season(_season.year, _season.season));
     _refreshController.completed();
     if (resp.success) {
-      this._bangumiRows = resp.data ?? [];
+      _bangumiRows = resp.data ?? [];
       notifyListeners();
     } else {
-      "获取${this._season.title}失败：${resp.msg}".toast();
+      "获取${_season.title}失败：${resp.msg}".toast();
     }
   }
 }

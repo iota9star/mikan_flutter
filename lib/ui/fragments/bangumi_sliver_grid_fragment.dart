@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
@@ -42,7 +42,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final List<Bangumi> bangumis,
   ) {
     return SliverPadding(
-      padding: this.padding,
+      padding: padding,
       sliver: SliverGrid(
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           crossAxisSpacing: 12.0,
@@ -120,7 +120,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                       right: -10,
                       top: 4,
                       child: Transform.rotate(
-                        angle: Math.pi / 4.0,
+                        angle: math.pi / 4.0,
                         child: Container(
                           width: 42.0,
                           color: Colors.redAccent,
@@ -209,12 +209,12 @@ class BangumiSliverGridFragment extends StatelessWidget {
                   tooltip: "取消订阅",
                   padding: edge4,
                   iconSize: 24.0,
-                  icon: Icon(
+                  icon: const Icon(
                     FluentIcons.heart_24_filled,
                     color: Colors.redAccent,
                   ),
                   onPressed: () {
-                    this.handleSubscribe.call(bangumi, currFlag);
+                    handleSubscribe.call(bangumi, currFlag);
                   },
                 ),
               )
@@ -230,7 +230,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                     color: Colors.redAccent.shade100,
                   ),
                   onPressed: () {
-                    this.handleSubscribe.call(bangumi, currFlag);
+                    handleSubscribe.call(bangumi, currFlag);
                   },
                 ),
               );
@@ -281,7 +281,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
 
   Widget _buildBangumiItemError() {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: ExtendedAssetImageProvider("assets/mikan.png"),
           fit: BoxFit.cover,
@@ -301,7 +301,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
           image: imageProvider,
           fit: BoxFit.cover,
           colorFilter: bangumi.grey == true
-              ? ColorFilter.mode(Colors.grey, BlendMode.color)
+              ? const ColorFilter.mode(Colors.grey, BlendMode.color)
               : null,
         ),
       ),

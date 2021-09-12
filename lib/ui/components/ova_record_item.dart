@@ -14,11 +14,12 @@ class OVARecordItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const OVARecordItem({
+    Key? key,
     required this.index,
     required this.record,
     required this.onTap,
     required this.theme,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +118,7 @@ class OVARecordItem extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(FluentIcons.cloud_download_24_regular),
+                icon: const Icon(FluentIcons.cloud_download_24_regular),
                 tooltip: "复制并尝试打开种子链接",
                 color: theme.secondary,
                 iconSize: 20.0,
@@ -127,7 +128,7 @@ class OVARecordItem extends StatelessWidget {
                 },
               ),
               IconButton(
-                icon: Icon(FluentIcons.clipboard_link_24_regular),
+                icon: const Icon(FluentIcons.clipboard_link_24_regular),
                 color: theme.secondary,
                 tooltip: "复制并尝试打开磁力链接",
                 iconSize: 20.0,
@@ -136,7 +137,7 @@ class OVARecordItem extends StatelessWidget {
                 },
               ),
               IconButton(
-                icon: Icon(FluentIcons.share_24_regular),
+                icon: const Icon(FluentIcons.share_24_regular),
                 color: theme.secondary,
                 tooltip: "分享",
                 iconSize: 20.0,

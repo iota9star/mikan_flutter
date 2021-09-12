@@ -97,6 +97,8 @@ Future _initDependencies() async {
 }
 
 class MikanApp extends StatelessWidget {
+  MikanApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     if (isMobile) {
@@ -185,6 +187,7 @@ class MikanApp extends StatelessWidget {
           offset: -72.0,
         ),
         child: MaterialApp(
+          scrollBehavior: normalScrollBehavior,
           debugShowCheckedModeBanner: false,
           theme: theme,
           darkTheme: themeModel.theme(darkTheme: true),
@@ -230,7 +233,7 @@ class MikanApp extends StatelessWidget {
                                 (Screen.devicePixelRatio * 24.0).toInt(),
                           ),
                           sizedBoxW8,
-                          Text(
+                          const Text(
                             "蜜柑计划",
                             style: textStyle16B,
                           ),
@@ -283,7 +286,7 @@ class MikanApp extends StatelessWidget {
             color: controlButtonColors[index],
             borderRadius: borderRadius8,
             boxShadow: const [
-              const BoxShadow(
+              BoxShadow(
                 color: Colors.black12,
                 blurRadius: 2.0,
               ),

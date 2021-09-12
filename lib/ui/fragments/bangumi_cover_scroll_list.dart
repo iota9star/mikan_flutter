@@ -11,16 +11,16 @@ import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
 
 class BangumiCoverScrollListFragment extends StatefulWidget {
+  const BangumiCoverScrollListFragment({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _BangumiCoverScrollListFragmentState();
-
-  const BangumiCoverScrollListFragment();
 }
 
 const _kRate = 60;
 const _kScrollOffset = 360;
 const _kScrollDuration =
-    const Duration(milliseconds: 1000 ~/ _kRate * _kScrollOffset);
+    Duration(milliseconds: 1000 ~/ _kRate * _kScrollOffset);
 
 class _BangumiCoverScrollListFragmentState
     extends State<BangumiCoverScrollListFragment> {
@@ -66,7 +66,7 @@ class _BangumiCoverScrollListFragmentState
     return ChangeNotifierProvider.value(
       value: _scrollItemModel,
       child: Container(
-        foregroundDecoration: BoxDecoration(
+        foregroundDecoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

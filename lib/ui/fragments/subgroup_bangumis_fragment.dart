@@ -12,7 +12,6 @@ import 'package:mikan_flutter/providers/bangumi_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
-import 'package:mikan_flutter/widget/normal_scroll_configuration.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -35,11 +34,11 @@ class SubgroupBangumisFragment extends StatelessWidget {
     return Material(
       color: theme.scaffoldBackgroundColor,
       child: ChangeNotifierProvider.value(
-        value: this.bangumiModel,
+        value: bangumiModel,
         child: Builder(builder: (context) {
           final model = Provider.of<BangumiModel>(context, listen: false);
           final subgroupBangumi =
-              model.bangumiDetail!.subgroupBangumis[this.dataId]!;
+              model.bangumiDetail!.subgroupBangumis[dataId]!;
           return NotificationListener(
             onNotification: (notification) {
               if (notification is OverscrollIndicatorNotification) {
@@ -86,38 +85,36 @@ class SubgroupBangumisFragment extends StatelessWidget {
             controller: bangumiModel.refreshController,
             enablePullDown: false,
             enablePullUp: true,
-            onLoading: () => bangumiModel.loadSubgroupList(this.dataId),
+            onLoading: () => bangumiModel.loadSubgroupList(dataId),
             footer: Indicator.footer(
               context,
               theme.secondary,
               bottom: 16.0,
             ),
-            child: NormalScrollConfiguration(
-              child: GridView.builder(
-                padding: edgeH16V8,
-                controller: ModalScrollController.of(context),
-                itemCount: records.length,
-                itemBuilder: (context, ind) {
-                  final RecordItem record = records[ind];
-                  return SimpleRecordItem(
-                    index: ind,
-                    theme: theme,
-                    record: record,
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        Routes.recordDetail.name,
-                        arguments: Routes.recordDetail.d(url: record.url),
-                      );
-                    },
-                  );
-                },
-                gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-                  minCrossAxisExtent: 360.0,
-                  mainAxisSpacing: 16.0,
-                  crossAxisSpacing: 16.0,
-                  mainAxisExtent: 150.0,
-                ),
+            child: GridView.builder(
+              padding: edgeH16V8,
+              controller: ModalScrollController.of(context),
+              itemCount: records.length,
+              itemBuilder: (context, ind) {
+                final RecordItem record = records[ind];
+                return SimpleRecordItem(
+                  index: ind,
+                  theme: theme,
+                  record: record,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.recordDetail.name,
+                      arguments: Routes.recordDetail.d(url: record.url),
+                    );
+                  },
+                );
+              },
+              gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+                minCrossAxisExtent: 360.0,
+                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 16.0,
+                mainAxisExtent: 150.0,
               ),
             ),
           );
@@ -156,7 +153,7 @@ class SubgroupBangumisFragment extends StatelessWidget {
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: circleShape,
             padding: EdgeInsets.zero,
-            child: Icon(
+            child: const Icon(
               FluentIcons.chevron_left_24_regular,
               size: 16.0,
             ),
@@ -175,7 +172,7 @@ class SubgroupBangumisFragment extends StatelessWidget {
             IconButton(
               padding: EdgeInsets.zero,
               tooltip: "查看字幕组详情",
-              icon: Icon(FluentIcons.people_team_24_regular),
+              icon: const Icon(FluentIcons.people_team_24_regular),
               onPressed: () {
                 final List<Subgroup> subgroups = subgroupBangumi.subgroups;
                 if (subgroups.length == 1) {

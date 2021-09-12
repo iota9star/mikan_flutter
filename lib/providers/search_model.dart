@@ -30,33 +30,33 @@ class SearchModel extends CancelableBaseModel {
   bool get hasScrolled => _hasScrolled;
 
   set hasScrolled(bool value) {
-    if (this._hasScrolled != value) {
-      this._hasScrolled = value;
+    if (_hasScrolled != value) {
+      _hasScrolled = value;
       notifyListeners();
     }
   }
 
   set subgroupId(final String? value) {
-    this._subgroupId = this._subgroupId == value ? null : value;
-    this._searching(keywords, subgroupId: this._subgroupId);
+    _subgroupId = _subgroupId == value ? null : value;
+    _searching(keywords, subgroupId: _subgroupId);
   }
 
   search(final String keywords) {
-    this._searchResult = null;
-    this._searching(keywords);
+    _searchResult = null;
+    _searching(keywords);
   }
 
   _searching(final String? keywords, {final String? subgroupId}) async {
-    this._keywords = keywords;
-    this._loading = true;
+    _keywords = keywords;
+    _loading = true;
     notifyListeners();
     final resp = await (this + Repo.search(keywords, subgroupId: subgroupId));
     if (resp.success) {
-      this._searchResult = resp.data;
+      _searchResult = resp.data;
     } else {
       "搜索出错啦：${resp.msg}".toast();
     }
-    this._loading = false;
+    _loading = false;
     notifyListeners();
   }
 }
