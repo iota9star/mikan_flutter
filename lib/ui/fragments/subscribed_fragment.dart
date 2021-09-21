@@ -341,9 +341,10 @@ class SubscribedFragment extends StatelessWidget {
             padding: edgeH16V8,
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 160.0,
+                maxCrossAxisExtent: 108.0,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
+                childAspectRatio: 0.8,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -491,11 +492,14 @@ class SubscribedFragment extends StatelessWidget {
           ),
         ),
         sizedBoxH8,
-        Text(
-          records.first.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: textStyle15B500,
+        Tooltip(
+          message: records.first.name,
+          child: Text(
+            records.first.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: textStyle15B500,
+          ),
         )
       ],
     );
@@ -577,7 +581,7 @@ class SubscribedFragment extends StatelessWidget {
               childCount: records!.length,
             ),
             gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 360.0,
+              minCrossAxisExtent: 400.0,
               crossAxisSpacing: 12.0,
               mainAxisSpacing: 12.0,
               mainAxisExtent: 170.0,

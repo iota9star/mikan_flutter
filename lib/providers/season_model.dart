@@ -39,4 +39,10 @@ class SeasonModel extends CancelableBaseModel {
       "获取${_season.title}失败：${resp.msg}".toast();
     }
   }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
 }

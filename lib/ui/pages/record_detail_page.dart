@@ -17,6 +17,7 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/record_detail_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 @FFRoute(
@@ -40,21 +41,23 @@ class RecordDetailPage extends StatelessWidget {
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
         create: (_) => RecordDetailModel(url),
-        child: Scaffold(
-          body: Stack(
-            children: [
-              _buildBackground(theme),
-              _buildLoading(),
-              _buildContentWrapper(theme),
-              _buildHeadBar(context, theme),
-            ],
-          ),
-        ),
+        child: Builder(builder: (context) {
+          final model = Provider.of<RecordDetailModel>(context, listen: false);
+          return Scaffold(
+            body: Stack(
+              children: [
+                _buildBackground(theme),
+                _buildContentWrapper(theme, model),
+                _buildHeader(context, theme),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 
-  Widget _buildHeadBar(
+  Widget _buildHeader(
     final BuildContext context,
     final ThemeData theme,
   ) {
@@ -120,36 +123,49 @@ class RecordDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContentWrapper(final ThemeData theme) {
+  Widget _buildContentWrapper(
+    final ThemeData theme,
+    final RecordDetailModel model,
+  ) {
     return Positioned.fill(
       child: Selector<RecordDetailModel, RecordDetail?>(
         selector: (context, model) => model.recordDetail,
         shouldRebuild: (pre, next) => pre != next,
         builder: (context, recordDetail, __) {
-          if (recordDetail == null) {
-            return sizedBox;
-          }
-          return WaterfallFlow(
-            padding: edgeH16T90B24WithStatusBar,
-            gridDelegate:
-                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 400.0,
-              mainAxisSpacing: 16.0,
-              crossAxisSpacing: 16.0,
+          return SmartRefresher(
+            controller: model.refreshController,
+            enablePullDown: true,
+            enablePullUp: false,
+            header: WaterDropMaterialHeader(
+              backgroundColor: theme.secondary,
+              color: theme.secondary.isDark ? Colors.white : Colors.black,
+              distance: Screen.statusBarHeight + 42.0,
             ),
-            physics: const BouncingScrollPhysics(),
-            children: [
-              _buildTop(
-                context,
-                theme,
-                recordDetail,
+            onRefresh: model.refresh,
+            child: WaterfallFlow(
+              padding: edgeH16T136B24WithStatusBar,
+              gridDelegate:
+                  const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+                minCrossAxisExtent: 400.0,
+                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 16.0,
               ),
-              _buildBase(
-                theme,
-                recordDetail,
-              ),
-              _buildIntro(theme, recordDetail),
-            ],
+              physics: const BouncingScrollPhysics(),
+              children: recordDetail == null
+                  ? [sizedBox]
+                  : [
+                      _buildTop(
+                        context,
+                        theme,
+                        recordDetail,
+                      ),
+                      _buildBase(
+                        theme,
+                        recordDetail,
+                      ),
+                      _buildIntro(theme, recordDetail),
+                    ],
+            ),
           );
         },
       ),
@@ -244,24 +260,6 @@ class RecordDetailPage extends StatelessWidget {
               ],
             ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildLoading() {
-    return Positioned.fill(
-      child: Selector<RecordDetailModel, bool>(
-        selector: (_, model) => model.loading,
-        shouldRebuild: (pre, next) => pre != next,
-        builder: (_, loading, child) {
-          if (loading) return child!;
-          return sizedBox;
-        },
-        child: const SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: centerLoading,
-        ),
       ),
     );
   }

@@ -147,6 +147,12 @@ class IndexModel extends CancelableBaseModel {
     }
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
 }
 
 typedef LoadSeasonIndex = int Function(int currIndex);

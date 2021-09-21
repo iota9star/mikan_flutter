@@ -91,7 +91,7 @@ class RecentSubscribedPage extends StatelessWidget {
         builder: (_, records, __) {
           return SliverGrid(
             gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 360.0,
+              minCrossAxisExtent: 400.0,
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
               mainAxisExtent: 170.0,

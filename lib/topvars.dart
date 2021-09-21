@@ -73,8 +73,8 @@ final edgeH24V36WithStatusBar = EdgeInsets.only(
   right: 24.0,
 );
 
-final edgeH16T90B24WithStatusBar = EdgeInsets.only(
-  top: 90.0 + Screen.statusBarHeight,
+final edgeH16T136B24WithStatusBar = EdgeInsets.only(
+  top: 136.0 + Screen.statusBarHeight,
   left: 16.0,
   right: 16.0,
   bottom: 24.0,

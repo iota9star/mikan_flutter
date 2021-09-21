@@ -21,6 +21,7 @@ import 'package:mikan_flutter/ui/fragments/subgroup_bangumis_fragment.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 @FFRoute(
@@ -117,56 +118,58 @@ class BangumiPage extends StatelessWidget {
     final ThemeData theme,
     final BangumiModel model,
   ) {
-    return Selector<BangumiModel, bool>(
-      selector: (_, model) => model.loading,
+    return Selector<BangumiModel, int>(
+      selector: (_, model) => model.refreshFlag,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (context, loading, __) {
+      builder: (context, _, __) {
         final detail = model.bangumiDetail;
         final notNull = detail != null;
         final subgroups = detail?.subgroupBangumis;
         final notEmpty = subgroups?.isNotEmpty == true;
-        final items = loading
-            ? [
-                _buildTop(
-                  context,
-                  theme,
-                  model,
-                ),
-                _buildLoading(theme),
-              ]
-            : [
-                _buildTop(
-                  context,
-                  theme,
-                  model,
-                ),
-                if (notNull)
-                  _buildBase(
-                    theme,
-                    model.bangumiDetail!,
-                  ),
-                if (notEmpty)
-                  _buildSubgroupTags(
-                    context,
-                    theme,
-                    model,
-                  ),
-                if (notNull && detail!.intro.isNotBlank)
-                  _buildIntro(
-                    theme,
-                    detail,
-                  ),
-                if (notEmpty)
-                  ..._buildSubgroups(context, theme, model, subgroups!),
-              ];
-        return WaterfallFlow(
-          children: items,
-          padding: edgeH16T90B24WithStatusBar,
-          physics: const BouncingScrollPhysics(),
-          gridDelegate: const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-            minCrossAxisExtent: 400.0,
-            crossAxisSpacing: 16.0,
-            mainAxisSpacing: 16.0,
+        final items = [
+          _buildTop(
+            context,
+            theme,
+            model,
+          ),
+          if (notNull)
+            _buildBase(
+              theme,
+              model.bangumiDetail!,
+            ),
+          if (notEmpty)
+            _buildSubgroupTags(
+              context,
+              theme,
+              model,
+            ),
+          if (notNull && detail!.intro.isNotBlank)
+            _buildIntro(
+              theme,
+              detail,
+            ),
+          if (notEmpty) ..._buildSubgroups(context, theme, model, subgroups!),
+        ];
+        return SmartRefresher(
+          controller: model.refreshController,
+          enablePullDown: true,
+          enablePullUp: false,
+          header: WaterDropMaterialHeader(
+            backgroundColor: theme.secondary,
+            color: theme.secondary.isDark ? Colors.white : Colors.black,
+            distance: Screen.statusBarHeight + 42.0,
+          ),
+          onRefresh: model.load,
+          child: WaterfallFlow(
+            children: items,
+            padding: edgeH16T136B24WithStatusBar,
+            physics: const BouncingScrollPhysics(),
+            gridDelegate:
+                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 400.0,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+            ),
           ),
         );
       },

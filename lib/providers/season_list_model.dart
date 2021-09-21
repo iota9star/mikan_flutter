@@ -83,4 +83,10 @@ class SeasonListModel extends CancelableBaseModel {
     if (_loading) return "加载中，请等待加载完成";
     await _loadSeasonBangumis();
   }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
 }

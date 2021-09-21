@@ -14,9 +14,9 @@ class BangumiModel extends CancelableBaseModel {
   final String id;
   final String cover;
 
-  bool _loading = false;
+  int _refreshFlag = 0;
 
-  bool get loading => _loading;
+  int get refreshFlag => _refreshFlag;
 
   BangumiDetail? _bangumiDetail;
 
@@ -35,12 +35,16 @@ class BangumiModel extends CancelableBaseModel {
     }
   }
 
-  final RefreshController _refreshController = RefreshController();
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: true);
 
   RefreshController get refreshController => _refreshController;
 
+  final RefreshController _subgroupRefreshController = RefreshController();
+
+  RefreshController get subgroupRefreshController => _subgroupRefreshController;
+
   BangumiModel(this.id, this.cover) {
-    _loadBangumiDetail();
     Future.delayed(const Duration(milliseconds: 640))
         .whenComplete(() => _loadCoverMainColor());
   }
@@ -70,7 +74,7 @@ class BangumiModel extends CancelableBaseModel {
   loadSubgroupList(final String dataId) async {
     final sb = _bangumiDetail?.subgroupBangumis[dataId];
     if ((sb?.records.length ?? 0) < 10) {
-      return _refreshController.loadNoData();
+      return _subgroupRefreshController.loadNoData();
     }
     final Resp resp = await (this +
         Repo.bangumiMore(
@@ -80,28 +84,28 @@ class BangumiModel extends CancelableBaseModel {
         ));
     if (resp.success) {
       if (sb?.records.length == resp.data.length) {
-        _refreshController.loadNoData();
+        _subgroupRefreshController.loadNoData();
       } else {
-        _refreshController.loadComplete();
+        _subgroupRefreshController.loadComplete();
       }
       sb?.records = resp.data;
       notifyListeners();
     } else {
-      _refreshController.loadFailed();
+      _subgroupRefreshController.loadFailed();
       resp.msg.toast();
     }
   }
 
-  _loadBangumiDetail() async {
-    _loading = true;
-    notifyListeners();
+  load() async {
     final resp = await (this + Repo.bangumi(id));
-    _loading = false;
+    _refreshController.refreshCompleted();
     if (resp.success) {
       _bangumiDetail = resp.data;
+      "加载成功".toast();
     } else {
       resp.msg?.toast();
     }
+    _refreshFlag++;
     notifyListeners();
   }
 
@@ -126,5 +130,12 @@ class BangumiModel extends CancelableBaseModel {
       return resp.msg.toast();
     }
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    _subgroupRefreshController.dispose();
+    super.dispose();
   }
 }

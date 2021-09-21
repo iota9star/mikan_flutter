@@ -52,4 +52,10 @@ class SubgroupModel extends CancelableBaseModel {
     await _loadBangumis();
     _refreshController.refreshCompleted();
   }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
 }

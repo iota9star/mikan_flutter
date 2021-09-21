@@ -93,4 +93,10 @@ class SubscribedModel extends CancelableBaseModel {
     }
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
 }

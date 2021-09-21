@@ -102,7 +102,7 @@ class SearchFragment extends StatelessWidget {
               childCount: records!.length,
             ),
             gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 360.0,
+              minCrossAxisExtent: 400.0,
               mainAxisSpacing: 16.0,
               crossAxisSpacing: 16.0,
               mainAxisExtent: 150.0,

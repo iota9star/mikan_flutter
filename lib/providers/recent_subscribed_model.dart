@@ -59,4 +59,10 @@ class RecentSubscribedModel extends CancelableBaseModel {
       "获取最近更新失败：${resp.msg}".toast();
     }
   }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
 }

@@ -11,10 +11,10 @@ class RecordDetail {
   late bool subscribed;
   late Map<String, String> more;
   late String intro;
-  late List<Subgroup> subgroups;
+  late List<Subgroup> subgroups = [];
 
   // 详情地址
-  late String url;
+  late String url = "";
 
   // 标题
   late String title;
