@@ -64,7 +64,6 @@ jobs:
       - name: Commit binary files
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: master
           push_options: '--force'
           commit_message: ":bookmark: Release binary files."
           file_pattern: releases/*-release.apk releases/meta.json

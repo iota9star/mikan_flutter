@@ -47,5 +47,5 @@ jobs:
           releaseFiles: 'build/app/outputs/flutter-apk/*-release-signed.apk'
           track: production
           inAppUpdatePriority: 5
-          userFraction: 1.0
+          userFraction: 0.9
           mappingFile: build/app/outputs/mapping/release/mapping.txt
