@@ -1,4 +1,4 @@
-name: build split apk
+name: build GP
 on:
   workflow_dispatch:
     inputs:
