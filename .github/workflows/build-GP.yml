@@ -1,0 +1,51 @@
+name: build split apk
+on:
+  workflow_dispatch:
+    inputs:
+      TAG:
+        description: 'Set a Tag'
+        required: true
+        default: ''
+  push:
+    tags:
+      - v*
+jobs:
+  build:
+    name: Release build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11.x'
+      - name: Setup flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+      - name: Build split apk
+        run: |
+          flutter pub get
+          flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
+          ls build/app/outputs/flutter-apk
+      - name: Sign build apk
+        uses: iota9star/sign-android-release@v1.0.5
+        with:
+          releaseDirectory: build/app/outputs/flutter-apk
+          fileRegex: .*-release.apk
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.3"
+      - name: Release to GP
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: io.nichijou.flutter.mikan
+          releaseFiles: 'build/app/outputs/flutter-apk/*-release-signed.apk'
+          track: production
+          inAppUpdatePriority: 5
+          userFraction: 1.0
+          mappingFile: build/app/outputs/mapping/release/mapping.txt
