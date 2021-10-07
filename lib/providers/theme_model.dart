@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,9 @@ class ThemeModel extends BaseModel {
   ThemeModel() {
     _themeItem = MyHive.themeItemBox.values.firstWhere((element) =>
         element.id == MyHive.db.get(HiveDBKey.themeId, defaultValue: 1));
+    if (_themeItem.fontFamily.isNullOrBlank) {
+      _themeItem.fontFamily = defaultFontFamilyName;
+    }
   }
 
   theme({bool darkTheme = false}) {
@@ -30,7 +34,7 @@ class ThemeModel extends BaseModel {
     final Brightness brightness = isDark ? Brightness.dark : Brightness.light;
     final primaryColor = Color(_themeItem.primaryColor);
     final primaryColorBrightness =
-        primaryColor.isDark ? Brightness.dark : Brightness.light;
+    primaryColor.isDark ? Brightness.dark : Brightness.light;
     final accentColor = Color(_themeItem.accentColor);
     final scaffoldBackgroundColor = Color(
       isDark
@@ -61,21 +65,21 @@ class ThemeModel extends BaseModel {
       splashColor: accentColor.withOpacity(0.27),
       colorScheme: isDark
           ? ColorScheme.dark(
-              primary: primaryColor,
-              primaryVariant: primaryColor.darken(0.24),
-              secondary: accentColor,
-              secondaryVariant: accentColor.darken(0.36),
-              background: backgroundColor,
-              surface: backgroundColor,
-            )
+        primary: primaryColor,
+        primaryVariant: primaryColor.darken(0.24),
+        secondary: accentColor,
+        secondaryVariant: accentColor.darken(0.36),
+        background: backgroundColor,
+        surface: backgroundColor,
+      )
           : ColorScheme.light(
-              primary: primaryColor,
-              primaryVariant: primaryColor.darken(0.2),
-              secondary: accentColor,
-              secondaryVariant: accentColor.darken(0.36),
-              background: backgroundColor,
-              surface: backgroundColor,
-            ),
+        primary: primaryColor,
+        primaryVariant: primaryColor.darken(0.2),
+        secondary: accentColor,
+        secondaryVariant: accentColor.darken(0.36),
+        background: backgroundColor,
+        surface: backgroundColor,
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         focusedBorder: underlineInputBorder,
@@ -119,11 +123,14 @@ class ThemeModel extends BaseModel {
   }
 
   void applyFont(Font? font) {
-    _themeItem.fontFamilyName = font?.name;
+    _themeItem.fontFamilyName = font?.name ?? defaultFontFamilyName;
     if (_themeItem.fontFamily != font?.id) {
       _themeItem.fontFamily = font?.id;
       _themeItem.save();
       themeItem = _themeItem;
     }
   }
+
+  // 如果是 linux 系统，默认使用鸿蒙字体
+  String? get defaultFontFamilyName => Platform.isLinux ? "hmsans" : null;
 }
