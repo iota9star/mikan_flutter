@@ -46,7 +46,7 @@ class NormalRecordItem extends StatelessWidget {
             padding: edgeHT16,
             child: Text(
               record.publishAt,
-              style: textStyle20B,
+              style: textStyle18B,
             ),
           ),
           Padding(

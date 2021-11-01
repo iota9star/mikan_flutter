@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/screen.dart';
@@ -29,6 +30,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class IndexFragment extends StatefulWidget {
   const IndexFragment({Key? key}) : super(key: key);
@@ -433,21 +435,16 @@ class _IndexFragmentState extends State<IndexFragment> {
   }
 
   Widget _buildOVAList(final ThemeData theme) {
-    return Selector<IndexModel, List<RecordItem>>(
-      selector: (_, model) => model.ovas,
-      shouldRebuild: (pre, next) => pre.ne(next),
-      builder: (context, records, __) {
-        if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
-        return SliverToBoxAdapter(
-          child: Container(
-            height: 154.0,
-            padding: const EdgeInsets.only(bottom: 12.0, top: 12.0),
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: records.length,
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 16.0),
-              itemBuilder: (context, index) {
+    return SliverPadding(
+      padding: edgeH16V8,
+      sliver: Selector<IndexModel, List<RecordItem>>(
+        selector: (_, model) => model.ovas,
+        shouldRebuild: (pre, next) => pre.ne(next),
+        builder: (context, records, __) {
+          if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
+          return SliverWaterfallFlow(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
                 final RecordItem record = records[index];
                 return OVARecordItem(
                   index: index,
@@ -462,10 +459,17 @@ class _IndexFragmentState extends State<IndexFragment> {
                   },
                 );
               },
+              childCount: records.length,
             ),
-          ),
-        );
-      },
+            gridDelegate:
+                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              minCrossAxisExtent: 280,
+            ),
+          );
+        },
+      ),
     );
   }
 

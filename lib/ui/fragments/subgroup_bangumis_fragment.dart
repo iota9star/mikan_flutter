@@ -16,6 +16,7 @@ import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 @immutable
 class SubgroupBangumisFragment extends StatelessWidget {
@@ -91,7 +92,7 @@ class SubgroupBangumisFragment extends StatelessWidget {
               theme.secondary,
               bottom: 16.0,
             ),
-            child: GridView.builder(
+            child: WaterfallFlow.builder(
               padding: edgeH16V8,
               controller: ModalScrollController.of(context),
               itemCount: records.length,
@@ -110,11 +111,11 @@ class SubgroupBangumisFragment extends StatelessWidget {
                   },
                 );
               },
-              gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+              gridDelegate:
+                  const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
                 minCrossAxisExtent: 400.0,
                 mainAxisSpacing: 16.0,
                 crossAxisSpacing: 16.0,
-                mainAxisExtent: 150.0,
               ),
             ),
           );

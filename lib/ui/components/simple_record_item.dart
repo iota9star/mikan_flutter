@@ -30,7 +30,6 @@ class SimpleRecordItem extends StatelessWidget {
     );
     return TapScaleContainer(
       onTap: onTap,
-      height: 156.0,
       decoration: BoxDecoration(
         color: theme.backgroundColor,
         borderRadius: borderRadius16,
@@ -53,65 +52,59 @@ class SimpleRecordItem extends StatelessWidget {
               margin: edgeH16,
               child: Text(
                 record.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: textStyle14B500,
+                style: textStyle15B500,
               ),
             ),
           ),
-          spacer,
+          sizedBoxH4,
           Container(
             margin: edgeH16,
             width: double.infinity,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  if (record.size.isNotBlank)
-                    Container(
-                      margin: edgeR4,
+            child: Wrap(
+              spacing: 4.0,
+              runSpacing: 4.0,
+              children: [
+                if (record.size.isNotBlank)
+                  Container(
+                    padding: edgeH4V2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          theme.secondary,
+                          theme.secondary.withOpacity(0.56),
+                        ],
+                      ),
+                      borderRadius: borderRadius2,
+                    ),
+                    child: Text(
+                      record.size,
+                      style: accentTagStyle,
+                    ),
+                  ),
+                if (!record.tags.isNullOrEmpty)
+                  ...List.generate(record.tags.length, (index) {
+                    return Container(
                       padding: edgeH4V2,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            theme.secondary,
-                            theme.secondary.withOpacity(0.56),
+                            theme.primary,
+                            theme.primary.withOpacity(0.56),
                           ],
                         ),
                         borderRadius: borderRadius2,
                       ),
                       child: Text(
-                        record.size,
-                        style: accentTagStyle,
+                        record.tags[index],
+                        style: primaryTagStyle,
                       ),
-                    ),
-                  if (!record.tags.isNullOrEmpty)
-                    ...List.generate(record.tags.length, (index) {
-                      return Container(
-                        margin: edgeR4,
-                        padding: edgeH4V2,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              theme.primary,
-                              theme.primary.withOpacity(0.56),
-                            ],
-                          ),
-                          borderRadius: borderRadius2,
-                        ),
-                        child: Text(
-                          record.tags[index],
-                          style: primaryTagStyle,
-                        ),
-                      );
-                    }),
-                ],
-              ),
+                    );
+                  }),
+              ],
             ),
           ),
           Row(
