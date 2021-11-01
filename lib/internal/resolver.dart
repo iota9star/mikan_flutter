@@ -162,7 +162,7 @@ class Resolver {
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
         await Jiffy.locale("zh_cn");
-        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
       } else {
         record.publishAt = temp;
       }
@@ -279,7 +279,7 @@ class Resolver {
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
         await Jiffy.locale("zh_cn");
-        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
       } else {
         record.publishAt = temp;
       }
@@ -317,7 +317,7 @@ class Resolver {
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
         await Jiffy.locale("zh_cn");
-        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
       } else {
         record.publishAt = temp;
       }
@@ -645,7 +645,7 @@ class Resolver {
           if (temp.isNotBlank &&
               RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
             await Jiffy.locale("zh_cn");
-            record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+            record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
           } else {
             record.publishAt = temp;
           }
@@ -777,7 +777,7 @@ class Resolver {
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
         await Jiffy.locale("zh_cn");
-        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMdjm;
+        record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
       } else {
         record.publishAt = temp;
       }

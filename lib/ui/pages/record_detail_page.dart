@@ -323,7 +323,7 @@ class RecordDetailPage extends StatelessWidget {
                         borderRadius: borderRadius24,
                       ),
                       child: Icon(
-                        FluentIcons.share_24_regular,
+                        FluentIcons.share_24_filled,
                         color: accentTextColor,
                       ),
                     ),
@@ -351,7 +351,7 @@ class RecordDetailPage extends StatelessWidget {
                         borderRadius: borderRadius24,
                       ),
                       child: Icon(
-                        FluentIcons.clipboard_link_24_regular,
+                        FluentIcons.clipboard_link_24_filled,
                         color: primaryTextColor,
                       ),
                     ),

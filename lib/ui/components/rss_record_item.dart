@@ -166,7 +166,7 @@ class RssRecordItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     IconButton(
-                      icon: const Icon(FluentIcons.cloud_download_24_regular),
+                      icon: const Icon(FluentIcons.arrow_download_24_filled),
                       tooltip: "复制并尝试打开种子链接",
                       color: theme.secondary,
                       iconSize: 20.0,
@@ -176,7 +176,7 @@ class RssRecordItem extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(FluentIcons.clipboard_link_24_regular),
+                      icon: const Icon(FluentIcons.clipboard_link_24_filled),
                       color: theme.secondary,
                       tooltip: "复制并尝试打开磁力链接",
                       iconSize: 20.0,
@@ -185,7 +185,7 @@ class RssRecordItem extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(FluentIcons.share_24_regular),
+                      icon: const Icon(FluentIcons.share_24_filled),
                       color: theme.secondary,
                       tooltip: "分享",
                       iconSize: 20.0,

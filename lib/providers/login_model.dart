@@ -75,7 +75,7 @@ class LoginModel extends CancelableBaseModel {
       "登录成功".toast();
       loginSuccess.call();
     } else {
-      "登录失败，请稍候重试：${resp.msg}".toast();
+      "${resp.msg}".toast();
     }
   }
 

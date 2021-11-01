@@ -90,10 +90,10 @@ class SliverWaterfallFlowDelegateWithMinCrossAxisExtent
 
   @override
   int getCrossAxisCount(SliverConstraints constraints) {
-    final count =
+    final int val =
         (constraints.crossAxisExtent / (minCrossAxisExtent + crossAxisSpacing))
             .floor();
-    return count == 0 ? 1 : count;
+    return val < 1 ? 1 : val;
   }
 
   @override

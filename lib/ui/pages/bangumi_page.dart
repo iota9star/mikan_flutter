@@ -259,8 +259,6 @@ class BangumiPage extends StatelessWidget {
                         margin: edgeH16,
                         child: Text(
                           record.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                           style: textStyle15B500,
                         ),
                       ),
@@ -277,7 +275,7 @@ class BangumiPage extends StatelessWidget {
                             height: 20.0,
                             child: TextButton(
                               child: Icon(
-                                FluentIcons.cloud_download_24_regular,
+                                FluentIcons.arrow_download_24_filled,
                                 size: 20.0,
                                 color: theme.secondary,
                               ),
@@ -296,7 +294,7 @@ class BangumiPage extends StatelessWidget {
                             height: 20.0,
                             child: TextButton(
                               child: Icon(
-                                FluentIcons.clipboard_link_24_regular,
+                                FluentIcons.clipboard_link_24_filled,
                                 size: 20.0,
                                 color: theme.secondary,
                               ),
@@ -315,7 +313,7 @@ class BangumiPage extends StatelessWidget {
                             height: 20.0,
                             child: TextButton(
                               child: Icon(
-                                FluentIcons.share_24_regular,
+                                FluentIcons.share_24_filled,
                                 size: 20.0,
                                 color: theme.secondary,
                               ),
@@ -518,7 +516,7 @@ class BangumiPage extends StatelessWidget {
                     borderRadius: borderRadius24,
                   ),
                   child: Icon(
-                    FluentIcons.share_24_regular,
+                    FluentIcons.share_24_filled,
                     color: accentTextColor,
                   ),
                 ),

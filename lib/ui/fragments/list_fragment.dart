@@ -12,6 +12,7 @@ import 'package:mikan_flutter/ui/components/normal_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 @immutable
 class ListFragment extends StatelessWidget {
@@ -72,7 +73,7 @@ class ListFragment extends StatelessWidget {
           if (records.isEmpty) {
             return emptySliverToBoxAdapter;
           }
-          return SliverGrid(
+          return SliverWaterfallFlow(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final RecordItem record = records[index];
@@ -91,11 +92,11 @@ class ListFragment extends StatelessWidget {
               },
               childCount: records.length,
             ),
-            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 400.0,
+            gridDelegate:
+                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
-              mainAxisExtent: 160.0,
+              minCrossAxisExtent: 280,
             ),
           );
         },

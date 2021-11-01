@@ -2,6 +2,7 @@ library flutter_scale_tap;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:sprung/sprung.dart';
 
 const _kDuration = Duration(milliseconds: 200);
@@ -83,14 +84,14 @@ class _TapScaleContainerState extends State<TapScaleContainer> {
     if (diff < _kDuration) {
       await Future.delayed(_kDuration - diff);
     }
-    setState(() {
+    setSafeState(() {
       _transform = Matrix4.identity();
     });
   }
 
   _tapStart() {
     _clickTime = DateTime.now();
-    setState(() {
+    setSafeState(() {
       _transform = Matrix4.diagonal3Values(0.92, 0.92, 1);
     });
   }

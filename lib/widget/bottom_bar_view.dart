@@ -100,8 +100,7 @@ class _BottomBarViewState extends State<BottomBarView>
   }
 
   void setRemoveAllSelection(BarItem item) {
-    if (!mounted) return;
-    setState(() {
+    setSafeState(() {
       for (BarItem tab in widget.items) {
         tab.isSelected = false;
         if (item._index == tab._index) {

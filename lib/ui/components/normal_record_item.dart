@@ -46,7 +46,7 @@ class NormalRecordItem extends StatelessWidget {
             padding: edgeHT16,
             child: Text(
               record.publishAt,
-              style: textStyle18B,
+              style: textStyle20B,
             ),
           ),
           Padding(
@@ -57,8 +57,6 @@ class NormalRecordItem extends StatelessWidget {
               margin: edgeH16,
               child: Text(
                 record.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
                 style: textStyle15B500,
               ),
             ),
@@ -67,55 +65,51 @@ class NormalRecordItem extends StatelessWidget {
           Container(
             margin: edgeH16T4,
             width: double.infinity,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  if (record.size.isNotBlank)
-                    Container(
-                      margin: edgeR4,
+            child: Wrap(
+              runSpacing: 4.0,
+              spacing: 4.0,
+              children: [
+                if (record.size.isNotBlank)
+                  Container(
+                    padding: edgeH4V2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          theme.secondary,
+                          theme.secondary.withOpacity(0.56),
+                        ],
+                      ),
+                      borderRadius: borderRadius2,
+                    ),
+                    child: Text(
+                      record.size,
+                      style: accentTagStyle,
+                    ),
+                  ),
+                if (!record.tags.isNullOrEmpty)
+                  ...List.generate(record.tags.length, (index) {
+                    return Container(
                       padding: edgeH4V2,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            theme.secondary,
-                            theme.secondary.withOpacity(0.56),
+                            theme.primary,
+                            theme.primary.withOpacity(0.56),
                           ],
                         ),
                         borderRadius: borderRadius2,
                       ),
                       child: Text(
-                        record.size,
-                        style: accentTagStyle,
+                        record.tags[index],
+                        style: primaryTagStyle,
                       ),
-                    ),
-                  if (!record.tags.isNullOrEmpty)
-                    ...List.generate(record.tags.length, (index) {
-                      return Container(
-                        margin: edgeR4,
-                        padding: edgeH4V2,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              theme.primary,
-                              theme.primary.withOpacity(0.56),
-                            ],
-                          ),
-                          borderRadius: borderRadius2,
-                        ),
-                        child: Text(
-                          record.tags[index],
-                          style: primaryTagStyle,
-                        ),
-                      );
-                    }),
-                ],
-              ),
+                    );
+                  }),
+              ],
             ),
           ),
           Row(
@@ -171,7 +165,7 @@ class NormalRecordItem extends StatelessWidget {
                 ),
               spacer,
               IconButton(
-                icon: const Icon(FluentIcons.cloud_download_24_regular),
+                icon: const Icon(FluentIcons.arrow_download_24_filled),
                 tooltip: "复制并尝试打开种子链接",
                 color: theme.secondary,
                 iconSize: 20.0,
@@ -180,7 +174,7 @@ class NormalRecordItem extends StatelessWidget {
                 },
               ),
               IconButton(
-                icon: const Icon(FluentIcons.clipboard_link_24_regular),
+                icon: const Icon(FluentIcons.clipboard_link_24_filled),
                 color: theme.secondary,
                 tooltip: "复制并尝试打开磁力链接",
                 iconSize: 20.0,
@@ -189,7 +183,7 @@ class NormalRecordItem extends StatelessWidget {
                 },
               ),
               IconButton(
-                icon: const Icon(FluentIcons.share_24_regular),
+                icon: const Icon(FluentIcons.share_24_filled),
                 color: theme.secondary,
                 tooltip: "分享",
                 iconSize: 20.0,

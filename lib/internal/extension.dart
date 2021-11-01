@@ -513,4 +513,8 @@ extension ThemeDataExt on ThemeData {
   Color get secondary => colorScheme.secondary;
 }
 
-eee() {}
+extension StateExt on State {
+  setSafeState(VoidCallback cb) {
+    if (mounted) setState(cb);
+  }
+}
