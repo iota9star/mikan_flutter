@@ -82,7 +82,7 @@ class SearchFragment extends StatelessWidget {
           if (records.isNullOrEmpty) {
             return emptySliverToBoxAdapter;
           }
-          return SliverGrid(
+          return SliverWaterfallFlow(
             delegate: SliverChildBuilderDelegate(
               (_, index) {
                 final RecordItem record = records![index];
@@ -101,11 +101,11 @@ class SearchFragment extends StatelessWidget {
               },
               childCount: records!.length,
             ),
-            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+            gridDelegate:
+                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
               mainAxisSpacing: 16.0,
               crossAxisSpacing: 16.0,
-              mainAxisExtent: 150.0,
             ),
           );
         },
