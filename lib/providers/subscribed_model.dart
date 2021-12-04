@@ -21,11 +21,10 @@ class SubscribedModel extends CancelableBaseModel {
 
   List<YearSeason>? get years => _years;
 
-  set years(List<YearSeason>? years) {
+  void bindYearsAndSeason(List<YearSeason> years, Season? season) {
     _years = years;
-    if (years.isSafeNotEmpty) {
-      final active = years![0].seasons.firstWhere((element) => element.active);
-      _loadMySubscribedSeasonBangumi(active);
+    if (season != null) {
+      _loadMySubscribedSeasonBangumi(season);
     }
   }
 

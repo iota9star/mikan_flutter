@@ -465,7 +465,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                 const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
-              minCrossAxisExtent: 280,
+              minCrossAxisExtent: 360,
             ),
           );
         },

@@ -220,7 +220,9 @@ class SubscribedFragment extends StatelessWidget {
                 selector: (_, model) => model.years,
                 shouldRebuild: (pre, next) => pre.ne(next),
                 builder: (context, years, __) {
-                  if (years.isNullOrEmpty) return sizedBox;
+                  if (years.isNullOrEmpty || subscribedModel.season == null) {
+                    return sizedBox;
+                  }
                   return MaterialButton(
                     onPressed: () {
                       Navigator.pushNamed(

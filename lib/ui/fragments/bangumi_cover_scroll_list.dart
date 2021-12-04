@@ -93,12 +93,12 @@ class _BangumiCoverScrollListFragmentState
             }
             return GridView.builder(
               controller: _scrollController,
-              padding: edge8,
+              padding: edge16,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: _scrollItemModel.maxCrossAxisExtent,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
               ),
               itemBuilder: (_, index) {
                 final bangumi = bangumis.elementAt(index % length);
@@ -137,6 +137,7 @@ class _BangumiCoverScrollListFragmentState
       builder: (_, align, __) {
         return Container(
           decoration: BoxDecoration(
+            borderRadius: borderRadius16,
             image: DecorationImage(
               alignment: Alignment(align, align),
               image: imageProvider,
@@ -159,10 +160,10 @@ class _ScrollItemModel extends ChangeNotifier {
 
   _ScrollItemModel() {
     maxCrossAxisExtent = 208.0;
-    contentWidth = Screen.screenWidth - 16.0;
-    crossAxisCount = ((contentWidth) / (maxCrossAxisExtent + 8.0)).ceil();
+    contentWidth = Screen.screenWidth - 32.0;
+    crossAxisCount = ((contentWidth) / (maxCrossAxisExtent + 16.0)).ceil();
     itemSize =
-        (Screen.screenWidth - (crossAxisCount + 1) * 8.0) / crossAxisCount;
+        (Screen.screenWidth - (crossAxisCount + 1) * 16.0) / crossAxisCount;
   }
 
   void scrolling(double offset) {
@@ -173,7 +174,7 @@ class _ScrollItemModel extends ChangeNotifier {
   double operator [](int index) {
     return ((_offset +
                         Screen.screenHeight -
-                        index / crossAxisCount * (itemSize + 8.0)) /
+                        index / crossAxisCount * (itemSize + 16.0)) /
                     Screen.screenHeight)
                 .clamp(0.0, 1.0) *
             2 -

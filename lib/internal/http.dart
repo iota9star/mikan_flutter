@@ -188,8 +188,8 @@ class _Fetcher {
             proto._sendPort.send(Resp(
               false,
               msg: resp.requestOptions.path == MikanUrl.login
-                  ? "登录失败，请稍后重试"
-                  : "注册失败，请稍后重试",
+                  ? "登录失败，请检查帐号密码后重试"
+                  : "注册失败，请检查表单正确填写后重试",
             ));
           } else {
             proto._sendPort.send(Resp(true, data: resp.data));

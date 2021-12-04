@@ -1,4 +1,5 @@
-import 'package:dio/dio.dart';
+import 'dart:ui';
+
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/model/theme_item.dart';

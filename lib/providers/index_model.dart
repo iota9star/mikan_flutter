@@ -1,3 +1,4 @@
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http.dart';
@@ -49,7 +50,7 @@ class IndexModel extends CancelableBaseModel {
   List<RecordItem> get ovas => _ovas;
 
   final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController(initialRefresh: false);
 
   RefreshController get refreshController => _refreshController;
 
@@ -63,7 +64,7 @@ class IndexModel extends CancelableBaseModel {
     // 延迟执行
     Future.delayed(const Duration(milliseconds: 500), () {
       _ovas = (MyHive.db.get(HiveDBKey.mikanOva, defaultValue: <RecordItem>[])
-              as List)
+      as List)
           .cast<RecordItem>();
       final Index? index = MyHive.db.get(HiveDBKey.mikanIndex);
       _bindIndexData(index);
@@ -110,13 +111,18 @@ class IndexModel extends CancelableBaseModel {
   void _bindIndexData(final Index? index) {
     if (index == null) return;
     _years = index.years;
-    _subscribedModel.years = _years;
-    _selectedSeason =
-        _years.getOrNull(0)?.seasons.firstWhere((element) => element.active);
     _bangumiRows = index.bangumiRows;
     _selectedBangumiRow = _bangumiRows[0];
     _carousels = index.carousels;
     _user = index.user;
+    if (years.isSafeNotEmpty) {
+      for (final YearSeason year in years) {
+        _selectedSeason =
+            year.seasons.firstWhereOrNull((element) => element.active);
+        if (_selectedSeason != null) break;
+      }
+    }
+    _subscribedModel.bindYearsAndSeason(_years, _selectedSeason);
   }
 
   List<BangumiRow> get bangumiRows => _bangumiRows;
