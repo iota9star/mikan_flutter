@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:ui';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -8,7 +7,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';

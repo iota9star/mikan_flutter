@@ -1,8 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:extended_list_library/extended_list_library.dart'
-    show ViewportBuilder;
-import 'package:flutter/material.dart' hide ViewportBuilder;
 import 'package:flutter/rendering.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 

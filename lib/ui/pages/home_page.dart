@@ -1,9 +1,7 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
 @FFArgumentImport()
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/providers/home_model.dart';

@@ -34,7 +34,7 @@ class SearchFragment extends StatelessWidget {
           body: NotificationListener(
             onNotification: (notification) {
               if (notification is OverscrollIndicatorNotification) {
-                notification.disallowGlow();
+                notification.disallowIndicator();
               } else if (notification is ScrollUpdateNotification) {
                 if (notification.depth == 0) {
                   final double offset = notification.metrics.pixels;

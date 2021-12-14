@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
 
 class FirebaseModel extends BaseModel {
@@ -12,7 +11,7 @@ class FirebaseModel extends BaseModel {
   FirebaseAnalyticsObserver get observer => _observer;
 
   FirebaseModel() {
-    _analytics = FirebaseAnalytics();
+    _analytics = FirebaseAnalytics.instance;
     _observer = FirebaseAnalyticsObserver(analytics: _analytics);
   }
 }

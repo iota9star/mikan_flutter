@@ -1,7 +1,5 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -43,7 +41,7 @@ class SubgroupBangumisFragment extends StatelessWidget {
           return NotificationListener(
             onNotification: (notification) {
               if (notification is OverscrollIndicatorNotification) {
-                notification.disallowGlow();
+                notification.disallowIndicator();
               } else if (notification is ScrollUpdateNotification) {
                 if (notification.depth == 0) {
                   final double offset = notification.metrics.pixels;

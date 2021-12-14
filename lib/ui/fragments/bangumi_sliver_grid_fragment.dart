@@ -1,9 +1,7 @@
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';

@@ -1,4 +1,4 @@
-import 'package:collection/src/iterable_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http.dart';
@@ -50,7 +50,7 @@ class IndexModel extends CancelableBaseModel {
   List<RecordItem> get ovas => _ovas;
 
   final RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: false);
 
   RefreshController get refreshController => _refreshController;
 
@@ -64,7 +64,7 @@ class IndexModel extends CancelableBaseModel {
     // 延迟执行
     Future.delayed(const Duration(milliseconds: 500), () {
       _ovas = (MyHive.db.get(HiveDBKey.mikanOva, defaultValue: <RecordItem>[])
-      as List)
+              as List)
           .cast<RecordItem>();
       final Index? index = MyHive.db.get(HiveDBKey.mikanIndex);
       _bindIndexData(index);

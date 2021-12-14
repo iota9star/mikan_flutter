@@ -1,5 +1,4 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -26,7 +25,7 @@ class ListFragment extends StatelessWidget {
       body: NotificationListener(
         onNotification: (notification) {
           if (notification is OverscrollIndicatorNotification) {
-            notification.disallowGlow();
+            notification.disallowIndicator();
           } else if (notification is ScrollUpdateNotification) {
             if (notification.depth == 0) {
               final double offset = notification.metrics.pixels;

@@ -34,7 +34,7 @@ class ThemeModel extends BaseModel {
     final Brightness brightness = isDark ? Brightness.dark : Brightness.light;
     final primaryColor = Color(_themeItem.primaryColor);
     final primaryColorBrightness =
-    primaryColor.isDark ? Brightness.dark : Brightness.light;
+        primaryColor.isDark ? Brightness.dark : Brightness.light;
     final accentColor = Color(_themeItem.accentColor);
     final scaffoldBackgroundColor = Color(
       isDark
@@ -65,21 +65,21 @@ class ThemeModel extends BaseModel {
       splashColor: accentColor.withOpacity(0.27),
       colorScheme: isDark
           ? ColorScheme.dark(
-        primary: primaryColor,
-        primaryVariant: primaryColor.darken(0.24),
-        secondary: accentColor,
-        secondaryVariant: accentColor.darken(0.36),
-        background: backgroundColor,
-        surface: backgroundColor,
-      )
+              primary: primaryColor,
+              primaryVariant: primaryColor.darken(0.24),
+              secondary: accentColor,
+              secondaryVariant: accentColor.darken(0.36),
+              background: backgroundColor,
+              surface: backgroundColor,
+            )
           : ColorScheme.light(
-        primary: primaryColor,
-        primaryVariant: primaryColor.darken(0.2),
-        secondary: accentColor,
-        secondaryVariant: accentColor.darken(0.36),
-        background: backgroundColor,
-        surface: backgroundColor,
-      ),
+              primary: primaryColor,
+              primaryVariant: primaryColor.darken(0.2),
+              secondary: accentColor,
+              secondaryVariant: accentColor.darken(0.36),
+              background: backgroundColor,
+              surface: backgroundColor,
+            ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         focusedBorder: underlineInputBorder,

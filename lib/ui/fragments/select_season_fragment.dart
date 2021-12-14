@@ -1,6 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -25,7 +24,7 @@ class SelectSeasonFragment extends StatelessWidget {
       child: NotificationListener(
         onNotification: (notification) {
           if (notification is OverscrollIndicatorNotification) {
-            notification.disallowGlow();
+            notification.disallowIndicator();
           }
           return true;
         },

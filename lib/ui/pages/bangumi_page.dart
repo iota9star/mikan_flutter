@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
@@ -143,7 +141,7 @@ class BangumiPage extends StatelessWidget {
               theme,
               model,
             ),
-          if (notNull && detail!.intro.isNotBlank)
+          if (notNull && detail.intro.isNotBlank)
             _buildIntro(
               theme,
               detail,

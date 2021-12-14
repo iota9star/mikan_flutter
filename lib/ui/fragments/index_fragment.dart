@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -51,7 +49,7 @@ class _IndexFragmentState extends State<IndexFragment> {
       body: NotificationListener(
         onNotification: (notification) {
           if (notification is OverscrollIndicatorNotification) {
-            notification.disallowGlow();
+            notification.disallowIndicator();
           } else if (notification is ScrollUpdateNotification) {
             if (notification.depth == 0) {
               final double offset = notification.metrics.pixels;
@@ -312,7 +310,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                           final withoutName =
                               user == null || user.name.isNullOrBlank;
                           return Text(
-                            withoutName ? "Mikan Project" : "Hi, ${user!.name}",
+                            withoutName ? "Mikan Project" : "Hi, ${user.name}",
                             style: textStyle14B500,
                           );
                         },
