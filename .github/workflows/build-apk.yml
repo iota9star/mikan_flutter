@@ -28,6 +28,7 @@ jobs:
           \cp -f pubspec.yaml assets/
           ls assets
           flutter pub get
+          flutter doctor --android-licenses
           flutter build apk --release
           flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           ls build/app/outputs/flutter-apk
