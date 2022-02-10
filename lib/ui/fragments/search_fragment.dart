@@ -4,8 +4,10 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
@@ -365,6 +367,8 @@ class SearchFragment extends StatelessWidget {
             _buildHeaderTitle(context, theme),
             sizedBoxH12,
             _buildHeaderSearchField(theme, searchModel),
+            sizedBoxH12,
+            _buildSearchHistory(theme, searchModel),
           ],
         ),
       ),
@@ -550,6 +554,60 @@ class SearchFragment extends StatelessWidget {
             ],
           ),
         );
+      },
+    );
+  }
+
+  Widget _buildSearchHistory(ThemeData theme, SearchModel searchModel) {
+    return ValueListenableBuilder<Box>(
+      valueListenable:
+          Hive.box(HiveBoxKey.db).listenable(keys: [HiveDBKey.mikanSearch]),
+      builder: (context, box, widget) {
+        final keywords =
+            box.get(HiveDBKey.mikanSearch, defaultValue: <String>[]);
+        return keywords.isEmpty
+            ? sizedBox
+            : Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  ...keywords
+                      .map<Widget>((it) => ActionChip(
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            tooltip: it,
+                            label: Text(
+                              it,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: theme.secondary,
+                              ),
+                            ),
+                            backgroundColor: theme.secondary.withOpacity(0.18),
+                            onPressed: () {
+                              searchModel.search(it);
+                            },
+                          ))
+                      .toList(),
+                  MaterialButton(
+                    onPressed: () {
+                      MyHive.db.delete(HiveDBKey.mikanSearch);
+                    },
+                    child: const Icon(
+                      FluentIcons.delete_24_regular,
+                      size: 14.0,
+                    ),
+                    minWidth: 28.0,
+                    height: 28.0,
+                    color: theme.secondary,
+                    padding: EdgeInsets.zero,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: circleShape,
+                  ),
+                ],
+              );
       },
     );
   }

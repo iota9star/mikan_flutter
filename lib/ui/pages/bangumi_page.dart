@@ -343,26 +343,6 @@ class BangumiPage extends StatelessWidget {
     });
   }
 
-  Widget _buildLoading(final ThemeData theme) {
-    return Container(
-      width: double.infinity,
-      height: 160.0,
-      padding: edge24,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            theme.backgroundColor.withOpacity(0.72),
-            theme.backgroundColor.withOpacity(0.9),
-          ],
-        ),
-        borderRadius: borderRadius16,
-      ),
-      child: centerLoading,
-    );
-  }
-
   Widget _buildIntro(final ThemeData theme, final BangumiDetail detail) {
     return Container(
       width: double.infinity,

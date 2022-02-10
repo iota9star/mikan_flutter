@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Theme;
@@ -33,8 +32,6 @@ class ThemeModel extends BaseModel {
     final bool isDark = _themeItem.autoMode ? darkTheme : _themeItem.isDark;
     final Brightness brightness = isDark ? Brightness.dark : Brightness.light;
     final primaryColor = Color(_themeItem.primaryColor);
-    final primaryColorBrightness =
-        primaryColor.isDark ? Brightness.dark : Brightness.light;
     final accentColor = Color(_themeItem.accentColor);
     final scaffoldBackgroundColor = Color(
       isDark
@@ -57,7 +54,6 @@ class ThemeModel extends BaseModel {
         scaffoldBackgroundColor: scaffoldBackgroundColor,
         brightness: brightness,
       ),
-      primaryColorBrightness: primaryColorBrightness,
       primaryColor: primaryColor,
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       fontFamily: fontFamily,
@@ -66,17 +62,13 @@ class ThemeModel extends BaseModel {
       colorScheme: isDark
           ? ColorScheme.dark(
               primary: primaryColor,
-              primaryVariant: primaryColor.darken(0.24),
               secondary: accentColor,
-              secondaryVariant: accentColor.darken(0.36),
               background: backgroundColor,
               surface: backgroundColor,
             )
           : ColorScheme.light(
               primary: primaryColor,
-              primaryVariant: primaryColor.darken(0.2),
               secondary: accentColor,
-              secondaryVariant: accentColor.darken(0.36),
               background: backgroundColor,
               surface: backgroundColor,
             ),

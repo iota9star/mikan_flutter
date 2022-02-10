@@ -168,6 +168,9 @@ class MikanApp extends StatelessWidget {
         case ConnectivityResult.ethernet:
           "您正在使用以太网".toast();
           break;
+        case ConnectivityResult.bluetooth:
+          "您正在使用蓝牙网络".toast();
+          break;
       }
     });
   }

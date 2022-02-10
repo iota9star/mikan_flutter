@@ -6,6 +6,7 @@ import 'dart:math' as math;
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -98,12 +99,12 @@ extension NullableStringExt on String? {
       Builder(
         builder: (context) {
           final Color bgc = Theme.of(context).secondary;
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          return Stack(
+            alignment: AlignmentDirectional.center,
             children: [
               Container(
                 padding: edgeH16V12,
-                margin: edgeH8,
+                margin: edgeH24,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -122,6 +123,8 @@ extension NullableStringExt on String? {
                 ),
                 child: Text(
                   this!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: bgc.isDark ? Colors.white : Colors.black,
                     fontWeight: FontWeight.bold,

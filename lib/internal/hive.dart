@@ -29,10 +29,8 @@ class MyHive {
   static const int mikanSeason = mikanSubgroup + 1;
   static const int mikanYearSeason = mikanSeason + 1;
   static const int mikanRecordItem = mikanYearSeason + 1;
-  static const int mikanItemLocation = mikanRecordItem + 1;
 
   static late Box<ThemeItem> themeItemBox;
-  static late Box<Index> indexBox;
   static late Box db;
 
   static init() async {
@@ -63,7 +61,7 @@ class MyHive {
         ..darkScaffoldBackgroundColor = HexColor.fromHex("#000000").value;
       themeItemBox.add(defaultTheme);
     }
-    db = await Hive.openBox("DB");
+    db = await Hive.openBox(HiveBoxKey.db);
   }
 }
 
@@ -73,11 +71,13 @@ class HiveDBKey {
   static const String themeId = "THEME_ID";
   static const String mikanIndex = "MIKAN_INDEX";
   static const String mikanOva = "MIKAN_OVA";
+  static const String mikanSearch = "MIKAN_SEARCH";
 }
 
 class HiveBoxKey {
   const HiveBoxKey._();
 
+  static const String db = "KEY_DB";
   static const String themes = "KEY_THEMES";
   static const String login = "KEY_LOGIN";
 }
