@@ -29,11 +29,11 @@ jobs:
           flutter config --enable-windows-desktop
           flutter build windows --release --no-tree-shake-icons
           dir build/windows/runner/Release
-          Compress-Archive -Path build/windows/runner/Release/* releases/windows-win32-release.zip -Force
+          Compress-Archive -Path build/windows/runner/Release/* windows-win32-release.zip -Force
       - name: Release build
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "releases/*-release.zip"
+          artifacts: "*-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}

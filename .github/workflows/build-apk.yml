@@ -28,10 +28,10 @@ jobs:
           \cp -f pubspec.yaml assets/
           ls assets
           flutter pub get
-          flutter doctor --android-licenses
           flutter build apk --release --no-tree-shake-icons
           flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --no-tree-shake-icons
           ls build/app/outputs/flutter-apk
+          mkdir -p releases
           mv -f build/app/outputs/flutter-apk/*-release.apk releases
           ls releases
           mv -f releases/app-release.apk releases/app-universal-release.apk
