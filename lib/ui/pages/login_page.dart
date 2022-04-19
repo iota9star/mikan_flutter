@@ -51,7 +51,8 @@ class LoginPage extends StatelessWidget {
                           sizedBoxH16,
                           TextButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, Routes.register);
+                              Navigator.pushNamed(
+                                  context, Routes.register.name);
                             },
                             child: const Text("还没有账号？赶紧来注册一个吧~"),
                           ),
@@ -107,7 +108,7 @@ class LoginPage extends StatelessWidget {
                 context.read<SubscribedModel>().refresh();
                 Navigator.popUntil(
                   context,
-                  (route) => route.settings.name == Routes.home,
+                  (route) => route.settings.name == Routes.home.name,
                 );
               });
             }
@@ -168,7 +169,7 @@ class LoginPage extends StatelessWidget {
         const Expanded(child: Text("记住密码")),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pushNamed(Routes.forgetPassword);
+            Navigator.of(context).pushNamed(Routes.forgetPassword.name);
           },
           child: const Text("忘记密码"),
         )

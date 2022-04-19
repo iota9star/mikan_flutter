@@ -26,7 +26,7 @@ jobs:
       - name: Build split apk
         run: |
           flutter pub get
-          flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
+          flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --no-tree-shake-icons
           ls build/app/outputs/flutter-apk
       - name: Sign build apk
         uses: iota9star/sign-android-release@v1.0.5
@@ -37,8 +37,6 @@ jobs:
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.3"
       - name: Release to GP
         uses: r0adkll/upload-google-play@v1
         with:

@@ -20,7 +20,7 @@ class SelectSeasonFragment extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final indexModel = Provider.of<IndexModel>(context, listen: false);
     return Material(
-      color: theme.backgroundColor,
+      color: theme.scaffoldBackgroundColor,
       child: NotificationListener(
         onNotification: (notification) {
           if (notification is OverscrollIndicatorNotification) {
@@ -71,7 +71,7 @@ class SelectSeasonFragment extends StatelessWidget {
               ),
               minWidth: 32.0,
               padding: EdgeInsets.zero,
-              color: theme.scaffoldBackgroundColor,
+              color: theme.backgroundColor,
               shape: circleShape,
             ),
           ],
@@ -115,7 +115,7 @@ class SelectSeasonFragment extends StatelessWidget {
                       color: color,
                     ),
                   ),
-                  color: color.withOpacity(0.12),
+                  color: color.withOpacity(0.28),
                   elevation: 0,
                   onPressed: () {
                     indexModel.loadSeason(season);
@@ -149,12 +149,33 @@ class SelectSeasonFragment extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 56.0,
-                      child: Text(
-                        year.year,
-                        style: textStyle20B,
+                      width: 72.0,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 12.0,
+                            height: 12.0,
+                            decoration: BoxDecoration(
+                                // gradient: LinearGradient(
+                                //   begin: Alignment.topLeft,
+                                //   end: Alignment.bottomRight,
+                                //   colors: [
+                                //     theme.colorScheme.primary,
+                                //     theme.colorScheme.secondary
+                                //   ],
+                                // ),
+                                color: theme.primary,
+                                borderRadius: BorderRadius.circular(6.0)),
+                          ),
+                          const Spacer(),
+                          Text(
+                            year.year,
+                            style: textStyle20B,
+                          ),
+                        ],
                       ),
                     ),
+                    sizedBoxW12,
                     ...List.generate(
                       4,
                       (index) {

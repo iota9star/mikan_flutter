@@ -79,8 +79,6 @@ class _IndexFragmentState extends State<IndexFragment> {
                 slivers: [
                   _buildHeader(context, theme),
                   _buildCarousels(theme),
-                  _buildOVASection(),
-                  _buildOVAList(theme),
                   ...List.generate(
                     bangumiRows.length,
                     (index) {
@@ -112,6 +110,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                       );
                     },
                   ),
+                  _buildOVA(theme),
                   sliverSizedBoxH80,
                 ],
               ),
@@ -171,26 +170,6 @@ class _IndexFragmentState extends State<IndexFragment> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOVASection() {
-    return Selector<IndexModel, List<RecordItem>>(
-      selector: (_, model) => model.ovas,
-      shouldRebuild: (pre, next) => pre.ne(next),
-      builder: (_, ovas, child) {
-        if (ovas.isSafeNotEmpty) return child!;
-        return emptySliverToBoxAdapter;
-      },
-      child: const SliverToBoxAdapter(
-        child: Padding(
-          padding: edgeH16T8,
-          child: Text(
-            "剧场版/OVA",
-            style: textStyle20B,
           ),
         ),
       ),
@@ -432,42 +411,79 @@ class _IndexFragmentState extends State<IndexFragment> {
     );
   }
 
-  Widget _buildOVAList(final ThemeData theme) {
-    return SliverPadding(
-      padding: edgeH16V8,
-      sliver: Selector<IndexModel, List<RecordItem>>(
-        selector: (_, model) => model.ovas,
-        shouldRebuild: (pre, next) => pre.ne(next),
-        builder: (context, records, __) {
-          if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
-          return SliverWaterfallFlow(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final RecordItem record = records[index];
-                return OVARecordItem(
-                  index: index,
-                  record: record,
-                  theme: theme,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.recordDetail.name,
-                      arguments: Routes.recordDetail.d(url: record.url),
+  Widget _buildOVA(final ThemeData theme) {
+    return Selector<IndexModel, List<RecordItem>>(
+      selector: (_, model) => model.ovas,
+      shouldRebuild: (pre, next) => pre.ne(next),
+      builder: (context, records, __) {
+        if (records.isNullOrEmpty) return emptySliverToBoxAdapter;
+        final simple = "🚀 ${records.length}条";
+        final full = "更新${records.length}条记录";
+        return MultiSliver(
+          pushPinnedChildren: true,
+          children: [
+            SliverPinnedToBoxAdapter(
+                child: Container(
+              padding: edgeH16V8,
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Expanded(
+                    child: Text(
+                      "最近更新 • 剧场版/OVA",
+                      style: textStyle20B,
+                    ),
+                  ),
+                  Tooltip(
+                    message: full,
+                    child: Text(
+                      simple,
+                      style: TextStyle(
+                        color: theme.textTheme.subtitle1?.color,
+                        fontSize: 14.0,
+                        height: 1.25,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )),
+            SliverPadding(
+              padding: edgeHB16T4,
+              sliver: SliverWaterfallFlow(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final RecordItem record = records[index];
+                    return OVARecordItem(
+                      index: index,
+                      record: record,
+                      theme: theme,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          Routes.recordDetail.name,
+                          arguments: Routes.recordDetail.d(url: record.url),
+                        );
+                      },
                     );
                   },
-                );
-              },
-              childCount: records.length,
+                  childCount: records.length,
+                ),
+                gridDelegate:
+                    const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  minCrossAxisExtent: 360,
+                ),
+              ),
             ),
-            gridDelegate:
-                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-              minCrossAxisExtent: 360,
-            ),
-          );
-        },
-      ),
+          ],
+        );
+      },
     );
   }
 

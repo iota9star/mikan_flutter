@@ -27,7 +27,7 @@ jobs:
         run: |
           Copy-Item -Path pubspec.yaml -Destination assets -Force
           flutter config --enable-windows-desktop
-          flutter build windows --release
+          flutter build windows --release --no-tree-shake-icons
           dir build/windows/runner/Release
           Compress-Archive -Path build/windows/runner/Release/* releases/windows-win32-release.zip -Force
       - name: Release build
@@ -37,13 +37,3 @@ jobs:
           artifacts: "releases/*-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
-      - name: Write meta file
-        run: |
-          dart scripts/releases.dart
-      - name: Commit binary files
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          add_options: '-u'
-          push_options: '--force'
-          commit_message: ":bookmark: Release binary files."
-          file_pattern: releases/*-release.zip releases/meta.json

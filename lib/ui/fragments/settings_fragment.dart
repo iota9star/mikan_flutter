@@ -116,7 +116,7 @@ class SettingsFragment extends StatelessWidget {
       builder: (context, user, __) {
         return MaterialButton(
           onPressed: () {
-            Navigator.pushNamed(context, Routes.login);
+            Navigator.pushNamed(context, Routes.login.name);
           },
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
@@ -215,7 +215,7 @@ class SettingsFragment extends StatelessWidget {
           onPressed: () {
             final HomeModel homeModel =
                 Provider.of<HomeModel>(context, listen: false);
-            homeModel.checkAppVersion();
+            homeModel.checkAppVersion(false);
           },
           padding: edgeH16,
           shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
@@ -224,7 +224,7 @@ class SettingsFragment extends StatelessWidget {
             children: [
               const Expanded(
                 child: Text(
-                  "检测更新",
+                  "检查更新",
                   style: textStyle16B500,
                 ),
               ),

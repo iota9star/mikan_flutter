@@ -12,7 +12,8 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
-import 'package:mikan_flutter/model/year_season.dart';
+import 'package:mikan_flutter/model/user.dart';
+import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
@@ -30,62 +31,106 @@ class SubscribedFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final subscribedModel =
-        Provider.of<SubscribedModel>(context, listen: false);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
-        body: NotificationListener(
-          onNotification: (notification) {
-            if (notification is OverscrollIndicatorNotification) {
-              notification.disallowIndicator();
-            } else if (notification is ScrollUpdateNotification) {
-              if (notification.depth == 0) {
-                final double offset = notification.metrics.pixels;
-                subscribedModel.hasScrolled = offset > 0.0;
-              }
-            }
-            return true;
+        body: Selector<IndexModel, User?>(
+          builder: (BuildContext context, User? value, Widget? child) {
+            return value?.name?.isNotBlank == true
+                ? _buildSubscribedView(context, theme)
+                : _buildLoginView(context, theme);
           },
-          child: SmartRefresher(
-            header: WaterDropMaterialHeader(
-              backgroundColor: theme.secondary,
-              color: theme.secondary.isDark ? Colors.white : Colors.black,
-              distance: Screen.statusBarHeight + 42.0,
-            ),
-            controller: subscribedModel.refreshController,
-            enablePullDown: true,
-            enablePullUp: false,
-            onRefresh: subscribedModel.refresh,
-            child: CustomScrollView(
-              slivers: [
-                _buildHeader(theme),
-                MultiSliver(
-                  pushPinnedChildren: true,
-                  children: [
-                    _buildRssSection(context, theme),
-                    _buildRssList(theme, subscribedModel),
-                  ],
-                ),
-                MultiSliver(
-                  pushPinnedChildren: true,
-                  children: [
-                    _buildSeasonRssSection(theme, subscribedModel),
-                    _buildSeasonRssList(theme, subscribedModel),
-                  ],
-                ),
-                MultiSliver(
-                  pushPinnedChildren: true,
-                  children: [
-                    _buildRssRecordsSection(context, theme),
-                    _buildRssRecordsList(theme),
-                  ],
-                ),
-                _buildSeeMore(theme, subscribedModel),
-                sliverSizedBoxH80,
-              ],
+          selector: (_, model) => model.user,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginView(BuildContext context, ThemeData theme) {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: theme.backgroundColor,
+            borderRadius: scrollHeaderBorderRadius(true),
+            boxShadow: scrollHeaderBoxShadow(true),
+          ),
+          width: double.infinity,
+          padding: edge16WithStatusBar,
+          child: const Text(
+            "我的订阅",
+            style: textStyle24B,
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.login.name);
+              },
+              child: const Text("您还没有登录，请先登录"),
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSubscribedView(
+    BuildContext context,
+    ThemeData theme,
+  ) {
+    final subscribedModel =
+        Provider.of<SubscribedModel>(context, listen: false);
+    return NotificationListener(
+      onNotification: (notification) {
+        if (notification is OverscrollIndicatorNotification) {
+          notification.disallowIndicator();
+        } else if (notification is ScrollUpdateNotification) {
+          if (notification.depth == 0) {
+            final double offset = notification.metrics.pixels;
+            subscribedModel.hasScrolled = offset > 0.0;
+          }
+        }
+        return true;
+      },
+      child: SmartRefresher(
+        header: WaterDropMaterialHeader(
+          backgroundColor: theme.secondary,
+          color: theme.secondary.isDark ? Colors.white : Colors.black,
+          distance: Screen.statusBarHeight + 42.0,
+        ),
+        controller: subscribedModel.refreshController,
+        enablePullDown: true,
+        enablePullUp: false,
+        onRefresh: subscribedModel.refresh,
+        child: CustomScrollView(
+          slivers: [
+            _buildHeader(theme),
+            MultiSliver(
+              pushPinnedChildren: true,
+              children: [
+                _buildRssSection(context, theme),
+                _buildRssList(theme, subscribedModel),
+              ],
+            ),
+            MultiSliver(
+              pushPinnedChildren: true,
+              children: [
+                _buildSeasonRssSection(theme, subscribedModel),
+                _buildSeasonRssList(theme, subscribedModel),
+              ],
+            ),
+            MultiSliver(
+              pushPinnedChildren: true,
+              children: [
+                _buildRssRecordsSection(context, theme),
+                _buildRssRecordsList(theme),
+              ],
+            ),
+            _buildSeeMore(theme, subscribedModel),
+            sliverSizedBoxH80,
+          ],
         ),
       ),
     );
@@ -107,13 +152,9 @@ class SubscribedFragment extends StatelessWidget {
             ),
             padding: edge16WithStatusBar,
             duration: dur240,
-            child: Row(
-              children: const <Widget>[
-                Text(
-                  "我的订阅",
-                  style: textStyle24B,
-                ),
-              ],
+            child: const Text(
+              "我的订阅",
+              style: textStyle24B,
             ),
           ),
         );
@@ -155,9 +196,8 @@ class SubscribedFragment extends StatelessWidget {
           return SliverToBoxAdapter(
             child: Container(
               width: double.infinity,
-              height: 240.0,
               margin: edgeH16V8,
-              padding: edge24,
+              padding: edge28,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topRight,
@@ -169,7 +209,24 @@ class SubscribedFragment extends StatelessWidget {
                 ),
                 borderRadius: borderRadius16,
               ),
-              child: const Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
+              child: Center(
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/mikan.png",
+                      width: 64.0,
+                    ),
+                    sizedBoxH12,
+                    const Text(
+                      "本季度您还没有订阅任何番组哦\n快去添加订阅吧",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         }
@@ -205,53 +262,71 @@ class SubscribedFragment extends StatelessWidget {
         child: Container(
           color: theme.scaffoldBackgroundColor,
           padding: edgeH16V8,
-          child: Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  "季度订阅",
-                  style: textStyle20B,
-                ),
-              ),
-              Selector<SubscribedModel, List<YearSeason>?>(
-                selector: (_, model) => model.years,
-                shouldRebuild: (pre, next) => pre.ne(next),
-                builder: (context, years, __) {
-                  if (years.isNullOrEmpty || subscribedModel.season == null) {
-                    return sizedBox;
-                  }
-                  return MaterialButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        Routes.subscribedSeason.name,
-                        arguments: Routes.subscribedSeason.d(
-                          years: subscribedModel.years ?? [],
-                          galleries: [
-                            SeasonGallery(
-                              year: subscribedModel.season!.year,
-                              season: subscribedModel.season!.season,
-                              title: subscribedModel.season!.title,
-                              bangumis: subscribedModel.bangumis ?? [],
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    color: theme.backgroundColor,
-                    minWidth: 32.0,
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    shape: circleShape,
-                    child: const Icon(
-                      FluentIcons.chevron_right_24_regular,
-                      size: 16.0,
+          child: Selector<SubscribedModel, List<Bangumi>?>(
+              selector: (_, model) => model.bangumis,
+              builder: (context, bangumis, _) {
+                final hasVal = bangumis.isSafeNotEmpty;
+                final updateNum =
+                    bangumis?.where((e) => e.num != null && e.num! > 0).length;
+                return Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        "季度订阅",
+                        style: textStyle20B,
+                      ),
                     ),
-                  );
-                },
-              )
-            ],
-          ),
+                    if (hasVal)
+                      Tooltip(
+                        message: [
+                          if (updateNum! > 0) "最近有更新 $updateNum部",
+                          "本季度共订阅 ${bangumis!.length}部"
+                        ].join("，"),
+                        child: Text(
+                          [
+                            if (updateNum > 0) "🚀 $updateNum部",
+                            "🎬 ${bangumis.length}部"
+                          ].join("，"),
+                          style: TextStyle(
+                            color: theme.textTheme.subtitle1?.color,
+                            fontSize: 14.0,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    sizedBoxW16,
+                    if (hasVal)
+                      MaterialButton(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            Routes.subscribedSeason.name,
+                            arguments: Routes.subscribedSeason.d(
+                              years: subscribedModel.years ?? [],
+                              galleries: [
+                                SeasonGallery(
+                                  year: subscribedModel.season!.year,
+                                  season: subscribedModel.season!.season,
+                                  title: subscribedModel.season!.title,
+                                  bangumis: subscribedModel.bangumis ?? [],
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                        color: theme.backgroundColor,
+                        minWidth: 32.0,
+                        padding: EdgeInsets.zero,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: circleShape,
+                        child: const Icon(
+                          FluentIcons.chevron_right_24_regular,
+                          size: 16.0,
+                        ),
+                      ),
+                  ],
+                );
+              }),
         ),
       ),
     );
@@ -267,39 +342,49 @@ class SubscribedFragment extends StatelessWidget {
         child: Container(
           color: theme.scaffoldBackgroundColor,
           padding: edgeH16V8,
-          child: Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  "最近更新",
-                  style: textStyle20B,
-                ),
-              ),
-              Selector<SubscribedModel, bool>(
-                shouldRebuild: (pre, next) => pre != next,
-                selector: (_, model) => model.rss.isNullOrEmpty,
-                builder: (_, nullOrEmpty, __) {
-                  if (nullOrEmpty) {
-                    return sizedBox;
-                  }
-                  return MaterialButton(
-                    onPressed: () {
-                      _toRecentSubscribedPage(context);
-                    },
-                    color: theme.backgroundColor,
-                    minWidth: 32.0,
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    shape: circleShape,
-                    child: const Icon(
-                      FluentIcons.chevron_right_24_regular,
-                      size: 16.0,
+          child: Selector<SubscribedModel, Map<String, List<RecordItem>>?>(
+              selector: (_, model) => model.rss,
+              builder: (context, rss, child) {
+                final isEmpty = rss.isNullOrEmpty;
+                return Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        "最近更新",
+                        style: textStyle20B,
+                      ),
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
+                    if (!isEmpty)
+                      Tooltip(
+                        message: "最近三天共有${rss!.length}部订阅更新",
+                        child: Text(
+                          "🚀 ${rss.length}部",
+                          style: TextStyle(
+                            color: theme.textTheme.subtitle1?.color,
+                            fontSize: 14.0,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    sizedBoxW16,
+                    if (!isEmpty)
+                      MaterialButton(
+                        onPressed: () {
+                          _toRecentSubscribedPage(context);
+                        },
+                        color: theme.backgroundColor,
+                        minWidth: 32.0,
+                        padding: EdgeInsets.zero,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: circleShape,
+                        child: const Icon(
+                          FluentIcons.chevron_right_24_regular,
+                          size: 16.0,
+                        ),
+                      ),
+                  ],
+                );
+              }),
         ),
       ),
     );
@@ -371,7 +456,24 @@ class SubscribedFragment extends StatelessWidget {
               ),
               borderRadius: borderRadius16,
             ),
-            child: const Center(child: Text(">_< 您还没有订阅任何番组，快去添加订阅吧")),
+            child: Center(
+              child: Column(
+                children: [
+                  Image.asset(
+                    "assets/mikan.png",
+                    width: 64.0,
+                  ),
+                  sizedBoxH12,
+                  const Text(
+                    "您的订阅中最近三天还没有更新内容哦\n快去添加订阅吧",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -613,9 +715,7 @@ class SubscribedFragment extends StatelessWidget {
                 ),
                 shadowColor: theme.secondary.withOpacity(0.87),
               ),
-              child: const Text(
-                "- _ - _ -  查看更多  - _ - _ -",
-              ),
+              child: const Text("查看更多"),
             ),
           ),
         );

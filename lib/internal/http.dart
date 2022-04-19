@@ -23,9 +23,9 @@ class _BaseInterceptor extends InterceptorsWrapper {
     options.receiveTimeout = timeout;
     options.headers["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/86.0.4240.75 "
-        "Safari/537.36 "
-        "MikanFlutter/x.x.x";
+        "Chrome/100.0.4896.60 "
+        "Safari/537.36"
+        "MikanFlutter/1.0.0";
     options.headers['client'] = "mikan_flutter";
     options.headers['os'] = Platform.operatingSystem;
     options.headers['osv'] = Platform.operatingSystemVersion;

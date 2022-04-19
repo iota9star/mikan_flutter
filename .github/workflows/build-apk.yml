@@ -28,8 +28,9 @@ jobs:
           \cp -f pubspec.yaml assets/
           ls assets
           flutter pub get
-          flutter build apk --release
-          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
+          flutter doctor --android-licenses
+          flutter build apk --release --no-tree-shake-icons
+          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --no-tree-shake-icons
           ls build/app/outputs/flutter-apk
           mv -f build/app/outputs/flutter-apk/*-release.apk releases
           ls releases
@@ -44,8 +45,6 @@ jobs:
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.3"
       - name: Rename signed apk
         run: |
           ls releases
@@ -58,14 +57,4 @@ jobs:
           artifacts: "releases/*-release.apk"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
-      - name: Write meta file
-        run: |
-          dart scripts/releases.dart
-      - name: Commit binary files
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          add_options: '-u'
-          push_options: '--force'
-          commit_message: ":bookmark: Release binary files."
-          file_pattern: releases/*-release.apk releases/meta.json
 

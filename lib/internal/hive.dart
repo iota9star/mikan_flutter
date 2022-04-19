@@ -72,6 +72,7 @@ class HiveDBKey {
   static const String mikanIndex = "MIKAN_INDEX";
   static const String mikanOva = "MIKAN_OVA";
   static const String mikanSearch = "MIKAN_SEARCH";
+  static const String ignoreUpdateVersion = "IGNORE_UPDATE_VERSION";
 }
 
 class HiveBoxKey {

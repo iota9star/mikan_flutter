@@ -201,8 +201,4 @@ class Repo {
   static Future<Resp> release() async {
     return await Http.get(ExtraUrl.releaseVersion);
   }
-
-  static Future<Resp> releaseMeta() async {
-    return await Http.get(ExtraUrl.mikanReleaseMeta);
-  }
 }

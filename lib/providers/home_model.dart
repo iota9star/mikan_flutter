@@ -2,7 +2,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
@@ -34,20 +36,21 @@ class HomeModel extends BaseModel {
     notifyListeners();
     try {
       final String pubspec = await rootBundle.loadString("assets/pubspec.yaml");
-      final String version = pubspec
-          .split("\n")
-          .firstWhere((line) => line.startsWith("version:"))
-          .split(" ")
-          .last
-          .split("+")
-          .first;
+      final String version = "v" +
+          pubspec
+              .split("\n")
+              .firstWhere((line) => line.startsWith("version:"))
+              .split(" ")
+              .last
+              .split("+")
+              .first;
       final Resp resp = await Repo.release();
       if (!resp.success) return;
-      final String lastVersion = resp.data["versions"].first;
+      final String lastVersion = resp.data["tag_name"];
+      final String ignoreVersion = MyHive.db.get(HiveDBKey.ignoreUpdateVersion);
+      // ignore update version.
+      if (autoCheck && ignoreVersion == lastVersion) return;
       if (lastVersion.compareTo(version) > 0) {
-        final Resp metaResp = await Repo.releaseMeta();
-        if (!metaResp.success) return;
-        if (metaResp.data["tag"] != "v$lastVersion") return;
         showCupertinoModalBottomSheet(
           context: navKey.currentState!.context,
           expand: false,
@@ -55,7 +58,7 @@ class HomeModel extends BaseModel {
           isDismissible: false,
           enableDrag: false,
           builder: (context) {
-            return _buildUpgradeWidget(context, metaResp.data);
+            return _buildUpgradeWidget(context, resp.data);
           },
         );
       } else {
@@ -73,7 +76,7 @@ class HomeModel extends BaseModel {
 
   Material _buildUpgradeWidget(
     BuildContext context,
-    Map<String, dynamic> meta,
+    Map<String, dynamic> release,
   ) {
     final ThemeData theme = Theme.of(context);
     final Color backgroundColor = theme.backgroundColor;
@@ -81,14 +84,15 @@ class HomeModel extends BaseModel {
     final Color accentTextColor =
         theme.secondary.isDark ? Colors.white : Colors.black;
     final TextStyle accentTagStyle = textStyle10WithColor(accentTextColor);
+    final jiffy = Jiffy(release["published_at"])..add(hours: 8);
     return Material(
       color: Colors.transparent,
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              backgroundColor.withOpacity(0.87),
-              backgroundColor,
+              scaffoldBackgroundColor.withOpacity(0.87),
+              scaffoldBackgroundColor,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -136,7 +140,7 @@ class HomeModel extends BaseModel {
                         ),
                         sizedBoxW4,
                         Text(
-                          "${meta["tag"]} ${meta["publishedAt"]}",
+                          "${release["tag_name"]} ${jiffy.yMMMMEEEEdjm}",
                           style: textStyle12,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -148,22 +152,16 @@ class HomeModel extends BaseModel {
               ],
             ),
             sizedBoxH8,
-            Container(
-              padding: edge8,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                borderRadius: borderRadius8,
-              ),
-              child: const Text("* 点击列表右侧下载按钮速度很快哦..."),
+            Text(
+              "下载速度可能很慢哦，dddd.",
+              style: TextStyle(fontSize: 12.0, color: theme.primary),
             ),
-            sizedBoxH8,
-            for (final item in meta["files"])
+            for (final item in release["assets"])
               Container(
                 margin: edgeV4,
                 padding: edge12,
                 decoration: BoxDecoration(
-                  color: theme.scaffoldBackgroundColor,
+                  color: backgroundColor,
                   borderRadius: borderRadius8,
                 ),
                 child: Column(
@@ -177,11 +175,14 @@ class HomeModel extends BaseModel {
                         spacer,
                         MaterialButton(
                           onPressed: () {
-                            item["cdl"].toString().launchAppAndCopy();
+                            item["browser_download_url"]
+                                .toString()
+                                .launchAppAndCopy();
                           },
-                          child: const Icon(
+                          child: Icon(
                             FluentIcons.arrow_download_24_regular,
                             size: 14.0,
+                            color: accentTextColor,
                           ),
                           color: theme.secondary,
                           minWidth: 32.0,
@@ -210,13 +211,23 @@ class HomeModel extends BaseModel {
                             borderRadius: borderRadius2,
                           ),
                           child: Text(
-                            item["arch"] ?? "universal",
+                            <String?>{
+                                  "arm64-v8a",
+                                  "armeabi-v7a",
+                                  "x86_64",
+                                  "universal",
+                                  "win32"
+                                }.firstWhere(
+                                    (arch) => item["name"].contains(arch),
+                                    orElse: () => null) ??
+                                "universal",
                             style: accentTagStyle,
                           ),
                         ),
                         spacer,
                         Text(
-                          item["sizefmt"],
+                          (item["size"] / 1024 / 1024).toStringAsFixed(2) +
+                              "MB",
                           style: textStyle12,
                         ),
                       ],
@@ -230,6 +241,10 @@ class HomeModel extends BaseModel {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    MyHive.db.put(
+                      HiveDBKey.ignoreUpdateVersion,
+                      release["tag_name"],
+                    );
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(

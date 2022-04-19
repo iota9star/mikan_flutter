@@ -75,9 +75,5 @@ class ExtraUrl {
       "https://cdn.jsdelivr.net/gh/iota9star/fonts@master";
   static const String fontsManifest = "$fontsBaseUrl/manifest.json";
   static const String releaseVersion =
-      "https://data.jsdelivr.com/v1/package/gh/iota9star/mikan_flutter";
-  static const String mikanRepoUrl =
-      "https://cdn.jsdelivr.net/gh/iota9star/mikan_flutter@master";
-  static const String mikanReleaseMeta =
-      "https://cdn.jsdelivr.net/gh/iota9star/mikan_flutter@master/releases/meta.json";
+      "https://api.github.com/repos/iota9star/mikan_flutter/releases/latest";
 }

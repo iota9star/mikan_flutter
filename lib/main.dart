@@ -10,6 +10,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http_cache_manager.dart';
@@ -80,6 +81,7 @@ Future _initFirebase() async {
 }
 
 Future _initDependencies() async {
+  await Jiffy.locale("zh_cn");
   await Store.init();
   await MyHive.init();
   NetworkFontLoader.init();
@@ -192,7 +194,7 @@ class MikanApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: theme,
           darkTheme: themeModel.theme(darkTheme: true),
-          initialRoute: Routes.splash,
+          initialRoute: Routes.splash.name,
           onGenerateRoute: (RouteSettings settings) {
             return onGenerateRoute(
               settings: settings,

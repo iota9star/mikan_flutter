@@ -34,13 +34,22 @@ class SplashPage extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TapScaleContainer(
-            child: ExtendedImage.asset(
-              "assets/mikan.png",
-              width: 108,
-            ),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, Routes.home);
+          FutureBuilder(
+            future: Future.delayed(const Duration(seconds: 5)),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                Future.microtask(() =>
+                    Navigator.pushReplacementNamed(context, Routes.home.name));
+              }
+              return TapScaleContainer(
+                child: ExtendedImage.asset(
+                  "assets/mikan.png",
+                  width: 108,
+                ),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, Routes.home.name);
+                },
+              );
             },
           ),
           sizedBoxH4,

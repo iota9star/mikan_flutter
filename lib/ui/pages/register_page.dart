@@ -107,7 +107,7 @@ class RegisterPage extends StatelessWidget {
                 context.read<SubscribedModel>().refresh();
                 Navigator.popUntil(
                   context,
-                  (route) => route.settings.name == Routes.home,
+                  (route) => route.settings.name == Routes.home.name,
                 );
               });
             }
