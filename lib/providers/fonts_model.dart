@@ -43,7 +43,7 @@ class FontsModel extends CancelableBaseModel {
           .map((it) {
             final Font font = Font.fromJson(it);
             font.files =
-                font.files.map((e) => ExtraUrl.fontsBaseUrl + "/" + e).toList();
+                font.files.map((e) => "${ExtraUrl.fontsBaseUrl}/$e").toList();
             return font;
           })
           .toList()

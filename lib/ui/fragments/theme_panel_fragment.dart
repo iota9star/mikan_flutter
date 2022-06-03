@@ -79,6 +79,7 @@ class ThemePanelFragment extends StatelessWidget {
                         if (themeItem.id == 1) return "默认主题不可修改".toast();
                         _showEditThemePanel(context, themeItem: themeItem);
                       },
+                      curve: Curves.linear,
                       margin: edge8,
                       padding: edge2,
                       decoration: BoxDecoration(
@@ -112,6 +113,7 @@ class ThemePanelFragment extends StatelessWidget {
                         }
                         _showEditThemePanel(context, themeItem: themeItem);
                       },
+                      curve: Curves.linear,
                       margin: edge8,
                       padding: EdgeInsets.zero,
                       decoration: BoxDecoration(

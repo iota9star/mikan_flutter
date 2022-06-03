@@ -411,14 +411,14 @@ class ThemeEditFragment extends StatelessWidget {
               });
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            child: const Icon(
-              FluentIcons.save_24_regular,
-              size: 16.0,
-            ),
             minWidth: 32.0,
             padding: EdgeInsets.zero,
             color: theme.scaffoldBackgroundColor,
             shape: circleShape,
+            child: const Icon(
+              FluentIcons.save_24_regular,
+              size: 16.0,
+            ),
           ),
         ],
       ),

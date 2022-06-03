@@ -309,6 +309,11 @@ class SearchFragment extends StatelessWidget {
           minWidth: 0,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+          color: color.withOpacity(0.12),
+          elevation: 0,
+          onPressed: () {
+            searchModel.subgroupId = subgroup.id;
+          },
           child: Text(
             subgroup.name,
             style: TextStyle(
@@ -318,11 +323,6 @@ class SearchFragment extends StatelessWidget {
               color: color,
             ),
           ),
-          color: color.withOpacity(0.12),
-          elevation: 0,
-          onPressed: () {
-            searchModel.subgroupId = subgroup.id;
-          },
         );
       },
     );
@@ -595,16 +595,16 @@ class SearchFragment extends StatelessWidget {
                     onPressed: () {
                       MyHive.db.delete(HiveDBKey.mikanSearch);
                     },
-                    child: const Icon(
-                      FluentIcons.delete_24_regular,
-                      size: 14.0,
-                    ),
                     minWidth: 28.0,
                     height: 28.0,
                     color: theme.secondary,
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: circleShape,
+                    child: const Icon(
+                      FluentIcons.delete_24_regular,
+                      size: 14.0,
+                    ),
                   ),
                 ],
               );

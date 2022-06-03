@@ -177,6 +177,7 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     _points ??= _buildPoints();
     final ThemeData theme = Theme.of(context);
     return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: AspectRatio(
         aspectRatio: 1,
         child: Center(
@@ -217,7 +218,6 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
           ),
         ),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 8),
     );
   }
 

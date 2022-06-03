@@ -14,7 +14,7 @@ import 'package:mikan_flutter/topvars.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 extension IterableExt<T> on Iterable<T>? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
@@ -140,8 +140,8 @@ extension NullableStringExt on String? {
   launchAppAndCopy() async {
     if (isNullOrBlank) return "内容为空，取消操作".toast();
     Future _doOtherAction() async {
-      if (await canLaunch(this!)) {
-        await launch(this!);
+      if (await canLaunchUrlString(this!)) {
+        await launchUrlString(this!);
       } else {
         "未找到可打开应用".toast();
       }
@@ -316,6 +316,7 @@ Future<void> get debugPrintDone =>
     _debugPrintCompleter?.future ?? Future<void>.value();
 
 final RegExp _indentPattern = RegExp('^ *(?:[-+*] |[0-9]+[.):] )?');
+
 enum _WordWrapParseMode { inSpace, inWord, atBreak }
 
 /// Wraps the given string at the given width.
@@ -464,16 +465,15 @@ const SystemUiOverlayStyle darkSystemUiOverlayStyle = SystemUiOverlayStyle(
   systemNavigationBarColor: Colors.transparent,
   systemNavigationBarDividerColor: Colors.transparent,
   statusBarColor: Colors.transparent,
-  systemNavigationBarIconBrightness: Brightness.light,
+  systemNavigationBarIconBrightness: Brightness.dark,
   statusBarIconBrightness: Brightness.dark,
   statusBarBrightness: Brightness.light,
 );
 
 extension BuildContextExt on BuildContext {
   SystemUiOverlayStyle get fitSystemUiOverlayStyle {
-    return Theme.of(this).scaffoldBackgroundColor.isDark
-        ? lightSystemUiOverlayStyle
-        : darkSystemUiOverlayStyle;
+    var isDark2 = Theme.of(this).scaffoldBackgroundColor.isDark;
+    return isDark2 ? lightSystemUiOverlayStyle : darkSystemUiOverlayStyle;
   }
 }
 
@@ -517,6 +517,7 @@ extension ThemeDataExt on ThemeData {
 
 extension StateExt on State {
   setSafeState(VoidCallback cb) {
+    // ignore: invalid_use_of_protected_member
     if (mounted) setState(cb);
   }
 }

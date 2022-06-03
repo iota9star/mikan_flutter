@@ -32,12 +32,12 @@ class HomePage extends StatelessWidget {
                 shouldRebuild: (pre, next) => pre != next,
                 builder: (_, selectIndex, __) {
                   return IndexedStack(
+                    index: selectIndex,
                     children: const [
                       ListFragment(),
                       IndexFragment(),
                       SubscribedFragment(),
                     ],
-                    index: selectIndex,
                   );
                 },
               ),

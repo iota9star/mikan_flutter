@@ -16,7 +16,7 @@ class Store {
     cacheDir = await getTemporaryDirectory();
     docDir = await getApplicationDocumentsDirectory();
     filesDir = await getApplicationSupportDirectory();
-    cookiesPath = cacheDir.path + "/cookies";
+    cookiesPath = "${cacheDir.path}/cookies";
   }
 
   static setLogin(final Map<String, dynamic> login) {

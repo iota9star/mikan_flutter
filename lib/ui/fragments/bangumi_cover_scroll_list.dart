@@ -32,7 +32,7 @@ class _BangumiCoverScrollListFragmentState
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPersistentFrameCallback((_) {
+    WidgetsBinding.instance.addPersistentFrameCallback((_) {
       if (_animating) return;
       if (_scrollController.hasClients) {
         _animating = true;

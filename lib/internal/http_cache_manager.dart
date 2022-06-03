@@ -16,18 +16,17 @@ class HttpCacheManager {
 
   static Future<void> init({String? cacheDir}) async {
     if (cacheDir == null || cacheDir.isEmpty) {
-      cacheDir = (await getApplicationSupportDirectory()).path +
-          Platform.pathSeparator +
-          "http_cache_manager";
+      cacheDir =
+          "${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}http_cache_manager";
     }
     _httpCacheManager = HttpCacheManager._(cacheDir);
   }
 
-  static late final HttpClient _client = HttpClient()..autoUncompress = false;
+  static final HttpClient _client = HttpClient()..autoUncompress = false;
 
-  static late final Map<String, String> _lockCache = <String, String>{};
+  static final Map<String, String> _lockCache = <String, String>{};
 
-  static late final Map<String, Completer<File?>> _tasks =
+  static final Map<String, Completer<File?>> _tasks =
       <String, Completer<File?>>{};
 
   static Future<File?> get(
@@ -107,7 +106,7 @@ class HttpCacheManager {
     Cancelable? cancelable,
   }) async {
     final Uri uri = Uri.parse(url);
-    final HttpClientResponse? checkResp =
+    final HttpClientResponse checkResp =
         await _createNewRequest(uri, withBody: false, headers: headers);
 
     final String rawFileKey =
@@ -116,8 +115,8 @@ class HttpCacheManager {
     final File rawFile = _childFile(parentDir, rawFileKey);
 
     // if request error, use cache.
-    if (checkResp == null || checkResp.statusCode != HttpStatus.ok) {
-      checkResp?.listen(null);
+    if (checkResp.statusCode != HttpStatus.ok) {
+      checkResp.listen(null);
       if (rawFile.existsSync()) {
         await _justFinished(uri, rawFile, chunkEvents);
         return rawFile;
@@ -193,7 +192,7 @@ class HttpCacheManager {
     // if not expired && is support breakpoint transmission && temp file exists
     if (!isExpired && breakpointTransmission && tempFile.existsSync()) {
       final int received = await tempFile.length();
-      final HttpClientResponse? resp = await _createNewRequest(
+      final HttpClientResponse resp = await _createNewRequest(
         uri,
         beforeRequest: (HttpClientRequest req) {
           req.headers.add(HttpHeaders.rangeHeader, 'bytes=$received-');
@@ -206,9 +205,6 @@ class HttpCacheManager {
         },
         headers: headers,
       );
-      if (resp == null) {
-        return null;
-      }
       if (resp.statusCode == HttpStatus.partialContent) {
         // is ok, continue download.
         return await _rw(
@@ -278,12 +274,12 @@ class HttpCacheManager {
     StreamController<ProgressChunkEvent>? chunkEvents,
     Cancelable? cancelable,
   }) async {
-    final HttpClientResponse? resp = await _createNewRequest(
+    final HttpClientResponse resp = await _createNewRequest(
       uri,
       headers: headers,
     );
-    if (resp == null || resp.statusCode != HttpStatus.ok) {
-      resp?.listen(null);
+    if (resp.statusCode != HttpStatus.ok) {
+      resp.listen(null);
       return null;
     }
     return await _rw(

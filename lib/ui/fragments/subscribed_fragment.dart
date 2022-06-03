@@ -12,8 +12,6 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/season_gallery.dart';
-import 'package:mikan_flutter/model/user.dart';
-import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
@@ -34,45 +32,8 @@ class SubscribedFragment extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
-        body: Selector<IndexModel, User?>(
-          builder: (BuildContext context, User? value, Widget? child) {
-            return value?.name?.isNotBlank == true
-                ? _buildSubscribedView(context, theme)
-                : _buildLoginView(context, theme);
-          },
-          selector: (_, model) => model.user,
-        ),
+        body: _buildSubscribedView(context, theme),
       ),
-    );
-  }
-
-  Widget _buildLoginView(BuildContext context, ThemeData theme) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: theme.backgroundColor,
-            borderRadius: scrollHeaderBorderRadius(true),
-            boxShadow: scrollHeaderBoxShadow(true),
-          ),
-          width: double.infinity,
-          padding: edge16WithStatusBar,
-          child: const Text(
-            "我的订阅",
-            style: textStyle24B,
-          ),
-        ),
-        Expanded(
-          child: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, Routes.login.name);
-              },
-              child: const Text("您还没有登录，请先登录"),
-            ),
-          ),
-        ),
-      ],
     );
   }
 

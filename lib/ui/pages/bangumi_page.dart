@@ -61,7 +61,7 @@ class BangumiPage extends StatelessWidget {
                     ),
                     child: ClipRect(
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
+                        filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
                         child: Selector<BangumiModel, Color?>(
                           selector: (_, model) => model.coverMainColor,
                           shouldRebuild: (pre, next) => pre != next,
@@ -73,7 +73,10 @@ class BangumiPage extends StatelessWidget {
                                 gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
-                                  colors: [Colors.transparent, color],
+                                  colors: [
+                                    color,
+                                    Colors.transparent,
+                                  ],
                                 ),
                               ),
                             );
@@ -93,15 +96,15 @@ class BangumiPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Icon(
-                      FluentIcons.chevron_left_24_regular,
-                      size: 16.0,
-                    ),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     color: theme.backgroundColor,
                     minWidth: 32.0,
                     padding: EdgeInsets.zero,
                     shape: circleShape,
+                    child: const Icon(
+                      FluentIcons.chevron_left_24_regular,
+                      size: 16.0,
+                    ),
                   ),
                 ),
               ],
@@ -159,7 +162,6 @@ class BangumiPage extends StatelessWidget {
           ),
           onRefresh: model.load,
           child: WaterfallFlow(
-            children: items,
             padding: edgeH16T136B24WithStatusBar,
             physics: const BouncingScrollPhysics(),
             gridDelegate:
@@ -168,6 +170,7 @@ class BangumiPage extends StatelessWidget {
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
             ),
+            children: items,
           ),
         );
       },
@@ -216,11 +219,6 @@ class BangumiPage extends StatelessWidget {
                   width: 20.0,
                   height: 20.0,
                   child: TextButton(
-                    child: Icon(
-                      FluentIcons.chevron_right_24_regular,
-                      size: 20.0,
-                      color: theme.secondary,
-                    ),
                     style: TextButton.styleFrom(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       padding: EdgeInsets.zero,
@@ -228,6 +226,11 @@ class BangumiPage extends StatelessWidget {
                     onPressed: () {
                       _showSubgroupPanel(context, model, e.dataId);
                     },
+                    child: Icon(
+                      FluentIcons.chevron_right_24_regular,
+                      size: 20.0,
+                      color: theme.secondary,
+                    ),
                   ),
                 ),
               ],
@@ -272,11 +275,6 @@ class BangumiPage extends StatelessWidget {
                             width: 20.0,
                             height: 20.0,
                             child: TextButton(
-                              child: Icon(
-                                FluentIcons.arrow_download_24_filled,
-                                size: 20.0,
-                                color: theme.secondary,
-                              ),
                               style: TextButton.styleFrom(
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 padding: EdgeInsets.zero,
@@ -284,6 +282,11 @@ class BangumiPage extends StatelessWidget {
                               onPressed: () {
                                 record.torrent.launchAppAndCopy();
                               },
+                              child: Icon(
+                                FluentIcons.arrow_download_24_filled,
+                                size: 20.0,
+                                color: theme.secondary,
+                              ),
                             ),
                           ),
                           sizedBoxW16,
@@ -291,11 +294,6 @@ class BangumiPage extends StatelessWidget {
                             width: 20.0,
                             height: 20.0,
                             child: TextButton(
-                              child: Icon(
-                                FluentIcons.clipboard_link_24_filled,
-                                size: 20.0,
-                                color: theme.secondary,
-                              ),
                               style: TextButton.styleFrom(
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 padding: EdgeInsets.zero,
@@ -303,6 +301,11 @@ class BangumiPage extends StatelessWidget {
                               onPressed: () {
                                 record.magnet.launchAppAndCopy();
                               },
+                              child: Icon(
+                                FluentIcons.clipboard_link_24_filled,
+                                size: 20.0,
+                                color: theme.secondary,
+                              ),
                             ),
                           ),
                           sizedBoxW16,
@@ -310,11 +313,6 @@ class BangumiPage extends StatelessWidget {
                             width: 20.0,
                             height: 20.0,
                             child: TextButton(
-                              child: Icon(
-                                FluentIcons.share_24_filled,
-                                size: 20.0,
-                                color: theme.secondary,
-                              ),
                               style: TextButton.styleFrom(
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 padding: EdgeInsets.zero,
@@ -322,6 +320,11 @@ class BangumiPage extends StatelessWidget {
                               onPressed: () {
                                 record.shareString.share();
                               },
+                              child: Icon(
+                                FluentIcons.share_24_filled,
+                                size: 20.0,
+                                color: theme.secondary,
+                              ),
                             ),
                           ),
                         ],
@@ -481,6 +484,11 @@ class BangumiPage extends StatelessWidget {
                 onPressed: () {
                   model.bangumiDetail?.shareString.share();
                 },
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minWidth: 0,
+                color: accentTextColor,
+                padding: EdgeInsets.zero,
+                shape: circleShape,
                 child: Container(
                   width: 42.0,
                   height: 42.0,
@@ -498,17 +506,17 @@ class BangumiPage extends StatelessWidget {
                     color: accentTextColor,
                   ),
                 ),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minWidth: 0,
-                color: accentTextColor,
-                padding: EdgeInsets.zero,
-                shape: circleShape,
               ),
               sizedBoxW16,
               MaterialButton(
                 onPressed: () {
                   model.changeSubscribe();
                 },
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minWidth: 0,
+                color: primaryTextColor,
+                padding: EdgeInsets.zero,
+                shape: circleShape,
                 child: Container(
                   width: 48.0,
                   height: 48.0,
@@ -535,11 +543,6 @@ class BangumiPage extends StatelessWidget {
                     },
                   ),
                 ),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minWidth: 0,
-                color: primaryTextColor,
-                padding: EdgeInsets.zero,
-                shape: circleShape,
               ),
             ],
           ),
@@ -593,7 +596,7 @@ class BangumiPage extends StatelessWidget {
                           e.value.launchAppAndCopy();
                         },
                         child: Text(
-                          "链接",
+                          "打开链接",
                           softWrap: true,
                           style: TextStyle(
                             color: theme.secondary,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/http.dart';
@@ -195,7 +197,11 @@ class Repo {
   }
 
   static Future<Resp> fonts() async {
-    return await Http.get(ExtraUrl.fontsManifest);
+    final Options options = Options(
+      extra: {"$ExtraUrl": ExtraUrl.fontsManifest},
+      contentType: ContentType.json.toString(),
+    );
+    return await Http.get(ExtraUrl.fontsManifest, options: options);
   }
 
   static Future<Resp> release() async {

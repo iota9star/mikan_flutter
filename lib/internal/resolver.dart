@@ -394,11 +394,12 @@ class Resolver {
     final List<Carousel> carousels = await parseCarousel(document);
     final List<YearSeason> years = await parseYearSeason(document);
     final User user = await parseUser(document);
-    final Map<String, List<RecordItem>> _rss = groupBy(rss, (it) => it.id!);
+    final Map<String, List<RecordItem>> groupedRss =
+        groupBy(rss, (it) => it.id!);
     return Index(
       years: years,
       bangumiRows: bangumiRows,
-      rss: _rss,
+      rss: groupedRss,
       carousels: carousels,
       user: user,
     );
@@ -446,7 +447,7 @@ class Resolver {
         attributes = element.attributes;
         season.year = attributes["data-year"].trim();
         season.season = attributes["data-season"];
-        season.title = season.year + ' ' + element.text.trim();
+        season.title = '${season.year} ${element.text.trim()}';
         season.active = season.title == selected;
         seasons.add(season);
       }
@@ -538,14 +539,14 @@ class Resolver {
             ?.text
             .trim() ??
         "";
-    String? _intro = document
+    String? intro = document
         .querySelector("#sk-container > div.central-container > p")
         ?.text
         .trim();
-    if (_intro.isNotBlank) {
-      _intro = "\u3000\u3000" + _intro!.replaceAll("\n", "\n\u3000\u3000");
+    if (intro.isNotBlank) {
+      intro = "\u3000\u3000${intro!.replaceAll("\n", "\n\u3000\u3000")}";
     }
-    detail.intro = _intro ?? "";
+    detail.intro = intro ?? "";
     detail.subscribed = document
             .querySelector(".subscribed-badge")
             ?.attributes["style"]

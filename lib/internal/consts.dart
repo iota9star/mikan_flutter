@@ -72,7 +72,7 @@ class ExtraUrl {
   const ExtraUrl();
 
   static const String fontsBaseUrl =
-      "https://cdn.jsdelivr.net/gh/iota9star/fonts@master";
+      "https://raw.githubusercontent.com/iota9star/fonts/master";
   static const String fontsManifest = "$fontsBaseUrl/manifest.json";
   static const String releaseVersion =
       "https://api.github.com/repos/iota9star/mikan_flutter/releases/latest";

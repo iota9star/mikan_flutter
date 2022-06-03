@@ -50,16 +50,16 @@ class ForgotPasswordPage extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: const Icon(
-                                  FluentIcons.chevron_left_24_regular,
-                                  size: 16.0,
-                                ),
                                 materialTapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap,
                                 minWidth: 0.0,
                                 padding: edge16,
                                 shape: circleShape,
                                 color: theme.backgroundColor,
+                                child: const Icon(
+                                  FluentIcons.chevron_left_24_regular,
+                                  size: 16.0,
+                                ),
                               ),
                               sizedBoxW16,
                               Expanded(child: _buildSubmitButton(theme)),

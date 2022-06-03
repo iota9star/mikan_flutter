@@ -23,6 +23,7 @@ class TapScaleContainer extends StatefulWidget {
   final double? width;
   final double? height;
   final Clip clipBehavior;
+  final Curve? curve;
 
   const TapScaleContainer({
     Key? key,
@@ -40,6 +41,7 @@ class TapScaleContainer extends StatefulWidget {
     this.child,
     this.clipBehavior = Clip.none,
     this.constraints,
+    this.curve,
   }) : super(key: key);
 
   @override
@@ -62,7 +64,7 @@ class _TapScaleContainerState extends State<TapScaleContainer> {
       child: AnimatedContainer(
         duration: _kDuration,
         transform: _transform,
-        curve: _kSpringCurve,
+        curve: widget.curve ?? _kSpringCurve,
         alignment: widget.alignment,
         padding: widget.padding,
         color: widget.color,

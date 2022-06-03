@@ -41,6 +41,17 @@ class SubgroupFragment extends StatelessWidget {
                       Container(
                         width: 24.0,
                         height: 24.0,
+                        decoration: BoxDecoration(
+                          borderRadius: borderRadius12,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              theme.primary,
+                              theme.primary.withOpacity(0.56),
+                            ],
+                          ),
+                        ),
                         child: Center(
                           child: Text(
                             subgroups[index].name[0],
@@ -51,17 +62,6 @@ class SubgroupFragment extends StatelessWidget {
                                   ? Colors.white
                                   : Colors.black,
                             ),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: borderRadius12,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              theme.primary,
-                              theme.primary.withOpacity(0.56),
-                            ],
                           ),
                         ),
                       ),

@@ -36,14 +36,13 @@ class HomeModel extends BaseModel {
     notifyListeners();
     try {
       final String pubspec = await rootBundle.loadString("assets/pubspec.yaml");
-      final String version = "v" +
-          pubspec
+      final String version = "v${pubspec
               .split("\n")
               .firstWhere((line) => line.startsWith("version:"))
               .split(" ")
               .last
               .split("+")
-              .first;
+              .first}";
       final Resp resp = await Repo.release();
       if (!resp.success) return;
       final String lastVersion = resp.data["tag_name"];
@@ -179,17 +178,17 @@ class HomeModel extends BaseModel {
                                 .toString()
                                 .launchAppAndCopy();
                           },
-                          child: Icon(
-                            FluentIcons.arrow_download_24_regular,
-                            size: 14.0,
-                            color: accentTextColor,
-                          ),
                           color: theme.secondary,
                           minWidth: 32.0,
                           height: 20.0,
                           padding: EdgeInsets.zero,
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
+                          child: Icon(
+                            FluentIcons.arrow_download_24_regular,
+                            size: 14.0,
+                            color: accentTextColor,
+                          ),
                         ),
                       ],
                     ),

@@ -33,7 +33,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 main() async {
-  CustomWidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await _initDependencies();
   runApp(MikanApp());
   if (!isMobile) {
@@ -44,21 +44,6 @@ main() async {
       appWindow.title = "蜜柑计划";
       appWindow.show();
     });
-  }
-}
-
-class CustomWidgetsFlutterBinding extends WidgetsFlutterBinding {
-  @override
-  ImageCache createImageCache() {
-    final ImageCache imageCache = super.createImageCache();
-    imageCache.maximumSize = 128;
-    imageCache.maximumSizeBytes = 256 * 1024 * 1024; // 256MB
-    return imageCache;
-  }
-
-  static WidgetsBinding ensureInitialized() {
-    if (WidgetsBinding.instance == null) CustomWidgetsFlutterBinding();
-    return WidgetsBinding.instance!;
   }
 }
 

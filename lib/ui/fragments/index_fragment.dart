@@ -302,20 +302,20 @@ class _IndexFragmentState extends State<IndexFragment> {
                   onPressed: () {
                     _showSearchPanel(context);
                   },
-                  child: const Icon(FluentIcons.search_24_regular),
                   minWidth: 48.0,
                   padding: edge8,
                   shape: circleShape,
+                  child: const Icon(FluentIcons.search_24_regular),
                 ),
                 sizedBoxW8,
                 MaterialButton(
                   onPressed: () {
                     _showSettingsPanel(context);
                   },
-                  child: _buildAvatar(),
                   minWidth: 48.0,
                   padding: edge8,
                   shape: circleShape,
+                  child: _buildAvatar(),
                 ),
               ],
             ),
@@ -349,10 +349,6 @@ class _IndexFragmentState extends State<IndexFragment> {
           onPressed: () {
             _showYearSeasonBottomSheet(context);
           },
-          child: const Icon(
-            FluentIcons.chevron_down_24_regular,
-            size: 14.0,
-          ),
           minWidth: 28.0,
           height: 28.0,
           color: hasScrolled
@@ -361,6 +357,10 @@ class _IndexFragmentState extends State<IndexFragment> {
           padding: EdgeInsets.zero,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: circleShape,
+          child: const Icon(
+            FluentIcons.chevron_down_24_regular,
+            size: 14.0,
+          ),
         ),
       ],
     );

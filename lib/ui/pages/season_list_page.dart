@@ -232,10 +232,6 @@ class SeasonListPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Icon(
-                    FluentIcons.chevron_left_24_regular,
-                    size: 16.0,
-                  ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   minWidth: 32.0,
                   padding: EdgeInsets.zero,
@@ -243,6 +239,10 @@ class SeasonListPage extends StatelessWidget {
                   color: hasScrolled
                       ? theme.scaffoldBackgroundColor
                       : theme.backgroundColor,
+                  child: const Icon(
+                    FluentIcons.chevron_left_24_regular,
+                    size: 16.0,
+                  ),
                 ),
                 sizedBoxW12,
                 const Expanded(

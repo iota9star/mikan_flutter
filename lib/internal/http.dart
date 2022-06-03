@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -74,6 +75,11 @@ class MikanTransformer extends DefaultTransformer {
           case MikanFunc.refreshForgotPasswordToken:
             return await Resolver.parseRefreshForgotPasswordToken(document);
         }
+      }
+
+      final extra = options.extra['$ExtraUrl'];
+      if (extra == ExtraUrl.fontsManifest) {
+        return jsonDecode(transformResponse);
       }
     }
     return transformResponse;
@@ -203,13 +209,16 @@ class _Fetcher {
           );
         }
       } catch (e) {
-        if (e is DioError &&
-            e.response?.statusCode == 302 &&
-            proto.method == _RequestMethod.postForm &&
-            (e.requestOptions.path == MikanUrl.login ||
-                e.requestOptions.path == MikanUrl.register ||
-                e.requestOptions.path == MikanUrl.forgotPassword)) {
-          proto._sendPort.send(Resp(true));
+        if (e is DioError) {
+          if (e.response?.statusCode == 302 &&
+              proto.method == _RequestMethod.postForm &&
+              (e.requestOptions.path == MikanUrl.login ||
+                  e.requestOptions.path == MikanUrl.register ||
+                  e.requestOptions.path == MikanUrl.forgotPassword)) {
+            proto._sendPort.send(Resp(true));
+          } else {
+            proto._sendPort.send(Resp(false, msg: e.message));
+          }
         } else {
           "请求出错：$e".error();
           proto._sendPort.send(Resp(false, msg: e.toString()));

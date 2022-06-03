@@ -65,14 +65,14 @@ class SelectSeasonFragment extends StatelessWidget {
                 );
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: const Icon(
-                FluentIcons.chevron_right_24_regular,
-                size: 16.0,
-              ),
               minWidth: 32.0,
               padding: EdgeInsets.zero,
               color: theme.backgroundColor,
               shape: circleShape,
+              child: const Icon(
+                FluentIcons.chevron_right_24_regular,
+                size: 16.0,
+              ),
             ),
           ],
         ),
@@ -106,6 +106,11 @@ class SelectSeasonFragment extends StatelessWidget {
                   shape: const RoundedRectangleBorder(
                     borderRadius: borderRadius10,
                   ),
+                  color: color.withOpacity(0.28),
+                  elevation: 0,
+                  onPressed: () {
+                    indexModel.loadSeason(season);
+                  },
                   child: Text(
                     season.season,
                     style: TextStyle(
@@ -115,11 +120,6 @@ class SelectSeasonFragment extends StatelessWidget {
                       color: color,
                     ),
                   ),
-                  color: color.withOpacity(0.28),
-                  elevation: 0,
-                  onPressed: () {
-                    indexModel.loadSeason(season);
-                  },
                 ),
               );
             },

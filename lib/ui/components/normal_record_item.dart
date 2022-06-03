@@ -135,17 +135,6 @@ class NormalRecordItem extends StatelessWidget {
                           margin: EdgeInsets.only(
                             left: index == 0 ? 16.0 : 4.0,
                           ),
-                          child: Center(
-                            child: Text(
-                              subgroups[index].name[0],
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: theme.primary.isDark
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12.0),
                             gradient: LinearGradient(
@@ -155,6 +144,17 @@ class NormalRecordItem extends StatelessWidget {
                                 theme.primary,
                                 theme.primary.withOpacity(0.56),
                               ],
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              subgroups[index].name[0],
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: theme.primary.isDark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
                             ),
                           ),
                         ),

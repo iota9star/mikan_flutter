@@ -68,14 +68,14 @@ class RecordDetailPage extends StatelessWidget {
           Navigator.pop(context);
         },
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        child: const Icon(
-          FluentIcons.chevron_left_24_regular,
-          size: 16.0,
-        ),
         color: theme.backgroundColor,
         minWidth: 32.0,
         padding: EdgeInsets.zero,
         shape: circleShape,
+        child: const Icon(
+          FluentIcons.chevron_left_24_regular,
+          size: 16.0,
+        ),
       ),
     );
   }
@@ -309,6 +309,11 @@ class RecordDetailPage extends StatelessWidget {
                     onPressed: () {
                       detail.shareString.share();
                     },
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    minWidth: 0,
+                    color: accentTextColor,
+                    padding: EdgeInsets.zero,
+                    shape: circleShape,
                     child: Container(
                       width: 42.0,
                       height: 42.0,
@@ -326,17 +331,17 @@ class RecordDetailPage extends StatelessWidget {
                         color: accentTextColor,
                       ),
                     ),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    minWidth: 0,
-                    color: accentTextColor,
-                    padding: EdgeInsets.zero,
-                    shape: circleShape,
                   ),
                   sizedBoxW16,
                   MaterialButton(
                     onPressed: () {
                       detail.magnet.launchAppAndCopy();
                     },
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    minWidth: 0,
+                    color: primaryTextColor,
+                    padding: EdgeInsets.zero,
+                    shape: circleShape,
                     child: Container(
                       width: 48.0,
                       height: 48.0,
@@ -354,11 +359,6 @@ class RecordDetailPage extends StatelessWidget {
                         color: primaryTextColor,
                       ),
                     ),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    minWidth: 0,
-                    color: primaryTextColor,
-                    padding: EdgeInsets.zero,
-                    shape: circleShape,
                   ),
                 ],
               ),

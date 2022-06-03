@@ -60,16 +60,16 @@ class RegisterPage extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: const Icon(
-                                  FluentIcons.chevron_left_24_regular,
-                                  size: 16.0,
-                                ),
                                 materialTapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap,
                                 minWidth: 0.0,
                                 padding: edge16,
                                 shape: circleShape,
                                 color: theme.backgroundColor,
+                                child: const Icon(
+                                  FluentIcons.chevron_left_24_regular,
+                                  size: 16.0,
+                                ),
                               ),
                               sizedBoxW16,
                               Expanded(
@@ -255,11 +255,11 @@ class RegisterPage extends StatelessWidget {
             suffixIcon: IconButton(
               icon: showPassword
                   ? Icon(
-                      FluentIcons.eye_show_24_regular,
+                      FluentIcons.eye_24_regular,
                       color: theme.secondary,
                     )
                   : Icon(
-                      FluentIcons.eye_show_24_filled,
+                      FluentIcons.eye_off_24_regular,
                       color: theme.secondary,
                     ),
               onPressed: () {
@@ -304,11 +304,11 @@ class RegisterPage extends StatelessWidget {
             suffixIcon: IconButton(
               icon: showPassword
                   ? Icon(
-                      FluentIcons.eye_show_24_regular,
+                      FluentIcons.eye_24_regular,
                       color: theme.secondary,
                     )
                   : Icon(
-                      FluentIcons.eye_show_24_filled,
+                      FluentIcons.eye_off_24_regular,
                       color: theme.secondary,
                     ),
               onPressed: () {
