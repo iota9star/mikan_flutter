@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class MikanFunc {
   const MikanFunc._();
 
@@ -69,7 +71,7 @@ class MikanUrl {
 }
 
 class ExtraUrl {
-  const ExtraUrl();
+  const ExtraUrl._();
 
   static const String fontsBaseUrl =
       "https://raw.githubusercontent.com/iota9star/fonts/master";
@@ -77,3 +79,6 @@ class ExtraUrl {
   static const String releaseVersion =
       "https://api.github.com/repos/iota9star/mikan_flutter/releases/latest";
 }
+
+final isMobile = Platform.isIOS || Platform.isAndroid;
+final isSupportFirebase = isMobile || Platform.isMacOS;

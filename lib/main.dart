@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http_cache_manager.dart';
@@ -32,6 +33,8 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import 'firebase_options.dart';
+
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _initDependencies();
@@ -48,7 +51,7 @@ main() async {
 }
 
 Future _initFirebase() async {
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   if (kDebugMode) {
     // Force disable Crashlytics collection while doing every day development.
@@ -71,7 +74,7 @@ Future _initDependencies() async {
   await MyHive.init();
   NetworkFontLoader.init();
   HttpCacheManager.init();
-  if (isMobile) {
+  if (isSupportFirebase) {
     await _initFirebase();
   }
   if (Platform.isAndroid) {
@@ -127,7 +130,7 @@ class MikanApp extends StatelessWidget {
         ],
         child: Consumer<ThemeModel>(
           builder: (context, themeModel, _) {
-            final firebaseModel = isMobile
+            final firebaseModel = isSupportFirebase
                 ? Provider.of<FirebaseModel>(
                     context,
                     listen: false,

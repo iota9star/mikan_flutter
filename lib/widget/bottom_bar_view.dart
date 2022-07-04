@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/topvars.dart';
 
 class BarItem {
   IconData? icon;
@@ -62,13 +61,13 @@ class _BottomBarViewState extends State<BottomBarView>
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: borderRadius16,
+      borderRadius: BorderRadius.circular(99999999.0),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
         child: Container(
           height: widget.height,
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor.withOpacity(0.72),
+            color: Theme.of(context).backgroundColor.withOpacity(0.8),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.max,

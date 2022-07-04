@@ -59,35 +59,44 @@ class BangumiPage extends StatelessWidget {
                         image: FastCacheImage(cover),
                       ),
                     ),
-                    child: ClipRect(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
-                        child: Selector<BangumiModel, Color?>(
-                          selector: (_, model) => model.coverMainColor,
-                          shouldRebuild: (pre, next) => pre != next,
-                          builder: (_, bgColor, __) {
-                            final color = bgColor ?? theme.backgroundColor;
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 640),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    color,
-                                    Colors.transparent,
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
+                      child: ColoredBox(
+                        color: theme.scaffoldBackgroundColor.withOpacity(0.08),
                       ),
                     ),
                   ),
                 ),
                 Positioned.fill(
                   child: _buildList(theme, model),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 150,
+                  child: IgnorePointer(
+                    child: Selector<BangumiModel, Color?>(
+                      selector: (_, model) => model.coverMainColor,
+                      shouldRebuild: (pre, next) => pre != next,
+                      builder: (_, bgColor, __) {
+                        final color = bgColor ?? theme.backgroundColor;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 640),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                color,
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 Positioned(
                   left: 16.0,

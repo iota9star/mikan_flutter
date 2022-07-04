@@ -7,6 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RecentSubscribedModel extends CancelableBaseModel {
   bool _recordsLoading = false;
+
   List<RecordItem> _records;
 
   int _dayOffset = 2;
@@ -26,6 +27,8 @@ class RecentSubscribedModel extends CancelableBaseModel {
     }
   }
 
+  bool _isRefresh = false;
+
   final RefreshController _refreshController = RefreshController();
 
   RefreshController get refreshController => _refreshController;
@@ -34,7 +37,7 @@ class RecentSubscribedModel extends CancelableBaseModel {
 
   refresh() async {
     _dayOffset = 0;
-    _records.clear();
+    _isRefresh = true;
     await loadMore();
   }
 
@@ -45,11 +48,15 @@ class RecentSubscribedModel extends CancelableBaseModel {
     _recordsLoading = false;
     if (resp.success) {
       final List<RecordItem> data = resp.data ?? [];
-      // recent 14 days.
-      if (next > 14 && data.length == _records.length) {
-        _refreshController.loadNoData();
+      if (_isRefresh) {
+        _refreshController.refreshCompleted();
       } else {
-        _refreshController.loadComplete();
+        // recent 14 days.
+        if (next > 14 && data.length == _records.length) {
+          _refreshController.loadNoData();
+        } else {
+          _refreshController.loadComplete();
+        }
       }
       _dayOffset = next;
       _records = data;

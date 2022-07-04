@@ -17,7 +17,9 @@ import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -101,7 +103,7 @@ class SubscribedFragment extends StatelessWidget {
     return Selector<SubscribedModel, bool>(
       selector: (_, model) => model.hasScrolled,
       shouldRebuild: (pre, next) => pre != next,
-      builder: (_, hasScrolled, __) {
+      builder: (context, hasScrolled, __) {
         return SliverPinnedToBoxAdapter(
           child: AnimatedContainer(
             decoration: BoxDecoration(
@@ -113,9 +115,30 @@ class SubscribedFragment extends StatelessWidget {
             ),
             padding: edge16WithStatusBar,
             duration: dur240,
-            child: const Text(
-              "我的订阅",
-              style: textStyle24B,
+            child: Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    "我的订阅",
+                    style: textStyle24B,
+                  ),
+                ),
+                Transform.translate(
+                  offset: const Offset(8.0, 0),
+                  child: IconButton(
+                    onPressed: () {
+                      showCupertinoModalBottomSheet(
+                        context: context,
+                        topRadius: radius16,
+                        builder: (_) {
+                          return const SettingsFragment();
+                        },
+                      );
+                    },
+                    icon: const Icon(FluentIcons.settings_16_regular),
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -389,7 +412,7 @@ class SubscribedFragment extends StatelessWidget {
                 maxCrossAxisExtent: 108.0,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
-                childAspectRatio: 0.8,
+                childAspectRatio: 0.76,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {

@@ -47,11 +47,43 @@ class RecordDetailPage extends StatelessWidget {
               children: [
                 _buildBackground(theme),
                 _buildContentWrapper(theme, model),
+                _buildTopMask(theme),
                 _buildHeader(context, theme),
               ],
             ),
           );
         }),
+      ),
+    );
+  }
+
+  Widget _buildTopMask(ThemeData theme) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      height: 150.0,
+      child: IgnorePointer(
+        child: Selector<RecordDetailModel, Color?>(
+          selector: (_, model) => model.coverMainColor,
+          shouldRebuild: (pre, next) => pre != next,
+          builder: (_, bgColor, __) {
+            final color = bgColor ?? theme.backgroundColor;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 640),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    color,
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -82,42 +114,32 @@ class RecordDetailPage extends StatelessWidget {
 
   Widget _buildBackground(final ThemeData theme) {
     return Positioned.fill(
-      child: ClipRect(
-        child: Selector<RecordDetailModel, RecordDetail?>(
-          selector: (_, model) => model.recordDetail,
-          shouldRebuild: (pre, next) => pre != next,
-          builder: (_, recordDetail, __) {
-            if (recordDetail == null) return sizedBox;
-            return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: FastCacheImage(recordDetail.cover),
-                ),
+      child: Selector<RecordDetailModel, RecordDetail?>(
+        selector: (_, model) => model.recordDetail,
+        shouldRebuild: (pre, next) => pre != next,
+        builder: (_, recordDetail, __) {
+          if (recordDetail == null) return sizedBox;
+          Widget child = ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
+              child: ColoredBox(
+                color: theme.scaffoldBackgroundColor.withOpacity(0.08),
               ),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
-                child: Selector<RecordDetailModel, Color?>(
-                  selector: (_, model) => model.coverMainColor,
-                  shouldRebuild: (pre, next) => pre != next,
-                  builder: (_, bgColor, __) {
-                    final color = bgColor ?? theme.backgroundColor;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 640),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, color],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+            ),
+          );
+          if (recordDetail.cover.endsWith("noimageavailble_icon.png")) {
+            return child;
+          }
+          return Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: FastCacheImage(recordDetail.cover),
               ),
-            );
-          },
-        ),
+            ),
+            child: child,
+          );
+        },
       ),
     );
   }

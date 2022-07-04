@@ -136,7 +136,6 @@ class _BangumiCoverScrollListFragmentState
       builder: (_, align, __) {
         return Container(
           decoration: BoxDecoration(
-            borderRadius: borderRadius16,
             image: DecorationImage(
               alignment: Alignment(align, align),
               image: imageProvider,

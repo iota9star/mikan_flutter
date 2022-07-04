@@ -30,7 +30,9 @@ class RecordDetailModel extends CancelableBaseModel {
   Color? get coverMainColor => _coverMainColor;
 
   _loadCoverMainColor() {
-    if (_recordDetail?.cover.isNullOrBlank == true) return;
+    final cover = _recordDetail?.cover;
+    if (cover.isNullOrBlank == true ||
+        cover!.endsWith("noimageavailble_icon.png")) return;
     PaletteGenerator.fromImageProvider(
       FastCacheImage(_recordDetail!.cover),
       maximumColorCount: 3,

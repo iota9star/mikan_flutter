@@ -13,6 +13,7 @@ class RssRecordItem extends StatelessWidget {
   final RecordItem record;
   final ThemeData theme;
   final VoidCallback onTap;
+  final bool enableHero;
 
   const RssRecordItem({
     Key? key,
@@ -20,6 +21,7 @@ class RssRecordItem extends StatelessWidget {
     required this.record,
     required this.onTap,
     required this.theme,
+    this.enableHero = true,
   }) : super(key: key);
 
   @override
@@ -32,35 +34,38 @@ class RssRecordItem extends StatelessWidget {
     );
     final List<String> tags = record.tags;
     final heroTag = "rss:${record.id}:${record.cover}:${record.torrent}";
+    final cover = Container(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius16,
+        image: DecorationImage(
+          image: FastCacheImage(record.cover),
+          fit: BoxFit.cover,
+        ),
+      ),
+      foregroundDecoration: BoxDecoration(
+        borderRadius: borderRadius16,
+        gradient: LinearGradient(
+          colors: [
+            theme.backgroundColor.withOpacity(0.64),
+            theme.backgroundColor.withOpacity(0.87),
+            theme.backgroundColor,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+    );
     return TapScaleContainer(
       onTap: onTap,
       child: Stack(
         children: [
           Positioned.fill(
-            child: Hero(
-              tag: heroTag,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius16,
-                  image: DecorationImage(
-                    image: FastCacheImage(record.cover),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                foregroundDecoration: BoxDecoration(
-                  borderRadius: borderRadius16,
-                  gradient: LinearGradient(
-                    colors: [
-                      theme.backgroundColor.withOpacity(0.64),
-                      theme.backgroundColor.withOpacity(0.87),
-                      theme.backgroundColor,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-              ),
-            ),
+            child: enableHero
+                ? Hero(
+                    tag: heroTag,
+                    child: cover,
+                  )
+                : cover,
           ),
           Positioned.fill(
             child: Column(
@@ -87,7 +92,7 @@ class RssRecordItem extends StatelessWidget {
                           record.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: textStyle18B,
+                          style: textStyle20B,
                         ),
                         Text(
                           record.publishAt,

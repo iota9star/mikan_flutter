@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -42,5 +41,3 @@ class Screen {
         .debug();
   }
 }
-
-final isMobile = Platform.isIOS || Platform.isAndroid;

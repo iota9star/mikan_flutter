@@ -92,7 +92,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
               color: theme.backgroundColor,
             ),
             onTap: () {
-              if (bangumi.grey == true) {
+              if (bangumi.grey) {
                 "此番组下暂无作品".toast();
               } else {
                 Navigator.pushNamed(
@@ -135,11 +135,12 @@ class BangumiSliverGridFragment extends StatelessWidget {
                         ),
                       ),
                     ),
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    child: _buildSubscribeButton(bangumi, currFlag),
-                  ),
+                  if (!bangumi.grey)
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: _buildSubscribeButton(bangumi, currFlag),
+                    ),
                 ],
               ),
             ),
