@@ -11,7 +11,7 @@ class BangumiDetail {
   late Map<String, SubgroupBangumi> subgroupBangumis;
 
   String get shareString {
-    return "$name：${MikanUrl.baseUrl}/${MikanUrl.bangumi}/$id";
+    return "$name：${MikanUrl.baseUrl}${MikanUrl.bangumi}/$id";
   }
 
   @override
