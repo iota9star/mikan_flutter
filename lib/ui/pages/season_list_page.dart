@@ -12,6 +12,7 @@ import 'package:mikan_flutter/providers/season_list_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
+import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -42,43 +43,29 @@ class SeasonListPage extends StatelessWidget {
           final seasonListModel =
               Provider.of<SeasonListModel>(context, listen: false);
           return Scaffold(
-            body: NotificationListener(
-              onNotification: (notification) {
-                if (notification is OverscrollIndicatorNotification) {
-                  notification.disallowIndicator();
-                } else if (notification is ScrollUpdateNotification) {
-                  if (notification.depth == 0) {
-                    final double offset = notification.metrics.pixels;
-                    seasonListModel.hasScrolled = offset > 0.0;
-                  }
-                }
-                return true;
+            body: Selector<SeasonListModel, List<SeasonBangumis>>(
+              selector: (_, model) => model.seasonBangumis,
+              shouldRebuild: (pre, next) => pre.ne(next),
+              builder: (context, seasons, __) {
+                return SmartRefresher(
+                  controller: seasonListModel.refreshController,
+                  header: WaterDropMaterialHeader(
+                    backgroundColor: theme.secondary,
+                    color: theme.secondary.isDark ? Colors.white : Colors.black,
+                    distance: Screen.statusBarHeight + 42.0,
+                  ),
+                  footer: Indicator.footer(
+                    context,
+                    theme.secondary,
+                    bottom: 16.0,
+                  ),
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  onRefresh: seasonListModel.refresh,
+                  onLoading: seasonListModel.loadMore,
+                  child: _buildContentWrapper(context, theme, seasons),
+                );
               },
-              child: Selector<SeasonListModel, List<SeasonBangumis>>(
-                selector: (_, model) => model.seasonBangumis,
-                shouldRebuild: (pre, next) => pre.ne(next),
-                builder: (context, seasons, __) {
-                  return SmartRefresher(
-                    controller: seasonListModel.refreshController,
-                    header: WaterDropMaterialHeader(
-                      backgroundColor: theme.secondary,
-                      color:
-                          theme.secondary.isDark ? Colors.white : Colors.black,
-                      distance: Screen.statusBarHeight + 42.0,
-                    ),
-                    footer: Indicator.footer(
-                      context,
-                      theme.secondary,
-                      bottom: 16.0,
-                    ),
-                    enablePullDown: true,
-                    enablePullUp: true,
-                    onRefresh: seasonListModel.refresh,
-                    onLoading: seasonListModel.loadMore,
-                    child: _buildContentWrapper(context, theme, seasons),
-                  );
-                },
-              ),
             ),
           );
         }),
@@ -211,49 +198,41 @@ class SeasonListPage extends StatelessWidget {
   }
 
   Widget _buildHeader(final ThemeData theme) {
-    return Selector<SeasonListModel, bool>(
-      selector: (_, model) => model.hasScrolled,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, hasScrolled, __) {
-        return SliverPinnedToBoxAdapter(
-          child: AnimatedContainer(
-            decoration: BoxDecoration(
-              color: hasScrolled
-                  ? theme.backgroundColor
-                  : theme.scaffoldBackgroundColor,
-              borderRadius: scrollHeaderBorderRadius(hasScrolled),
-              boxShadow: scrollHeaderBoxShadow(hasScrolled),
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return SimpleSliverPinnedHeader(
+      builder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return Row(
+          children: <Widget>[
+            MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              minWidth: 32.0,
+              padding: EdgeInsets.zero,
+              shape: circleShape,
+              color: ic,
+              child: const Icon(
+                FluentIcons.chevron_left_24_regular,
+                size: 16.0,
+              ),
             ),
-            padding: edge16WithStatusBar,
-            duration: dur240,
-            child: Row(
-              children: <Widget>[
-                MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  minWidth: 32.0,
-                  padding: EdgeInsets.zero,
-                  shape: circleShape,
-                  color: hasScrolled
-                      ? theme.scaffoldBackgroundColor
-                      : theme.backgroundColor,
-                  child: const Icon(
-                    FluentIcons.chevron_left_24_regular,
-                    size: 16.0,
-                  ),
+            sizedBoxW12,
+            Expanded(
+              child: Text(
+                "季度番组",
+                style: TextStyle(
+                  fontSize: 30.0 - (ratio * 6.0),
+                  fontWeight: FontWeight.bold,
+                  height: 1.25,
                 ),
-                sizedBoxW12,
-                const Expanded(
-                  child: Text(
-                    "季度番组",
-                    style: textStyle24B,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         );
       },
     );

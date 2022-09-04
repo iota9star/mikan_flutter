@@ -1,14 +1,8 @@
 name: build apk
 on:
   workflow_dispatch:
-    inputs:
-      TAG:
-        description: 'Set a Tag'
-        required: true
-        default: ''
   push:
-    tags:
-      - v*
+
 jobs:
   build:
     name: Release build
@@ -28,8 +22,8 @@ jobs:
           \cp -f pubspec.yaml assets/
           ls assets
           flutter pub get
-          flutter build apk --release --no-tree-shake-icons
-          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --no-tree-shake-icons
+          flutter build apk --release
+          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           ls build/app/outputs/flutter-apk
           mkdir -p releases
           mv -f build/app/outputs/flutter-apk/*-release.apk releases
@@ -56,5 +50,4 @@ jobs:
           allowUpdates: true
           artifacts: "releases/*-release.apk"
           token: ${{ secrets.ACTION_TOKEN }}
-          tag: ${{ github.event.inputs.TAG }}
 

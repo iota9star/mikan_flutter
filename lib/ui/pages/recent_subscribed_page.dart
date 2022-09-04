@@ -1,4 +1,3 @@
-import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 @FFArgumentImport()
@@ -13,6 +12,7 @@ import 'package:mikan_flutter/providers/recent_subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
+import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -38,40 +38,27 @@ class RecentSubscribedPage extends StatelessWidget {
           final model =
               Provider.of<RecentSubscribedModel>(context, listen: false);
           return Scaffold(
-            body: NotificationListener(
-              onNotification: (notification) {
-                if (notification is OverscrollIndicatorNotification) {
-                  notification.disallowIndicator();
-                } else if (notification is ScrollUpdateNotification) {
-                  if (notification.depth == 0) {
-                    final double offset = notification.metrics.pixels;
-                    model.hasScrolled = offset > 0.0;
-                  }
-                }
-                return true;
-              },
-              child: SmartRefresher(
-                controller: model.refreshController,
-                header: WaterDropMaterialHeader(
-                  backgroundColor: theme.secondary,
-                  color: theme.secondary.isDark ? Colors.white : Colors.black,
-                  distance: Screen.statusBarHeight + 42.0,
-                ),
-                footer: Indicator.footer(
-                  context,
-                  theme.secondary,
-                  bottom: 16.0,
-                ),
-                enablePullDown: true,
-                enablePullUp: true,
-                onRefresh: model.refresh,
-                onLoading: model.loadMore,
-                child: CustomScrollView(
-                  slivers: [
-                    _buildHeader(theme),
-                    _buildList(theme),
-                  ],
-                ),
+            body: SmartRefresher(
+              controller: model.refreshController,
+              header: WaterDropMaterialHeader(
+                backgroundColor: theme.secondary,
+                color: theme.secondary.isDark ? Colors.white : Colors.black,
+                distance: Screen.statusBarHeight + 42.0,
+              ),
+              footer: Indicator.footer(
+                context,
+                theme.secondary,
+                bottom: 16.0,
+              ),
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: model.refresh,
+              onLoading: model.loadMore,
+              child: CustomScrollView(
+                slivers: [
+                  _buildHeader(theme),
+                  _buildList(theme),
+                ],
               ),
             ),
           );
@@ -120,51 +107,41 @@ class RecentSubscribedPage extends StatelessWidget {
   }
 
   Widget _buildHeader(final ThemeData theme) {
-    return SliverPinnedToBoxAdapter(
-      child: Selector<RecentSubscribedModel, bool>(
-        selector: (_, model) => model.hasScrolled,
-        shouldRebuild: (pre, next) => pre != next,
-        builder: (context, hasScrolled, __) {
-          return AnimatedContainer(
-            decoration: BoxDecoration(
-              color: hasScrolled
-                  ? theme.backgroundColor
-                  : theme.scaffoldBackgroundColor,
-              borderRadius: scrollHeaderBorderRadius(hasScrolled),
-              boxShadow: scrollHeaderBoxShadow(hasScrolled),
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return SimpleSliverPinnedHeader(
+      builder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return Row(
+          children: <Widget>[
+            MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              color: ic,
+              minWidth: 32.0,
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: circleShape,
+              child: const Icon(
+                FluentIcons.chevron_left_24_regular,
+                size: 16.0,
+              ),
             ),
-            padding: edge16WithStatusBar,
-            duration: dur240,
-            child: Row(
-              children: <Widget>[
-                MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  minWidth: 32.0,
-                  padding: EdgeInsets.zero,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: circleShape,
-                  color: hasScrolled
-                      ? theme.scaffoldBackgroundColor
-                      : theme.backgroundColor,
-                  child: const Icon(
-                    FluentIcons.chevron_left_24_regular,
-                    size: 16.0,
-                  ),
-                ),
-                sizedBoxW12,
-                const Expanded(
-                  child: Text(
-                    "最近更新",
-                    style: textStyle24B,
-                  ),
-                ),
-              ],
+            sizedBoxW12,
+            Text(
+              "最近更新",
+              style: TextStyle(
+                fontSize: 30.0 - (ratio * 6.0),
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
             ),
-          );
-        },
-      ),
+          ],
+        );
+      },
     );
   }
 }

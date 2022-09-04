@@ -62,8 +62,10 @@ class DefaultFirebaseOptions {
     projectId: 'flutter-mikan',
     databaseURL: 'https://flutter-mikan.firebaseio.com',
     storageBucket: 'flutter-mikan.appspot.com',
-    androidClientId: '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
-    iosClientId: '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
+    androidClientId:
+        '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
+    iosClientId:
+        '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
     iosBundleId: 'io.nichijou.flutter.mikan',
   );
 
@@ -74,8 +76,10 @@ class DefaultFirebaseOptions {
     projectId: 'flutter-mikan',
     databaseURL: 'https://flutter-mikan.firebaseio.com',
     storageBucket: 'flutter-mikan.appspot.com',
-    androidClientId: '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
-    iosClientId: '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
+    androidClientId:
+        '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
+    iosClientId:
+        '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
     iosBundleId: 'io.nichijou.flutter.mikan',
   );
 }

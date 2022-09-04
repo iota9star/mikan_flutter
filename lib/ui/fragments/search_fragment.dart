@@ -35,9 +35,7 @@ class SearchFragment extends StatelessWidget {
         return Scaffold(
           body: NotificationListener(
             onNotification: (notification) {
-              if (notification is OverscrollIndicatorNotification) {
-                notification.disallowIndicator();
-              } else if (notification is ScrollUpdateNotification) {
+              if (notification is ScrollUpdateNotification) {
                 if (notification.depth == 0) {
                   final double offset = notification.metrics.pixels;
                   searchModel.hasScrolled = offset > 0.0;
@@ -449,7 +447,7 @@ class SearchFragment extends StatelessWidget {
     final Bangumi bangumi,
   ) {
     return ExtendedImage(
-      image: FastCacheImage(bangumi.cover),
+      image: CacheImageProvider(bangumi.cover),
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {
         Widget child = Row(

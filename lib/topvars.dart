@@ -303,10 +303,7 @@ final controlButtonActions = [
 
 final normalScrollBehavior = const ScrollBehavior().copyWith(
   scrollbars: false,
-  dragDevices: {
-    PointerDeviceKind.mouse,
-    PointerDeviceKind.touch,
-  },
+  dragDevices: PointerDeviceKind.values.toSet(),
   physics: const BouncingScrollPhysics(),
   platform: TargetPlatform.iOS,
 );

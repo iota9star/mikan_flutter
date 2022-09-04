@@ -1,14 +1,8 @@
 name: build windows
 on:
   workflow_dispatch:
-    inputs:
-      TAG:
-        description: 'Set a Tag'
-        required: true
-        default: ''
   push:
-    tags:
-      - v*
+
 jobs:
   build:
     name: Release build
@@ -36,4 +30,3 @@ jobs:
           allowUpdates: true
           artifacts: "*-release.zip"
           token: ${{ secrets.ACTION_TOKEN }}
-          tag: ${{ github.event.inputs.TAG }}

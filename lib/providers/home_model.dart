@@ -36,13 +36,8 @@ class HomeModel extends BaseModel {
     notifyListeners();
     try {
       final String pubspec = await rootBundle.loadString("assets/pubspec.yaml");
-      final String version = "v${pubspec
-              .split("\n")
-              .firstWhere((line) => line.startsWith("version:"))
-              .split(" ")
-              .last
-              .split("+")
-              .first}";
+      final String version =
+          "v${pubspec.split("\n").firstWhere((line) => line.startsWith("version:")).split(" ").last.split("+").first}";
       final Resp resp = await Repo.release();
       if (!resp.success) return;
       final String lastVersion = resp.data["tag_name"];

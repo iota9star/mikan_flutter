@@ -8,17 +8,6 @@ import 'package:mikan_flutter/providers/base_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SeasonListModel extends CancelableBaseModel {
-  bool _hasScrolled = false;
-
-  bool get hasScrolled => _hasScrolled;
-
-  set hasScrolled(bool value) {
-    if (_hasScrolled != value) {
-      _hasScrolled = value;
-      notifyListeners();
-    }
-  }
-
   bool _loading = false;
 
   bool get loading => _loading;

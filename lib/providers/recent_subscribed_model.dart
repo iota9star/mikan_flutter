@@ -16,17 +16,6 @@ class RecentSubscribedModel extends CancelableBaseModel {
 
   bool get recordsLoading => _recordsLoading;
 
-  bool _hasScrolled = false;
-
-  bool get hasScrolled => _hasScrolled;
-
-  set hasScrolled(bool value) {
-    if (_hasScrolled != value) {
-      _hasScrolled = value;
-      notifyListeners();
-    }
-  }
-
   bool _isRefresh = false;
 
   final RefreshController _refreshController = RefreshController();

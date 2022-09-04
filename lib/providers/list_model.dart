@@ -15,17 +15,6 @@ class ListModel extends CancelableBaseModel {
 
   int get changeFlag => _changeFlag;
 
-  bool _hasScrolled = false;
-
-  bool get hasScrolled => _hasScrolled;
-
-  set hasScrolled(bool value) {
-    if (_hasScrolled != value) {
-      _hasScrolled = value;
-      notifyListeners();
-    }
-  }
-
   final RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 

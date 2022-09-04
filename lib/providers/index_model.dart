@@ -23,17 +23,6 @@ class IndexModel extends CancelableBaseModel {
   User? _user;
   BangumiRow? _selectedBangumiRow;
 
-  bool _hasScrolled = false;
-
-  bool get hasScrolled => _hasScrolled;
-
-  set hasScrolled(bool value) {
-    if (_hasScrolled != value) {
-      _hasScrolled = value;
-      notifyListeners();
-    }
-  }
-
   BangumiRow? get selectedBangumiRow => _selectedBangumiRow;
 
   set selectedBangumiRow(BangumiRow? value) {

@@ -14,17 +14,6 @@ class SeasonModel extends CancelableBaseModel {
 
   List<BangumiRow> get bangumiRows => _bangumiRows;
 
-  bool _hasScrolled = false;
-
-  bool get hasScrolled => _hasScrolled;
-
-  set hasScrolled(bool value) {
-    if (_hasScrolled != value) {
-      _hasScrolled = value;
-      notifyListeners();
-    }
-  }
-
   RefreshController get refreshController => _refreshController;
 
   SeasonModel(this._season);

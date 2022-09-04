@@ -10,6 +10,7 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/season_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
+import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -36,69 +37,56 @@ class SingleSeasonPage extends StatelessWidget {
       child: Builder(builder: (context) {
         final seasonModel = Provider.of<SeasonModel>(context, listen: false);
         return Scaffold(
-          body: NotificationListener(
-            onNotification: (notification) {
-              if (notification is OverscrollIndicatorNotification) {
-                notification.disallowIndicator();
-              } else if (notification is ScrollUpdateNotification) {
-                if (notification.depth == 0) {
-                  final double offset = notification.metrics.pixels;
-                  seasonModel.hasScrolled = offset > 0.0;
-                }
-              }
-              return true;
+          body: Selector<SeasonModel, List<BangumiRow>>(
+            selector: (_, model) => model.bangumiRows,
+            shouldRebuild: (pre, next) => pre.ne(next),
+            builder: (_, bangumiRows, __) {
+              return SmartRefresher(
+                controller: seasonModel.refreshController,
+                enablePullUp: false,
+                enablePullDown: true,
+                header: WaterDropMaterialHeader(
+                  backgroundColor: theme.secondary,
+                  color: theme.secondary.isDark ? Colors.white : Colors.black,
+                  distance: Screen.statusBarHeight + 42.0,
+                ),
+                onRefresh: seasonModel.refresh,
+                child: CustomScrollView(
+                  controller: ModalScrollController.of(context),
+                  slivers: [
+                    _buildHeader(theme),
+                    ...List.generate(bangumiRows.length, (index) {
+                      final BangumiRow bangumiRow = bangumiRows[index];
+                      return MultiSliver(
+                        pushPinnedChildren: true,
+                        children: [
+                          _buildWeekSection(theme, bangumiRow),
+                          BangumiSliverGridFragment(
+                            padding: edge16,
+                            bangumis: bangumiRow.bangumis,
+                            handleSubscribe: (bangumi, flag) {
+                              context.read<OpModel>().subscribeBangumi(
+                                bangumi.id,
+                                bangumi.subscribed,
+                                onSuccess: () {
+                                  bangumi.subscribed = !bangumi.subscribed;
+                                  context
+                                      .read<OpModel>()
+                                      .subscribeChanged(flag);
+                                },
+                                onError: (msg) {
+                                  "订阅失败：$msg".toast();
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
+                ),
+              );
             },
-            child: Selector<SeasonModel, List<BangumiRow>>(
-              selector: (_, model) => model.bangumiRows,
-              shouldRebuild: (pre, next) => pre.ne(next),
-              builder: (_, bangumiRows, __) {
-                return SmartRefresher(
-                  controller: seasonModel.refreshController,
-                  enablePullUp: false,
-                  enablePullDown: true,
-                  header: WaterDropMaterialHeader(
-                    backgroundColor: theme.secondary,
-                    color: theme.secondary.isDark ? Colors.white : Colors.black,
-                    distance: Screen.statusBarHeight + 42.0,
-                  ),
-                  onRefresh: seasonModel.refresh,
-                  child: CustomScrollView(
-                    controller: ModalScrollController.of(context),
-                    slivers: [
-                      _buildHeader(theme),
-                      ...List.generate(bangumiRows.length, (index) {
-                        final BangumiRow bangumiRow = bangumiRows[index];
-                        return MultiSliver(
-                          pushPinnedChildren: true,
-                          children: [
-                            _buildWeekSection(theme, bangumiRow),
-                            BangumiSliverGridFragment(
-                              padding: edge16,
-                              bangumis: bangumiRow.bangumis,
-                              handleSubscribe: (bangumi, flag) {
-                                context.read<OpModel>().subscribeBangumi(
-                                  bangumi.id,
-                                  bangumi.subscribed,
-                                  onSuccess: () {
-                                    bangumi.subscribed = !bangumi.subscribed;
-                                    context
-                                        .read<OpModel>()
-                                        .subscribeChanged(flag);
-                                  },
-                                  onError: (msg) {
-                                    "订阅失败：$msg".toast();
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ),
-                );
-              },
-            ),
           ),
         );
       }),
@@ -106,47 +94,39 @@ class SingleSeasonPage extends StatelessWidget {
   }
 
   Widget _buildHeader(final ThemeData theme) {
-    return Selector<SeasonModel, bool>(
-      selector: (_, model) => model.hasScrolled,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, hasScrolled, __) {
-        return SliverPinnedToBoxAdapter(
-          child: AnimatedContainer(
-            decoration: BoxDecoration(
-              color: hasScrolled
-                  ? theme.backgroundColor
-                  : theme.scaffoldBackgroundColor,
-              borderRadius: scrollHeaderBorderRadius(hasScrolled),
-              boxShadow: scrollHeaderBoxShadow(hasScrolled),
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return SimpleSliverPinnedHeader(
+      builder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return Row(
+          children: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              color: ic,
+              minWidth: 32.0,
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: circleShape,
+              child: const Icon(
+                FluentIcons.chevron_left_24_regular,
+                size: 16.0,
+              ),
             ),
-            padding: edge16WithStatusBar,
-            duration: dur240,
-            child: Row(
-              children: [
-                MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  minWidth: 32.0,
-                  padding: EdgeInsets.zero,
-                  shape: circleShape,
-                  color: hasScrolled
-                      ? theme.scaffoldBackgroundColor
-                      : theme.backgroundColor,
-                  child: const Icon(
-                    FluentIcons.chevron_left_24_regular,
-                    size: 16.0,
-                  ),
-                ),
-                sizedBoxW12,
-                Text(
-                  season.title,
-                  style: textStyle24B,
-                ),
-              ],
+            sizedBoxW12,
+            Text(
+              season.title,
+              style: TextStyle(
+                fontSize: 30.0 - (ratio * 6.0),
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
             ),
-          ),
+          ],
         );
       },
     );

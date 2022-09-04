@@ -6,7 +6,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 @FFArgumentImport()
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
@@ -47,43 +47,11 @@ class RecordDetailPage extends StatelessWidget {
               children: [
                 _buildBackground(theme),
                 _buildContentWrapper(theme, model),
-                _buildTopMask(theme),
                 _buildHeader(context, theme),
               ],
             ),
           );
         }),
-      ),
-    );
-  }
-
-  Widget _buildTopMask(ThemeData theme) {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      height: 150.0,
-      child: IgnorePointer(
-        child: Selector<RecordDetailModel, Color?>(
-          selector: (_, model) => model.coverMainColor,
-          shouldRebuild: (pre, next) => pre != next,
-          builder: (_, bgColor, __) {
-            final color = bgColor ?? theme.backgroundColor;
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 640),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    color,
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -134,7 +102,7 @@ class RecordDetailPage extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: FastCacheImage(recordDetail.cover),
+                image: CacheImageProvider(recordDetail.cover),
               ),
             ),
             child: child,
@@ -439,7 +407,7 @@ class RecordDetailPage extends StatelessWidget {
     final RecordDetail recordDetail,
   ) {
     return ExtendedImage(
-      image: FastCacheImage(recordDetail.cover),
+      image: CacheImageProvider(recordDetail.cover),
       width: 136.0,
       shape: BoxShape.rectangle,
       loadStateChanged: (state) {
@@ -581,7 +549,7 @@ class RecordDetailPage extends StatelessWidget {
 
   Widget _buildImageWidget(final String url) {
     return ExtendedImage(
-      image: FastCacheImage(url),
+      image: CacheImageProvider(url),
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:

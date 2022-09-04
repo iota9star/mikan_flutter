@@ -38,7 +38,7 @@ class RssRecordItem extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: borderRadius16,
         image: DecorationImage(
-          image: FastCacheImage(record.cover),
+          image: CacheImageProvider(record.cover),
           fit: BoxFit.cover,
         ),
       ),
@@ -88,11 +88,15 @@ class RssRecordItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          record.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: textStyle20B,
+                        Row(
+                          children: [
+                            Text(
+                              record.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: textStyle20B,
+                            ),
+                          ],
                         ),
                         Text(
                           record.publishAt,
@@ -113,7 +117,7 @@ class RssRecordItem extends StatelessWidget {
                     style: textStyle15B500,
                   ),
                 ),
-                spacer,
+                sizedBoxH8,
                 Container(
                   margin: edgeH16,
                   width: double.infinity,
@@ -166,39 +170,6 @@ class RssRecordItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(FluentIcons.arrow_download_24_filled),
-                      tooltip: "复制并尝试打开种子链接",
-                      color: theme.secondary,
-                      iconSize: 20.0,
-                      onPressed: () {
-                        record.torrent.launchAppAndCopy();
-                        record.torrent.copy();
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(FluentIcons.clipboard_link_24_filled),
-                      color: theme.secondary,
-                      tooltip: "复制并尝试打开磁力链接",
-                      iconSize: 20.0,
-                      onPressed: () {
-                        record.magnet.launchAppAndCopy();
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(FluentIcons.share_24_filled),
-                      color: theme.secondary,
-                      tooltip: "分享",
-                      iconSize: 20.0,
-                      onPressed: () {
-                        record.shareString.share();
-                      },
-                    ),
-                  ],
                 ),
               ],
             ),

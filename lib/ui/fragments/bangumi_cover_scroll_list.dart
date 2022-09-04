@@ -102,7 +102,7 @@ class _BangumiCoverScrollListFragmentState
               itemBuilder: (_, index) {
                 final bangumi = bangumis.elementAt(index % length);
                 return ExtendedImage(
-                  image: FastCacheImage(bangumi.cover),
+                  image: CacheImageProvider(bangumi.cover),
                   loadStateChanged: (state) {
                     switch (state.extendedImageLoadState) {
                       case LoadState.loading:

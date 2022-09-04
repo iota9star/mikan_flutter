@@ -3,7 +3,6 @@ import 'dart:isolate';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -16,7 +15,6 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http_cache_manager.dart';
 import 'package:mikan_flutter/internal/network_font_loader.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/internal/store.dart';
 import 'package:mikan_flutter/mikan_flutter_route.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
@@ -38,7 +36,7 @@ import 'firebase_options.dart';
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _initDependencies();
-  runApp(MikanApp());
+  runApp(const MikanApp());
   if (!isMobile) {
     doWhenWindowReady(() {
       appWindow.minSize = const Size(400, 640);
@@ -85,7 +83,7 @@ Future _initDependencies() async {
 }
 
 class MikanApp extends StatelessWidget {
-  MikanApp({Key? key}) : super(key: key);
+  const MikanApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +105,7 @@ class MikanApp extends StatelessWidget {
             create: (context) => FontsModel(context.read<ThemeModel>()),
             lazy: false,
           ),
-          if (isMobile)
+          if (isSupportFirebase)
             ChangeNotifierProvider<FirebaseModel>(
               create: (_) => FirebaseModel(),
             ),
@@ -190,59 +188,59 @@ class MikanApp extends StatelessWidget {
             );
           },
           navigatorKey: navKey,
-          builder: (_, child) {
-            if (!isMobile) {
-              child = Material(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 36.0,
-                      padding: const EdgeInsets.only(
-                        left: 16.0,
-                        right: 12.0,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            theme.backgroundColor.withOpacity(0.87),
-                            theme.backgroundColor,
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          ExtendedImage.asset(
-                            "assets/mikan.png",
-                            height: 24.0,
-                            width: 24.0,
-                            cacheHeight:
-                                (Screen.devicePixelRatio * 24.0).toInt(),
-                            cacheWidth:
-                                (Screen.devicePixelRatio * 24.0).toInt(),
-                          ),
-                          sizedBoxW8,
-                          const Text(
-                            "蜜柑计划",
-                            style: textStyle16B,
-                          ),
-                          Expanded(child: MoveWindow()),
-                          ...List.generate(
-                            controlButtonColors.length,
-                            (index) => controlButton(index),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(child: child!)
-                  ],
-                ),
-              );
-            }
-            return child!;
-          },
+          // builder: (_, child) {
+          //   if (!isMobile) {
+          //     child = Material(
+          //       child: Column(
+          //         children: [
+          //           Container(
+          //             height: 36.0,
+          //             padding: const EdgeInsets.only(
+          //               left: 16.0,
+          //               right: 12.0,
+          //             ),
+          //             decoration: BoxDecoration(
+          //               gradient: LinearGradient(
+          //                 colors: [
+          //                   theme.backgroundColor.withOpacity(0.87),
+          //                   theme.backgroundColor,
+          //                 ],
+          //                 begin: Alignment.topCenter,
+          //                 end: Alignment.bottomCenter,
+          //               ),
+          //             ),
+          //             child: Row(
+          //               mainAxisSize: MainAxisSize.max,
+          //               children: [
+          //                 ExtendedImage.asset(
+          //                   "assets/mikan.png",
+          //                   height: 24.0,
+          //                   width: 24.0,
+          //                   cacheHeight:
+          //                       (Screen.devicePixelRatio * 24.0).toInt(),
+          //                   cacheWidth:
+          //                       (Screen.devicePixelRatio * 24.0).toInt(),
+          //                 ),
+          //                 sizedBoxW8,
+          //                 const Text(
+          //                   "蜜柑计划",
+          //                   style: textStyle16B,
+          //                 ),
+          //                 Expanded(child: MoveWindow()),
+          //                 ...List.generate(
+          //                   controlButtonColors.length,
+          //                   (index) => controlButton(index),
+          //                 ),
+          //               ],
+          //             ),
+          //           ),
+          //           Expanded(child: child!)
+          //         ],
+          //       ),
+          //     );
+          //   }
+          //   return child!;
+          // },
           navigatorObservers: [
             if (isMobile) firebaseModel!.observer,
             FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
@@ -259,48 +257,48 @@ class MikanApp extends StatelessWidget {
     );
   }
 
-  final ValueNotifier<int> _hoverIndexNotifier = ValueNotifier(-1);
-
-  Widget controlButton(final int index) {
-    return MouseRegion(
-      onEnter: (_) {
-        _hoverIndexNotifier.value = index;
-      },
-      onExit: (_) {
-        _hoverIndexNotifier.value = -1;
-      },
-      child: InkWell(
-        onTap: controlButtonActions[index],
-        borderRadius: borderRadius16,
-        child: Container(
-          decoration: BoxDecoration(
-            color: controlButtonColors[index],
-            borderRadius: borderRadius8,
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 2.0,
-              ),
-            ],
-          ),
-          margin: edge6,
-          padding: edge2,
-          child: ValueListenableBuilder(
-            builder: (_, hoverIndex, __) {
-              return AnimatedOpacity(
-                duration: const Duration(milliseconds: 100),
-                opacity: hoverIndex == index ? 1.0 : 0.0,
-                child: Icon(
-                  controlButtonIcons[index],
-                  size: 12.0,
-                  color: Colors.black,
-                ),
-              );
-            },
-            valueListenable: _hoverIndexNotifier,
-          ),
-        ),
-      ),
-    );
-  }
+// final ValueNotifier<int> _hoverIndexNotifier = ValueNotifier(-1);
+//
+// Widget controlButton(final int index) {
+//   return MouseRegion(
+//     onEnter: (_) {
+//       _hoverIndexNotifier.value = index;
+//     },
+//     onExit: (_) {
+//       _hoverIndexNotifier.value = -1;
+//     },
+//     child: InkWell(
+//       onTap: controlButtonActions[index],
+//       borderRadius: borderRadius16,
+//       child: Container(
+//         decoration: BoxDecoration(
+//           color: controlButtonColors[index],
+//           borderRadius: borderRadius8,
+//           boxShadow: const [
+//             BoxShadow(
+//               color: Colors.black12,
+//               blurRadius: 2.0,
+//             ),
+//           ],
+//         ),
+//         margin: edge6,
+//         padding: edge2,
+//         child: ValueListenableBuilder(
+//           builder: (_, hoverIndex, __) {
+//             return AnimatedOpacity(
+//               duration: const Duration(milliseconds: 100),
+//               opacity: hoverIndex == index ? 1.0 : 0.0,
+//               child: Icon(
+//                 controlButtonIcons[index],
+//                 size: 12.0,
+//                 color: Colors.black,
+//               ),
+//             );
+//           },
+//           valueListenable: _hoverIndexNotifier,
+//         ),
+//       ),
+//     ),
+//   );
+// }
 }

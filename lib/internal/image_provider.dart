@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
@@ -13,12 +11,12 @@ import 'package:path_provider/path_provider.dart';
 
 /// The dart:io implementation of [painting.NetworkImage].
 @immutable
-class FastCacheImage extends painting.ImageProvider<painting.NetworkImage>
+class CacheImageProvider extends painting.ImageProvider<painting.NetworkImage>
     implements painting.NetworkImage {
   /// Creates an object that fetches the image at the given URL.
   ///
   /// The arguments [url] and [scale] must not be null.
-  const FastCacheImage(this.url, {this.scale = 1.0, this.headers});
+  const CacheImageProvider(this.url, {this.scale = 1.0, this.headers});
 
   @override
   final String url;
@@ -30,13 +28,30 @@ class FastCacheImage extends painting.ImageProvider<painting.NetworkImage>
   final Map<String, String>? headers;
 
   @override
-  Future<FastCacheImage> obtainKey(painting.ImageConfiguration configuration) {
-    return SynchronousFuture<FastCacheImage>(this);
+  Future<CacheImageProvider> obtainKey(
+      painting.ImageConfiguration configuration) {
+    return SynchronousFuture<CacheImageProvider>(this);
+  }
+
+  InformationCollector? _imageStreamInformationCollector(
+    painting.NetworkImage key,
+  ) {
+    InformationCollector? collector;
+    assert(() {
+      collector = () => <DiagnosticsNode>[
+            DiagnosticsProperty<painting.ImageProvider>('Image provider', this),
+            DiagnosticsProperty<NetworkImage>('Image key', key),
+          ];
+      return true;
+    }());
+    return collector;
   }
 
   @override
-  ImageStreamCompleter load(
-      painting.NetworkImage key, painting.DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(
+    painting.NetworkImage key,
+    painting.DecoderBufferCallback decode,
+  ) {
     // Ownership of this controller is handed off to [_loadAsync]; it is that
     // method's responsibility to close the controller's stream when the image
     // has been loaded or an error is thrown.
@@ -44,16 +59,11 @@ class FastCacheImage extends painting.ImageProvider<painting.NetworkImage>
         StreamController<ImageChunkEvent>();
 
     return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key as FastCacheImage, chunkEvents, decode),
       chunkEvents: chunkEvents.stream,
+      codec: _loadAsync(key, chunkEvents, decode),
       scale: key.scale,
       debugLabel: key.url,
-      informationCollector: () {
-        return <DiagnosticsNode>[
-          DiagnosticsProperty<painting.ImageProvider>('Image provider', this),
-          DiagnosticsProperty<painting.NetworkImage>('Image key', key),
-        ];
-      },
+      informationCollector: _imageStreamInformationCollector(key),
     );
   }
 
@@ -101,18 +111,19 @@ class FastCacheImage extends painting.ImageProvider<painting.NetworkImage>
   }
 
   Future<ui.Codec> _loadAsync(
-    FastCacheImage key,
+    painting.NetworkImage key,
     StreamController<ImageChunkEvent> chunkEvents,
-    painting.DecoderCallback decode,
+    painting.DecoderBufferCallback decode,
   ) async {
     try {
       assert(key == this);
-
-      final String cacheKey = md5.convert(utf8.encode(key.url)).toString();
+      final cacheKey = base64Url.encode(utf8.encode(key.url));
       final Directory parentDir = await _getCacheDir();
       final File cacheFile = _childFile(parentDir, cacheKey);
       if (cacheFile.existsSync()) {
-        return decode(await cacheFile.readAsBytes());
+        final buffer = await cacheFile.readAsBytes();
+        final immutableBuffer = await ui.ImmutableBuffer.fromUint8List(buffer);
+        return decode(immutableBuffer);
       }
       final Uri resolved = Uri.base.resolve(key.url);
 
@@ -145,7 +156,9 @@ class FastCacheImage extends painting.ImageProvider<painting.NetworkImage>
       }
 
       await cacheFile.writeAsBytes(bytes);
-      return decode(bytes);
+      final ui.ImmutableBuffer buffer =
+          await ui.ImmutableBuffer.fromUint8List(bytes);
+      return decode(buffer);
     } catch (e) {
       // Depending on where the exception was thrown, the image cache may not
       // have had a chance to track the key in the cache at all.
@@ -160,13 +173,11 @@ class FastCacheImage extends painting.ImageProvider<painting.NetworkImage>
   }
 
   @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is FastCacheImage && other.url == url && other.scale == scale;
-  }
+  bool operator ==(Object other) =>
+      other is CacheImageProvider && url == other.url && scale == other.scale;
 
   @override
-  int get hashCode => ui.hashValues(url, scale);
+  int get hashCode => url.hashCode ^ scale.hashCode;
 
   @override
   String toString() =>

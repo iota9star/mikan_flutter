@@ -26,7 +26,7 @@ jobs:
       - name: Build split apk
         run: |
           flutter pub get
-          flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --no-tree-shake-icons
+          flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
           ls build/app/outputs/flutter-apk
       - name: Sign build apk
         uses: iota9star/sign-android-release@v1.0.5
