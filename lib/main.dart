@@ -67,9 +67,9 @@ Future _initFirebase() async {
 }
 
 Future _initDependencies() async {
+  await Store.init();
   await Future.wait([
     Jiffy.locale("zh_cn"),
-    Store.init(),
     MyHive.init(),
     NetworkFontLoader.init(),
     HttpCacheManager.init(),
