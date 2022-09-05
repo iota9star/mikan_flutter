@@ -91,9 +91,11 @@ Future<void> _release({
         " -H 'Accept: application/vnd.github.v3+json'"
         " -d '$params'"
         " https://api.github.com/repos/$repo/releases");
-    var json = result.first.stdout.toString().trim();
-    print('json: $json');
-    id = jsonDecode(json)?['id'];
+    result = await shell.run("curl -s"
+        " -H 'Authorization: token $token'"
+        " -H 'Accept: application/vnd.github.v3+json'"
+        " https://api.github.com/repos/$repo/releases/tags/$tag");
+    id = jsonDecode(result.first.stdout)?['id'];
   }
   if (id == null) {
     throw StateError(result.first.stdout);
