@@ -33,7 +33,7 @@ class MyHive {
   static late Box<ThemeItem> themeItemBox;
   static late Box db;
 
-  static init() async {
+  static Future<void> init() async {
     Hive.init("${Store.filesDir.path}${Platform.pathSeparator}hivedb");
     Hive.registerAdapter(ThemeItemAdapter());
     Hive.registerAdapter(BangumiAdapter());

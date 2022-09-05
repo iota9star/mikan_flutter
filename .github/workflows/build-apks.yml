@@ -1,7 +1,17 @@
-name: build apk
+name: Build Apks
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
-  workflow_dispatch:
   push:
+    branches:
+      - main
+      - master
+    tags-ignore:
+      - v**
+  workflow_dispatch:
 
 jobs:
   build:
@@ -45,9 +55,6 @@ jobs:
           for name in $(ls releases/*-signed.apk);do mv -f $name ${name%-signed.apk}.apk ;done
           ls releases
       - name: Release to github
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifacts: "releases/*-release.apk"
-          token: ${{ secrets.ACTION_TOKEN }}
+        run: |
+          dart scripts/github.dart --token=${{ secrets.ACTION_TOKEN }} --fun=release --artifacts=releases/*-release.apk
 

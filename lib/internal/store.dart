@@ -12,7 +12,7 @@ class Store {
 
   static late String cookiesPath;
 
-  static init() async {
+  static Future<void> init() async {
     cacheDir = await getTemporaryDirectory();
     docDir = await getApplicationDocumentsDirectory();
     filesDir = await getApplicationSupportDirectory();

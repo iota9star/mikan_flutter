@@ -67,14 +67,14 @@ Future _initFirebase() async {
 }
 
 Future _initDependencies() async {
-  await Jiffy.locale("zh_cn");
-  await Store.init();
-  await MyHive.init();
-  NetworkFontLoader.init();
-  HttpCacheManager.init();
-  if (isSupportFirebase) {
-    await _initFirebase();
-  }
+  await Future.wait([
+    Jiffy.locale("zh_cn"),
+    Store.init(),
+    MyHive.init(),
+    NetworkFontLoader.init(),
+    HttpCacheManager.init(),
+    if (isSupportFirebase) _initFirebase()
+  ]);
   if (Platform.isAndroid) {
     FlutterDisplayMode.setHighRefreshRate().catchError((e) {
       e.error();
