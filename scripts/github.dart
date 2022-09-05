@@ -91,7 +91,9 @@ Future<void> _release({
         " -H 'Accept: application/vnd.github.v3+json'"
         " -d '$params'"
         " https://api.github.com/repos/$repo/releases");
-    id = jsonDecode(result.first.stdout.toString().trim())?['id'];
+    var json = result.first.stdout.toString().trim();
+    print('json: $json');
+    id = jsonDecode(json)?['id'];
   }
   if (id == null) {
     throw StateError(result.first.stdout);
