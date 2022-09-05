@@ -66,17 +66,33 @@ Future<void> _release({
   //     .firstWhere((e) => e.startsWith("*"))
   //     .split(" ")
   //     .last;
-  result = await shell.run("curl -s"
-      " -H 'Authorization: token $token'"
-      " -H 'Accept: application/vnd.github.v3+json'"
-      " https://api.github.com/repos/$repo/releases/tags/$tag");
-  var id = jsonDecode(result.first.stdout)?['id'];
+  result = await shell.run("git ls-remote --tags");
+  var exist = result.first.stdout
+      .toString()
+      .split("\n")
+      .any((s) => s.split("refs/tags/").last.startsWith(tag));
+  if (!exist) {
+    try {
+      await shell.run("git"
+          " -c user.name=${pair[0]}"
+          " -c user.email=${pair[1]}"
+          " tag $tag");
+      await shell.run("git push origin $tag");
+    } catch (e) {
+      print(e);
+    }
+  }
+  dynamic id;
+  try {
+    result = await shell.run("curl -s"
+        " -H 'Authorization: token $token'"
+        " -H 'Accept: application/vnd.github.v3+json'"
+        " https://api.github.com/repos/$repo/releases/tags/$tag");
+    id = jsonDecode(result.first.stdout)?['id'];
+  } catch (e) {
+    print(e);
+  }
   if (id == null) {
-    await shell.run("git"
-        " -c user.name=${pair[0]}"
-        " -c user.email=${pair[1]}"
-        " tag $tag");
-    await shell.run("git push origin -f $tag");
     var params = jsonEncode({
       "tag_name": tag,
       "target_commitish": "main",
@@ -91,10 +107,6 @@ Future<void> _release({
         " -H 'Accept: application/vnd.github.v3+json'"
         " -d '$params'"
         " https://api.github.com/repos/$repo/releases");
-    result = await shell.run("curl -s"
-        " -H 'Authorization: token $token'"
-        " -H 'Accept: application/vnd.github.v3+json'"
-        " https://api.github.com/repos/$repo/releases/tags/$tag");
     id = jsonDecode(result.first.stdout)?['id'];
   }
   if (id == null) {
