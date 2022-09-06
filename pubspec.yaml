@@ -58,6 +58,7 @@ dev_dependencies:
   args: ^2.3.1
   yaml: ^3.1.1
   glob: ^2.1.0
+  http: ^0.13.5
   process_run: ^0.12.3+2
   build_runner: ^2.2.0
   json_serializable: ^6.3.1

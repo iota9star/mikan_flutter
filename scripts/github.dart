@@ -5,6 +5,7 @@ import 'package:args/args.dart';
 import 'package:collection/collection.dart';
 import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 import 'package:yaml/yaml.dart';
@@ -24,7 +25,7 @@ Future<void> main(List<String> arguments) async {
   var shell = Shell();
   var result = await shell.run("git remote -v");
   var urlParts =
-      result.first.stdout.toString().trim().split("\n").last.split("/");
+  result.first.stdout.toString().trim().split("\n").last.split("/");
   var repo = [
     urlParts[urlParts.length - 2],
     urlParts[urlParts.length - 1].split(" ").first.replaceAll(".git", '')
@@ -46,7 +47,7 @@ Future<void> _release({
   await shell.run("git remote set-url origin https://$token@github.com/$repo");
   var result = await shell.run("git show -s");
   var commitId =
-      RegExp(r"\s([a-z\d]{40})\s").firstMatch(result.first.stdout)?.group(1);
+  RegExp(r"\s([a-z\d]{40})\s").firstMatch(result.first.stdout)?.group(1);
   if (commitId == null) {
     throw StateError("Can't get ref.");
   }
@@ -67,11 +68,10 @@ Future<void> _release({
   //     .split(" ")
   //     .last;
   result = await shell.run("git ls-remote --tags");
-  var exist = result.first.stdout
-      .toString()
-      .split("\n")
-      .any((s) => s.split("refs/tags/").last.startsWith(tag));
-  if (!exist) {
+  var tags = result.first.stdout.toString();
+  var has =
+  tags.split("\n").any((s) => s.split("refs/tags/").last.startsWith(tag));
+  if (!has) {
     try {
       await shell.run("git"
           " -c user.name=${pair[0]}"
@@ -84,16 +84,19 @@ Future<void> _release({
   }
   dynamic id;
   try {
-    result = await shell.run("curl -s"
-        " -H 'Authorization: token $token'"
-        " -H 'Accept: application/vnd.github.v3+json'"
-        " https://api.github.com/repos/$repo/releases/tags/$tag");
-    id = jsonDecode(result.first.stdout)?['id'];
+    var response = await http.get(
+      Uri.parse('https://api.github.com/repos/$repo/releases/tags/$tag'),
+      headers: {
+        'Authorization': 'token $token',
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    );
+    id = jsonDecode(response.body)?['id'];
   } catch (e) {
     print(e);
   }
   if (id == null) {
-    var params = jsonEncode({
+    var data = jsonEncode({
       "tag_name": tag,
       "target_commitish": "main",
       "name": tag,
@@ -102,43 +105,66 @@ Future<void> _release({
       "prerelease": false,
       "generate_release_notes": true
     });
-    result = await shell.run("curl -s -X POST"
-        " -H 'Authorization: token $token'"
-        " -H 'Accept: application/vnd.github.v3+json'"
-        " -d '$params'"
-        " https://api.github.com/repos/$repo/releases");
-    id = jsonDecode(result.first.stdout)?['id'];
+    var response = await http.post(
+      Uri.parse('https://api.github.com/repos/$repo/releases'),
+      body: data,
+      headers: {
+        'Authorization': 'token $token',
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    );
+    id = jsonDecode(response.body)?['id'];
   }
+  print('release id: $id');
   if (id == null) {
     throw StateError(result.first.stdout);
   }
   var files = Glob(artifacts, recursive: true).listSync(root: root.path);
-  result = await shell.run("curl -s"
-      " -H 'Authorization: token $token'"
-      " -H 'Accept: application/vnd.github.v3+json'"
-      " https://api.github.com/repos/$repo/releases/$id/assets");
-  var assets = (jsonDecode(result.first.stdout) as List?);
+  var response = await http.get(
+    Uri.parse('https://api.github.com/repos/$repo/releases/$id/assets'),
+    headers: {
+      'Authorization': 'token $token',
+      'Accept': 'application/vnd.github.v3+json',
+    },
+  );
+  var assets = jsonDecode(response.body) as List?;
+  print('assets: ${assets?.map((e) => e['name']).join(", ")}');
   for (var file in files) {
     if (file is File) {
       var filePath = file.absolute.path;
       var fileName = basename(filePath);
+      print('prepare upload: $filePath');
       var exist = assets?.firstWhereOrNull((e) {
         return e['name'] == fileName;
       });
       if (exist != null) {
+        print('exist asset: ${exist?['name']}');
         // delete exist assert
-        await shell.run("curl -s -X DELETE"
-            " -H 'Authorization: token $token'"
-            " -H 'Accept: application/vnd.github.v3+json'"
-            " https://api.github.com/repos/$repo/releases/assets/${exist['id']}");
+        var response = await http.delete(
+          Uri.parse(
+              'https://api.github.com/repos/$repo/releases/assets/${exist['id']}'),
+          headers: {
+            'Authorization': 'token $token',
+            'Accept': 'application/vnd.github.v3+json',
+          },
+        );
+        print('delete end: ${response.statusCode}');
       }
       // upload asset.
-      await shell.run("curl -X POST"
-          " -H 'Content-Type: application/octet-stream'"
-          " -H 'Authorization: token $token'"
-          " -H 'Accept: application/vnd.github.v3+json'"
-          " -T '$filePath'"
-          " https://uploads.github.com/repos/$repo/releases/$id/assets?name=$fileName");
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            'https://uploads.github.com/repos/$repo/releases/$id/assets?name=$fileName'),
+      );
+      request.files.add(await http.MultipartFile.fromPath('file', filePath));
+      request.headers.addAll({
+        'Authorization': 'token $token',
+        'Accept': 'application/vnd.github.v3+json',
+      });
+      var response = await request.send();
+      print('upload end: ${response.statusCode}, $filePath');
     }
   }
+  print('task end');
+  exit(0);
 }
