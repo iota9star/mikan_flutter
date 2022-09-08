@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -477,39 +476,45 @@ class SearchFragment extends StatelessWidget {
         color: Colors.black.withAlpha(24),
       ),
     ];
+    final provider = CacheImageProvider(bangumi.cover);
     return AspectRatio(
       aspectRatio: 9 / 16,
       child: Column(
         children: [
           Expanded(
-            child: ExtendedImage(
-              image: CacheImageProvider(bangumi.cover),
-              shape: BoxShape.rectangle,
-              loadStateChanged: (ExtendedImageState value) {
-                Widget cover;
-                if (value.extendedImageLoadState == LoadState.loading) {
-                  cover = Container(
-                    padding: edge28,
-                    decoration: BoxDecoration(
-                      borderRadius: borderRadius8,
-                      boxShadow: boxShadow,
-                    ),
-                    child: Center(
-                      child: SpinKitPumpingHeart(
-                        duration: const Duration(milliseconds: 960),
-                        itemBuilder: (_, __) => ExtendedImage.asset(
-                          "assets/mikan.png",
+            child: Image(
+              image: provider,
+              loadingBuilder: (_, child, event) {
+                return event == null
+                    ? child
+                    : Hero(
+                        tag: currFlag,
+                        child: Container(
+                          padding: edge28,
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius8,
+                            boxShadow: boxShadow,
+                          ),
+                          child: Center(
+                            child: SpinKitPumpingHeart(
+                              duration: const Duration(milliseconds: 960),
+                              itemBuilder: (_, __) => Image.asset(
+                                "assets/mikan.png",
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                } else if (value.extendedImageLoadState == LoadState.failed) {
-                  cover = Container(
+                      );
+              },
+              errorBuilder: (_, __, ___) {
+                return Hero(
+                  tag: currFlag,
+                  child: Container(
                     decoration: BoxDecoration(
                       borderRadius: borderRadius8,
                       boxShadow: boxShadow,
                       image: const DecorationImage(
-                        image: ExtendedAssetImageProvider("assets/mikan.png"),
+                        image: AssetImage("assets/mikan.png"),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
                           Colors.grey,
@@ -517,24 +522,22 @@ class SearchFragment extends StatelessWidget {
                         ),
                       ),
                     ),
-                  );
-                } else {
-                  bangumi.aspectRatio = value.extendedImageInfo!.image.width /
-                      value.extendedImageInfo!.image.height;
-                  cover = Container(
+                  ),
+                );
+              },
+              frameBuilder: (_, __, ___, ____) {
+                return Hero(
+                  tag: currFlag,
+                  child: Container(
                     decoration: BoxDecoration(
                       borderRadius: borderRadius8,
                       boxShadow: boxShadow,
                       image: DecorationImage(
-                        image: value.imageProvider,
+                        image: provider,
                         fit: BoxFit.cover,
                       ),
                     ),
-                  );
-                }
-                return Hero(
-                  tag: currFlag,
-                  child: cover,
+                  ),
                 );
               },
             ),

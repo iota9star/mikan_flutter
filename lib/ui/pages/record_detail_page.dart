@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 @FFArgumentImport()
@@ -406,83 +405,90 @@ class RecordDetailPage extends StatelessWidget {
     final BuildContext context,
     final RecordDetail recordDetail,
   ) {
-    return ExtendedImage(
+    return Image(
       image: CacheImageProvider(recordDetail.cover),
       width: 136.0,
-      shape: BoxShape.rectangle,
-      loadStateChanged: (state) {
-        Widget child;
-        if (state.extendedImageLoadState == LoadState.loading) {
-          child = Container(
-            padding: edge28,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withOpacity(0.6),
+      loadingBuilder: (_, child, event) {
+        return event == null
+            ? child
+            : Stack(
+                children: [
+                  AspectRatio(
+                    aspectRatio: 3 / 4,
+                    child: Container(
+                      padding: edge28,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 8.0,
+                            color: Colors.black.withOpacity(0.6),
+                          ),
+                        ],
+                        borderRadius: borderRadius8,
+                      ),
+                      child: Center(
+                        child: SpinKitPumpingHeart(
+                          duration: const Duration(milliseconds: 960),
+                          itemBuilder: (_, __) => Image.asset(
+                            "assets/mikan.png",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    child: _buildSubscribeBtn(context, recordDetail),
+                  ),
+                ],
+              );
+      },
+      errorBuilder: (_, __, ___) {
+        return Stack(
+          children: [
+            AspectRatio(
+              aspectRatio: 3 / 4,
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 8.0,
+                      color: Colors.black.withAlpha(24),
+                    )
+                  ],
+                  borderRadius: borderRadius8,
+                  image: const DecorationImage(
+                    image: AssetImage("assets/mikan.png"),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+                  ),
                 ),
-              ],
-              borderRadius: borderRadius8,
-            ),
-            child: Center(
-              child: SpinKitPumpingHeart(
-                duration: const Duration(milliseconds: 960),
-                itemBuilder: (_, __) => ExtendedImage.asset(
-                  "assets/mikan.png",
-                ),
               ),
             ),
-          );
-        } else if (state.extendedImageLoadState == LoadState.failed) {
-          child = Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
-              borderRadius: borderRadius8,
-              image: const DecorationImage(
-                image: ExtendedAssetImageProvider("assets/mikan.png"),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
-              ),
+            Positioned(
+              child: _buildSubscribeBtn(context, recordDetail),
             ),
-          );
-        } else {
-          recordDetail.coverSize = Size(
-            state.extendedImageInfo!.image.width.toDouble(),
-            state.extendedImageInfo!.image.height.toDouble(),
-          );
-          child = Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
-              borderRadius: borderRadius8,
-              image: DecorationImage(
-                image: state.imageProvider,
-                fit: BoxFit.cover,
+          ],
+        );
+      },
+      frameBuilder: (_, child, ___, ____) {
+        return Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 8.0,
+                    color: Colors.black.withAlpha(24),
+                  )
+                ],
+                borderRadius: borderRadius8,
               ),
+              child: ClipRRect(borderRadius: borderRadius8, child: child),
             ),
-          );
-        }
-        return AspectRatio(
-          aspectRatio: recordDetail.coverSize == null
-              ? 1
-              : recordDetail.coverSize!.width / recordDetail.coverSize!.height,
-          child: Stack(
-            children: [
-              Positioned.fill(child: child),
-              Positioned(
-                child: _buildSubscribeBtn(context, recordDetail),
-              ),
-            ],
-          ),
+            Positioned(
+              child: _buildSubscribeBtn(context, recordDetail),
+            ),
+          ],
         );
       },
     );
@@ -548,28 +554,26 @@ class RecordDetailPage extends StatelessWidget {
   }
 
   Widget _buildImageWidget(final String url) {
-    return ExtendedImage(
+    final placeholder = AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Container(
+        width: double.infinity,
+        color: Colors.grey.withOpacity(0.24),
+        child: Center(
+          child: Image.asset(
+            "assets/mikan.png",
+            width: 56.0,
+          ),
+        ),
+      ),
+    );
+    return Image(
       image: CacheImageProvider(url),
-      loadStateChanged: (state) {
-        switch (state.extendedImageLoadState) {
-          case LoadState.loading:
-          case LoadState.failed:
-            return AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Container(
-                width: double.infinity,
-                color: Colors.grey.withOpacity(0.24),
-                child: Center(
-                  child: ExtendedImage.asset(
-                    "assets/mikan.png",
-                    width: 56.0,
-                  ),
-                ),
-              ),
-            );
-          case LoadState.completed:
-            return null;
-        }
+      loadingBuilder: (_, child, event) {
+        return event == null ? child : placeholder;
+      },
+      errorBuilder: (_, __, ___) {
+        return placeholder;
       },
     );
   }

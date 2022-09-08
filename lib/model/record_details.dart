@@ -26,8 +26,6 @@ class RecordDetail {
   late String torrent;
   late List<String> tags;
 
-  Size? coverSize;
-
   String get shareString {
     final StringBuffer sb = StringBuffer();
     if (name.isNotBlank) {

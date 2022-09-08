@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -337,26 +336,29 @@ class _IndexFragmentState extends State<IndexFragment> {
       builder: (_, user, __) {
         return user?.hasLogin == true
             ? ClipOval(
-                child: ExtendedImage(
+                child: Image(
                   image: CacheImageProvider(user!.avatar ?? ""),
                   width: 36.0,
                   height: 36.0,
-                  loadStateChanged: (state) {
-                    switch (state.extendedImageLoadState) {
-                      case LoadState.loading:
-                      case LoadState.failed:
-                        return ExtendedImage.asset(
-                          "assets/mikan.png",
-                          width: 36.0,
-                          height: 36.0,
-                        );
-                      case LoadState.completed:
-                        return null;
-                    }
+                  loadingBuilder: (_, child, event) {
+                    return event == null
+                        ? child
+                        : Image.asset(
+                            "assets/mikan.png",
+                            width: 36.0,
+                            height: 36.0,
+                          );
+                  },
+                  errorBuilder: (_, __, ___) {
+                    return Image.asset(
+                      "assets/mikan.png",
+                      width: 36.0,
+                      height: 36.0,
+                    );
                   },
                 ),
               )
-            : ExtendedImage.asset(
+            : Image.asset(
                 "assets/mikan.png",
                 width: 36.0,
                 height: 36.0,

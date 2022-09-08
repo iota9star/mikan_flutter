@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -463,6 +462,7 @@ class SubscribedFragment extends StatelessWidget {
     final String bangumiId = entry.key;
     final String badge = recordsLength > 99 ? "99+" : "+$recordsLength";
     final String currFlag = "rss:$bangumiId:$bangumiCover";
+    final imageProvider = CacheImageProvider(bangumiCover);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -496,34 +496,32 @@ class SubscribedFragment extends StatelessWidget {
                   Positioned.fill(
                     child: Hero(
                       tag: currFlag,
-                      child: ExtendedImage(
-                        image: CacheImageProvider(bangumiCover),
+                      child: Image(
+                        image: imageProvider,
                         fit: BoxFit.cover,
-                        loadStateChanged: (state) {
-                          switch (state.extendedImageLoadState) {
-                            case LoadState.loading:
-                              return Padding(
-                                padding: edge16,
-                                child: Center(
-                                  child: ExtendedImage.asset(
-                                    "assets/mikan.png",
+                        loadingBuilder: (_, child, event) {
+                          return event == null
+                              ? child
+                              : Padding(
+                                  padding: edge16,
+                                  child: Center(
+                                    child: Image.asset(
+                                      "assets/mikan.png",
+                                    ),
                                   ),
-                                ),
-                              );
-                            case LoadState.failed:
-                              return Padding(
-                                padding: edge16,
-                                child: Center(
-                                  child: ExtendedImage.asset(
-                                    "assets/mikan.png",
-                                    colorBlendMode: BlendMode.color,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              );
-                            case LoadState.completed:
-                              return null;
-                          }
+                                );
+                        },
+                        errorBuilder: (_, __, ___) {
+                          return Padding(
+                            padding: edge16,
+                            child: Center(
+                              child: Image.asset(
+                                "assets/mikan.png",
+                                colorBlendMode: BlendMode.color,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          );
                         },
                       ),
                     ),

@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -600,78 +599,77 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildCover(final String cover, final BangumiModel model) {
-    return ExtendedImage(
+    return Image(
       image: CacheImageProvider(cover),
       width: 136.0,
-      shape: BoxShape.rectangle,
-      loadStateChanged: (ExtendedImageState value) {
-        Widget child;
-        if (value.extendedImageLoadState == LoadState.loading) {
-          child = Container(
-            padding: edge28,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withOpacity(0.6),
+      loadingBuilder: (_, child, event) {
+        return event == null
+            ? child
+            : AspectRatio(
+                aspectRatio: 3 / 4,
+                child: Hero(
+                  tag: heroTag,
+                  child: Container(
+                    padding: edge28,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8.0,
+                          color: Colors.black.withOpacity(0.6),
+                        ),
+                      ],
+                      borderRadius: borderRadius8,
+                    ),
+                    child: Center(
+                      child: SpinKitPumpingHeart(
+                        duration: const Duration(milliseconds: 960),
+                        itemBuilder: (_, __) => Image.asset(
+                          "assets/mikan.png",
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ],
-              borderRadius: borderRadius8,
-            ),
-            child: Center(
-              child: SpinKitPumpingHeart(
-                duration: const Duration(milliseconds: 960),
-                itemBuilder: (_, __) => ExtendedImage.asset(
-                  "assets/mikan.png",
-                ),
-              ),
-            ),
-          );
-        } else if (value.extendedImageLoadState == LoadState.failed) {
-          child = Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
-              borderRadius: borderRadius8,
-              image: const DecorationImage(
-                image: ExtendedAssetImageProvider("assets/mikan.png"),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
-              ),
-            ),
-          );
-        } else {
-          model.coverSize = Size(
-            value.extendedImageInfo!.image.width.toDouble(),
-            value.extendedImageInfo!.image.height.toDouble(),
-          );
-          child = Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
-              borderRadius: borderRadius8,
-              image: DecorationImage(
-                image: value.imageProvider,
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        }
+              );
+      },
+      errorBuilder: (_, __, ___) {
         return AspectRatio(
-          aspectRatio: model.coverSize == null
-              ? 1
-              : model.coverSize!.width / model.coverSize!.height,
+          aspectRatio: 3 / 4,
           child: Hero(
             tag: heroTag,
-            child: child,
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 8.0,
+                    color: Colors.black.withAlpha(24),
+                  )
+                ],
+                borderRadius: borderRadius8,
+                image: const DecorationImage(
+                  image: AssetImage("assets/mikan.png"),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      frameBuilder: (_, child, ___, ____) {
+        return Hero(
+          tag: heroTag,
+          child: Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 8.0,
+                  color: Colors.black.withAlpha(24),
+                )
+              ],
+              borderRadius: borderRadius8,
+            ),
+            child: ClipRRect(borderRadius: borderRadius8, child: child),
           ),
         );
       },

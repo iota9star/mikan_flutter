@@ -1,4 +1,4 @@
-import 'package:extended_image/extended_image.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/topvars.dart';
@@ -78,7 +78,7 @@ class Indicator {
       SpinKitPumpingHeart(
         size: 18,
         itemBuilder: (_, __) {
-          return ExtendedImage.asset(
+          return Image.asset(
             "assets/mikan.png",
             width: 32.0,
             height: 32.0,

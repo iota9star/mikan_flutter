@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/topvars.dart';
@@ -51,11 +50,10 @@ class _BangumiCoverScrollListFragmentState
     super.dispose();
   }
 
-  Iterable<Bangumi>? _bangumis;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final model = Provider.of<IndexModel>(context, listen: false);
     return Container(
       foregroundDecoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -72,41 +70,47 @@ class _BangumiCoverScrollListFragmentState
           colors: [Colors.transparent, theme.backgroundColor],
         ),
       ),
-      child: Selector<IndexModel, List<BangumiRow>>(
-        selector: (_, model) => model.bangumiRows,
-        shouldRebuild: (pre, next) => pre.ne(next) && _bangumis == null,
-        builder: (_, bangumiRows, __) {
-          _bangumis =
-              bangumiRows.map((e) => e.bangumis).expand((element) => element);
-          final length = _bangumis!.length;
-          if (length == 0) {
-            return sizedBox;
-          }
-          return GridView.builder(
-            controller: _scrollController,
-            padding: edge16,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 120,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-              childAspectRatio: 3 / 4,
-            ),
-            itemBuilder: (_, index) {
-              final bangumi = _bangumis!.elementAt(index % length);
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius8,
-                  image: DecorationImage(
-                    image: CacheImageProvider(bangumi.cover),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            },
-          );
-        },
+      child: model.bangumiRows.isEmpty
+          ? Selector<IndexModel, List<BangumiRow>>(
+              selector: (_, model) => model.bangumiRows,
+              shouldRebuild: (pre, next) => pre.ne(next),
+              builder: (_, bangumiRows, __) {
+                return _buildList(bangumiRows);
+              },
+            )
+          : _buildList(model.bangumiRows),
+    );
+  }
+
+  Widget _buildList(List<BangumiRow> bangumiRows) {
+    final bangumis =
+        bangumiRows.map((e) => e.bangumis).expand((element) => element);
+    final length = bangumis.length;
+    if (length == 0) {
+      return sizedBox;
+    }
+    return GridView.builder(
+      controller: _scrollController,
+      padding: edge16,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 120,
+        crossAxisSpacing: 16.0,
+        mainAxisSpacing: 16.0,
+        childAspectRatio: 3 / 4,
       ),
+      itemBuilder: (_, index) {
+        final bangumi = bangumis.elementAt(index % length);
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: borderRadius8,
+            image: DecorationImage(
+              image: CacheImageProvider(bangumi.cover),
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
     );
   }
 }

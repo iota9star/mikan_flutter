@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:extended_image/extended_image.dart';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -241,27 +241,25 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final String currFlag,
     final Bangumi bangumi,
   ) {
-    return ExtendedImage(
-      image: CacheImageProvider(bangumi.cover),
-      loadStateChanged: (state) {
-        Widget child;
-        switch (state.extendedImageLoadState) {
-          case LoadState.loading:
-            child = _buildBangumiItemPlaceholder();
-            break;
-          case LoadState.completed:
-            child = _buildBackgroundCover(
-              bangumi,
-              state.imageProvider,
-            );
-            break;
-          case LoadState.failed:
-            child = _buildBangumiItemError();
-            break;
-        }
+    final provider = CacheImageProvider(bangumi.cover);
+    return Image(
+      image: provider,
+      loadingBuilder: (_, child, event) {
         return Hero(
           tag: currFlag,
-          child: child,
+          child: event == null ? child : _buildBangumiItemPlaceholder(),
+        );
+      },
+      errorBuilder: (_, __, ___) {
+        return Hero(
+          tag: currFlag,
+          child: _buildBangumiItemError(),
+        );
+      },
+      frameBuilder: (_,__,___,____){
+        return _buildBackgroundCover(
+          bangumi,
+          provider,
         );
       },
     );
@@ -271,7 +269,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     return Container(
       padding: edge28,
       child: Center(
-        child: ExtendedImage.asset(
+        child: Image.asset(
           "assets/mikan.png",
         ),
       ),
@@ -282,7 +280,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: ExtendedAssetImageProvider("assets/mikan.png"),
+          image: AssetImage("assets/mikan.png"),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
         ),

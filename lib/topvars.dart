@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -251,7 +250,7 @@ const circleShape = CircleBorder();
 final normalFormHeader = Row(
   crossAxisAlignment: CrossAxisAlignment.center,
   children: <Widget>[
-    ExtendedImage.asset(
+    Image.asset(
       "assets/mikan.png",
       width: 72.0,
     ),

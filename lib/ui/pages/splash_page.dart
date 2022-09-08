@@ -1,4 +1,4 @@
-import 'package:extended_image/extended_image.dart';
+
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -46,13 +46,13 @@ class SplashPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           FutureBuilder(
-            future: Future.delayed(const Duration(seconds: 5)),
+            future: Future.delayed(const Duration(seconds: 8)),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 toHome(context);
               }
               return TapScaleContainer(
-                child: ExtendedImage.asset(
+                child: Image.asset(
                   "assets/mikan.png",
                   width: 108,
                 ),

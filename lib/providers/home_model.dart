@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -99,7 +98,7 @@ class HomeModel extends BaseModel {
           children: [
             Row(
               children: [
-                ExtendedImage.asset(
+                Image.asset(
                   "assets/mikan.png",
                   height: 42.0,
                   width: 42.0,
@@ -246,7 +245,7 @@ class HomeModel extends BaseModel {
                     shape: const RoundedRectangleBorder(
                       borderRadius: borderRadius8,
                     ),
-                    primary: scaffoldBackgroundColor,
+                    backgroundColor: scaffoldBackgroundColor,
                   ),
                   child: Text(
                     "下次一定",

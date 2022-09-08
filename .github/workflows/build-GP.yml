@@ -11,6 +11,9 @@ on:
         description: 'Set a Tag'
         required: true
         default: ''
+  push:
+    tags:
+      - v*
 jobs:
   build:
     name: Release build

@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -142,25 +141,22 @@ class SettingsFragment extends StatelessWidget {
   }
 
   Widget _buildAvatar(User? user) {
-    final placeholder = ExtendedImage.asset(
+    final placeholder = Image.asset(
       "assets/mikan.png",
       width: 36.0,
       height: 36.0,
     );
     return user?.hasLogin == true
         ? ClipOval(
-            child: ExtendedImage(
+            child: Image(
               image: CacheImageProvider(user!.avatar ?? ""),
               width: 36.0,
               height: 36.0,
-              loadStateChanged: (state) {
-                switch (state.extendedImageLoadState) {
-                  case LoadState.loading:
-                  case LoadState.failed:
-                    return placeholder;
-                  case LoadState.completed:
-                    return null;
-                }
+              loadingBuilder: (_, child, event) {
+                return event == null ? child : placeholder;
+              },
+              errorBuilder: (_, __, ___) {
+                return placeholder;
               },
             ),
           )
