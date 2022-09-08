@@ -10,6 +10,7 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subgroup_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
+import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -39,42 +40,28 @@ class SubgroupPage extends StatelessWidget {
           final subgroupModel =
               Provider.of<SubgroupModel>(context, listen: false);
           return Scaffold(
-            body: NotificationListener(
-              onNotification: (notification) {
-                if (notification is OverscrollIndicatorNotification) {
-                  notification.disallowIndicator();
-                } else if (notification is ScrollUpdateNotification) {
-                  if (notification.depth == 0) {
-                    final double offset = notification.metrics.pixels;
-                    subgroupModel.hasScrolled = offset > 0.0;
-                  }
-                }
-                return true;
+            body: Selector<SubgroupModel, List<SeasonGallery>>(
+              selector: (_, model) => model.galleries,
+              shouldRebuild: (pre, next) => pre.ne(next),
+              builder: (context, galleries, __) {
+                return SmartRefresher(
+                  controller: subgroupModel.refreshController,
+                  header: WaterDropMaterialHeader(
+                    backgroundColor: theme.secondary,
+                    color: theme.secondary.isDark ? Colors.white : Colors.black,
+                    distance: Screen.statusBarHeight + 42.0,
+                  ),
+                  enablePullDown: true,
+                  enablePullUp: false,
+                  onRefresh: subgroupModel.refresh,
+                  child: _buildContentWrapper(
+                    context,
+                    theme,
+                    subgroupModel,
+                    galleries,
+                  ),
+                );
               },
-              child: Selector<SubgroupModel, List<SeasonGallery>>(
-                selector: (_, model) => model.galleries,
-                shouldRebuild: (pre, next) => pre.ne(next),
-                builder: (context, galleries, __) {
-                  return SmartRefresher(
-                    controller: subgroupModel.refreshController,
-                    header: WaterDropMaterialHeader(
-                      backgroundColor: theme.secondary,
-                      color:
-                          theme.secondary.isDark ? Colors.white : Colors.black,
-                      distance: Screen.statusBarHeight + 42.0,
-                    ),
-                    enablePullDown: true,
-                    enablePullUp: false,
-                    onRefresh: subgroupModel.refresh,
-                    child: _buildContentWrapper(
-                      context,
-                      theme,
-                      subgroupModel,
-                      galleries,
-                    ),
-                  );
-                },
-              ),
             ),
           );
         }),
@@ -144,49 +131,39 @@ class SubgroupPage extends StatelessWidget {
   }
 
   Widget _buildHeader(final ThemeData theme) {
-    return Selector<SubgroupModel, bool>(
-      selector: (_, model) => model.hasScrolled,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, hasScrolled, __) {
-        return SliverPinnedToBoxAdapter(
-          child: AnimatedContainer(
-            decoration: BoxDecoration(
-              color: hasScrolled
-                  ? theme.backgroundColor
-                  : theme.scaffoldBackgroundColor,
-              borderRadius: scrollHeaderBorderRadius(hasScrolled),
-              boxShadow: scrollHeaderBoxShadow(hasScrolled),
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return SimpleSliverPinnedHeader(
+      builder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return Row(
+          children: <Widget>[
+            MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              color: ic,
+              minWidth: 32.0,
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: circleShape,
+              child: const Icon(
+                FluentIcons.chevron_left_24_regular,
+                size: 16.0,
+              ),
             ),
-            padding: edge16WithStatusBar,
-            duration: dur240,
-            child: Row(
-              children: <Widget>[
-                MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  minWidth: 32.0,
-                  padding: EdgeInsets.zero,
-                  shape: circleShape,
-                  color: hasScrolled
-                      ? theme.scaffoldBackgroundColor
-                      : theme.backgroundColor,
-                  child: const Icon(
-                    FluentIcons.chevron_left_24_regular,
-                    size: 16.0,
-                  ),
-                ),
-                sizedBoxW12,
-                Expanded(
-                  child: Text(
-                    subgroup.name,
-                    style: textStyle24B,
-                  ),
-                ),
-              ],
+            sizedBoxW12,
+            Text(
+              subgroup.name,
+              style: TextStyle(
+                fontSize: 30.0 - (ratio * 6.0),
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
             ),
-          ),
+          ],
         );
       },
     );

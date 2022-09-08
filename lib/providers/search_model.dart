@@ -26,17 +26,6 @@ class SearchModel extends CancelableBaseModel {
 
   bool get loading => _loading;
 
-  bool _hasScrolled = false;
-
-  bool get hasScrolled => _hasScrolled;
-
-  set hasScrolled(bool value) {
-    if (_hasScrolled != value) {
-      _hasScrolled = value;
-      notifyListeners();
-    }
-  }
-
   set subgroupId(final String? value) {
     _subgroupId = _subgroupId == value ? null : value;
     _searching(keywords, subgroupId: _subgroupId);

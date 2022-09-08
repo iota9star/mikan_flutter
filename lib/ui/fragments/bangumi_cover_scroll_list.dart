@@ -1,8 +1,6 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
-import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
@@ -25,8 +23,6 @@ class _BangumiCoverScrollListFragmentState
     extends State<BangumiCoverScrollListFragment> {
   final ScrollController _scrollController = ScrollController();
 
-  final _ScrollItemModel _scrollItemModel = _ScrollItemModel();
-
   bool _animating = false;
 
   @override
@@ -47,135 +43,70 @@ class _BangumiCoverScrollListFragmentState
         });
       }
     });
-    _scrollController.addListener(() {
-      _scrollItemModel.scrolling(_scrollController.offset);
-    });
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
-    _scrollItemModel.dispose();
     super.dispose();
   }
+
+  Iterable<Bangumi>? _bangumis;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return ChangeNotifierProvider.value(
-      value: _scrollItemModel,
-      child: Container(
-        foregroundDecoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.black54, Colors.black12, Colors.black87],
-            stops: [0, 0.72, 1.0],
-          ),
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.transparent, theme.backgroundColor],
-          ),
-        ),
-        child: Selector<IndexModel, List<BangumiRow>>(
-          selector: (_, model) => model.bangumiRows,
-          shouldRebuild: (pre, next) => pre.ne(next),
-          builder: (_, bangumiRows, __) {
-            final bangumis =
-                bangumiRows.map((e) => e.bangumis).expand((element) => element);
-            final length = bangumis.length;
-            if (length == 0) {
-              return sizedBox;
-            }
-            return GridView.builder(
-              controller: _scrollController,
-              padding: edge16,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: _scrollItemModel.maxCrossAxisExtent,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-              ),
-              itemBuilder: (_, index) {
-                final bangumi = bangumis.elementAt(index % length);
-                return ExtendedImage(
-                  image: FastCacheImage(bangumi.cover),
-                  loadStateChanged: (state) {
-                    switch (state.extendedImageLoadState) {
-                      case LoadState.loading:
-                      case LoadState.failed:
-                        return sizedBox;
-                      case LoadState.completed:
-                        return _buildBackgroundCover(
-                          bangumi,
-                          state.imageProvider,
-                          index,
-                        );
-                    }
-                  },
-                );
-              },
-            );
-          },
+    return Container(
+      foregroundDecoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.black54, Colors.black12, Colors.black87],
+          stops: [0, 0.72, 1.0],
         ),
       ),
-    );
-  }
-
-  Widget _buildBackgroundCover(
-    final Bangumi bangumi,
-    final ImageProvider imageProvider,
-    final int index,
-  ) {
-    return Selector<_ScrollItemModel, double>(
-      selector: (_, model) => model[index],
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (_, align, __) {
-        return Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              alignment: Alignment(align, align),
-              image: imageProvider,
-              fit: BoxFit.cover,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.transparent, theme.backgroundColor],
+        ),
+      ),
+      child: Selector<IndexModel, List<BangumiRow>>(
+        selector: (_, model) => model.bangumiRows,
+        shouldRebuild: (pre, next) => pre.ne(next) && _bangumis == null,
+        builder: (_, bangumiRows, __) {
+          _bangumis =
+              bangumiRows.map((e) => e.bangumis).expand((element) => element);
+          final length = _bangumis!.length;
+          if (length == 0) {
+            return sizedBox;
+          }
+          return GridView.builder(
+            controller: _scrollController,
+            padding: edge16,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 120,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 3 / 4,
             ),
-          ),
-        );
-      },
+            itemBuilder: (_, index) {
+              final bangumi = _bangumis!.elementAt(index % length);
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius8,
+                  image: DecorationImage(
+                    image: CacheImageProvider(bangumi.cover),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
-  }
-}
-
-class _ScrollItemModel extends ChangeNotifier {
-  late final double maxCrossAxisExtent;
-  late final double contentWidth;
-  late final int crossAxisCount;
-  late final double itemSize;
-
-  double _offset = 0;
-
-  _ScrollItemModel() {
-    maxCrossAxisExtent = 208.0;
-    contentWidth = Screen.screenWidth - 32.0;
-    crossAxisCount = ((contentWidth) / (maxCrossAxisExtent + 16.0)).ceil();
-    itemSize =
-        (Screen.screenWidth - (crossAxisCount + 1) * 16.0) / crossAxisCount;
-  }
-
-  void scrolling(double offset) {
-    _offset = offset;
-    notifyListeners();
-  }
-
-  double operator [](int index) {
-    return ((_offset +
-                        Screen.screenHeight -
-                        index / crossAxisCount * (itemSize + 16.0)) /
-                    Screen.screenHeight)
-                .clamp(0.0, 1.0) *
-            2 -
-        1;
   }
 }

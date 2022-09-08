@@ -46,14 +46,9 @@ class SimpleRecordItem extends StatelessWidget {
           ),
           Padding(
             padding: edgeH16T8,
-            child: Tooltip(
-              message: record.title,
-              padding: edgeH12V8,
-              margin: edgeH16,
-              child: Text(
-                record.title,
-                style: textStyle15B500,
-              ),
+            child: Text(
+              record.title,
+              style: textStyle15B500,
             ),
           ),
           sizedBoxH4,

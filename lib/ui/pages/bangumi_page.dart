@@ -56,7 +56,7 @@ class BangumiPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: FastCacheImage(cover),
+                        image: CacheImageProvider(cover),
                       ),
                     ),
                     child: BackdropFilter(
@@ -69,34 +69,6 @@ class BangumiPage extends StatelessWidget {
                 ),
                 Positioned.fill(
                   child: _buildList(theme, model),
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 150,
-                  child: IgnorePointer(
-                    child: Selector<BangumiModel, Color?>(
-                      selector: (_, model) => model.coverMainColor,
-                      shouldRebuild: (pre, next) => pre != next,
-                      builder: (_, bgColor, __) {
-                        final color = bgColor ?? theme.backgroundColor;
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 640),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                color,
-                                Colors.transparent,
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
                 ),
                 Positioned(
                   left: 16.0,
@@ -246,7 +218,7 @@ class BangumiPage extends StatelessWidget {
             ),
             sizedBoxH24,
             ListView.separated(
-              itemCount: length > 3 ? 3 : length,
+              itemCount: length > 4 ? 4 : length,
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
@@ -263,14 +235,9 @@ class BangumiPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Tooltip(
-                        message: record.title,
-                        padding: edgeH12V8,
-                        margin: edgeH16,
-                        child: Text(
-                          record.title,
-                          style: textStyle15B500,
-                        ),
+                      Text(
+                        record.title,
+                        style: textStyle15B500,
                       ),
                       sizedBoxH12,
                       Row(
@@ -634,7 +601,7 @@ class BangumiPage extends StatelessWidget {
 
   Widget _buildCover(final String cover, final BangumiModel model) {
     return ExtendedImage(
-      image: FastCacheImage(cover),
+      image: CacheImageProvider(cover),
       width: 136.0,
       shape: BoxShape.rectangle,
       loadStateChanged: (ExtendedImageState value) {

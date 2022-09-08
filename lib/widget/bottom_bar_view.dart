@@ -41,10 +41,10 @@ class BottomBarView extends StatefulWidget {
   final double iconSize;
 
   @override
-  _BottomBarViewState createState() => _BottomBarViewState();
+  BottomBarViewState createState() => BottomBarViewState();
 }
 
-class _BottomBarViewState extends State<BottomBarView>
+class BottomBarViewState extends State<BottomBarView>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
 

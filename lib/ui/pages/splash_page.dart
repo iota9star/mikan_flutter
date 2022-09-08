@@ -27,6 +27,17 @@ class SplashPage extends StatelessWidget {
   }
 
   Positioned _buildAppIcon(final BuildContext context) {
+    bool to = false;
+    void toHome(BuildContext context) {
+      if (to) {
+        return;
+      }
+      Future.microtask(() {
+        Navigator.pushReplacementNamed(context, Routes.home.name);
+        to = true;
+      });
+    }
+
     return Positioned(
       left: 0,
       right: 0,
@@ -38,8 +49,7 @@ class SplashPage extends StatelessWidget {
             future: Future.delayed(const Duration(seconds: 5)),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                Future.microtask(() =>
-                    Navigator.pushReplacementNamed(context, Routes.home.name));
+                toHome(context);
               }
               return TapScaleContainer(
                 child: ExtendedImage.asset(
@@ -47,7 +57,7 @@ class SplashPage extends StatelessWidget {
                   width: 108,
                 ),
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, Routes.home.name);
+                  toHome(context);
                 },
               );
             },

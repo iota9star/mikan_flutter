@@ -242,7 +242,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final Bangumi bangumi,
   ) {
     return ExtendedImage(
-      image: FastCacheImage(bangumi.cover),
+      image: CacheImageProvider(bangumi.cover),
       loadStateChanged: (state) {
         Widget child;
         switch (state.extendedImageLoadState) {

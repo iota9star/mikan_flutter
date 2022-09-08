@@ -1,14 +1,18 @@
-name: build windows
+name: Build Windows
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
-  workflow_dispatch:
-    inputs:
-      TAG:
-        description: 'Set a Tag'
-        required: true
-        default: ''
   push:
-    tags:
-      - v*
+    branches:
+      - main
+      - master
+    tags-ignore:
+      - v**
+  workflow_dispatch:
+
 jobs:
   build:
     name: Release build
@@ -31,9 +35,5 @@ jobs:
           dir build/windows/runner/Release
           Compress-Archive -Path build/windows/runner/Release/* windows-win32-release.zip -Force
       - name: Release build
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifacts: "*-release.zip"
-          token: ${{ secrets.ACTION_TOKEN }}
-          tag: ${{ github.event.inputs.TAG }}
+        run: |
+          dart scripts/github.dart --token=${{ secrets.ACTION_TOKEN }} --fun=release --artifacts=*-release.zip

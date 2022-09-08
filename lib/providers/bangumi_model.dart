@@ -3,11 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
-import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class BangumiModel extends CancelableBaseModel {
@@ -24,17 +22,6 @@ class BangumiModel extends CancelableBaseModel {
 
   Size? coverSize;
 
-  bool _hasScrolled = false;
-
-  bool get hasScrolled => _hasScrolled;
-
-  set hasScrolled(bool value) {
-    if (_hasScrolled != value) {
-      _hasScrolled = value;
-      notifyListeners();
-    }
-  }
-
   final RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 
@@ -44,32 +31,7 @@ class BangumiModel extends CancelableBaseModel {
 
   RefreshController get subgroupRefreshController => _subgroupRefreshController;
 
-  BangumiModel(this.id, this.cover) {
-    Future.delayed(const Duration(milliseconds: 640))
-        .whenComplete(() => _loadCoverMainColor());
-  }
-
-  Color? _coverMainColor;
-
-  Color? get coverMainColor => _coverMainColor;
-
-  _loadCoverMainColor() {
-    PaletteGenerator.fromImageProvider(
-      FastCacheImage(cover),
-      maximumColorCount: 3,
-      targets: [
-        PaletteTarget.lightVibrant,
-        PaletteTarget.vibrant,
-      ],
-    ).then((value) {
-      _coverMainColor = value.lightVibrantColor?.color ??
-          value.vibrantColor?.color ??
-          value.colors.getOrNull(0);
-      if (_coverMainColor != null) {
-        notifyListeners();
-      }
-    });
-  }
+  BangumiModel(this.id, this.cover);
 
   loadSubgroupList(final String dataId) async {
     final sb = _bangumiDetail?.subgroupBangumis[dataId];

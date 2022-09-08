@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:mikan_flutter/internal/http_cache_manager.dart';
@@ -17,7 +16,8 @@ class NetworkFontLoader {
 
   static Future<void> init({String? cacheDir}) async {
     if (cacheDir == null || cacheDir.isEmpty) {
-      cacheDir = "${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}font_manager_cache";
+      cacheDir =
+          "${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}font_manager_cache";
     }
     final Directory directory = Directory(cacheDir);
     if (!directory.existsSync()) {

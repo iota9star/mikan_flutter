@@ -139,7 +139,7 @@ extension NullableStringExt on String? {
 
   launchAppAndCopy() async {
     if (isNullOrBlank) return "内容为空，取消操作".toast();
-    Future _doOtherAction() async {
+    Future doOtherAction() async {
       if (await canLaunchUrlString(this!)) {
         await launchUrlString(this!);
       } else {
@@ -157,10 +157,10 @@ extension NullableStringExt on String? {
         ],
         data: this!,
       ).launch().catchError((e) async {
-        await _doOtherAction();
+        await doOtherAction();
       });
     } else {
-      await _doOtherAction();
+      await doOtherAction();
     }
   }
 

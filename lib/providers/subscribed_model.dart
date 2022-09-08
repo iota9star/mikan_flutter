@@ -40,17 +40,6 @@ class SubscribedModel extends CancelableBaseModel {
 
   List<Bangumi>? get bangumis => _bangumis;
 
-  bool _hasScrolled = false;
-
-  bool get hasScrolled => _hasScrolled;
-
-  set hasScrolled(bool value) {
-    if (_hasScrolled != value) {
-      _hasScrolled = value;
-      notifyListeners();
-    }
-  }
-
   final RefreshController _refreshController = RefreshController();
 
   RefreshController get refreshController => _refreshController;

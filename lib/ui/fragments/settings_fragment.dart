@@ -150,7 +150,7 @@ class SettingsFragment extends StatelessWidget {
     return user?.hasLogin == true
         ? ClipOval(
             child: ExtendedImage(
-              image: FastCacheImage(user!.avatar ?? ""),
+              image: CacheImageProvider(user!.avatar ?? ""),
               width: 36.0,
               height: 36.0,
               loadStateChanged: (state) {

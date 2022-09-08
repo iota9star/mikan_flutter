@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -23,6 +21,7 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
+import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -46,77 +45,62 @@ class _IndexFragmentState extends State<IndexFragment> {
     final ThemeData theme = Theme.of(context);
     final indexModel = Provider.of<IndexModel>(context, listen: false);
     return Scaffold(
-      body: NotificationListener(
-        onNotification: (notification) {
-          if (notification is OverscrollIndicatorNotification) {
-            notification.disallowIndicator();
-          } else if (notification is ScrollUpdateNotification) {
-            if (notification.depth == 0) {
-              final double offset = notification.metrics.pixels;
-              indexModel.hasScrolled = offset > 0.0;
-            }
+      body: Selector<IndexModel, List<BangumiRow>>(
+        selector: (_, model) => model.bangumiRows,
+        shouldRebuild: (pre, next) => pre.ne(next),
+        builder: (_, bangumiRows, __) {
+          if (bangumiRows.isNullOrEmpty && indexModel.seasonLoading) {
+            return centerLoading;
           }
-          return true;
+          return SmartRefresher(
+            controller: indexModel.refreshController,
+            enablePullUp: false,
+            enablePullDown: true,
+            header: WaterDropMaterialHeader(
+              backgroundColor: theme.secondary,
+              color: theme.secondary.isDark ? Colors.white : Colors.black,
+              distance: Screen.statusBarHeight + 42.0,
+            ),
+            onRefresh: indexModel.refresh,
+            child: CustomScrollView(
+              slivers: [
+                _buildHeader(theme),
+                _buildCarousels(theme),
+                ...List.generate(
+                  bangumiRows.length,
+                  (index) {
+                    final BangumiRow bangumiRow = bangumiRows[index];
+                    return MultiSliver(
+                      pushPinnedChildren: true,
+                      children: [
+                        _buildWeekSection(theme, bangumiRow),
+                        BangumiSliverGridFragment(
+                          padding: edgeHB16T4,
+                          bangumis: bangumiRow.bangumis,
+                          handleSubscribe: (bangumi, flag) {
+                            context.read<OpModel>().subscribeBangumi(
+                              bangumi.id,
+                              bangumi.subscribed,
+                              onSuccess: () {
+                                bangumi.subscribed = !bangumi.subscribed;
+                                context.read<OpModel>().subscribeChanged(flag);
+                              },
+                              onError: (msg) {
+                                "订阅失败：$msg".toast();
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                _buildOVA(theme),
+                sliverSizedBoxH80,
+              ],
+            ),
+          );
         },
-        child: Selector<IndexModel, List<BangumiRow>>(
-          selector: (_, model) => model.bangumiRows,
-          shouldRebuild: (pre, next) => pre.ne(next),
-          builder: (_, bangumiRows, __) {
-            if (bangumiRows.isNullOrEmpty && indexModel.seasonLoading) {
-              return centerLoading;
-            }
-            return SmartRefresher(
-              controller: indexModel.refreshController,
-              enablePullUp: false,
-              enablePullDown: true,
-              header: WaterDropMaterialHeader(
-                backgroundColor: theme.secondary,
-                color: theme.secondary.isDark ? Colors.white : Colors.black,
-                distance: Screen.statusBarHeight + 42.0,
-              ),
-              onRefresh: indexModel.refresh,
-              child: CustomScrollView(
-                slivers: [
-                  _buildHeader(context, theme),
-                  _buildCarousels(theme),
-                  ...List.generate(
-                    bangumiRows.length,
-                    (index) {
-                      final BangumiRow bangumiRow = bangumiRows[index];
-                      return MultiSliver(
-                        pushPinnedChildren: true,
-                        children: [
-                          _buildWeekSection(theme, bangumiRow),
-                          BangumiSliverGridFragment(
-                            padding: edgeHB16T4,
-                            bangumis: bangumiRow.bangumis,
-                            handleSubscribe: (bangumi, flag) {
-                              context.read<OpModel>().subscribeBangumi(
-                                bangumi.id,
-                                bangumi.subscribed,
-                                onSuccess: () {
-                                  bangumi.subscribed = !bangumi.subscribed;
-                                  context
-                                      .read<OpModel>()
-                                      .subscribeChanged(flag);
-                                },
-                                onError: (msg) {
-                                  "订阅失败：$msg".toast();
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  _buildOVA(theme),
-                  sliverSizedBoxH80,
-                ],
-              ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -233,7 +217,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                             ],
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: FastCacheImage(carousel.cover),
+                              image: CacheImageProvider(carousel.cover),
                             ),
                           ),
                         ),
@@ -255,114 +239,94 @@ class _IndexFragmentState extends State<IndexFragment> {
     );
   }
 
-  Widget _buildHeader(final BuildContext context, final ThemeData theme) {
-    return SliverPinnedToBoxAdapter(
-      child: Selector<IndexModel, bool>(
-        selector: (_, model) => model.hasScrolled,
-        shouldRebuild: (pre, next) => pre != next,
-        builder: (_, hasScrolled, child) {
-          return AnimatedContainer(
-            decoration: BoxDecoration(
-              color: hasScrolled
-                  ? theme.backgroundColor
-                  : theme.scaffoldBackgroundColor,
-              borderRadius: scrollHeaderBorderRadius(hasScrolled),
-              boxShadow: scrollHeaderBoxShadow(hasScrolled),
-            ),
-            padding: EdgeInsets.only(
-              top: 12.0 + Screen.statusBarHeight,
-              left: 16.0,
-              right: 16.0,
-              bottom: 8.0,
-            ),
-            duration: dur240,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Selector<IndexModel, User?>(
-                        selector: (_, model) => model.user,
+  Widget _buildHeader(final ThemeData theme) {
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return SimpleSliverPinnedHeader(
+      builder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Selector<IndexModel, User?>(
+                    selector: (_, model) => model.user,
+                    shouldRebuild: (pre, next) => pre != next,
+                    builder: (_, user, __) {
+                      final withoutName =
+                          user == null || user.name.isNullOrBlank;
+                      return Text(
+                        withoutName ? "Mikan Project" : "Hi, ${user.name}",
+                        style: textStyle14B500,
+                      );
+                    },
+                  ),
+                  Row(
+                    children: [
+                      Selector<IndexModel, Season?>(
+                        selector: (_, model) => model.selectedSeason,
                         shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, user, __) {
-                          final withoutName =
-                              user == null || user.name.isNullOrBlank;
-                          return Text(
-                            withoutName ? "Mikan Project" : "Hi, ${user.name}",
-                            style: textStyle14B500,
-                          );
+                        builder: (_, season, __) {
+                          return season == null
+                              ? sizedBox
+                              : Text(
+                                  season.title,
+                                  style: TextStyle(
+                                    fontSize: 30.0 - (ratio * 6.0),
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.25,
+                                  ),
+                                );
                         },
                       ),
-                      _buildSeasonSelector(context, theme, hasScrolled)
+                      sizedBoxW8,
+                      MaterialButton(
+                        onPressed: () {
+                          showYearSeasonBottomSheet(context);
+                        },
+                        minWidth: 28.0,
+                        height: 28.0,
+                        color: ic,
+                        padding: EdgeInsets.zero,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: circleShape,
+                        child: const Icon(
+                          FluentIcons.chevron_down_24_regular,
+                          size: 14.0,
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                MaterialButton(
-                  onPressed: () {
-                    _showSearchPanel(context);
-                  },
-                  minWidth: 48.0,
-                  padding: edge8,
-                  shape: circleShape,
-                  child: const Icon(FluentIcons.search_24_regular),
-                ),
-                sizedBoxW8,
-                MaterialButton(
-                  onPressed: () {
-                    _showSettingsPanel(context);
-                  },
-                  minWidth: 48.0,
-                  padding: edge8,
-                  shape: circleShape,
-                  child: _buildAvatar(),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildSeasonSelector(
-    final BuildContext context,
-    final ThemeData theme,
-    final bool hasScrolled,
-  ) {
-    return Row(
-      children: [
-        Selector<IndexModel, Season?>(
-          selector: (_, model) => model.selectedSeason,
-          shouldRebuild: (pre, next) => pre != next,
-          builder: (_, season, __) {
-            return season == null
-                ? sizedBox
-                : Text(
-                    season.title,
-                    style: textStyle24B,
-                  );
-          },
-        ),
-        sizedBoxW8,
-        MaterialButton(
-          onPressed: () {
-            _showYearSeasonBottomSheet(context);
-          },
-          minWidth: 28.0,
-          height: 28.0,
-          color: hasScrolled
-              ? theme.scaffoldBackgroundColor
-              : theme.backgroundColor,
-          padding: EdgeInsets.zero,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shape: circleShape,
-          child: const Icon(
-            FluentIcons.chevron_down_24_regular,
-            size: 14.0,
-          ),
-        ),
-      ],
+            MaterialButton(
+              onPressed: () {
+                showSearchPanel(context);
+              },
+              minWidth: 48.0,
+              padding: edge8,
+              shape: circleShape,
+              child: const Icon(FluentIcons.search_24_regular),
+            ),
+            MaterialButton(
+              onPressed: () {
+                showSettingsPanel(context);
+              },
+              minWidth: 48.0,
+              padding: edge8,
+              shape: circleShape,
+              child: _buildAvatar(),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -374,7 +338,7 @@ class _IndexFragmentState extends State<IndexFragment> {
         return user?.hasLogin == true
             ? ClipOval(
                 child: ExtendedImage(
-                  image: FastCacheImage(user!.avatar ?? ""),
+                  image: CacheImageProvider(user!.avatar ?? ""),
                   width: 36.0,
                   height: 36.0,
                   loadStateChanged: (state) {
@@ -397,16 +361,6 @@ class _IndexFragmentState extends State<IndexFragment> {
                 width: 36.0,
                 height: 36.0,
               );
-      },
-    );
-  }
-
-  Future _showYearSeasonBottomSheet(final BuildContext context) {
-    return showCupertinoModalBottomSheet(
-      context: context,
-      topRadius: radius16,
-      builder: (_) {
-        return const SelectSeasonFragment();
       },
     );
   }
@@ -486,27 +440,37 @@ class _IndexFragmentState extends State<IndexFragment> {
       },
     );
   }
+}
 
-  _showSearchPanel(final BuildContext context) {
-    showCupertinoModalBottomSheet(
-      context: context,
-      expand: true,
-      bounce: true,
-      enableDrag: false,
-      topRadius: radius16,
-      builder: (_) {
-        return const SearchFragment();
-      },
-    );
-  }
+void showSearchPanel(final BuildContext context) {
+  showCupertinoModalBottomSheet(
+    context: context,
+    expand: true,
+    bounce: true,
+    enableDrag: false,
+    topRadius: radius16,
+    builder: (_) {
+      return const SearchFragment();
+    },
+  );
+}
 
-  void _showSettingsPanel(final BuildContext context) {
-    showCupertinoModalBottomSheet(
-      context: context,
-      topRadius: radius16,
-      builder: (_) {
-        return const SettingsFragment();
-      },
-    );
-  }
+void showSettingsPanel(final BuildContext context) {
+  showCupertinoModalBottomSheet(
+    context: context,
+    topRadius: radius16,
+    builder: (_) {
+      return const SettingsFragment();
+    },
+  );
+}
+
+void showYearSeasonBottomSheet(final BuildContext context) {
+  showCupertinoModalBottomSheet(
+    context: context,
+    topRadius: radius16,
+    builder: (_) {
+      return const SelectSeasonFragment();
+    },
+  );
 }

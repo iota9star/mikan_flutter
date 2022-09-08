@@ -13,8 +13,7 @@ const edgeH16V8 = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
 const edgeHT16 = EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0);
 const edgeH16T4 = EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0);
 const edgeH16T8 = EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0);
-const edgeH16T8B16 =
-    EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0);
+const edgeH16B16 = EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0);
 const edgeHB16T8 =
     EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0);
 const edgeHB24 = EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0);
@@ -303,10 +302,7 @@ final controlButtonActions = [
 
 final normalScrollBehavior = const ScrollBehavior().copyWith(
   scrollbars: false,
-  dragDevices: {
-    PointerDeviceKind.mouse,
-    PointerDeviceKind.touch,
-  },
+  dragDevices: PointerDeviceKind.values.toSet(),
   physics: const BouncingScrollPhysics(),
   platform: TargetPlatform.iOS,
 );

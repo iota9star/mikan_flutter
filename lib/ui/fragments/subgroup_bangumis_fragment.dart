@@ -11,6 +11,7 @@ import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
+import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -38,22 +39,20 @@ class SubgroupBangumisFragment extends StatelessWidget {
           final model = Provider.of<BangumiModel>(context, listen: false);
           final subgroupBangumi =
               model.bangumiDetail!.subgroupBangumis[dataId]!;
-          return NotificationListener(
-            onNotification: (notification) {
-              if (notification is OverscrollIndicatorNotification) {
-                notification.disallowIndicator();
-              } else if (notification is ScrollUpdateNotification) {
-                if (notification.depth == 0) {
-                  final double offset = notification.metrics.pixels;
-                  model.hasScrolled = offset > 0.0;
-                }
-              }
-              return true;
-            },
-            child: Column(
-              children: [
+          return SmartRefresher(
+            controller: bangumiModel.subgroupRefreshController,
+            enablePullDown: false,
+            enablePullUp: true,
+            onLoading: () => bangumiModel.loadSubgroupList(dataId),
+            footer: Indicator.footer(
+              context,
+              theme.secondary,
+              bottom: 16.0,
+            ),
+            child: CustomScrollView(
+              controller: ModalScrollController.of(context),
+              slivers: [
                 _buildHeader(
-                  context,
                   theme,
                   subgroupBangumi,
                 ),
@@ -75,46 +74,32 @@ class SubgroupBangumisFragment extends StatelessWidget {
     final ThemeData theme,
     final SubgroupBangumi subgroupBangumi,
   ) {
-    return Expanded(
-      child: Selector<BangumiModel, List<RecordItem>>(
+    return SliverPadding(
+      padding: edgeH16V8,
+      sliver: Selector<BangumiModel, List<RecordItem>>(
         selector: (_, model) => subgroupBangumi.records,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, records, __) {
-          return SmartRefresher(
-            controller: bangumiModel.subgroupRefreshController,
-            enablePullDown: false,
-            enablePullUp: true,
-            onLoading: () => bangumiModel.loadSubgroupList(dataId),
-            footer: Indicator.footer(
-              context,
-              theme.secondary,
-              bottom: 16.0,
-            ),
-            child: WaterfallFlow.builder(
-              padding: edgeH16V8,
-              controller: ModalScrollController.of(context),
-              itemCount: records.length,
-              itemBuilder: (context, ind) {
-                final RecordItem record = records[ind];
-                return SimpleRecordItem(
-                  index: ind,
-                  theme: theme,
-                  record: record,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.recordDetail.name,
-                      arguments: Routes.recordDetail.d(url: record.url),
-                    );
-                  },
-                );
-              },
-              gridDelegate:
-                  const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-                minCrossAxisExtent: 400.0,
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 16.0,
-              ),
+          return SliverWaterfallFlow(
+            delegate: SliverChildBuilderDelegate((context, ind) {
+              final RecordItem record = records[ind];
+              return SimpleRecordItem(
+                index: ind,
+                theme: theme,
+                record: record,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.recordDetail.name,
+                    arguments: Routes.recordDetail.d(url: record.url),
+                  );
+                },
+              );
+            }, childCount: records.length),
+            gridDelegate: const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 400.0,
+              mainAxisSpacing: 16.0,
+              crossAxisSpacing: 16.0,
             ),
           );
         },
@@ -123,74 +108,81 @@ class SubgroupBangumisFragment extends StatelessWidget {
   }
 
   Widget _buildHeader(
-    final BuildContext context,
     final ThemeData theme,
     final SubgroupBangumi subgroupBangumi,
   ) {
-    return Selector<BangumiModel, bool>(
-      selector: (_, model) => model.hasScrolled,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (_, hasScrolled, child) {
-        return AnimatedContainer(
-          padding: edgeVT16R8,
-          decoration: BoxDecoration(
-            color: hasScrolled
-                ? theme.backgroundColor
-                : theme.scaffoldBackgroundColor,
-            borderRadius: scrollHeaderBorderRadius(hasScrolled),
-            boxShadow: scrollHeaderBoxShadow(hasScrolled),
-          ),
-          duration: dur240,
-          child: child,
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return SimpleSliverPinnedHeader(
+      maxExtent: 128.0,
+      minExtent: 56.0,
+      builder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return Row(
+          children: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              color: ic,
+              minWidth: 32.0,
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: circleShape,
+              child: const Icon(
+                FluentIcons.chevron_left_24_regular,
+                size: 16.0,
+              ),
+            ),
+            sizedBoxW12,
+            Expanded(
+              child: Text(
+                subgroupBangumi.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 30.0 - (ratio * 6.0),
+                  fontWeight: FontWeight.bold,
+                  height: 1.25,
+                ),
+              ),
+            ),
+            if (subgroupBangumi.subgroups.isNotEmpty)
+              Tooltip(
+                message: '查看字幕组详情',
+                child: MaterialButton(
+                  onPressed: () {
+                    final List<Subgroup> subgroups = subgroupBangumi.subgroups;
+                    if (subgroups.length == 1) {
+                      final Subgroup subgroup = subgroups[0];
+                      Navigator.pushNamed(
+                        context,
+                        Routes.subgroup.name,
+                        arguments: Routes.subgroup.d(subgroup: subgroup),
+                      );
+                    } else {
+                      _showSubgroupPanel(
+                        context,
+                        subgroups,
+                      );
+                    }
+                  },
+                  color: ic,
+                  minWidth: 32.0,
+                  padding: EdgeInsets.zero,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: circleShape,
+                  child: const Icon(
+                    FluentIcons.shifts_team_24_regular,
+                    size: 16.0,
+                  ),
+                ),
+              ),
+          ],
         );
       },
-      child: Row(
-        children: [
-          MaterialButton(
-            minWidth: 32.0,
-            color: theme.backgroundColor,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: circleShape,
-            padding: EdgeInsets.zero,
-            child: const Icon(
-              FluentIcons.chevron_left_24_regular,
-              size: 16.0,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          sizedBoxW12,
-          Expanded(
-            child: Text(
-              subgroupBangumi.name,
-              style: textStyle24B,
-            ),
-          ),
-          if (subgroupBangumi.subgroups.isNotEmpty)
-            IconButton(
-              padding: EdgeInsets.zero,
-              tooltip: "查看字幕组详情",
-              icon: const Icon(FluentIcons.people_team_24_regular),
-              onPressed: () {
-                final List<Subgroup> subgroups = subgroupBangumi.subgroups;
-                if (subgroups.length == 1) {
-                  final Subgroup subgroup = subgroups[0];
-                  Navigator.pushNamed(
-                    context,
-                    Routes.subgroup.name,
-                    arguments: Routes.subgroup.d(subgroup: subgroup),
-                  );
-                } else {
-                  _showSubgroupPanel(
-                    context,
-                    subgroups,
-                  );
-                }
-              },
-            ),
-        ],
-      ),
     );
   }
 

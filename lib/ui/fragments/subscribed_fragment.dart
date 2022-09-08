@@ -17,9 +17,9 @@ import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
-import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
+import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
+import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -45,102 +45,82 @@ class SubscribedFragment extends StatelessWidget {
   ) {
     final subscribedModel =
         Provider.of<SubscribedModel>(context, listen: false);
-    return NotificationListener(
-      onNotification: (notification) {
-        if (notification is OverscrollIndicatorNotification) {
-          notification.disallowIndicator();
-        } else if (notification is ScrollUpdateNotification) {
-          if (notification.depth == 0) {
-            final double offset = notification.metrics.pixels;
-            subscribedModel.hasScrolled = offset > 0.0;
-          }
-        }
-        return true;
-      },
-      child: SmartRefresher(
-        header: WaterDropMaterialHeader(
-          backgroundColor: theme.secondary,
-          color: theme.secondary.isDark ? Colors.white : Colors.black,
-          distance: Screen.statusBarHeight + 42.0,
-        ),
-        controller: subscribedModel.refreshController,
-        enablePullDown: true,
-        enablePullUp: false,
-        onRefresh: subscribedModel.refresh,
-        child: CustomScrollView(
-          slivers: [
-            _buildHeader(theme),
-            MultiSliver(
-              pushPinnedChildren: true,
-              children: [
-                _buildRssSection(context, theme),
-                _buildRssList(theme, subscribedModel),
-              ],
-            ),
-            MultiSliver(
-              pushPinnedChildren: true,
-              children: [
-                _buildSeasonRssSection(theme, subscribedModel),
-                _buildSeasonRssList(theme, subscribedModel),
-              ],
-            ),
-            MultiSliver(
-              pushPinnedChildren: true,
-              children: [
-                _buildRssRecordsSection(context, theme),
-                _buildRssRecordsList(theme),
-              ],
-            ),
-            _buildSeeMore(theme, subscribedModel),
-            sliverSizedBoxH80,
-          ],
-        ),
+    return SmartRefresher(
+      header: WaterDropMaterialHeader(
+        backgroundColor: theme.secondary,
+        color: theme.secondary.isDark ? Colors.white : Colors.black,
+        distance: Screen.statusBarHeight + 42.0,
+      ),
+      controller: subscribedModel.refreshController,
+      enablePullDown: true,
+      enablePullUp: false,
+      onRefresh: subscribedModel.refresh,
+      child: CustomScrollView(
+        slivers: [
+          _buildHeader(theme),
+          MultiSliver(
+            pushPinnedChildren: true,
+            children: [
+              _buildRssSection(context, theme),
+              _buildRssList(theme, subscribedModel),
+            ],
+          ),
+          MultiSliver(
+            pushPinnedChildren: true,
+            children: [
+              _buildSeasonRssSection(theme, subscribedModel),
+              _buildSeasonRssList(theme, subscribedModel),
+            ],
+          ),
+          MultiSliver(
+            pushPinnedChildren: true,
+            children: [
+              _buildRssRecordsSection(context, theme),
+              _buildRssRecordsList(theme),
+            ],
+          ),
+          _buildSeeMore(theme, subscribedModel),
+          sliverSizedBoxH80,
+        ],
       ),
     );
   }
 
   Widget _buildHeader(final ThemeData theme) {
-    return Selector<SubscribedModel, bool>(
-      selector: (_, model) => model.hasScrolled,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (context, hasScrolled, __) {
-        return SliverPinnedToBoxAdapter(
-          child: AnimatedContainer(
-            decoration: BoxDecoration(
-              color: hasScrolled
-                  ? theme.backgroundColor
-                  : theme.scaffoldBackgroundColor,
-              borderRadius: scrollHeaderBorderRadius(hasScrolled),
-              boxShadow: scrollHeaderBoxShadow(hasScrolled),
-            ),
-            padding: edge16WithStatusBar,
-            duration: dur240,
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    "我的订阅",
-                    style: textStyle24B,
-                  ),
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return SimpleSliverPinnedHeader(
+      builder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return Row(
+          children: [
+            Expanded(
+              child: Text(
+                "我的订阅",
+                style: TextStyle(
+                  fontSize: 30.0 - (ratio * 6.0),
+                  fontWeight: FontWeight.bold,
+                  height: 1.25,
                 ),
-                Transform.translate(
-                  offset: const Offset(8.0, 0),
-                  child: IconButton(
-                    onPressed: () {
-                      showCupertinoModalBottomSheet(
-                        context: context,
-                        topRadius: radius16,
-                        builder: (_) {
-                          return const SettingsFragment();
-                        },
-                      );
-                    },
-                    icon: const Icon(FluentIcons.settings_16_regular),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            MaterialButton(
+              onPressed: () {
+                showSettingsPanel(context);
+              },
+              color: ic,
+              minWidth: 32.0,
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: circleShape,
+              child: const Icon(
+                FluentIcons.settings_20_regular,
+                size: 16.0,
+              ),
+            ),
+          ],
         );
       },
     );
@@ -517,7 +497,7 @@ class SubscribedFragment extends StatelessWidget {
                     child: Hero(
                       tag: currFlag,
                       child: ExtendedImage(
-                        image: FastCacheImage(bangumiCover),
+                        image: CacheImageProvider(bangumiCover),
                         fit: BoxFit.cover,
                         loadStateChanged: (state) {
                           switch (state.extendedImageLoadState) {
@@ -669,7 +649,7 @@ class SubscribedFragment extends StatelessWidget {
               minCrossAxisExtent: 400.0,
               crossAxisSpacing: 12.0,
               mainAxisSpacing: 12.0,
-              mainAxisExtent: 170.0,
+              mainAxisExtent: 150.0,
             ),
           );
         },

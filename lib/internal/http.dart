@@ -10,6 +10,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:isolate/isolate_runner.dart';
 import 'package:isolate/load_balancer.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/resolver.dart';
@@ -47,33 +48,33 @@ class MikanTransformer extends DefaultTransformer {
         final Document document = parse(transformResponse);
         switch (func) {
           case MikanFunc.season:
-            return await Resolver.parseSeason(document);
+            return Resolver.parseSeason(document);
           case MikanFunc.day:
-            return await Resolver.parseDay(document);
+            return Resolver.parseDay(document);
           case MikanFunc.search:
-            return await Resolver.parseSearch(document);
+            return Resolver.parseSearch(document);
           case MikanFunc.user:
-            return await Resolver.parseUser(document);
+            return Resolver.parseUser(document);
           case MikanFunc.list:
-            return await Resolver.parseList(document);
+            return Resolver.parseList(document);
           case MikanFunc.index:
-            return await Resolver.parseIndex(document);
+            return Resolver.parseIndex(document);
           case MikanFunc.subgroup:
-            return await Resolver.parseSubgroup(document);
+            return Resolver.parseSubgroup(document);
           case MikanFunc.bangumi:
-            return await Resolver.parseBangumi(document);
+            return Resolver.parseBangumi(document);
           case MikanFunc.bangumiMore:
-            return await Resolver.parseBangumiMore(document);
+            return Resolver.parseBangumiMore(document);
           case MikanFunc.details:
-            return await Resolver.parseRecordDetail(document);
+            return Resolver.parseRecordDetail(document);
           case MikanFunc.subscribedSeason:
-            return await Resolver.parseMySubscribed(document);
+            return Resolver.parseMySubscribed(document);
           case MikanFunc.refreshLoginToken:
-            return await Resolver.parseRefreshLoginToken(document);
+            return Resolver.parseRefreshLoginToken(document);
           case MikanFunc.refreshRegisterToken:
-            return await Resolver.parseRefreshRegisterToken(document);
+            return Resolver.parseRefreshRegisterToken(document);
           case MikanFunc.refreshForgotPasswordToken:
-            return await Resolver.parseRefreshForgotPasswordToken(document);
+            return Resolver.parseRefreshForgotPasswordToken(document);
         }
       }
 
@@ -161,6 +162,7 @@ class _Fetcher {
     sendPort.send(receivePort.sendPort);
     receivePort.listen((final proto) async {
       try {
+        await Jiffy.locale("zh_cn");
         final _Http http = _Fetcher(cookiesDir: proto.cookiesDir)._http;
         Response resp;
         if (proto.method == _RequestMethod.get) {

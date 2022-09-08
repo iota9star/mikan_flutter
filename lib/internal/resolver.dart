@@ -23,7 +23,7 @@ import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 
 class Resolver {
-  static Future<List<BangumiRow>> parseSeason(final Document document) async {
+  static List<BangumiRow> parseSeason(final Document document) {
     final List<Element> rowElements =
         document.querySelectorAll("div.sk-bangumi");
     final List<BangumiRow> list = [];
@@ -97,7 +97,7 @@ class Resolver {
     return list;
   }
 
-  static Future<List<RecordItem>> parseDay(final Document document) async {
+  static List<RecordItem> parseDay(final Document document) {
     final List<Element> elements =
         document.querySelectorAll("#an-list-res .my-rss-item");
     RecordItem record;
@@ -161,7 +161,6 @@ class Resolver {
       temp = ele.querySelector("div.sk-col.pull-right")?.text.trim() ?? "";
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
-        await Jiffy.locale("zh_cn");
         record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
       } else {
         record.publishAt = temp;
@@ -171,7 +170,7 @@ class Resolver {
     return list;
   }
 
-  static Future<User> parseUser(final Document document) async {
+  static User parseUser(final Document document) {
     final String? name =
         document.querySelector("#user-name .text-right")?.text.trim();
     final String? avatar = document
@@ -189,9 +188,9 @@ class Resolver {
     );
   }
 
-  static Future<String?> parseRefreshRegisterToken(
+  static String? parseRefreshRegisterToken(
     final Document document,
-  ) async {
+  ) {
     final String? token = document
         .querySelector("#registerForm input[name=__RequestVerificationToken]")
         ?.attributes["value"]
@@ -199,7 +198,7 @@ class Resolver {
     return token;
   }
 
-  static Future<String?> parseRefreshLoginToken(final Document document) async {
+  static String? parseRefreshLoginToken(final Document document) {
     final String? token = document
         .querySelector("#login input[name=__RequestVerificationToken]")
         ?.attributes["value"]
@@ -207,8 +206,7 @@ class Resolver {
     return token;
   }
 
-  static Future<String?> parseRefreshForgotPasswordToken(
-      final Document document) async {
+  static String? parseRefreshForgotPasswordToken(final Document document) {
     final String? token = document
         .querySelector(
             "#resetpasswordform input[name=__RequestVerificationToken]")
@@ -217,7 +215,7 @@ class Resolver {
     return token;
   }
 
-  static Future<SearchResult> parseSearch(final Document document) async {
+  static SearchResult parseSearch(final Document document) {
     List<Element> eles = document.querySelectorAll(
         "div.leftbar-container .leftbar-item .subgroup-longname");
     final List<Subgroup> subgroups = [];
@@ -278,7 +276,6 @@ class Resolver {
       temp = elements[2].text.trim();
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
-        await Jiffy.locale("zh_cn");
         record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
       } else {
         record.publishAt = temp;
@@ -296,7 +293,7 @@ class Resolver {
     );
   }
 
-  static Future<List<RecordItem>> parseList(final Document document) async {
+  static List<RecordItem> parseList(final Document document) {
     final List<Element> eles =
         document.querySelectorAll("#sk-body > table > tbody > tr");
     final List<RecordItem> records = [];
@@ -316,7 +313,6 @@ class Resolver {
       temp = elements[0].text.trim();
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
-        await Jiffy.locale("zh_cn");
         record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
       } else {
         record.publishAt = temp;
@@ -388,12 +384,12 @@ class Resolver {
     return records;
   }
 
-  static Future<Index> parseIndex(final Document document) async {
-    final List<BangumiRow> bangumiRows = await parseSeason(document);
-    final List<RecordItem> rss = await parseDay(document);
-    final List<Carousel> carousels = await parseCarousel(document);
-    final List<YearSeason> years = await parseYearSeason(document);
-    final User user = await parseUser(document);
+  static Index parseIndex(final Document document) {
+    final List<BangumiRow> bangumiRows = parseSeason(document);
+    final List<RecordItem> rss = parseDay(document);
+    final List<Carousel> carousels = parseCarousel(document);
+    final List<YearSeason> years = parseYearSeason(document);
+    final User user = parseUser(document);
     final Map<String, List<RecordItem>> groupedRss =
         groupBy(rss, (it) => it.id!);
     return Index(
@@ -405,7 +401,7 @@ class Resolver {
     );
   }
 
-  static Future<List<Carousel>> parseCarousel(final Document document) async {
+  static List<Carousel> parseCarousel(final Document document) {
     final List<Element> eles = document.querySelectorAll(
         "#myCarousel > div.carousel-inner > div.item.carousel-bg");
     final List<Carousel> carousels = [];
@@ -423,8 +419,7 @@ class Resolver {
     return carousels;
   }
 
-  static Future<List<YearSeason>> parseYearSeason(
-      final Document document) async {
+  static List<YearSeason> parseYearSeason(final Document document) {
     final List<Element> eles = document.querySelectorAll(
         "#sk-data-nav > div > ul.navbar-nav.date-select > li > ul > li");
     final String? selected = document
@@ -457,9 +452,9 @@ class Resolver {
     return yearSeasons;
   }
 
-  static Future<List<SeasonGallery>> parseSubgroup(
+  static List<SeasonGallery> parseSubgroup(
     final Document document,
-  ) async {
+  ) {
     final List<Element> eles = document.querySelectorAll(
         "#js-sort-wrapper > div.pubgroup-timeline-item[data-index]");
     List<SeasonGallery> list = [];
@@ -509,7 +504,7 @@ class Resolver {
     return list;
   }
 
-  static Future<BangumiDetail> parseBangumi(final Document document) async {
+  static BangumiDetail parseBangumi(final Document document) {
     final BangumiDetail detail = BangumiDetail();
     detail.id = document
             .querySelector("#sk-container "
@@ -645,7 +640,6 @@ class Resolver {
           temp = ele.children[2].text.trim();
           if (temp.isNotBlank &&
               RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
-            await Jiffy.locale("zh_cn");
             record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
           } else {
             record.publishAt = temp;
@@ -661,7 +655,7 @@ class Resolver {
     return detail;
   }
 
-  static Future<RecordDetail> parseRecordDetail(final Document document) async {
+  static RecordDetail parseRecordDetail(final Document document) {
     final RecordDetail recordDetail = RecordDetail();
     recordDetail.id = document
             .querySelector(
@@ -742,9 +736,9 @@ class Resolver {
     return recordDetail;
   }
 
-  static Future<List<RecordItem>> parseBangumiMore(
+  static List<RecordItem> parseBangumiMore(
     final Document document,
-  ) async {
+  ) {
     final elements = document.querySelectorAll("tbody > tr");
     RecordItem record;
     Element element;
@@ -777,7 +771,6 @@ class Resolver {
       temp = ele.children[2].text.trim();
       if (temp.isNotBlank &&
           RegExp(r"^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$").hasMatch(temp)) {
-        await Jiffy.locale("zh_cn");
         record.publishAt = Jiffy(temp, "yyyy/MM/dd HH:mm").yMMMEdjm;
       } else {
         record.publishAt = temp;
@@ -789,9 +782,9 @@ class Resolver {
     return records;
   }
 
-  static Future<List<Bangumi>> parseMySubscribed(
+  static List<Bangumi> parseMySubscribed(
     final Document document,
-  ) async {
+  ) {
     final List<Element> elements = document.querySelectorAll("li");
     Bangumi bangumi;
     Map<dynamic, String> attributes;
