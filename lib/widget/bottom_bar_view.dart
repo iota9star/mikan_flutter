@@ -60,17 +60,18 @@ class BottomBarViewState extends State<BottomBarView>
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(99999999.0),
+      borderRadius: BorderRadius.circular(widget.height),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
           height: widget.height,
+          padding: const EdgeInsets.symmetric(horizontal: 48.0),
           decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor.withOpacity(0.8),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: _buildBarItems(),
           ),

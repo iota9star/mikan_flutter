@@ -56,7 +56,7 @@ class SubscribedFragment extends StatelessWidget {
       onRefresh: subscribedModel.refresh,
       child: CustomScrollView(
         slivers: [
-          _buildHeader(theme),
+          _buildHeader(),
           MultiSliver(
             pushPinnedChildren: true,
             children: [
@@ -85,44 +85,8 @@ class SubscribedFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final ThemeData theme) {
-    final it = ColorTween(
-      begin: theme.backgroundColor,
-      end: theme.scaffoldBackgroundColor,
-    );
-    return SimpleSliverPinnedHeader(
-      builder: (context, ratio) {
-        final ic = it.transform(ratio);
-        return Row(
-          children: [
-            Expanded(
-              child: Text(
-                "我的订阅",
-                style: TextStyle(
-                  fontSize: 30.0 - (ratio * 6.0),
-                  fontWeight: FontWeight.bold,
-                  height: 1.25,
-                ),
-              ),
-            ),
-            MaterialButton(
-              onPressed: () {
-                showSettingsPanel(context);
-              },
-              color: ic,
-              minWidth: 32.0,
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: circleShape,
-              child: const Icon(
-                FluentIcons.settings_20_regular,
-                size: 16.0,
-              ),
-            ),
-          ],
-        );
-      },
-    );
+  Widget _buildHeader() {
+    return const _PinedHeader();
   }
 
   Widget _buildSeasonRssList(
@@ -684,6 +648,56 @@ class SubscribedFragment extends StatelessWidget {
       },
       shouldRebuild: (pre, next) => pre != next,
       selector: (_, model) => model.records?.length ?? 0,
+    );
+  }
+}
+
+class _PinedHeader extends StatelessWidget {
+  const _PinedHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return StackSliverPinnedHeader(
+      childrenBuilder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return [
+          Positioned(
+            right: 0,
+            top: 12.0 + Screen.statusBarHeight,
+            child: MaterialButton(
+              onPressed: () {
+                showSettingsPanel(context);
+              },
+              color: ic,
+              minWidth: 32.0,
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: circleShape,
+              child: const Icon(
+                FluentIcons.settings_20_regular,
+                size: 16.0,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 78 * (1 - ratio) + 16 + Screen.statusBarHeight,
+            left: 0,
+            child: Text(
+              "我的订阅",
+              style: TextStyle(
+                fontSize: 30.0 - (ratio * 6.0),
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
+            ),
+          ),
+        ];
+      },
     );
   }
 }

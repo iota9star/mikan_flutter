@@ -96,7 +96,8 @@ class SubgroupBangumisFragment extends StatelessWidget {
                 },
               );
             }, childCount: records.length),
-            gridDelegate: const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+            gridDelegate:
+                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
               mainAxisSpacing: 16.0,
               crossAxisSpacing: 16.0,
@@ -115,14 +116,17 @@ class SubgroupBangumisFragment extends StatelessWidget {
       begin: theme.backgroundColor,
       end: theme.scaffoldBackgroundColor,
     );
-    return SimpleSliverPinnedHeader(
-      maxExtent: 128.0,
-      minExtent: 56.0,
-      builder: (context, ratio) {
+    return StackSliverPinnedHeader(
+      maxExtent: 136.0,
+      minExtent: 60.0,
+      childrenBuilder: (context, ratio) {
         final ic = it.transform(ratio);
-        return Row(
-          children: [
-            MaterialButton(
+        final titleRight = ratio * 44;
+        return [
+          Positioned(
+            left: 0,
+            top: 12.0,
+            child: MaterialButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -136,21 +140,12 @@ class SubgroupBangumisFragment extends StatelessWidget {
                 size: 16.0,
               ),
             ),
-            sizedBoxW12,
-            Expanded(
-              child: Text(
-                subgroupBangumi.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 30.0 - (ratio * 6.0),
-                  fontWeight: FontWeight.bold,
-                  height: 1.25,
-                ),
-              ),
-            ),
-            if (subgroupBangumi.subgroups.isNotEmpty)
-              Tooltip(
+          ),
+          if (subgroupBangumi.subgroups.isNotEmpty)
+            Positioned(
+              right: 0,
+              top: 12.0,
+              child: Tooltip(
                 message: '查看字幕组详情',
                 child: MaterialButton(
                   onPressed: () {
@@ -180,8 +175,23 @@ class SubgroupBangumisFragment extends StatelessWidget {
                   ),
                 ),
               ),
-          ],
-        );
+            ),
+          Positioned(
+            top: 78 * (1 - ratio) + 16,
+            left: titleRight,
+            right: titleRight,
+            child: Text(
+              subgroupBangumi.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 30.0 - (ratio * 6.0),
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
+            ),
+          ),
+        ];
       },
     );
   }

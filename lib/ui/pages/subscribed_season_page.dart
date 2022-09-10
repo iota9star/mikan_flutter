@@ -91,7 +91,7 @@ class SubscribedSeasonPage extends StatelessWidget {
   ) {
     return CustomScrollView(
       slivers: [
-        _buildHeader(theme),
+        _buildHeader(),
         if (galleries.isSafeNotEmpty)
           ...List.generate(
             galleries.length,
@@ -207,45 +207,7 @@ class SubscribedSeasonPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final ThemeData theme) {
-    final it = ColorTween(
-      begin: theme.backgroundColor,
-      end: theme.scaffoldBackgroundColor,
-    );
-    return SimpleSliverPinnedHeader(
-      builder: (
-        context,
-        ratio,
-      ) {
-        final ic = it.transform(ratio);
-        return Row(
-          children: <Widget>[
-            MaterialButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              color: ic,
-              minWidth: 32.0,
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: circleShape,
-              child: const Icon(
-                FluentIcons.chevron_left_24_regular,
-                size: 16.0,
-              ),
-            ),
-            sizedBoxW12,
-            Text(
-              "季度订阅",
-              style: TextStyle(
-                fontSize: 30.0 - (ratio * 6.0),
-                fontWeight: FontWeight.bold,
-                height: 1.25,
-              ),
-            ),
-          ],
-        );
-      },
-    );
+  Widget _buildHeader() {
+    return const SliverPinnedTitleHeader(title: "季度订阅");
   }
 }

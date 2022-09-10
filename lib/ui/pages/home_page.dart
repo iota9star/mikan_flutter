@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
                 builder: (_, selectIndex, __) {
                   return Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 560.0),
+                      constraints: const BoxConstraints(maxWidth: 320.0),
                       child: BottomBarView(
                         items: [
                           BarItem(

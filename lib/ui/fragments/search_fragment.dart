@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -47,7 +45,7 @@ class SearchFragment extends StatelessWidget {
     return CustomScrollView(
       controller: ModalScrollController.of(context),
       slivers: [
-        _buildHeader(context, theme, searchModel),
+        _buildHeader(theme, searchModel),
         _buildSearchHistory(theme, searchModel),
         _buildSubgroupSection(theme),
         _buildSubgroupList(theme, searchModel),
@@ -313,104 +311,57 @@ class SearchFragment extends StatelessWidget {
   }
 
   Widget _buildHeader(
-    final BuildContext context,
     final ThemeData theme,
     final SearchModel searchModel,
   ) {
-    final theme = Theme.of(context);
-    final bgcTween = ColorTween(
-      begin: theme.scaffoldBackgroundColor,
-      end: theme.backgroundColor,
-    );
     final it = ColorTween(
       begin: theme.backgroundColor,
       end: theme.scaffoldBackgroundColor,
     );
-    const maxHeight = 200.0;
-    const minHeight = 120.0;
-    const offsetHeight = maxHeight - minHeight;
-    return SliverPersistentHeader(
-      delegate: SimpleSliverPersistentHeaderDelegate(
-        maxExtent: maxHeight,
-        minExtent: minHeight,
-        onBuild: (
-          BuildContext context,
-          double shrinkOffset,
-          bool overlapsContent,
-        ) {
-          final ratio = math.min(shrinkOffset / offsetHeight, 1.0);
-          final bgc = bgcTween.transform(ratio);
-          final ic = it.transform(ratio);
-          final radius = Radius.circular(16.0 * ratio);
-          final shadowRadius = 3.0 * ratio;
-          return Container(
-            decoration: BoxDecoration(
-              color: bgc,
-              borderRadius: BorderRadius.only(
-                bottomLeft: radius,
-                bottomRight: radius,
+    return StackSliverPinnedHeader(
+      maxExtent: 200.0,
+      minExtent: 120.0,
+      childrenBuilder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return [
+          Positioned(
+            left: 0,
+            top: 12.0,
+            child: MaterialButton(
+              minWidth: 32.0,
+              color: ic,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: circleShape,
+              padding: EdgeInsets.zero,
+              child: const Icon(
+                FluentIcons.chevron_left_24_regular,
+                size: 16.0,
               ),
-              boxShadow: ratio == 0
-                  ? null
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: const Offset(0, 1),
-                        blurRadius: shadowRadius,
-                        spreadRadius: shadowRadius,
-                      ),
-                    ],
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: 10.0,
+          ),
+          Positioned(
+            top: 78 * (1 - ratio) + 16,
+            left: ratio * 44,
+            child: Text(
+              "搜索",
+              style: TextStyle(
+                fontSize: 30.0 - (ratio * 6.0),
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
             ),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Positioned(
-                  left: 0,
-                  top: 12.0,
-                  child: MaterialButton(
-                    minWidth: 32.0,
-                    color: ic,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    shape: circleShape,
-                    padding: EdgeInsets.zero,
-                    child: const Icon(
-                      FluentIcons.chevron_left_24_regular,
-                      size: 16.0,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                Positioned(
-                  top: 78 * (1 - ratio) + 16,
-                  left: ratio * 44,
-                  child: Text(
-                    "搜索",
-                    style: TextStyle(
-                      fontSize: 30.0 - (ratio * 6.0),
-                      fontWeight: FontWeight.bold,
-                      height: 1.25,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: _buildHeaderSearchField(theme, searchModel),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      pinned: true,
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: _buildHeaderSearchField(theme, searchModel),
+          ),
+        ];
+      },
     );
   }
 

@@ -53,7 +53,7 @@ class SelectSeasonFragment extends StatelessWidget {
             const Expanded(
               child: Text(
                 "年度番组",
-                style: textStyle20B,
+                style: textStyle24B,
               ),
             ),
             MaterialButton(

@@ -63,7 +63,7 @@ class _IndexFragmentState extends State<IndexFragment> {
             onRefresh: indexModel.refresh,
             child: CustomScrollView(
               slivers: [
-                _buildHeader(theme),
+                _buildHeader(),
                 _buildCarousels(theme),
                 ...List.generate(
                   bangumiRows.length,
@@ -238,133 +238,8 @@ class _IndexFragmentState extends State<IndexFragment> {
     );
   }
 
-  Widget _buildHeader(final ThemeData theme) {
-    final it = ColorTween(
-      begin: theme.backgroundColor,
-      end: theme.scaffoldBackgroundColor,
-    );
-    return SimpleSliverPinnedHeader(
-      builder: (context, ratio) {
-        final ic = it.transform(ratio);
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Selector<IndexModel, User?>(
-                    selector: (_, model) => model.user,
-                    shouldRebuild: (pre, next) => pre != next,
-                    builder: (_, user, __) {
-                      final withoutName =
-                          user == null || user.name.isNullOrBlank;
-                      return Text(
-                        withoutName ? "Mikan Project" : "Hi, ${user.name}",
-                        style: textStyle14B500,
-                      );
-                    },
-                  ),
-                  Row(
-                    children: [
-                      Selector<IndexModel, Season?>(
-                        selector: (_, model) => model.selectedSeason,
-                        shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, season, __) {
-                          return season == null
-                              ? sizedBox
-                              : Text(
-                                  season.title,
-                                  style: TextStyle(
-                                    fontSize: 30.0 - (ratio * 6.0),
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.25,
-                                  ),
-                                );
-                        },
-                      ),
-                      sizedBoxW8,
-                      MaterialButton(
-                        onPressed: () {
-                          showYearSeasonBottomSheet(context);
-                        },
-                        minWidth: 28.0,
-                        height: 28.0,
-                        color: ic,
-                        padding: EdgeInsets.zero,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: circleShape,
-                        child: const Icon(
-                          FluentIcons.chevron_down_24_regular,
-                          size: 14.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            MaterialButton(
-              onPressed: () {
-                showSearchPanel(context);
-              },
-              minWidth: 48.0,
-              padding: edge8,
-              shape: circleShape,
-              child: const Icon(FluentIcons.search_24_regular),
-            ),
-            MaterialButton(
-              onPressed: () {
-                showSettingsPanel(context);
-              },
-              minWidth: 48.0,
-              padding: edge8,
-              shape: circleShape,
-              child: _buildAvatar(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildAvatar() {
-    return Selector<IndexModel, User?>(
-      selector: (_, model) => model.user,
-      shouldRebuild: (pre, next) => pre != next,
-      builder: (_, user, __) {
-        return user?.hasLogin == true
-            ? ClipOval(
-                child: Image(
-                  image: CacheImageProvider(user!.avatar ?? ""),
-                  width: 36.0,
-                  height: 36.0,
-                  loadingBuilder: (_, child, event) {
-                    return event == null
-                        ? child
-                        : Image.asset(
-                            "assets/mikan.png",
-                            width: 36.0,
-                            height: 36.0,
-                          );
-                  },
-                  errorBuilder: (_, __, ___) {
-                    return Image.asset(
-                      "assets/mikan.png",
-                      width: 36.0,
-                      height: 36.0,
-                    );
-                  },
-                ),
-              )
-            : Image.asset(
-                "assets/mikan.png",
-                width: 36.0,
-                height: 36.0,
-              );
-      },
-    );
+  Widget _buildHeader() {
+    return const _PinedHeader();
   }
 
   Widget _buildOVA(final ThemeData theme) {
@@ -475,4 +350,146 @@ void showYearSeasonBottomSheet(final BuildContext context) {
       return const SelectSeasonFragment();
     },
   );
+}
+
+class _PinedHeader extends StatelessWidget {
+  const _PinedHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return StackSliverPinnedHeader(
+      minExtent: Screen.statusBarHeight + 76,
+      childrenBuilder: (context, ratio) {
+        final ic = it.transform(ratio);
+        return [
+          Positioned(
+            top: 52 * (1 - ratio) + 16 + Screen.statusBarHeight,
+            left: 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Selector<IndexModel, User?>(
+                  selector: (_, model) => model.user,
+                  shouldRebuild: (pre, next) => pre != next,
+                  builder: (_, user, __) {
+                    final withoutName = user == null || user.name.isNullOrBlank;
+                    return Text(
+                      withoutName ? "Mikan Project" : "Hi, ${user.name}",
+                      style: textStyle14B500,
+                    );
+                  },
+                ),
+                Row(
+                  children: [
+                    Selector<IndexModel, Season?>(
+                      selector: (_, model) => model.selectedSeason,
+                      shouldRebuild: (pre, next) => pre != next,
+                      builder: (_, season, __) {
+                        return season == null
+                            ? sizedBox
+                            : Text(
+                                season.title,
+                                style: TextStyle(
+                                  fontSize: 30.0 - (ratio * 6.0),
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.25,
+                                ),
+                              );
+                      },
+                    ),
+                    sizedBoxW8,
+                    MaterialButton(
+                      onPressed: () {
+                        showYearSeasonBottomSheet(context);
+                      },
+                      minWidth: 28.0,
+                      height: 28.0,
+                      color: ic,
+                      padding: EdgeInsets.zero,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: circleShape,
+                      child: const Icon(
+                        FluentIcons.chevron_down_24_regular,
+                        size: 14.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 12.0 + Screen.statusBarHeight,
+            child: Row(
+              children: [
+                MaterialButton(
+                  onPressed: () {
+                    showSearchPanel(context);
+                  },
+                  minWidth: 48.0,
+                  padding: edge8,
+                  shape: circleShape,
+                  child: const Icon(FluentIcons.search_24_regular),
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    showSettingsPanel(context);
+                  },
+                  minWidth: 48.0,
+                  padding: edge8,
+                  shape: circleShape,
+                  child: _buildAvatar(),
+                ),
+              ],
+            ),
+          ),
+        ];
+      },
+    );
+  }
+
+  Widget _buildAvatar() {
+    return Selector<IndexModel, User?>(
+      selector: (_, model) => model.user,
+      shouldRebuild: (pre, next) => pre != next,
+      builder: (_, user, __) {
+        return user?.hasLogin == true
+            ? ClipOval(
+                child: Image(
+                  image: CacheImageProvider(user!.avatar ?? ""),
+                  width: 36.0,
+                  height: 36.0,
+                  loadingBuilder: (_, child, event) {
+                    return event == null
+                        ? child
+                        : Image.asset(
+                            "assets/mikan.png",
+                            width: 36.0,
+                            height: 36.0,
+                          );
+                  },
+                  errorBuilder: (_, __, ___) {
+                    return Image.asset(
+                      "assets/mikan.png",
+                      width: 36.0,
+                      height: 36.0,
+                    );
+                  },
+                ),
+              )
+            : Image.asset(
+                "assets/mikan.png",
+                width: 36.0,
+                height: 36.0,
+              );
+      },
+    );
+  }
 }

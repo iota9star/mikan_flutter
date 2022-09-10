@@ -42,7 +42,7 @@ class ListFragment extends StatelessWidget {
         onLoading: model.loadMore,
         child: CustomScrollView(
           slivers: [
-            _buildHeader(theme),
+            _buildHeader(),
             _buildList(theme, model),
           ],
         ),
@@ -92,27 +92,29 @@ class ListFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final ThemeData theme) {
+  Widget _buildHeader() {
+    return const _PinedHeader();
+  }
+}
+
+class _PinedHeader extends StatelessWidget {
+  const _PinedHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final it = ColorTween(
       begin: theme.backgroundColor,
       end: theme.scaffoldBackgroundColor,
     );
-    return SimpleSliverPinnedHeader(
-      builder: (context, ratio) {
+    return StackSliverPinnedHeader(
+      childrenBuilder: (context, ratio) {
         final ic = it.transform(ratio);
-        return Row(
-          children: [
-            Expanded(
-              child: Text(
-                "最新发布",
-                style: TextStyle(
-                  fontSize: 30.0 - (ratio * 6.0),
-                  fontWeight: FontWeight.bold,
-                  height: 1.25,
-                ),
-              ),
-            ),
-            MaterialButton(
+        return [
+          Positioned(
+            right: 0,
+            top: 12.0 + Screen.statusBarHeight,
+            child: MaterialButton(
               onPressed: () {
                 showSearchPanel(context);
               },
@@ -126,8 +128,20 @@ class ListFragment extends StatelessWidget {
                 size: 16.0,
               ),
             ),
-          ],
-        );
+          ),
+          Positioned(
+            top: 78 * (1 - ratio) + 16 + Screen.statusBarHeight,
+            left: 0,
+            child: Text(
+              "最新发布",
+              style: TextStyle(
+                fontSize: 30.0 - (ratio * 6.0),
+                fontWeight: FontWeight.bold,
+                height: 1.25,
+              ),
+            ),
+          ),
+        ];
       },
     );
   }

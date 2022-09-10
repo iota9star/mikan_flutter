@@ -1,6 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
@@ -80,7 +79,7 @@ class SeasonListPage extends StatelessWidget {
   ) {
     return CustomScrollView(
       slivers: [
-        _buildHeader(theme),
+        _buildHeader(),
         ...List.generate(seasons.length, (index) {
           final SeasonBangumis seasonBangumis = seasons[index];
           final String seasonTitle = seasonBangumis.season.title;
@@ -197,44 +196,7 @@ class SeasonListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(final ThemeData theme) {
-    final it = ColorTween(
-      begin: theme.backgroundColor,
-      end: theme.scaffoldBackgroundColor,
-    );
-    return SimpleSliverPinnedHeader(
-      builder: (context, ratio) {
-        final ic = it.transform(ratio);
-        return Row(
-          children: <Widget>[
-            MaterialButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              minWidth: 32.0,
-              padding: EdgeInsets.zero,
-              shape: circleShape,
-              color: ic,
-              child: const Icon(
-                FluentIcons.chevron_left_24_regular,
-                size: 16.0,
-              ),
-            ),
-            sizedBoxW12,
-            Expanded(
-              child: Text(
-                "季度番组",
-                style: TextStyle(
-                  fontSize: 30.0 - (ratio * 6.0),
-                  fontWeight: FontWeight.bold,
-                  height: 1.25,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+  Widget _buildHeader() {
+    return const SliverPinnedTitleHeader(title: "季度番组");
   }
 }
