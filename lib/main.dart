@@ -9,7 +9,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
@@ -33,7 +32,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'firebase_options.dart';
 
-main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _initDependencies();
   runApp(const MikanApp());
@@ -127,13 +126,7 @@ class MikanApp extends StatelessWidget {
         ],
         child: Consumer<ThemeModel>(
           builder: (context, themeModel, _) {
-            final firebaseModel = isSupportFirebase
-                ? Provider.of<FirebaseModel>(
-                    context,
-                    listen: false,
-                  )
-                : null;
-            return _buildMaterialApp(themeModel, firebaseModel);
+            return _buildMaterialApp(context, themeModel);
           },
         ),
       ),
@@ -163,8 +156,8 @@ class MikanApp extends StatelessWidget {
   }
 
   Widget _buildMaterialApp(
+    final BuildContext context,
     final ThemeModel themeModel,
-    final FirebaseModel? firebaseModel,
   ) {
     final ThemeData theme = themeModel.theme(darkTheme: !isMobile);
     return Theme(
@@ -187,61 +180,12 @@ class MikanApp extends StatelessWidget {
             );
           },
           navigatorKey: navKey,
-          // builder: (_, child) {
-          //   if (!isMobile) {
-          //     child = Material(
-          //       child: Column(
-          //         children: [
-          //           Container(
-          //             height: 36.0,
-          //             padding: const EdgeInsets.only(
-          //               left: 16.0,
-          //               right: 12.0,
-          //             ),
-          //             decoration: BoxDecoration(
-          //               gradient: LinearGradient(
-          //                 colors: [
-          //                   theme.backgroundColor.withOpacity(0.87),
-          //                   theme.backgroundColor,
-          //                 ],
-          //                 begin: Alignment.topCenter,
-          //                 end: Alignment.bottomCenter,
-          //               ),
-          //             ),
-          //             child: Row(
-          //               mainAxisSize: MainAxisSize.max,
-          //               children: [
-          //                 ExtendedImage.asset(
-          //                   "assets/mikan.png",
-          //                   height: 24.0,
-          //                   width: 24.0,
-          //                   cacheHeight:
-          //                       (Screen.devicePixelRatio * 24.0).toInt(),
-          //                   cacheWidth:
-          //                       (Screen.devicePixelRatio * 24.0).toInt(),
-          //                 ),
-          //                 sizedBoxW8,
-          //                 const Text(
-          //                   "蜜柑计划",
-          //                   style: textStyle16B,
-          //                 ),
-          //                 Expanded(child: MoveWindow()),
-          //                 ...List.generate(
-          //                   controlButtonColors.length,
-          //                   (index) => controlButton(index),
-          //                 ),
-          //               ],
-          //             ),
-          //           ),
-          //           Expanded(child: child!)
-          //         ],
-          //       ),
-          //     );
-          //   }
-          //   return child!;
-          // },
           navigatorObservers: [
-            if (isSupportFirebase) firebaseModel!.observer,
+            if (isSupportFirebase)
+              Provider.of<FirebaseModel>(
+                context,
+                listen: false,
+              ).observer,
             FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
               //you can track page here
               final RouteSettings? oldSettings = oldRoute?.settings;

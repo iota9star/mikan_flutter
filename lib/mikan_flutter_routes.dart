@@ -16,6 +16,7 @@ const List<String> routeNames = <String>[
   'forget-password',
   'home',
   'license',
+  'license-detail',
   'login',
   'recent-subscribed',
   'record-detail',
@@ -73,6 +74,17 @@ class Routes {
   ///
   /// LicenseList : [Key? key]
   static const _License license = _License();
+
+  /// '/license/detail'
+  ///
+  /// [name] : 'license-detail'
+  ///
+  /// [routeName] : '/license/detail'
+  ///
+  /// [constructors] :
+  ///
+  /// LicenseDetail : [Key? key, String(required) packageName, List<LicenseEntry>(required) licenseEntries]
+  static const _LicenseDetail licenseDetail = _LicenseDetail();
 
   /// '/login'
   ///
@@ -238,6 +250,26 @@ class _License {
   }) =>
       <String, dynamic>{
         'key': key,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _LicenseDetail {
+  const _LicenseDetail();
+
+  String get name => 'license-detail';
+
+  Map<String, dynamic> d({
+    Key? key,
+    required String packageName,
+    required List<LicenseEntry> licenseEntries,
+  }) =>
+      <String, dynamic>{
+        'key': key,
+        'packageName': packageName,
+        'licenseEntries': licenseEntries,
       };
 
   @override

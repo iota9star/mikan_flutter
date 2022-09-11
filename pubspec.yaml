@@ -1,7 +1,7 @@
 name: mikan_flutter
 description: mikanani.me
 
-version: 1.0.0-RC31+53
+version: 1.0.0-RC32+54
 
 publish_to: none
 
@@ -69,6 +69,18 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+  fonts:
+    - family: mono
+      fonts:
+        - asset: assets/fonts/mono/JetBrainsMono-Regular.ttf
+        - asset: assets/fonts/mono/JetBrainsMono-Italic.ttf
+        - asset: assets/fonts/mono/JetBrainsMono-Medium.ttf
+        - asset: assets/fonts/mono/JetBrainsMono-Medium-Italic.ttf
+        - asset: assets/fonts/mono/JetBrainsMono-Bold.ttf
+        - asset: assets/fonts/mono/JetBrainsMono-Bold-Italic.ttf
+        - asset: assets/fonts/mono/JetBrainsMono-ExtraBold.ttf
+        - asset: assets/fonts/mono/JetBrainsMono-ExtraBold-Italic.ttf
+
 
 icons_launcher:
   image_path: 'assets/mikan.png'

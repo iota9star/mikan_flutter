@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/model/bangumi_row.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
@@ -53,7 +52,6 @@ class _BangumiCoverScrollListFragmentState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final model = Provider.of<IndexModel>(context, listen: false);
     return Container(
       foregroundDecoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -70,15 +68,13 @@ class _BangumiCoverScrollListFragmentState
           colors: [Colors.transparent, theme.backgroundColor],
         ),
       ),
-      child: model.bangumiRows.isEmpty
-          ? Selector<IndexModel, List<BangumiRow>>(
-              selector: (_, model) => model.bangumiRows,
-              shouldRebuild: (pre, next) => pre.ne(next),
-              builder: (_, bangumiRows, __) {
-                return _buildList(bangumiRows);
-              },
-            )
-          : _buildList(model.bangumiRows),
+      child: Selector<IndexModel, List<BangumiRow>>(
+        selector: (_, model) => model.bangumiRows,
+        shouldRebuild: (pre, next) => pre.length != next.length,
+        builder: (_, bangumiRows, __) {
+          return _buildList(bangumiRows);
+        },
+      ),
     );
   }
 

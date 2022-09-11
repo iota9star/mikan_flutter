@@ -1,6 +1,4 @@
 import 'dart:math' as math;
-
-
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -256,7 +254,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
           child: _buildBangumiItemError(),
         );
       },
-      frameBuilder: (_,__,___,____){
+      frameBuilder: (_, __, ___, ____) {
         return _buildBackgroundCover(
           bangumi,
           provider,

@@ -45,10 +45,10 @@ class TapScaleContainer extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TapScaleContainerState createState() => _TapScaleContainerState();
+  TapScaleContainerState createState() => TapScaleContainerState();
 }
 
-class _TapScaleContainerState extends State<TapScaleContainer> {
+class TapScaleContainerState extends State<TapScaleContainer> {
   late DateTime _clickTime;
 
   Matrix4 _transform = Matrix4.identity();

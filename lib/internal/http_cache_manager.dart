@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -109,7 +108,7 @@ class HttpCacheManager {
         await _createNewRequest(uri, withBody: false, headers: headers);
 
     final String rawFileKey =
-        cacheKey ?? md5.convert(utf8.encode(url)).toString();
+        cacheKey ?? base64Url.encode(utf8.encode(url)).toString();
     final Directory parentDir = await _getCacheDir(cacheDir);
     final File rawFile = _childFile(parentDir, rawFileKey);
 

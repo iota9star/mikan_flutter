@@ -209,9 +209,15 @@ class SettingsFragment extends StatelessWidget {
           padding: edgeH16,
           shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
           height: 48.0,
-          child: const Text(
-            "开源协议",
-            style: textStyle16B500,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: const [
+              Text(
+                "开源协议",
+                style: textStyle16B500,
+                textAlign: TextAlign.left,
+              ),
+            ],
           ),
         ),
       ),

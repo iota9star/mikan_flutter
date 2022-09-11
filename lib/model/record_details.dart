@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/subgroup.dart';

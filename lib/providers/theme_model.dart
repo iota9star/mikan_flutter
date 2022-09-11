@@ -94,7 +94,7 @@ class ThemeModel extends BaseModel {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          primary: accentColor,
+          foregroundColor: accentColor,
           shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
           minimumSize: const Size(0, 48.0),
         ),

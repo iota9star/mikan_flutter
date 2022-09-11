@@ -4,6 +4,7 @@
 // **************************************************************************
 // ignore_for_file: prefer_const_literals_to_create_immutables,unused_local_variable,unused_import,unnecessary_import
 import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mikan_flutter/model/record_item.dart';
@@ -15,6 +16,7 @@ import 'package:mikan_flutter/model/year_season.dart';
 import 'ui/pages/bangumi_page.dart';
 import 'ui/pages/forgot_password_page.dart';
 import 'ui/pages/home_page.dart';
+import 'ui/pages/license_detail_page.dart';
 import 'ui/pages/license_page.dart';
 import 'ui/pages/login_page.dart';
 import 'ui/pages/recent_subscribed_page.dart';
@@ -86,6 +88,23 @@ FFRouteSettings getRouteSettings({
           ),
         ),
         routeName: '/license',
+      );
+    case 'license-detail':
+      return FFRouteSettings(
+        name: name,
+        arguments: arguments,
+        builder: () => LicenseDetail(
+          key: asT<Key?>(
+            safeArguments['key'],
+          ),
+          packageName: asT<String>(
+            safeArguments['packageName'],
+          )!,
+          licenseEntries: asT<List<LicenseEntry>>(
+            safeArguments['licenseEntries'],
+          )!,
+        ),
+        routeName: '/license/detail',
       );
     case 'login':
       return FFRouteSettings(
