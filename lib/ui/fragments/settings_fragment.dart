@@ -42,7 +42,8 @@ class SettingsFragment extends StatelessWidget {
                 _buildSection("主题"),
                 _buildThemeList(),
                 _buildFontManager(context, theme),
-                _buildSection("更新"),
+                _buildSection("更多"),
+                _buildLicense(context, theme),
                 _buildCheckUpdate(context, theme),
                 sliverSizedBoxH24,
               ],
@@ -193,10 +194,34 @@ class SettingsFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildCheckUpdate(final BuildContext context, ThemeData theme) {
+  Widget _buildLicense(final BuildContext context, ThemeData theme) {
     return SliverToBoxAdapter(
       child: Container(
         margin: edgeH16,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius16,
+          color: theme.backgroundColor,
+        ),
+        child: MaterialButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed(Routes.license.name);
+          },
+          padding: edgeH16,
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
+          height: 48.0,
+          child: const Text(
+            "开源协议",
+            style: textStyle16B500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCheckUpdate(final BuildContext context, ThemeData theme) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: edgeH16T8,
         decoration: BoxDecoration(
           borderRadius: borderRadius16,
           color: theme.backgroundColor,

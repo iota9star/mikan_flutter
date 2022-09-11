@@ -15,6 +15,7 @@ import 'package:mikan_flutter/model/year_season.dart';
 import 'ui/pages/bangumi_page.dart';
 import 'ui/pages/forgot_password_page.dart';
 import 'ui/pages/home_page.dart';
+import 'ui/pages/license_page.dart';
 import 'ui/pages/login_page.dart';
 import 'ui/pages/recent_subscribed_page.dart';
 import 'ui/pages/record_detail_page.dart';
@@ -75,6 +76,17 @@ FFRouteSettings getRouteSettings({
         ),
         routeName: '/',
       );
+    case 'license':
+      return FFRouteSettings(
+        name: name,
+        arguments: arguments,
+        builder: () => LicenseList(
+          key: asT<Key?>(
+            safeArguments['key'],
+          ),
+        ),
+        routeName: '/license',
+      );
     case 'login':
       return FFRouteSettings(
         name: name,
@@ -98,7 +110,7 @@ FFRouteSettings getRouteSettings({
             safeArguments['loaded'],
           )!,
         ),
-        routeName: '/recent-subscribed',
+        routeName: '/subscribed/recent',
       );
     case 'record-detail':
       return FFRouteSettings(
@@ -112,7 +124,7 @@ FFRouteSettings getRouteSettings({
             safeArguments['url'],
           )!,
         ),
-        routeName: '/record-detail',
+        routeName: '/record/detail',
       );
     case 'register':
       return FFRouteSettings(
@@ -151,7 +163,7 @@ FFRouteSettings getRouteSettings({
             safeArguments['years'],
           )!,
         ),
-        routeName: '/season-list',
+        routeName: '/season/list',
       );
     case 'splash':
       return FFRouteSettings(
@@ -193,7 +205,7 @@ FFRouteSettings getRouteSettings({
             safeArguments['galleries'],
           )!,
         ),
-        routeName: '/subscribed-season',
+        routeName: '/subscribed/season',
       );
     default:
       return FFRouteSettings(
