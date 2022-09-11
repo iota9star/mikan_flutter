@@ -102,7 +102,7 @@ class StackSliverPinnedHeader extends StatelessWidget {
       begin: theme.scaffoldBackgroundColor,
       end: theme.backgroundColor,
     );
-    final maxHeight = maxExtent ?? Screen.statusBarHeight + 132;
+    final maxHeight = maxExtent ?? Screen.statusBarHeight + 136;
     final minHeight = minExtent ?? Screen.statusBarHeight + 60;
     final offsetHeight = maxHeight - minHeight;
     return SliverPersistentHeader(

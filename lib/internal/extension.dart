@@ -102,7 +102,7 @@ extension NullableStringExt on String? {
             alignment: AlignmentDirectional.center,
             children: [
               Container(
-                padding: edgeH16V12,
+                padding: edgeH12V8,
                 margin: edgeH24,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -126,7 +126,6 @@ extension NullableStringExt on String? {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: bgc.isDark ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

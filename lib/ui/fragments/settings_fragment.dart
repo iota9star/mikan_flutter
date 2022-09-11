@@ -28,16 +28,10 @@ class SettingsFragment extends StatelessWidget {
             Provider.of<SettingsModel>(context, listen: false);
         return Material(
           color: theme.scaffoldBackgroundColor,
-          child: NotificationListener(
-            onNotification: (notification) {
-              if (notification is OverscrollIndicatorNotification) {
-                notification.disallowIndicator();
-              } else if (notification is ScrollUpdateNotification) {
-                if (notification.depth == 0) {
-                  final double offset = notification.metrics.pixels;
-                  settingsModel.hasScrolled = offset > 0.0;
-                }
-              }
+          child: NotificationListener<ScrollUpdateNotification>(
+            onNotification: (ScrollUpdateNotification notification) {
+              final double offset = notification.metrics.pixels;
+              settingsModel.hasScrolled = offset > 0.0;
               return true;
             },
             child: CustomScrollView(

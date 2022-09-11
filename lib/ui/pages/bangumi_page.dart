@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
@@ -31,16 +32,24 @@ class BangumiPage extends StatelessWidget {
   final String bangumiId;
   final String cover;
 
-  const BangumiPage({
+  BangumiPage({
     Key? key,
     required this.bangumiId,
     required this.cover,
     required this.heroTag,
   }) : super(key: key);
 
+  final ValueNotifier<double> _scrollRatio = ValueNotifier(0);
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final bgct =
+        ColorTween(begin: Colors.transparent, end: theme.backgroundColor);
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider<BangumiModel>(
@@ -48,49 +57,191 @@ class BangumiPage extends StatelessWidget {
         child: Builder(builder: (context) {
           final model = Provider.of<BangumiModel>(context, listen: false);
           return Scaffold(
-            body: Stack(
-              children: [
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CacheImageProvider(cover),
+            body: NotificationListener<ScrollUpdateNotification>(
+              onNotification: (ScrollUpdateNotification notification) {
+                final double offset = notification.metrics.pixels;
+                if (offset >= 0) {
+                  _scrollRatio.value = math.min(1.0, offset / 96);
+                }
+                return true;
+              },
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CacheImageProvider(cover),
+                        ),
                       ),
-                    ),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaY: 8.0, sigmaX: 8.0),
-                      child: ColoredBox(
-                        color: theme.scaffoldBackgroundColor.withOpacity(0.08),
+                      child: ClipRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaY: 16.0, sigmaX: 16.0),
+                          child: ColoredBox(
+                            color:
+                                theme.scaffoldBackgroundColor.withOpacity(0.08),
+                          ),
+                        ),
                       ),
                     ),
                   ),
+                  Positioned.fill(
+                    child: _buildList(theme, model),
+                  ),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: _scrollRatio,
+                      builder: (_, ratio, __) {
+                        final bgc = bgct.transform(ratio < 0.2 ? 0 : ratio);
+                        final ic = it.transform(ratio);
+                        final shadowRadius = 3.0 * ratio;
+                        return _buildHeader(
+                          context,
+                          theme,
+                          model,
+                          ratio,
+                          bgc,
+                          ic,
+                          shadowRadius,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildHeader(
+    BuildContext context,
+    ThemeData theme,
+    BangumiModel model,
+    double ratio,
+    Color? bgc,
+    Color? ic,
+    double shadowRadius,
+  ) {
+    final bottomRadius = Radius.circular(16 * ratio);
+    return Container(
+      decoration: BoxDecoration(
+        color: bgc,
+        borderRadius: BorderRadius.only(
+          bottomLeft: bottomRadius,
+          bottomRight: bottomRadius,
+        ),
+        boxShadow: shadowRadius <= 0.36
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.024),
+                  offset: const Offset(0, 1),
+                  blurRadius: shadowRadius,
+                  spreadRadius: shadowRadius,
                 ),
-                Positioned.fill(
-                  child: _buildList(theme, model),
-                ),
-                Positioned(
-                  left: 16.0,
-                  top: 12.0 + Screen.statusBarHeight,
-                  child: MaterialButton(
+              ],
+      ),
+      padding: EdgeInsets.only(
+        top: 12 + Screen.statusBarHeight,
+        left: 16.0,
+        right: 16.0,
+        bottom: 12.0,
+      ),
+      child: Row(
+        children: [
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            color: ic,
+            minWidth: 32.0,
+            padding: EdgeInsets.zero,
+            shape: circleShape,
+            child: const Icon(
+              FluentIcons.chevron_left_24_regular,
+              size: 16.0,
+            ),
+          ),
+          sizedBoxW12,
+          Expanded(
+            child: Opacity(
+              opacity: ratio,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Selector<BangumiModel, String?>(
+                      selector: (_, model) => model.bangumiDetail?.name,
+                      shouldRebuild: (pre, next) => pre != next,
+                      builder: (_, value, __) {
+                        if (value == null) {
+                          return sizedBox;
+                        }
+                        return Text(
+                          value,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 30.0 - (ratio * 6.0),
+                            fontWeight: FontWeight.bold,
+                            height: 1.25,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  sizedBoxW12,
+                  MaterialButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      model.bangumiDetail?.shareString.share();
                     },
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    color: theme.backgroundColor,
+                    color: ic,
                     minWidth: 32.0,
                     padding: EdgeInsets.zero,
                     shape: circleShape,
                     child: const Icon(
-                      FluentIcons.chevron_left_24_regular,
+                      FluentIcons.share_24_filled,
                       size: 16.0,
                     ),
                   ),
-                ),
-              ],
+                  sizedBoxW12,
+                  MaterialButton(
+                    onPressed: () {
+                      model.changeSubscribe();
+                    },
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    color: ic,
+                    minWidth: 32.0,
+                    padding: EdgeInsets.zero,
+                    shape: circleShape,
+                    child: Selector<BangumiModel, bool>(
+                      selector: (_, model) =>
+                          model.bangumiDetail?.subscribed == true,
+                      shouldRebuild: (pre, next) => pre != next,
+                      builder: (_, subscribed, __) {
+                        return Icon(
+                          subscribed
+                              ? FluentIcons.heart_24_filled
+                              : FluentIcons.heart_24_regular,
+                          size: 16.0,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          );
-        }),
+          )
+        ],
       ),
     );
   }

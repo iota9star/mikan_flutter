@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
@@ -20,7 +21,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 @FFRoute(
   name: "record-detail",
-  routeName: "/record-detail",
+  routeName: "/record/detail",
   argumentImports: [
     "import 'package:mikan_flutter/model/year_season.dart';",
     "import 'package:mikan_flutter/model/season_gallery.dart';",
@@ -30,11 +31,18 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 class RecordDetailPage extends StatelessWidget {
   final String url;
 
-  const RecordDetailPage({Key? key, required this.url}) : super(key: key);
+  RecordDetailPage({Key? key, required this.url}) : super(key: key);
+  final ValueNotifier<double> _scrollRatio = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final bgct =
+        ColorTween(begin: Colors.transparent, end: theme.backgroundColor);
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
@@ -42,12 +50,42 @@ class RecordDetailPage extends StatelessWidget {
         child: Builder(builder: (context) {
           final model = Provider.of<RecordDetailModel>(context, listen: false);
           return Scaffold(
-            body: Stack(
-              children: [
-                _buildBackground(theme),
-                _buildContentWrapper(theme, model),
-                _buildHeader(context, theme),
-              ],
+            body: NotificationListener<ScrollUpdateNotification>(
+              onNotification: (ScrollUpdateNotification notification) {
+                final double offset = notification.metrics.pixels;
+                if (offset >= 0) {
+                  _scrollRatio.value = math.min(1.0, offset / 96);
+                }
+                return true;
+              },
+              child: Stack(
+                children: [
+                  _buildBackground(theme),
+                  _buildContentWrapper(theme, model),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: _scrollRatio,
+                      builder: (_, ratio, __) {
+                        final bgc = bgct.transform(ratio < 0.2 ? 0 : ratio);
+                        final ic = it.transform(ratio);
+                        final shadowRadius = 3.0 * ratio;
+                        return _buildHeader(
+                          context,
+                          theme,
+                          model,
+                          ratio,
+                          bgc,
+                          ic,
+                          shadowRadius,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }),
@@ -56,25 +94,118 @@ class RecordDetailPage extends StatelessWidget {
   }
 
   Widget _buildHeader(
-    final BuildContext context,
-    final ThemeData theme,
+    BuildContext context,
+    ThemeData theme,
+    RecordDetailModel model,
+    double ratio,
+    Color? bgc,
+    Color? ic,
+    double shadowRadius,
   ) {
-    return Positioned(
-      top: 12.0 + Screen.statusBarHeight,
-      left: 16.0,
-      child: MaterialButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: theme.backgroundColor,
-        minWidth: 32.0,
-        padding: EdgeInsets.zero,
-        shape: circleShape,
-        child: const Icon(
-          FluentIcons.chevron_left_24_regular,
-          size: 16.0,
+    final bottomRadius = Radius.circular(16 * ratio);
+    return Container(
+      decoration: BoxDecoration(
+        color: bgc,
+        borderRadius: BorderRadius.only(
+          bottomLeft: bottomRadius,
+          bottomRight: bottomRadius,
         ),
+        boxShadow: shadowRadius <= 0.36
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.024),
+                  offset: const Offset(0, 1),
+                  blurRadius: shadowRadius,
+                  spreadRadius: shadowRadius,
+                ),
+              ],
+      ),
+      padding: EdgeInsets.only(
+        top: 12 + Screen.statusBarHeight,
+        left: 16.0,
+        right: 16.0,
+        bottom: 12.0,
+      ),
+      child: Row(
+        children: [
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            color: ic,
+            minWidth: 32.0,
+            padding: EdgeInsets.zero,
+            shape: circleShape,
+            child: const Icon(
+              FluentIcons.chevron_left_24_regular,
+              size: 16.0,
+            ),
+          ),
+          sizedBoxW12,
+          Expanded(
+            child: Opacity(
+              opacity: ratio,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Selector<RecordDetailModel, String?>(
+                      selector: (_, model) => model.recordDetail?.name,
+                      shouldRebuild: (pre, next) => pre != next,
+                      builder: (_, value, __) {
+                        if (value == null) {
+                          return sizedBox;
+                        }
+                        return Text(
+                          value,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 30.0 - (ratio * 6.0),
+                            fontWeight: FontWeight.bold,
+                            height: 1.25,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  sizedBoxW12,
+                  MaterialButton(
+                    onPressed: () {
+                      model.recordDetail?.shareString.share();
+                    },
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    color: ic,
+                    minWidth: 32.0,
+                    padding: EdgeInsets.zero,
+                    shape: circleShape,
+                    child: const Icon(
+                      FluentIcons.share_24_filled,
+                      size: 16.0,
+                    ),
+                  ),
+                  sizedBoxW12,
+                  MaterialButton(
+                    onPressed: () {
+                      model.recordDetail?.magnet.launchAppAndCopy();
+                    },
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    color: ic,
+                    minWidth: 32.0,
+                    padding: EdgeInsets.zero,
+                    shape: circleShape,
+                    child: const Icon(
+                      FluentIcons.clipboard_link_24_filled,
+                      size: 16.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -88,7 +219,7 @@ class RecordDetailPage extends StatelessWidget {
           if (recordDetail == null) return sizedBox;
           Widget child = ClipRect(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaY: 10.0, sigmaX: 10.0),
+              filter: ImageFilter.blur(sigmaY: 16.0, sigmaX: 16.0),
               child: ColoredBox(
                 color: theme.scaffoldBackgroundColor.withOpacity(0.08),
               ),

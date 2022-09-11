@@ -21,21 +21,13 @@ class SelectSeasonFragment extends StatelessWidget {
     final indexModel = Provider.of<IndexModel>(context, listen: false);
     return Material(
       color: theme.scaffoldBackgroundColor,
-      child: NotificationListener(
-        onNotification: (notification) {
-          if (notification is OverscrollIndicatorNotification) {
-            notification.disallowIndicator();
-          }
-          return true;
-        },
-        child: CustomScrollView(
-          shrinkWrap: true,
-          controller: ModalScrollController.of(context),
-          slivers: [
-            _buildHeader(context, theme, indexModel),
-            _buildSeasonItemList(theme, indexModel),
-          ],
-        ),
+      child: CustomScrollView(
+        shrinkWrap: true,
+        controller: ModalScrollController.of(context),
+        slivers: [
+          _buildHeader(context, theme, indexModel),
+          _buildSeasonItemList(theme, indexModel),
+        ],
       ),
     );
   }

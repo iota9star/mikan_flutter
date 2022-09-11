@@ -20,7 +20,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 @FFRoute(
   name: "subscribed-season",
-  routeName: "/subscribed-season",
+  routeName: "/subscribed/season",
   argumentImports: [
     "import 'package:mikan_flutter/model/year_season.dart';",
     "import 'package:mikan_flutter/model/season_gallery.dart';",
