@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:quiver/iterables.dart';
+
 void main() {
   print('start write doc...');
   var before = DateTime.now().millisecondsSinceEpoch;
@@ -10,6 +12,7 @@ void main() {
   );
   print(
       'write doc end...${(DateTime.now().millisecondsSinceEpoch - before) / 1000.0}s');
+  exit(0);
 }
 
 void writeDoc2README(
@@ -37,19 +40,20 @@ void writeDoc2README(
 
 String getScreenshots() {
   var screenshotDir = Directory("static${Platform.pathSeparator}screenshot");
-  var screenshots = screenshotDir.listSync();
-  var sb = StringBuffer(
-      "## Screenshot  \n\n| :heart: | :fire: | :sparkles: |  \n| -----| ---- | ---- |  \n");
-  var length = screenshots.length;
-  for (var i = 0; i < length; i++) {
-    var file = screenshots.elementAt(i);
-    sb.write("| ![](");
-    sb.write(file.path.replaceAll(RegExp(r'\\'), r'/'));
-    sb.write(") ");
-    if ((i + 1) % 3 == 0 || i == length - 1) {
-      sb.write("|  \n");
+  var screenshots = screenshotDir.listSync(recursive: true);
+  screenshots.sort((a, b) => a.path.compareTo(b.path));
+  var parts = partition(screenshots, 4);
+  var sb = StringBuffer("## Screenshot  \n\n");
+  sb.writeln("<table>");
+  for (var part in parts) {
+    sb.writeln("  <tr>");
+    for (var p in part) {
+      sb.writeln(
+          '    <td><img alt="" src="${p.path.replaceAll(RegExp(r'\\'), r'/')}"></td>');
     }
+    sb.writeln("  <tr>");
   }
+  sb.writeln("</table>");
   return sb.toString();
 }
 

@@ -3,42 +3,68 @@
 ![最新release](https://img.shields.io/github/v/release/iota9star/mikan_flutter) ![Platform](https://img.shields.io/badge/support%20platform-android%20%7C%20ios%20%7C%20windows%20%7C%20macos%20%7C%20linux-green) ![Apache License 2.0](https://img.shields.io/github/license/iota9star/mikan_flutter) ![下载量](https://img.shields.io/github/downloads/iota9star/mikan_flutter/total) ![open issues](https://img.shields.io/github/issues/iota9star/mikan_flutter) ![fork](https://img.shields.io/github/forks/iota9star/mikan_flutter?style=social) ![代码行数](https://img.shields.io/tokei/lines/github/iota9star/mikan_flutter) ![build](https://img.shields.io/github/workflow/status/iota9star/mikan_flutter/daily%20build%20apk) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f969750dc4aa424ead664219ddcf321d)](https://app.codacy.com/gh/iota9star/mikan_flutter?utm_source=github.com&utm_medium=referral&utm_content=iota9star/mikan_flutter&utm_campaign=Badge_Grade)
 ![蜜柑计划](static/art/banner.png)
 
-[mikanani.me](https://mikanani.me)  
+[mikanani.me](https://mikanani.me)
 
 ![count viewed](https://count.getloli.com/get/@iota9star:mikan_flutter?theme=rule34)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials, samples, guidance on mobile development, and a
-full API reference.
 
 ## Screenshot  
 
-| :heart: | :fire: | :sparkles: |  
-| -----| ---- | ---- |  
-| ![](static/screenshot/img_1.png) | ![](static/screenshot/Screenshot_20210529-143342.jpg) | ![](static/screenshot/Screenshot_20210529-133328.jpg) |  
-| ![](static/screenshot/img_2.png) | ![](static/screenshot/img_3.png) | ![](static/screenshot/Screenshot_20210529-142739.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-141624.jpg) | ![](static/screenshot/img_6.png) | ![](static/screenshot/Screenshot_20210529-133306.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-142925.jpg) | ![](static/screenshot/img_4.png) | ![](static/screenshot/img_5.png) |  
-| ![](static/screenshot/Screenshot_20210529-133349.jpg) | ![](static/screenshot/Screenshot_20210529-133203.jpg) | ![](static/screenshot/Screenshot_20210529-141657.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-142835.jpg) | ![](static/screenshot/img.png) | ![](static/screenshot/Screenshot_20210529-143127.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-143328.jpg) | ![](static/screenshot/Screenshot_20210529-143116.jpg) | ![](static/screenshot/Screenshot_20210529-140019.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-143317.jpg) | ![](static/screenshot/Screenshot_20210529-133409.jpg) | ![](static/screenshot/img3.png) |  
-| ![](static/screenshot/Screenshot_20210529-142810.jpg) | ![](static/screenshot/img2.png) | ![](static/screenshot/Screenshot_20210529-143110.jpg) |  
-| ![](static/screenshot/img1.png) | ![](static/screenshot/Screenshot_20210529-133336.jpg) | ![](static/screenshot/Screenshot_20210529-142929.jpg) |  
-| ![](static/screenshot/Screenshot_20210529-143215.jpg) | ![](static/screenshot/Screenshot_20210529-133246.jpg) |  
+<table>
+  <tr>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-42-48-34_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-42-54-09_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-42-58-40_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-04-99_8b62dbcb4bfbe8a.jpg"></td>
+  <tr>
+  <tr>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-11-83_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-18-67_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-30-02_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-45-87_8b62dbcb4bfbe8a.jpg"></td>
+  <tr>
+  <tr>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-54-88_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-11-25_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-19-63_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-27-87_8b62dbcb4bfbe8a.jpg"></td>
+  <tr>
+  <tr>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-32-25_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-44-69_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-45-02-78_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-45-11-72_8b62dbcb4bfbe8a.jpg"></td>
+  <tr>
+  <tr>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-45-59-43_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-02-94_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-17-06_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-37-02_8b62dbcb4bfbe8a.jpg"></td>
+  <tr>
+  <tr>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-41-07_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-51-79_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-58-65_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-16-28_8b62dbcb4bfbe8a.jpg"></td>
+  <tr>
+  <tr>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-36-70_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-41-34_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-51-35_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-57-52_8b62dbcb4bfbe8a.jpg"></td>
+  <tr>
+  <tr>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-49-35-08_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-49-41-09_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-15-15-41-62_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-15-15-45-41_8b62dbcb4bfbe8a.jpg"></td>
+  <tr>
+</table>
 
 ## Thanks
 
-特别感谢 [JetBrains](https://www.jetbrains.com/?from=mikan_flutter) 提供的 [IntelliJ IDEA](https://www.jetbrains.com/idea)
+特别感谢 [JetBrains](https://www.jetbrains.com/?from=mikan_flutter)
+提供的 [IntelliJ IDEA](https://www.jetbrains.com/idea)
 等全家桶对开源项目的支持.
 
 [<img src="static/jetbrains/jetbrains.png" width="200"/>](https://www.jetbrains.com/?from=mikan_flutter)
