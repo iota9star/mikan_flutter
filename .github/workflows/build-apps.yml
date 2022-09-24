@@ -115,6 +115,7 @@ jobs:
           MACOS_IDENTITY: ${{ secrets.MACOS_IDENTITY }}
           MACOS_APP_RELEASE_PATH: build/macos/Build/Products/Release
         run: |
+          cp -f pubspec.yaml assets/
           flutter config --enable-macos-desktop
           flutter pub get
           flutter build macos --release
