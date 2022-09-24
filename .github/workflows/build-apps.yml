@@ -1,0 +1,151 @@
+name: Build Apps
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+#  push:
+#    branches:
+#      - main
+#      - master
+#    tags-ignore:
+#      - v**
+#  workflow_dispatch:
+  workflow_dispatch:
+    inputs:
+      TAG:
+        description: 'Set a Tag'
+        required: true
+        default: ''
+  push:
+    tags:
+      - v*
+jobs:
+  build-apks-and-linux-app:
+    name: Release Apks/LinuxApp
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11.x'
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Build apks
+        run: |
+          \cp -f pubspec.yaml assets/
+          flutter pub get
+          flutter build apk --release
+          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
+          mkdir -p releases
+          mv -f build/app/outputs/flutter-apk/*-release.apk releases
+          mv -f releases/app-release.apk releases/app-universal-release.apk
+      - name: Sign build apk
+        uses: iota9star/sign-android-release@v1.0.5
+        with:
+          releaseDirectory: releases
+          fileRegex: .*-release.apk
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - name: Rename signed apk
+        run: |
+          for name in $(ls releases/*-signed.apk);do mv -f $name ${name%-signed.apk}.apk ;done
+      - name: Build linux app
+        run: |
+          sudo apt-get install bash curl file unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev -y
+          flutter pub get
+          flutter config --enable-linux-desktop
+          flutter build linux --release
+          cd build/linux/x64/release/bundle
+          zip -r linux-release.zip ./
+          mv linux-release.zip ../../../../../
+      - name: Release to github
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "releases/*-release.apk,linux-release.zip"
+          token: ${{ secrets.ACTION_TOKEN }}
+          tag: ${{ github.event.inputs.TAG }}
+
+  build-windows-app:
+    name: Release Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Build windows
+        run: |
+          Copy-Item -Path pubspec.yaml -Destination assets -Force
+          flutter pub get
+          flutter config --enable-windows-desktop
+          flutter build windows --release --no-tree-shake-icons
+          Compress-Archive -Path build/windows/runner/Release/* windows-win32-release.zip -Force
+      - name: Release build
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "windows-win32-release.zip"
+          token: ${{ secrets.ACTION_TOKEN }}
+          tag: ${{ github.event.inputs.TAG }}
+
+  build-macos-app:
+    name: Release MacOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Set up xcode
+        uses: devbotsxyz/xcode-select@v1
+      - name: Build macos
+        env:
+          MACOS_CERTIFICATES: ${{ secrets.MACOS_CERTIFICATES }}
+          MACOS_CERTIFICATES_PWD: ${{ secrets.MACOS_CERTIFICATES_PWD }}
+          MACOS_IDENTITY: ${{ secrets.MACOS_IDENTITY }}
+          MACOS_APP_RELEASE_PATH: build/macos/Build/Products/Release
+        run: |
+          flutter config --enable-macos-desktop
+          flutter pub get
+          flutter build macos --release
+          echo $MACOS_CERTIFICATES | base64 --decode > Certificates.p12
+          security create-keychain -p $MACOS_CERTIFICATES_PWD build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p $MACOS_CERTIFICATES_PWD build.keychain
+          security import Certificates.p12 -k build.keychain -P $MACOS_CERTIFICATES_PWD -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $MACOS_CERTIFICATES_PWD build.keychain
+          /usr/bin/codesign --force --deep -s $MACOS_IDENTITY ./$MACOS_APP_RELEASE_PATH/mikan_flutter.app
+          brew install create-dmg
+          cd $MACOS_APP_RELEASE_PATH
+          create-dmg \
+            --volname "MikanProject Installer" \
+            --window-pos 200 120 \
+            --window-size 800 529 \
+            --icon-size 130 \
+            --text-size 14 \
+            --icon "mikan_flutter.app" 260 250 \
+            --hide-extension "mikan_flutter.app" \
+            --app-drop-link 540 250 \
+            --hdiutil-quiet \
+            "mikan_flutter.dmg" \
+            "mikan_flutter.app"
+          cd ../../../../../
+          mv $MACOS_APP_RELEASE_PATH/mikan_flutter.dmg macos-release.dmg
+      - name: Release build
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "macos-release.dmg"
+          token: ${{ secrets.ACTION_TOKEN }}
+          tag: ${{ github.event.inputs.TAG }}
+
