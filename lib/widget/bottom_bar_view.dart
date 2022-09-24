@@ -29,7 +29,7 @@ class BottomBarView extends StatefulWidget {
     Key? key,
     required this.items,
     required this.onItemClick,
-    this.height = 64,
+    this.height = 56,
     this.iconSize = 30,
   })  : assert(height > iconSize),
         super(key: key);
@@ -59,19 +59,21 @@ class BottomBarViewState extends State<BottomBarView>
 
   @override
   Widget build(BuildContext context) {
+    final bgc = Theme.of(context).backgroundColor;
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.height),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
           height: widget.height,
-          padding: const EdgeInsets.symmetric(horizontal: 48.0),
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor.withOpacity(0.8),
+            color: bgc.withOpacity(0.8),
+            border: Border.all(color: bgc.withOpacity(0.9), width: 4.0),
+            borderRadius: BorderRadius.circular(widget.height),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: _buildBarItems(),
           ),
@@ -175,44 +177,41 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
   Widget build(BuildContext context) {
     _points ??= _buildPoints();
     final ThemeData theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Center(
-          child: InkWell(
-            splashColor: Colors.transparent,
-            focusColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            onTap: () {
-              if (!widget.barItem.isSelected) {
-                setAnimation();
-              }
-              widget.barItem.onClick?.call();
-            },
-            child: IgnorePointer(
-              child: Stack(
-                fit: StackFit.expand,
-                alignment: Alignment.center,
-                children: <Widget>[
-                  ScaleTransition(
-                    alignment: Alignment.center,
-                    scale: Tween<double>(begin: 0.88, end: 1.0).animate(
-                      CurvedAnimation(
-                        parent: _animationController,
-                        curve: const Interval(
-                          0.1,
-                          1.0,
-                          curve: Curves.linear,
-                        ),
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Center(
+        child: InkWell(
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          onTap: () {
+            if (!widget.barItem.isSelected) {
+              setAnimation();
+            }
+            widget.barItem.onClick?.call();
+          },
+          child: IgnorePointer(
+            child: Stack(
+              fit: StackFit.expand,
+              alignment: Alignment.center,
+              children: <Widget>[
+                ScaleTransition(
+                  alignment: Alignment.center,
+                  scale: Tween<double>(begin: 0.88, end: 1.0).animate(
+                    CurvedAnimation(
+                      parent: _animationController,
+                      curve: const Interval(
+                        0.1,
+                        1.0,
+                        curve: Curves.linear,
                       ),
                     ),
-                    child: _toBarIcon(theme.secondary, widget.barItem),
                   ),
-                  ..._buildPointWidgets(theme),
-                ],
-              ),
+                  child: _toBarIcon(theme.secondary, widget.barItem),
+                ),
+                ..._buildPointWidgets(theme),
+              ],
             ),
           ),
         ),
