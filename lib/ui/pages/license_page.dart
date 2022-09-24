@@ -1,11 +1,13 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 @FFRoute(
   name: "license",
@@ -73,62 +75,71 @@ class LicenseList extends StatelessWidget {
                     );
                   case ConnectionState.done:
                     final data = snapshot.data!;
-                    return SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (_, index) {
-                          final String packageName = data.packages[index];
-                          final List<int> bindings =
-                              data.packageLicenseBindings[packageName]!;
-                          return Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).pushNamed(
-                                  Routes.licenseDetail.name,
-                                  arguments: Routes.licenseDetail.d(
-                                    packageName: packageName,
-                                    licenseEntries: bindings
-                                        .map((int i) => data.licenses[i])
-                                        .toList(growable: false),
+                    return SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      sliver: SliverWaterfallFlow(
+                        delegate: SliverChildBuilderDelegate(
+                          (_, index) {
+                            final String packageName = data.packages[index];
+                            final List<int> bindings =
+                                data.packageLicenseBindings[packageName]!;
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                    Routes.licenseDetail.name,
+                                    arguments: Routes.licenseDetail.d(
+                                      packageName: packageName,
+                                      licenseEntries: bindings
+                                          .map((int i) => data.licenses[i])
+                                          .toList(growable: false),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  decoration: BoxDecoration(
+                                    color: theme.backgroundColor,
+                                    borderRadius: borderRadius16,
                                   ),
-                                );
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 8.0,
-                                ),
-                                padding: const EdgeInsets.all(16.0),
-                                decoration: BoxDecoration(
-                                  color: theme.backgroundColor,
-                                  borderRadius: borderRadius16,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      packageName,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0,
-                                        height: 1.25,
-                                        fontFamily: "mono",
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        packageName,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.0,
+                                          height: 1.25,
+                                          fontFamily: "mono",
+                                        ),
                                       ),
-                                    ),
-                                    sizedBoxH8,
-                                    Text(
-                                      "${bindings.length}条协议",
-                                      style: const TextStyle(
-                                        fontFamily: "mono",
+                                      sizedBoxH8,
+                                      Text(
+                                        "${bindings.length}条协议",
+                                        style: const TextStyle(
+                                          fontFamily: "mono",
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                        childCount: data.packages.length,
+                            );
+                          },
+                          childCount: data.packages.length,
+                        ),
+                        gridDelegate:
+                            const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+                          crossAxisSpacing: 12.0,
+                          mainAxisSpacing: 12.0,
+                          minCrossAxisExtent: 240.0,
+                        ),
                       ),
                     );
                 }
@@ -153,6 +164,7 @@ class LicenseList extends StatelessWidget {
                       "❤",
                       style: TextStyle(
                         fontSize: 18.0,
+                        color: Colors.red,
                       ),
                     ),
                     sizedBoxW12,
