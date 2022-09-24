@@ -41,16 +41,17 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "mikan_flutter");
+    gtk_header_bar_set_title(header_bar, "MikanProject");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "mikan_flutter");
+    gtk_window_set_title(window, "MikanProject");
   }
 
   auto bdw = bitsdojo_window_from(window);
-  bdw->setCustomFrame(true);
+//  bdw->setCustomFrame(true);
   //gtk_window_set_default_size(window, 1280, 720);
+  gtk_window_set_icon_from_file(GTK_WINDOW(window), "assets/mikan.png", NULL);
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
