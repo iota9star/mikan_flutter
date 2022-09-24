@@ -1,4 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
@@ -13,6 +14,7 @@ import 'package:mikan_flutter/ui/fragments/fonts_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/theme_panel_fragment.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 @immutable
 class SettingsFragment extends StatelessWidget {
@@ -44,6 +46,7 @@ class SettingsFragment extends StatelessWidget {
                 _buildFontManager(context, theme),
                 _buildSection("更多"),
                 _buildLicense(context, theme),
+                _buildPrivacyPolicy(context, theme),
                 _buildCheckUpdate(context, theme),
                 sliverSizedBoxH24,
               ],
@@ -212,11 +215,48 @@ class SettingsFragment extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: const [
-              Text(
-                "开源协议",
-                style: textStyle16B500,
-                textAlign: TextAlign.left,
+              Expanded(
+                child: Text(
+                  "开源协议",
+                  style: textStyle16B500,
+                  textAlign: TextAlign.left,
+                ),
               ),
+              Icon(FluentIcons.chevron_right_24_regular),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPrivacyPolicy(final BuildContext context, ThemeData theme) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: edgeH16T8,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius16,
+          color: theme.backgroundColor,
+        ),
+        child: MaterialButton(
+          onPressed: () {
+            launchUrlString(
+                "https://github.com/iota9star/mikan_flutter/blob/master/PrivacyPolicy.md");
+          },
+          padding: edgeH16,
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
+          height: 48.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: const [
+              Expanded(
+                child: Text(
+                  "隐私政策",
+                  style: textStyle16B500,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Icon(FluentIcons.chevron_right_24_regular),
             ],
           ),
         ),

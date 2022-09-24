@@ -90,7 +90,7 @@ class _BangumiCoverScrollListFragmentState
       padding: edge16,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 120,
+        maxCrossAxisExtent: 200,
         crossAxisSpacing: 16.0,
         mainAxisSpacing: 16.0,
         childAspectRatio: 3 / 4,

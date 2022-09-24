@@ -124,7 +124,7 @@ jobs:
           security unlock-keychain -p $MACOS_CERTIFICATES_PWD build.keychain
           security import Certificates.p12 -k build.keychain -P $MACOS_CERTIFICATES_PWD -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $MACOS_CERTIFICATES_PWD build.keychain
-          /usr/bin/codesign --force --deep -s $MACOS_IDENTITY ./$MACOS_APP_RELEASE_PATH/mikan_flutter.app
+          /usr/bin/codesign --force --deep -s $MACOS_IDENTITY ./$MACOS_APP_RELEASE_PATH/MikanProject.app
           brew install create-dmg
           cd $MACOS_APP_RELEASE_PATH
           create-dmg \
@@ -133,14 +133,14 @@ jobs:
             --window-size 800 529 \
             --icon-size 130 \
             --text-size 14 \
-            --icon "mikan_flutter.app" 260 250 \
-            --hide-extension "mikan_flutter.app" \
+            --icon "MikanProject.app" 260 250 \
+            --hide-extension "MikanProject.app" \
             --app-drop-link 540 250 \
             --hdiutil-quiet \
-            "mikan_flutter.dmg" \
-            "mikan_flutter.app"
+            "MikanProject.dmg" \
+            "MikanProject.app"
           cd ../../../../../
-          mv $MACOS_APP_RELEASE_PATH/mikan_flutter.dmg macos-release.dmg
+          mv $MACOS_APP_RELEASE_PATH/MikanProject.dmg macos-release.dmg
       - name: Release build
         uses: ncipollo/release-action@v1
         with:
