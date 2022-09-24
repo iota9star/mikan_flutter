@@ -1,7 +1,7 @@
 name: mikan_flutter
 description: mikanani.me
 
-version: 1.0.0-RC33+55
+version: 1.0.0-RC34+56
 
 publish_to: none
 
@@ -49,6 +49,7 @@ dependencies:
   collection: ^1.16.0
   json_annotation: ^4.6.0
   path: ^1.8.2
+  cookie_jar: ^3.0.1
 
 
 dev_dependencies:
