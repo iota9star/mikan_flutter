@@ -46,7 +46,7 @@ class ThemeModel extends BaseModel {
       borderSide: BorderSide.none,
       borderRadius: borderRadius16,
     );
-    ThemeData themeData = ThemeData(
+    final themeData = ThemeData(
       platform: TargetPlatform.iOS,
       brightness: brightness,
       cupertinoOverrideTheme: CupertinoThemeData(
@@ -94,9 +94,8 @@ class ThemeModel extends BaseModel {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: accentColor,
-          shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
-          minimumSize: const Size(0, 48.0),
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+          minimumSize: const Size(0, 40.0),
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
@@ -106,7 +105,8 @@ class ThemeModel extends BaseModel {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           textStyle: TextStyle(color: primaryColor),
-          minimumSize: const Size(0, 48.0),
+          minimumSize: const Size(0, 40.0),
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
         ),
       ),
       visualDensity: VisualDensity.standard,

@@ -68,7 +68,7 @@ class BottomBarViewState extends State<BottomBarView>
           height: widget.height,
           decoration: BoxDecoration(
             color: bgc.withOpacity(0.8),
-            border: Border.all(color: bgc.withOpacity(0.9), width: 4.0),
+            border: Border.all(color: bgc.withOpacity(0.9), width: 2.0),
             borderRadius: BorderRadius.circular(widget.height),
           ),
           child: Row(
@@ -112,9 +112,11 @@ class BottomBarViewState extends State<BottomBarView>
 }
 
 class _BottomBarItemView extends StatefulWidget {
-  const _BottomBarItemView(
-      {Key? key, required this.barItem, required this.removeAllSelect})
-      : super(key: key);
+  const _BottomBarItemView({
+    Key? key,
+    required this.barItem,
+    required this.removeAllSelect,
+  }) : super(key: key);
 
   final BarItem barItem;
   final Function removeAllSelect;
@@ -152,12 +154,12 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
       return barItem.selectedIcon == null
           ? Image.asset(
               barItem.selectedIconPath!,
-              width: barItem._size + 10,
-              height: barItem._size + 10,
+              width: barItem._size + 8.0,
+              height: barItem._size + 8.0,
             )
           : Icon(
               barItem.selectedIcon,
-              size: barItem._size + 10,
+              size: barItem._size + 8.0,
               color: Theme.of(context).secondary,
             );
     }

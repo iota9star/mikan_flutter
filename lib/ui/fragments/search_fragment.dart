@@ -13,6 +13,7 @@ import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/providers/search_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -327,16 +328,9 @@ class SearchFragment extends StatelessWidget {
           Positioned(
             left: 0,
             top: 12.0,
-            child: MaterialButton(
-              minWidth: 32.0,
-              color: ic,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: circleShape,
-              padding: EdgeInsets.zero,
-              child: const Icon(
-                FluentIcons.chevron_left_24_regular,
-                size: 16.0,
-              ),
+            child: CustomIconButton(
+              iconData: FluentIcons.chevron_left_24_regular,
+              backgroundColor: ic,
               onPressed: () {
                 Navigator.pop(context);
               },

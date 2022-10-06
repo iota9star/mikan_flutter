@@ -37,9 +37,7 @@ class _LicenseDetailState extends State<LicenseDetail> {
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
-            SliverPinnedTitleHeader(
-              title: widget.packageName,
-            ),
+            SliverPinnedTitleHeader(title: widget.packageName),
             SliverPadding(
               padding: EdgeInsets.only(
                 top: 8.0,

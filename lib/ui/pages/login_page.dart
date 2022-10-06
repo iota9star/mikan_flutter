@@ -127,7 +127,7 @@ class LoginPage extends StatelessWidget {
                 loading ? "登录中..." : "登录",
                 style: TextStyle(
                   color: iconColor,
-                  fontSize: 16.0,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),

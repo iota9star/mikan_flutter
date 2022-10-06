@@ -15,6 +15,7 @@ import 'package:mikan_flutter/model/record_details.dart';
 import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/record_detail_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -102,7 +103,7 @@ class RecordDetailPage extends StatelessWidget {
     Color? ic,
     double shadowRadius,
   ) {
-    final bottomRadius = Radius.circular(16 * ratio);
+    final bottomRadius = Radius.circular(16.0 * ratio);
     return Container(
       decoration: BoxDecoration(
         color: bgc,
@@ -115,7 +116,7 @@ class RecordDetailPage extends StatelessWidget {
             : [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.024),
-                  offset: const Offset(0, 1),
+                  offset: const Offset(0.0, 1.0),
                   blurRadius: shadowRadius,
                   spreadRadius: shadowRadius,
                 ),
@@ -129,19 +130,12 @@ class RecordDetailPage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          MaterialButton(
+          CustomIconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            color: ic,
-            minWidth: 32.0,
-            padding: EdgeInsets.zero,
-            shape: circleShape,
-            child: const Icon(
-              FluentIcons.chevron_left_24_regular,
-              size: 16.0,
-            ),
+            backgroundColor: ic,
+            iconData: FluentIcons.chevron_left_24_regular,
           ),
           sizedBoxW12,
           Expanded(
@@ -162,8 +156,8 @@ class RecordDetailPage extends StatelessWidget {
                           value,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 30.0 - (ratio * 6.0),
+                          style: const TextStyle(
+                            fontSize: 24.0,
                             fontWeight: FontWeight.bold,
                             height: 1.25,
                           ),
@@ -172,34 +166,20 @@ class RecordDetailPage extends StatelessWidget {
                     ),
                   ),
                   sizedBoxW12,
-                  MaterialButton(
+                  CustomIconButton(
                     onPressed: () {
                       model.recordDetail?.shareString.share();
                     },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    color: ic,
-                    minWidth: 32.0,
-                    padding: EdgeInsets.zero,
-                    shape: circleShape,
-                    child: const Icon(
-                      FluentIcons.share_24_filled,
-                      size: 16.0,
-                    ),
+                    backgroundColor: ic,
+                    iconData: FluentIcons.share_24_filled,
                   ),
                   sizedBoxW12,
-                  MaterialButton(
+                  CustomIconButton(
                     onPressed: () {
                       model.recordDetail?.magnet.launchAppAndCopy();
                     },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    color: ic,
-                    minWidth: 32.0,
-                    padding: EdgeInsets.zero,
-                    shape: circleShape,
-                    child: const Icon(
-                      FluentIcons.clipboard_link_24_filled,
-                      size: 16.0,
-                    ),
+                    backgroundColor: ic,
+                    iconData: FluentIcons.clipboard_link_24_filled,
                   ),
                 ],
               ),
@@ -262,7 +242,7 @@ class RecordDetailPage extends StatelessWidget {
             ),
             onRefresh: model.refresh,
             child: WaterfallFlow(
-              padding: edgeH16T136B24WithStatusBar,
+              padding: edgeH16T96B48WithSafeHeight,
               gridDelegate:
                   const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
                 minCrossAxisExtent: 400.0,
@@ -271,7 +251,7 @@ class RecordDetailPage extends StatelessWidget {
               ),
               physics: const BouncingScrollPhysics(),
               children: recordDetail == null
-                  ? [sizedBox]
+                  ? []
                   : [
                       _buildTop(
                         context,

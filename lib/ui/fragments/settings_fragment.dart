@@ -2,7 +2,10 @@ import 'package:extended_sliver/extended_sliver.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
+import 'package:mikan_flutter/internal/screen.dart';
+import 'package:mikan_flutter/internal/store.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/user.dart';
 import 'package:mikan_flutter/providers/home_model.dart';
@@ -12,6 +15,7 @@ import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/fonts_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/theme_panel_fragment.dart';
+import 'package:mikan_flutter/widget/placeholder_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -47,8 +51,9 @@ class SettingsFragment extends StatelessWidget {
                 _buildSection("更多"),
                 _buildLicense(context, theme),
                 _buildPrivacyPolicy(context, theme),
+                _buildClearCache(context, settingsModel, theme),
                 _buildCheckUpdate(context, theme),
-                sliverSizedBoxH24,
+                sliverSizedBoxH24WithNavBarHeight,
               ],
             ),
           ),
@@ -97,7 +102,7 @@ class SettingsFragment extends StatelessWidget {
               borderRadius: scrollHeaderBorderRadius(hasScrolled),
               boxShadow: scrollHeaderBoxShadow(hasScrolled),
             ),
-            padding: edgeHT16,
+            padding: edge16,
             duration: dur240,
             child: _buildHeadSection(),
           );
@@ -162,8 +167,7 @@ class SettingsFragment extends StatelessWidget {
   }
 
   Widget _buildFontManager(final BuildContext context, ThemeData theme) {
-    final ThemeModel themeModel =
-        Provider.of<ThemeModel>(context, listen: false);
+    final themeModel = Provider.of<ThemeModel>(context, listen: false);
     return SliverToBoxAdapter(
       child: Container(
         margin: edgeH16T8,
@@ -223,6 +227,54 @@ class SettingsFragment extends StatelessWidget {
                 ),
               ),
               Icon(FluentIcons.chevron_right_24_regular),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildClearCache(
+    BuildContext context,
+    SettingsModel model,
+    ThemeData theme,
+  ) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: edgeH16T8,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius16,
+          color: theme.backgroundColor,
+        ),
+        child: MaterialButton(
+          onPressed: () async {
+            final cleared = await _showClearCacheModal(context, theme);
+            if (cleared == true) {
+              model.refreshCacheSize();
+            }
+          },
+          padding: edgeH16,
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius16),
+          height: 48.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Expanded(
+                child: Text(
+                  "清除缓存",
+                  style: textStyle16B500,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Selector<SettingsModel, String>(
+                selector: (_, model) => model.formatCacheSize,
+                builder: (context, value, _) {
+                  return Text(
+                    value,
+                    style: theme.textTheme.caption,
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -313,6 +365,99 @@ class SettingsFragment extends StatelessWidget {
       topRadius: radius16,
       builder: (context) {
         return const FontsFragment();
+      },
+    );
+  }
+
+  Future<bool?> _showClearCacheModal(
+    final BuildContext context,
+    final ThemeData theme,
+  ) {
+    return showCupertinoModalBottomSheet<bool>(
+      context: context,
+      topRadius: radius16,
+      builder: (context) {
+        return Material(
+          color: theme.backgroundColor,
+          child: Container(
+            height: 240.0,
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0 + Screen.navBarHeight,
+              top: 16.0,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      FluentIcons.warning_24_regular,
+                      size: 36.0,
+                      color: theme.secondary,
+                    ),
+                    sizedBoxW8,
+                    const Expanded(
+                      child: Text(
+                        "请注意",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: textStyle20B,
+                      ),
+                    ),
+                  ],
+                ),
+                sizedBoxH12,
+                Expanded(
+                  child: PlaceholderText(
+                    "确认要清除缓存吗？缓存主要来自于{番组封面}，清除后将{重新}下载",
+                    style: textStyle15B500,
+                    onMatched: (pos, matched) {
+                      if (pos == 1) {
+                        return TextSpan(
+                          text: matched.group(1),
+                          style: textStyle15B500.copyWith(
+                            color: theme.secondary,
+                          ),
+                        );
+                      }
+                      return TextSpan(
+                        text: matched.group(1),
+                        style: textStyle15B500.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("取消"),
+                      ),
+                    ),
+                    sizedBoxW16,
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Store.clearCache().whenComplete(() {
+                            Navigator.pop(context, true);
+                          });
+                        },
+                        child: const Text("确定"),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }

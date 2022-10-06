@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 
 class SimpleSliverPinnedHeader extends StatelessWidget {
   const SimpleSliverPinnedHeader({
@@ -173,23 +173,16 @@ class SliverPinnedTitleHeader extends StatelessWidget {
           Positioned(
             left: 0,
             top: 12.0 + Screen.statusBarHeight,
-            child: MaterialButton(
+            child: CustomIconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              color: ic,
-              minWidth: 32.0,
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: circleShape,
-              child: const Icon(
-                FluentIcons.chevron_left_24_regular,
-                size: 16.0,
-              ),
+              backgroundColor: ic,
+              iconData: FluentIcons.chevron_left_24_regular,
             ),
           ),
           Positioned(
-            top: 78 * (1 - ratio) + 16 + Screen.statusBarHeight,
+            top: 78 * (1 - ratio) + 14 + Screen.statusBarHeight,
             left: ratio * 44,
             child: Text(
               title,

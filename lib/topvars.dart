@@ -71,11 +71,11 @@ final edgeH24V36WithStatusBar = EdgeInsets.only(
   right: 24.0,
 );
 
-final edgeH16T136B24WithStatusBar = EdgeInsets.only(
-  top: 136.0 + Screen.statusBarHeight,
+final edgeH16T96B48WithSafeHeight = EdgeInsets.only(
+  top: 96.0 + Screen.statusBarHeight,
   left: 16.0,
   right: 16.0,
-  bottom: 24.0,
+  bottom: 48.0 + Screen.navBarHeight,
 );
 
 final edgeHT16B24WithNavbarHeight = EdgeInsets.only(
@@ -230,11 +230,14 @@ const sizedBoxH4 = SizedBox(height: 4.0);
 const sizedBoxH56 = SizedBox(height: 56.0);
 const sizedBoxH42 = SizedBox(height: 42.0);
 
-final sliverSizedBoxH80 = SliverToBoxAdapter(
+final sliverSizedBoxH80WithNavBarHeight = SliverToBoxAdapter(
   child: SizedBox(height: 80.0 + Screen.navBarHeight),
 );
 
-final sliverSizedBoxH24 = SliverToBoxAdapter(
+final sizedBoxH24WithNavBarHeight =
+    SizedBox(height: 24.0 + Screen.navBarHeight);
+
+final sliverSizedBoxH24WithNavBarHeight = SliverToBoxAdapter(
   child: SizedBox(height: 24.0 + Screen.navBarHeight),
 );
 

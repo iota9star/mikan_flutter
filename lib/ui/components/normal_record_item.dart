@@ -5,6 +5,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
@@ -37,29 +38,23 @@ class NormalRecordItem extends StatelessWidget {
         color: theme.backgroundColor,
         borderRadius: borderRadius16,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Padding(
-            padding: edgeHT16,
-            child: Text(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
               record.publishAt,
               style: textStyle18B,
             ),
-          ),
-          Padding(
-            padding: edgeH16T8,
-            child: Text(
+            sizedBoxH8,
+            Text(
               record.title,
               style: textStyle15B500,
             ),
-          ),
-          sizedBoxH4,
-          Container(
-            margin: edgeH16T4,
-            width: double.infinity,
-            child: Wrap(
+            sizedBoxH4,
+            Wrap(
               runSpacing: 4.0,
               spacing: 4.0,
               children: [
@@ -105,89 +100,96 @@ class NormalRecordItem extends StatelessWidget {
                   }),
               ],
             ),
-          ),
-          Row(
-            children: <Widget>[
-              if (subgroups.isSafeNotEmpty)
-                ...List.generate(
-                  subgroups.length,
-                  (index) {
-                    return Tooltip(
-                      message: subgroups[index].name,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            Routes.subgroup.name,
-                            arguments: Routes.subgroup.d(
-                              subgroup: subgroups[index],
+            sizedBoxH8,
+            Row(
+              children: <Widget>[
+                if (subgroups.isSafeNotEmpty)
+                  ...List.generate(
+                    subgroups.length,
+                    (index) {
+                      return Tooltip(
+                        message: subgroups[index].name,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              Routes.subgroup.name,
+                              arguments: Routes.subgroup.d(
+                                subgroup: subgroups[index],
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 24.0,
+                            height: 24.0,
+                            margin: EdgeInsets.only(
+                              left: index == 0 ? 0.0 : 4.0,
                             ),
-                          );
-                        },
-                        child: Container(
-                          width: 24.0,
-                          height: 24.0,
-                          margin: EdgeInsets.only(
-                            left: index == 0 ? 16.0 : 4.0,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.0),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                theme.primary,
-                                theme.primary.withOpacity(0.56),
-                              ],
+                            decoration: BoxDecoration(
+                              borderRadius: borderRadius12,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  theme.primary,
+                                  theme.primary.withOpacity(0.56),
+                                ],
+                              ),
                             ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              subgroups[index].name[0],
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: theme.primary.isDark
-                                    ? Colors.white
-                                    : Colors.black,
+                            child: Center(
+                              child: Text(
+                                subgroups[index].name[0],
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: theme.primary.isDark
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
+                      );
+                    },
+                  ),
+                spacer,
+                sizedBoxW8,
+                CustomIconButton(
+                  iconData: FluentIcons.arrow_download_24_filled,
+                  tooltip: "复制并尝试打开种子链接",
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  onPressed: () {
+                    record.torrent.launchAppAndCopy();
+                  },
+                  iconSize: 12.0,
+                  size: 28.0,
+                ),
+                sizedBoxW8,
+                CustomIconButton(
+                  iconData: FluentIcons.clipboard_link_24_filled,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  tooltip: "复制并尝试打开磁力链接",
+                  iconSize: 12.0,
+                  size: 28.0,
+                  onPressed: () {
+                    record.magnet.launchAppAndCopy();
                   },
                 ),
-              spacer,
-              IconButton(
-                icon: const Icon(FluentIcons.arrow_download_24_filled),
-                tooltip: "复制并尝试打开种子链接",
-                color: theme.secondary,
-                iconSize: 20.0,
-                onPressed: () {
-                  record.torrent.launchAppAndCopy();
-                },
-              ),
-              IconButton(
-                icon: const Icon(FluentIcons.clipboard_link_24_filled),
-                color: theme.secondary,
-                tooltip: "复制并尝试打开磁力链接",
-                iconSize: 20.0,
-                onPressed: () {
-                  record.magnet.launchAppAndCopy();
-                },
-              ),
-              IconButton(
-                icon: const Icon(FluentIcons.share_24_filled),
-                color: theme.secondary,
-                tooltip: "分享",
-                iconSize: 20.0,
-                onPressed: () {
-                  record.shareString.share();
-                },
-              ),
-            ],
-          ),
-        ],
+                sizedBoxW8,
+                CustomIconButton(
+                  iconData: FluentIcons.share_24_filled,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  tooltip: "分享",
+                  iconSize: 12.0,
+                  size: 28.0,
+                  onPressed: () {
+                    record.shareString.share();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

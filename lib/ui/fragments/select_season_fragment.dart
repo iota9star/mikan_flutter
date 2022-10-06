@@ -8,6 +8,7 @@ import 'package:mikan_flutter/model/season.dart';
 import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +49,9 @@ class SelectSeasonFragment extends StatelessWidget {
                 style: textStyle24B,
               ),
             ),
-            MaterialButton(
+            CustomIconButton(
+              iconData: FluentIcons.chevron_right_24_regular,
+              backgroundColor: theme.backgroundColor,
               onPressed: () {
                 Navigator.pushNamed(
                   context,
@@ -56,15 +59,6 @@ class SelectSeasonFragment extends StatelessWidget {
                   arguments: Routes.seasonList.d(years: indexModel.years),
                 );
               },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              minWidth: 32.0,
-              padding: EdgeInsets.zero,
-              color: theme.backgroundColor,
-              shape: circleShape,
-              child: const Icon(
-                FluentIcons.chevron_right_24_regular,
-                size: 16.0,
-              ),
             ),
           ],
         ),

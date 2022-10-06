@@ -109,7 +109,8 @@ class ThemePanelFragment extends StatelessWidget {
                       },
                       onLongPress: () {
                         if (themeItem.id == 1) {
-                          return "默认主题不可修改".toast();
+                          "默认主题不可修改".toast();
+                          return;
                         }
                         _showEditThemePanel(context, themeItem: themeItem);
                       },

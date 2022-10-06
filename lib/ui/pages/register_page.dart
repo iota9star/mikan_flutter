@@ -8,6 +8,7 @@ import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/register_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
@@ -56,20 +57,13 @@ class RegisterPage extends StatelessWidget {
                           sizedBoxH56,
                           Row(
                             children: [
-                              MaterialButton(
+                              CustomIconButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                minWidth: 0.0,
-                                padding: edge16,
-                                shape: circleShape,
-                                color: theme.backgroundColor,
-                                child: const Icon(
-                                  FluentIcons.chevron_left_24_regular,
-                                  size: 16.0,
-                                ),
+                                size: 40.0,
+                                backgroundColor: theme.backgroundColor,
+                                iconData: FluentIcons.chevron_left_24_regular,
                               ),
                               sizedBoxW16,
                               Expanded(
@@ -126,7 +120,7 @@ class RegisterPage extends StatelessWidget {
                 loading ? "注册中" : "注册",
                 style: TextStyle(
                   color: iconColor,
-                  fontSize: 16.0,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),

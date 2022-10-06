@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -189,8 +190,8 @@ class BangumiPage extends StatelessWidget {
                           value,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 30.0 - (ratio * 6.0),
+                          style: const TextStyle(
+                            fontSize: 24.0,
                             fontWeight: FontWeight.bold,
                             height: 1.25,
                           ),
@@ -293,7 +294,7 @@ class BangumiPage extends StatelessWidget {
           ),
           onRefresh: model.load,
           child: WaterfallFlow(
-            padding: edgeH16T136B24WithStatusBar,
+            padding: edgeH16T96B48WithSafeHeight,
             physics: const BouncingScrollPhysics(),
             gridDelegate:
                 const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
@@ -494,7 +495,7 @@ class BangumiPage extends StatelessWidget {
             "概况简介",
             style: textStyle18B,
           ),
-          sizedBoxH12,
+          sizedBoxH8,
           Text(
             detail.intro,
             textAlign: TextAlign.justify,
@@ -536,7 +537,7 @@ class BangumiPage extends StatelessWidget {
             "字幕组",
             style: textStyle18B,
           ),
-          sizedBoxH12,
+          sizedBoxH8,
           Wrap(
             spacing: 8.0,
             runSpacing: 8.0,
@@ -703,15 +704,15 @@ class BangumiPage extends StatelessWidget {
               fontSize: 20.0,
             ),
           ),
-          sizedBoxH12,
-          ...detail.more.entries.map((e) {
-            return Row(
+          sizedBoxH8,
+          ...detail.more.entries.mapIndexed((index, e) {
+            final child = Row(
               children: [
                 Text(
                   "${e.key}：",
                   softWrap: true,
                   style: const TextStyle(
-                    height: 1.8,
+                    height: 1.25,
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -726,7 +727,7 @@ class BangumiPage extends StatelessWidget {
                           softWrap: true,
                           style: TextStyle(
                             color: theme.secondary,
-                            height: 1.8,
+                            height: 1.25,
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,
                           ),
@@ -736,13 +737,19 @@ class BangumiPage extends StatelessWidget {
                         e.value,
                         softWrap: true,
                         style: const TextStyle(
-                          height: 1.8,
+                          height: 1.25,
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,
                         ),
                       )
               ],
             );
+            return index == detail.more.length - 1
+                ? child
+                : Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: child,
+                  );
           }).toList(),
         ],
       ),

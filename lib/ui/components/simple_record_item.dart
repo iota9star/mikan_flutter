@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
@@ -34,28 +35,22 @@ class SimpleRecordItem extends StatelessWidget {
         color: theme.backgroundColor,
         borderRadius: borderRadius16,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: edgeHT16,
-            child: Text(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
               record.publishAt,
               style: textStyle18B,
             ),
-          ),
-          Padding(
-            padding: edgeH16T8,
-            child: Text(
+            sizedBoxH8,
+            Text(
               record.title,
               style: textStyle15B500,
             ),
-          ),
-          sizedBoxH4,
-          Container(
-            margin: edgeH16,
-            width: double.infinity,
-            child: Wrap(
+            sizedBoxH4,
+            Wrap(
               spacing: 4.0,
               runSpacing: 4.0,
               children: [
@@ -101,40 +96,46 @@ class SimpleRecordItem extends StatelessWidget {
                   }),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
-                icon: const Icon(FluentIcons.arrow_download_24_filled),
-                tooltip: "复制并尝试打开种子链接",
-                color: theme.secondary,
-                iconSize: 20.0,
-                onPressed: () {
-                  record.torrent.launchAppAndCopy();
-                },
-              ),
-              IconButton(
-                icon: const Icon(FluentIcons.clipboard_link_24_filled),
-                color: theme.secondary,
-                tooltip: "复制并尝试打开磁力链接",
-                iconSize: 20.0,
-                onPressed: () {
-                  record.magnet.launchAppAndCopy();
-                },
-              ),
-              IconButton(
-                icon: const Icon(FluentIcons.share_24_filled),
-                color: theme.secondary,
-                tooltip: "分享",
-                iconSize: 20.0,
-                onPressed: () {
-                  record.shareString.share();
-                },
-              ),
-            ],
-          ),
-        ],
+            sizedBoxH4,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                CustomIconButton(
+                  iconData: FluentIcons.arrow_download_24_filled,
+                  tooltip: "复制并尝试打开种子链接",
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  onPressed: () {
+                    record.torrent.launchAppAndCopy();
+                  },
+                  iconSize: 12.0,
+                  size: 28.0,
+                ),
+                sizedBoxW8,
+                CustomIconButton(
+                  iconData: FluentIcons.clipboard_link_24_filled,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  tooltip: "复制并尝试打开磁力链接",
+                  iconSize: 12.0,
+                  size: 28.0,
+                  onPressed: () {
+                    record.magnet.launchAppAndCopy();
+                  },
+                ),
+                sizedBoxW8,
+                CustomIconButton(
+                  iconData: FluentIcons.share_24_filled,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  tooltip: "分享",
+                  iconSize: 12.0,
+                  size: 28.0,
+                  onPressed: () {
+                    record.shareString.share();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

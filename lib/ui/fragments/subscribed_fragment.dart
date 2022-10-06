@@ -17,6 +17,7 @@ import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +80,7 @@ class SubscribedFragment extends StatelessWidget {
             ],
           ),
           _buildSeeMore(theme, subscribedModel),
-          sliverSizedBoxH80,
+          sliverSizedBoxH80WithNavBarHeight,
         ],
       ),
     );
@@ -669,19 +670,12 @@ class _PinedHeader extends StatelessWidget {
           Positioned(
             right: 0,
             top: 12.0 + Screen.statusBarHeight,
-            child: MaterialButton(
+            child: CustomIconButton(
               onPressed: () {
                 showSettingsPanel(context);
               },
-              color: ic,
-              minWidth: 32.0,
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: circleShape,
-              child: const Icon(
-                FluentIcons.settings_20_regular,
-                size: 16.0,
-              ),
+              backgroundColor: ic,
+              iconData: FluentIcons.settings_20_regular,
             ),
           ),
           Positioned(

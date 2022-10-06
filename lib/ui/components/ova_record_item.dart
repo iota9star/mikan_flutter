@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 
 @immutable
@@ -34,25 +35,22 @@ class OVARecordItem extends StatelessWidget {
         color: theme.backgroundColor,
         borderRadius: borderRadius16,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding: edgeHT16,
-            child: Tooltip(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Tooltip(
               message: record.title,
               padding: edgeH12V8,
               margin: edgeH16,
               child: Text(
                 record.title,
-                style: textStyle15B500,
+                style: textStyle14B500,
               ),
             ),
-          ),
-          sizedBoxH4,
-          Container(
-            margin: edgeH16,
-            child: Wrap(
+            sizedBoxH4,
+            Wrap(
               runSpacing: 4.0,
               spacing: 4.0,
               children: [
@@ -98,48 +96,53 @@ class OVARecordItem extends StatelessWidget {
                   }),
               ],
             ),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              sizedBoxW16,
-              Expanded(
-                child: Text(
-                  record.publishAt,
-                  style: textStyle14,
+            sizedBoxH8,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    record.publishAt,
+                    style: theme.textTheme.caption,
+                  ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(FluentIcons.arrow_download_24_filled),
-                tooltip: "复制并尝试打开种子链接",
-                color: theme.secondary,
-                iconSize: 20.0,
-                onPressed: () {
-                  record.torrent.launchAppAndCopy();
-                  record.torrent.copy();
-                },
-              ),
-              IconButton(
-                icon: const Icon(FluentIcons.clipboard_link_24_filled),
-                color: theme.secondary,
-                tooltip: "复制并尝试打开磁力链接",
-                iconSize: 20.0,
-                onPressed: () {
-                  record.magnet.launchAppAndCopy();
-                },
-              ),
-              IconButton(
-                icon: const Icon(FluentIcons.share_24_filled),
-                color: theme.secondary,
-                tooltip: "分享",
-                iconSize: 20.0,
-                onPressed: () {
-                  record.shareString.share();
-                },
-              ),
-            ],
-          ),
-        ],
+                sizedBoxW8,
+                CustomIconButton(
+                  iconData: FluentIcons.arrow_download_24_filled,
+                  tooltip: "复制并尝试打开种子链接",
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  onPressed: () {
+                    record.torrent.launchAppAndCopy();
+                  },
+                  iconSize: 12.0,
+                  size: 28.0,
+                ),
+                sizedBoxW8,
+                CustomIconButton(
+                  iconData: FluentIcons.clipboard_link_24_filled,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  tooltip: "复制并尝试打开磁力链接",
+                  iconSize: 12.0,
+                  size: 28.0,
+                  onPressed: () {
+                    record.magnet.launchAppAndCopy();
+                  },
+                ),
+                sizedBoxW8,
+                CustomIconButton(
+                  iconData: FluentIcons.share_24_filled,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  tooltip: "分享",
+                  iconSize: 12.0,
+                  size: 28.0,
+                  onPressed: () {
+                    record.shareString.share();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

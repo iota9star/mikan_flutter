@@ -9,6 +9,7 @@ import 'package:mikan_flutter/providers/list_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/normal_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:provider/provider.dart';
@@ -114,19 +115,12 @@ class _PinedHeader extends StatelessWidget {
           Positioned(
             right: 0,
             top: 12.0 + Screen.statusBarHeight,
-            child: MaterialButton(
+            child: CustomIconButton(
+              iconData: FluentIcons.search_24_regular,
+              backgroundColor: ic,
               onPressed: () {
                 showSearchPanel(context);
               },
-              color: ic,
-              minWidth: 32.0,
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: circleShape,
-              child: const Icon(
-                FluentIcons.search_24_regular,
-                size: 16.0,
-              ),
             ),
           ),
           Positioned(

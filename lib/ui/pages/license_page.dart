@@ -31,9 +31,7 @@ class LicenseList extends StatelessWidget {
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
-            const SliverPinnedTitleHeader(
-              title: "开源协议",
-            ),
+            const SliverPinnedTitleHeader(title: "开源协议"),
             FutureBuilder<_LicenseData>(
               future: _licenses,
               builder: (context, snapshot) {

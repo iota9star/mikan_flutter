@@ -20,6 +20,7 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -95,7 +96,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                   },
                 ),
                 _buildOVA(theme),
-                sliverSizedBoxH80,
+                sliverSizedBoxH80WithNavBarHeight,
               ],
             ),
           );
@@ -404,20 +405,14 @@ class _PinedHeader extends StatelessWidget {
                       },
                     ),
                     sizedBoxW8,
-                    MaterialButton(
+                    CustomIconButton(
                       onPressed: () {
                         showYearSeasonBottomSheet(context);
                       },
-                      minWidth: 28.0,
-                      height: 28.0,
-                      color: ic,
-                      padding: EdgeInsets.zero,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: circleShape,
-                      child: const Icon(
-                        FluentIcons.chevron_down_24_regular,
-                        size: 14.0,
-                      ),
+                      size: 28.0,
+                      backgroundColor: ic,
+                      iconData: FluentIcons.chevron_down_24_regular,
+                      iconSize: 14.0,
                     ),
                   ],
                 ),
