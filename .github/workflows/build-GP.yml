@@ -52,4 +52,3 @@ jobs:
           inAppUpdatePriority: 3
           status: completed
           mappingFile: build/app/outputs/mapping/release/mapping.txt
-          changesNotSentForReview: true
