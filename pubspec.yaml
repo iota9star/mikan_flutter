@@ -12,9 +12,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^1.24.0
-  firebase_analytics: ^9.3.7
-  firebase_crashlytics: ^2.8.12
+  firebase_core: ^2.1.1
+  firebase_analytics: ^10.0.3
+  firebase_crashlytics: ^3.0.3
   path_provider: ^2.0.11
   dio: ^4.0.6
   dio_cookie_manager: ^2.0.0
