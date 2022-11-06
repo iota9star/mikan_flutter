@@ -6,12 +6,12 @@ import FlutterMacOS
 import Foundation
 
 import bitsdojo_window_macos
-import connectivity_plus_macos
+import connectivity_plus
 import firebase_analytics
 import firebase_core
 import firebase_crashlytics
 import path_provider_macos
-import share_plus_macos
+import share_plus
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {

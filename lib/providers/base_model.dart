@@ -1,6 +1,6 @@
 import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/log.dart';
 
 class BaseModel extends ChangeNotifier {
   bool _disposed = false;
@@ -46,8 +46,8 @@ class CancelableBaseModel extends BaseModel {
     _jobs.add(completer);
     future.then((value) {
       completer.complete(future);
-    }).catchError((dynamic err, StackTrace stackTrace) {
-      "$err: $stackTrace".debug(level: 3);
+    }).catchError((err, stackTrace) {
+      error.error(stackTrace: stackTrace, level: 3);
       completer.completeError(err, stackTrace);
     }).whenComplete(() {
       _jobs.remove(completer);

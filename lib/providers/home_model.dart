@@ -5,6 +5,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http.dart';
+import 'package:mikan_flutter/internal/log.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/providers/base_model.dart';
 import 'package:mikan_flutter/topvars.dart';
@@ -59,8 +60,8 @@ class HomeModel extends BaseModel {
           "没有检测到更新".toast();
         }
       }
-    } catch (e) {
-      e.debug();
+    } catch (e, s) {
+      e.error(stackTrace: s);
     } finally {
       _checkingUpgrade = false;
       notifyListeners();

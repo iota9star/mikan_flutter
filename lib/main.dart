@@ -13,6 +13,7 @@ import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/hive.dart';
 import 'package:mikan_flutter/internal/http_cache_manager.dart';
+import 'package:mikan_flutter/internal/log.dart';
 import 'package:mikan_flutter/internal/network_font_loader.dart';
 import 'package:mikan_flutter/internal/store.dart';
 import 'package:mikan_flutter/mikan_flutter_route.dart';
@@ -74,8 +75,8 @@ Future _initDependencies() async {
     if (isSupportFirebase) _initFirebase()
   ]);
   if (Platform.isAndroid) {
-    FlutterDisplayMode.setHighRefreshRate().catchError((e) {
-      e.error();
+    FlutterDisplayMode.setHighRefreshRate().catchError((e, s) {
+      e.error(stackTrace: s);
     });
   }
 }
@@ -150,6 +151,9 @@ class MikanApp extends StatelessWidget {
           break;
         case ConnectivityResult.bluetooth:
           "您正在使用蓝牙网络".toast();
+          break;
+        case ConnectivityResult.vpn:
+          "您正在使用 VPN".toast();
           break;
       }
     });

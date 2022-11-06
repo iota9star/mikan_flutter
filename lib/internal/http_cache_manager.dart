@@ -52,7 +52,7 @@ class HttpCacheManager {
     )
         .then((value) {
       completer.complete(value);
-    }).catchError((dynamic error, StackTrace stackTrace) {
+    }).catchError((error, stackTrace) {
       completer.completeError(error, stackTrace);
     }).whenComplete(() => _tasks.remove(url));
     _tasks[url] = completer;

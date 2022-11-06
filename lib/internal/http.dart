@@ -13,6 +13,7 @@ import 'package:isolate/load_balancer.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/log.dart';
 import 'package:mikan_flutter/internal/resolver.dart';
 import 'package:mikan_flutter/internal/store.dart';
 
@@ -210,7 +211,8 @@ class _Fetcher {
             ),
           );
         }
-      } catch (e) {
+      } catch (e, s) {
+        e.error(stackTrace: s);
         if (e is DioError) {
           if (e.response?.statusCode == 302 &&
               proto.method == _RequestMethod.postForm &&
@@ -222,7 +224,6 @@ class _Fetcher {
             proto._sendPort.send(Resp(false, msg: e.message));
           }
         } else {
-          "请求出错：$e".error();
           proto._sendPort.send(Resp(false, msg: e.toString()));
         }
       }

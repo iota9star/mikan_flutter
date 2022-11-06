@@ -4,7 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
-  connectivity_plus_windows
+  connectivity_plus
+  share_plus
   url_launcher_windows
 )
 

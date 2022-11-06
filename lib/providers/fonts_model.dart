@@ -4,6 +4,7 @@ import 'package:mikan_flutter/internal/consts.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/http.dart';
 import 'package:mikan_flutter/internal/http_cache_manager.dart';
+import 'package:mikan_flutter/internal/log.dart';
 import 'package:mikan_flutter/internal/network_font_loader.dart';
 import 'package:mikan_flutter/internal/repo.dart';
 import 'package:mikan_flutter/model/fonts.dart';
@@ -102,8 +103,8 @@ class FontsModel extends CancelableBaseModel {
       if (_lastEnableFont == font.id) {
         _themeModel.applyFont(font);
       }
-    } catch (e) {
-      e.debug();
+    } catch (e, s) {
+      e.error(stackTrace: s);
     } finally {
       chunkEvents.close();
       _loadingTask.remove(font.id)?.cancel("on finally.....");

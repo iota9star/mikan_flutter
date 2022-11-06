@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/internal/log.dart';
 
 class Screen {
   static final MediaQueryData mediaQueryData =
