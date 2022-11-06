@@ -40,10 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com",
+              "client_id": "626809778849-d4af03hv97s0d57gvlhh0gqhvs5hmniq.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "io.nichijou.flutter.mikan"
+                "bundle_id": "io.nichijou.flutter.mikan1"
               }
             }
           ]

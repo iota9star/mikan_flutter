@@ -203,49 +203,4 @@ class MikanApp extends StatelessWidget {
       ),
     );
   }
-
-// final ValueNotifier<int> _hoverIndexNotifier = ValueNotifier(-1);
-//
-// Widget controlButton(final int index) {
-//   return MouseRegion(
-//     onEnter: (_) {
-//       _hoverIndexNotifier.value = index;
-//     },
-//     onExit: (_) {
-//       _hoverIndexNotifier.value = -1;
-//     },
-//     child: InkWell(
-//       onTap: controlButtonActions[index],
-//       borderRadius: borderRadius16,
-//       child: Container(
-//         decoration: BoxDecoration(
-//           color: controlButtonColors[index],
-//           borderRadius: borderRadius8,
-//           boxShadow: const [
-//             BoxShadow(
-//               color: Colors.black12,
-//               blurRadius: 2.0,
-//             ),
-//           ],
-//         ),
-//         margin: edge6,
-//         padding: edge2,
-//         child: ValueListenableBuilder(
-//           builder: (_, hoverIndex, __) {
-//             return AnimatedOpacity(
-//               duration: const Duration(milliseconds: 100),
-//               opacity: hoverIndex == index ? 1.0 : 0.0,
-//               child: Icon(
-//                 controlButtonIcons[index],
-//                 size: 12.0,
-//                 color: Colors.black,
-//               ),
-//             );
-//           },
-//           valueListenable: _hoverIndexNotifier,
-//         ),
-//       ),
-//     ),
-//   );
-// }
 }

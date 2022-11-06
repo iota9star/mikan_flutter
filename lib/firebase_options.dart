@@ -57,16 +57,14 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDPj6xwYmdFGuCUHeSEt6mD4AjGw-_M1kM',
-    appId: '1:626809778849:ios:d580f4b3810bebb7edb6e0',
+    appId: '1:626809778849:ios:1c4a98399392e2c7edb6e0',
     messagingSenderId: '626809778849',
     projectId: 'flutter-mikan',
     databaseURL: 'https://flutter-mikan.firebaseio.com',
     storageBucket: 'flutter-mikan.appspot.com',
-    androidClientId:
-        '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
-    iosClientId:
-        '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
-    iosBundleId: 'io.nichijou.flutter.mikan',
+    androidClientId: '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
+    iosClientId: '626809778849-d4af03hv97s0d57gvlhh0gqhvs5hmniq.apps.googleusercontent.com',
+    iosBundleId: 'io.nichijou.flutter.mikan1',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -76,10 +74,8 @@ class DefaultFirebaseOptions {
     projectId: 'flutter-mikan',
     databaseURL: 'https://flutter-mikan.firebaseio.com',
     storageBucket: 'flutter-mikan.appspot.com',
-    androidClientId:
-        '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
-    iosClientId:
-        '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
+    androidClientId: '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
+    iosClientId: '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
     iosBundleId: 'io.nichijou.flutter.mikan',
   );
 }
