@@ -68,10 +68,15 @@ class BottomBarViewState extends State<BottomBarView>
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
           height: widget.height,
-          decoration: BoxDecoration(color: bgc.withOpacity(0.9)),
+          decoration: BoxDecoration(
+            color: bgc.withOpacity(0.9),
+            boxShadow: [
+              BoxShadow(color: bgc.withOpacity(0.1)),
+            ],
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: _buildBarItems(),
           ),
