@@ -1,5 +1,4 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -8,7 +7,7 @@ import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/register_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/icon_button.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
@@ -57,13 +56,19 @@ class RegisterPage extends StatelessWidget {
                           sizedBoxH56,
                           Row(
                             children: [
-                              CustomIconButton(
-                                onPressed: () {
+                              RippleTap(
+                                onTap: () {
                                   Navigator.of(context).pop();
                                 },
-                                size: 40.0,
-                                backgroundColor: theme.backgroundColor,
-                                iconData: FluentIcons.chevron_left_24_regular,
+                                color: theme.backgroundColor,
+                                child: const SizedBox(
+                                  width: 40.0,
+                                  height: 40.0,
+                                  child: Icon(
+                                    Icons.west_rounded,
+                                    size: 20.0,
+                                  ),
+                                ),
                               ),
                               sizedBoxW16,
                               Expanded(
@@ -121,7 +126,7 @@ class RegisterPage extends StatelessWidget {
                 style: TextStyle(
                   color: iconColor,
                   fontSize: 14.0,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               sizedBoxW12,
@@ -146,19 +151,19 @@ class RegisterPage extends StatelessWidget {
       controller: registerModel.userNameController,
       cursorColor: theme.secondary,
       decoration: InputDecoration(
-        isDense: true,
         border: InputBorder.none,
         labelText: '用户名',
         hintText: '请输入用户名',
-        hintStyle: const TextStyle(fontSize: 14.0),
+        isCollapsed: true,
         prefixIcon: Icon(
-          FluentIcons.person_24_regular,
+          Icons.perm_identity_rounded,
           color: theme.secondary,
         ),
       ),
       validator: (value) {
         return value.isNullOrBlank ? "用户名不能为空" : null;
       },
+      textAlignVertical: TextAlignVertical.center,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
     );
@@ -172,13 +177,12 @@ class RegisterPage extends StatelessWidget {
       controller: registerModel.emailController,
       cursorColor: theme.secondary,
       decoration: InputDecoration(
-        isDense: true,
+        isCollapsed: true,
         border: InputBorder.none,
         labelText: '邮箱',
         hintText: '请输入邮箱',
-        hintStyle: const TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
-          FluentIcons.mail_24_regular,
+          Icons.email_rounded,
           color: theme.secondary,
         ),
       ),
@@ -187,6 +191,7 @@ class RegisterPage extends StatelessWidget {
         if (!RegExp(r".+@.+\..+").hasMatch(value!)) return "邮箱格式不正确";
         return null;
       },
+      textAlignVertical: TextAlignVertical.center,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
     );
@@ -200,13 +205,12 @@ class RegisterPage extends StatelessWidget {
       controller: registerModel.qqController,
       cursorColor: theme.secondary,
       decoration: InputDecoration(
-        isDense: true,
+        isCollapsed: true,
         border: InputBorder.none,
         labelText: 'QQ',
         hintText: '请输入QQ号码',
-        hintStyle: const TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
-          FluentIcons.emoji_surprise_24_regular,
+          Icons.mood_rounded,
           color: theme.secondary,
         ),
       ),
@@ -219,6 +223,7 @@ class RegisterPage extends StatelessWidget {
         }
         return null;
       },
+      textAlignVertical: TextAlignVertical.center,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.number,
     );
@@ -237,23 +242,22 @@ class RegisterPage extends StatelessWidget {
           cursorColor: theme.secondary,
           controller: registerModel.passwordController,
           decoration: InputDecoration(
-            isDense: true,
+            isCollapsed: true,
             border: InputBorder.none,
             labelText: '密码',
             hintText: '请输入密码',
-            hintStyle: const TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
-              FluentIcons.password_24_regular,
+              Icons.password_rounded,
               color: theme.secondary,
             ),
             suffixIcon: IconButton(
               icon: showPassword
                   ? Icon(
-                      FluentIcons.eye_24_regular,
+                      Icons.visibility_rounded,
                       color: theme.secondary,
                     )
                   : Icon(
-                      FluentIcons.eye_off_24_regular,
+                Icons.visibility_off_rounded,
                       color: theme.secondary,
                     ),
               onPressed: () {
@@ -266,6 +270,7 @@ class RegisterPage extends StatelessWidget {
             if (value!.length < 6) return "密码最少6位";
             return null;
           },
+          textAlignVertical: TextAlignVertical.center,
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.visiblePassword,
         );
@@ -286,23 +291,22 @@ class RegisterPage extends StatelessWidget {
           cursorColor: theme.secondary,
           controller: registerModel.confirmPasswordController,
           decoration: InputDecoration(
-            isDense: true,
+            isCollapsed: true,
             border: InputBorder.none,
             labelText: '确认密码',
             hintText: '请输入确认密码',
-            hintStyle: const TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
-              FluentIcons.key_multiple_20_regular,
+              Icons.key_rounded,
               color: theme.secondary,
             ),
             suffixIcon: IconButton(
               icon: showPassword
                   ? Icon(
-                      FluentIcons.eye_24_regular,
+                      Icons.visibility_rounded,
                       color: theme.secondary,
                     )
                   : Icon(
-                      FluentIcons.eye_off_24_regular,
+                Icons.visibility_off_rounded,
                       color: theme.secondary,
                     ),
               onPressed: () {
@@ -317,6 +321,7 @@ class RegisterPage extends StatelessWidget {
             }
             return null;
           },
+          textAlignVertical: TextAlignVertical.center,
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.visiblePassword,
         );

@@ -44,7 +44,7 @@ class ThemeModel extends BaseModel {
     final fontFamily = _themeItem.fontFamily;
     const underlineInputBorder = UnderlineInputBorder(
       borderSide: BorderSide.none,
-      borderRadius: borderRadius16,
+      borderRadius: borderRadius0,
     );
     final themeData = ThemeData(
       platform: TargetPlatform.iOS,
@@ -74,6 +74,7 @@ class ThemeModel extends BaseModel {
             ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
+        isCollapsed: true,
         focusedBorder: underlineInputBorder,
         disabledBorder: underlineInputBorder,
         enabledBorder: underlineInputBorder,
@@ -84,8 +85,9 @@ class ThemeModel extends BaseModel {
         suffixStyle: TextStyle(color: accentColor),
         focusColor: accentColor,
         contentPadding: const EdgeInsets.symmetric(horizontal: 14.0),
-        hintStyle: TextStyle(height: 1.4, color: accentColor),
-        labelStyle: TextStyle(fontSize: 16.0, color: accentColor),
+        hintStyle: TextStyle(color: accentColor),
+        labelStyle: TextStyle(color: accentColor),
+        floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: accentColor,
@@ -94,8 +96,9 @@ class ThemeModel extends BaseModel {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius0),
           minimumSize: const Size(0, 40.0),
+          elevation: 0.0,
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
@@ -106,7 +109,8 @@ class ThemeModel extends BaseModel {
         style: TextButton.styleFrom(
           textStyle: TextStyle(color: primaryColor),
           minimumSize: const Size(0, 40.0),
-          shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius0),
+          elevation: 0.0,
         ),
       ),
       visualDensity: VisualDensity.standard,

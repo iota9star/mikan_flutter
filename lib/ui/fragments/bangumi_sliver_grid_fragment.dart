@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/image_provider.dart';
@@ -7,7 +7,7 @@ import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi.dart';
 import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:provider/provider.dart';
 
 typedef HandleSubscribe = void Function(Bangumi bangumi, String flag);
@@ -41,8 +41,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
       padding: padding,
       sliver: SliverGrid(
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          crossAxisSpacing: 12.0,
-          mainAxisSpacing: 12.0,
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
           maxCrossAxisExtent: 156.0,
           childAspectRatio: 0.56,
         ),
@@ -67,28 +67,17 @@ class BangumiSliverGridFragment extends StatelessWidget {
     final int index,
     final Bangumi bangumi,
   ) {
-    final String currFlag =
-        "$flag:bangumi:$index:${bangumi.id}:${bangumi.cover}";
-    final String msg = [bangumi.name, bangumi.updateAt]
+    final currFlag = "$flag:bangumi:$index:${bangumi.id}:${bangumi.cover}";
+    final msg = [bangumi.name, bangumi.updateAt]
         .where((element) => element.isNotBlank)
         .join("\n");
-    final Widget cover = _buildBangumiItemCover(currFlag, bangumi);
+    final cover = _buildBangumiItemCover(currFlag, bangumi);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
+      children: [
         Expanded(
-          child: TapScaleContainer(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: borderRadius8,
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withOpacity(0.08),
-                )
-              ],
-              color: theme.backgroundColor,
-            ),
+          child: ScalableRippleTap(
+            color: theme.backgroundColor,
             onTap: () {
               if (bangumi.grey) {
                 "此番组下暂无作品".toast();
@@ -104,47 +93,44 @@ class BangumiSliverGridFragment extends StatelessWidget {
                 );
               }
             },
-            child: ClipRRect(
-              borderRadius: borderRadius8,
-              child: Stack(
-                clipBehavior: Clip.antiAlias,
-                fit: StackFit.expand,
-                children: [
-                  Positioned.fill(child: cover),
-                  if (bangumi.num != null && bangumi.num! > 0)
-                    Positioned(
-                      right: -10,
-                      top: 4,
-                      child: Transform.rotate(
-                        angle: math.pi / 4.0,
-                        child: Container(
-                          width: 42.0,
-                          color: Colors.redAccent,
-                          child: Text(
-                            bangumi.num! > 99 ? "99+" : "+${bangumi.num}",
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 10.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              height: 1.25,
-                            ),
+            child: Stack(
+              clipBehavior: Clip.antiAlias,
+              fit: StackFit.expand,
+              children: [
+                Positioned.fill(child: cover),
+                if (bangumi.num != null && bangumi.num! > 0)
+                  Positioned(
+                    right: -10,
+                    top: 4,
+                    child: Transform.rotate(
+                      angle: math.pi / 4.0,
+                      child: Container(
+                        width: 42.0,
+                        color: Colors.redAccent,
+                        child: Text(
+                          bangumi.num! > 99 ? "99+" : "+${bangumi.num}",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 10.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            height: 1.25,
                           ),
                         ),
                       ),
                     ),
-                  if (!bangumi.grey)
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      child: _buildSubscribeButton(bangumi, currFlag),
-                    ),
-                ],
-              ),
+                  ),
+                if (!bangumi.grey)
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    child: _buildSubscribeButton(bangumi, currFlag),
+                  ),
+              ],
             ),
           ),
         ),
-        sizedBoxH10,
+        sizedBoxH8,
         Tooltip(
           padding: edgeH8V6,
           showDuration: dur3000,
@@ -153,8 +139,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
-                width: 4,
-                height: 12,
+                width: 4.0,
+                height: 12.0,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -173,7 +159,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                   bangumi.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: textStyle16B500,
+                  style: textStyle15B500,
                 ),
               ),
             ],
@@ -183,11 +169,8 @@ class BangumiSliverGridFragment extends StatelessWidget {
           Text(
             bangumi.updateAt,
             maxLines: 1,
-            style: TextStyle(
-              fontSize: 12.0,
-              height: 1.25,
-              color: theme.textTheme.subtitle1?.color,
-            ),
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.caption,
           )
       ],
     );
@@ -199,34 +182,36 @@ class BangumiSliverGridFragment extends StatelessWidget {
       shouldRebuild: (_, next) => next == currFlag,
       builder: (_, __, ___) {
         return bangumi.subscribed
-            ? SizedBox(
-                width: 32.0,
-                height: 32.0,
-                child: IconButton(
-                  tooltip: "取消订阅",
-                  padding: edge4,
-                  iconSize: 24.0,
-                  icon: const Icon(
-                    FluentIcons.heart_24_filled,
-                    color: Colors.redAccent,
+            ? Tooltip(
+                message: "取消订阅",
+                child: RippleTap(
+                  shape: const CircleBorder(),
+                  child: const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Icon(
+                      Icons.favorite_rounded,
+                      color: Colors.redAccent,
+                      size: 24.0,
+                    ),
                   ),
-                  onPressed: () {
+                  onTap: () {
                     handleSubscribe.call(bangumi, currFlag);
                   },
                 ),
               )
-            : SizedBox(
-                width: 32.0,
-                height: 32.0,
-                child: IconButton(
-                  tooltip: "订阅",
-                  padding: edge4,
-                  iconSize: 24.0,
-                  icon: Icon(
-                    FluentIcons.heart_24_regular,
-                    color: Colors.redAccent.shade100,
+            : Tooltip(
+                message: "订阅",
+                child: RippleTap(
+                  shape: const CircleBorder(),
+                  child: const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Icon(
+                      Icons.favorite_border_rounded,
+                      color: Colors.redAccent,
+                      size: 24.0,
+                    ),
                   ),
-                  onPressed: () {
+                  onTap: () {
                     handleSubscribe.call(bangumi, currFlag);
                   },
                 ),

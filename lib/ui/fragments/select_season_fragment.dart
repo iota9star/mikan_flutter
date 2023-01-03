@@ -1,5 +1,4 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -9,6 +8,7 @@ import 'package:mikan_flutter/model/year_season.dart';
 import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/icon_button.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +18,7 @@ class SelectSeasonFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
     final indexModel = Provider.of<IndexModel>(context, listen: false);
     return Material(
       color: theme.scaffoldBackgroundColor,
@@ -39,20 +39,20 @@ class SelectSeasonFragment extends StatelessWidget {
     final IndexModel indexModel,
   ) {
     return SliverPinnedToBoxAdapter(
-      child: Padding(
+      child: Container(
         padding: edge16,
+        decoration: BoxDecoration(color: theme.backgroundColor),
         child: Row(
           children: <Widget>[
             const Expanded(
               child: Text(
                 "年度番组",
-                style: textStyle24B,
+                style: textStyle20B,
               ),
             ),
-            CustomIconButton(
-              iconData: FluentIcons.chevron_right_24_regular,
-              backgroundColor: theme.backgroundColor,
-              onPressed: () {
+            RightArrowButton(
+              color: theme.scaffoldBackgroundColor,
+              onTap: () {
                 Navigator.pushNamed(
                   context,
                   Routes.seasonList.name,
@@ -85,25 +85,21 @@ class SelectSeasonFragment extends StatelessWidget {
                   : theme.secondary;
               return Tooltip(
                 message: season.title,
-                child: MaterialButton(
-                  minWidth: 0,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: borderRadius10,
-                  ),
-                  color: color.withOpacity(0.28),
-                  elevation: 0,
-                  onPressed: () {
+                child: RippleTap(
+                  color: color.withOpacity(0.1),
+                  onTap: () {
                     indexModel.loadSeason(season);
                   },
-                  child: Text(
-                    season.season,
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      height: 1.25,
-                      fontWeight: FontWeight.w500,
-                      color: color,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      season.season,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        height: 1.25,
+                        fontWeight: FontWeight.w500,
+                        color: color,
+                      ),
                     ),
                   ),
                 ),
@@ -120,7 +116,7 @@ class SelectSeasonFragment extends StatelessWidget {
     final IndexModel indexModel,
   ) {
     return SliverPadding(
-      padding: edgeH16B24WithNavbarHeight,
+      padding: edgeHT16B24WithNavbarHeight,
       sliver: Selector<IndexModel, List<YearSeason>>(
         selector: (_, model) => model.years,
         shouldRebuild: (pre, next) => pre.ne(next),

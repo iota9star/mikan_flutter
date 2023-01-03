@@ -2,7 +2,6 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 @FFArgumentImport()
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -16,6 +15,7 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/record_detail_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/icon_button.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -38,8 +38,10 @@ class RecordDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final bgct =
-        ColorTween(begin: Colors.transparent, end: theme.backgroundColor);
+    final bgct = ColorTween(
+      begin: theme.backgroundColor.withOpacity(0.0),
+      end: theme.backgroundColor.withOpacity(0.87),
+    );
     final it = ColorTween(
       begin: theme.backgroundColor,
       end: theme.scaffoldBackgroundColor,
@@ -72,7 +74,6 @@ class RecordDetailPage extends StatelessWidget {
                       builder: (_, ratio, __) {
                         final bgc = bgct.transform(ratio < 0.2 ? 0 : ratio);
                         final ic = it.transform(ratio);
-                        final shadowRadius = 3.0 * ratio;
                         return _buildHeader(
                           context,
                           theme,
@@ -80,7 +81,6 @@ class RecordDetailPage extends StatelessWidget {
                           ratio,
                           bgc,
                           ic,
-                          shadowRadius,
                         );
                       },
                     ),
@@ -101,43 +101,19 @@ class RecordDetailPage extends StatelessWidget {
     double ratio,
     Color? bgc,
     Color? ic,
-    double shadowRadius,
   ) {
-    final bottomRadius = Radius.circular(16.0 * ratio);
-    return Container(
-      decoration: BoxDecoration(
-        color: bgc,
-        borderRadius: BorderRadius.only(
-          bottomLeft: bottomRadius,
-          bottomRight: bottomRadius,
-        ),
-        boxShadow: shadowRadius <= 0.36
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.024),
-                  offset: const Offset(0.0, 1.0),
-                  blurRadius: shadowRadius,
-                  spreadRadius: shadowRadius,
-                ),
-              ],
-      ),
+    final child = Container(
+      decoration: BoxDecoration(color: bgc),
       padding: EdgeInsets.only(
-        top: 12 + Screen.statusBarHeight,
+        top: 12 + Screens.statusBarHeight,
         left: 16.0,
         right: 16.0,
         bottom: 12.0,
       ),
       child: Row(
         children: [
-          CustomIconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            backgroundColor: ic,
-            iconData: FluentIcons.chevron_left_24_regular,
-          ),
-          sizedBoxW12,
+          CircleBackButton(color: ic),
+          sizedBoxW16,
           Expanded(
             child: Opacity(
               opacity: ratio,
@@ -156,30 +132,40 @@ class RecordDetailPage extends StatelessWidget {
                           value,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                            height: 1.25,
-                          ),
+                          style: textStyle20B,
                         );
                       },
                     ),
                   ),
                   sizedBoxW12,
-                  CustomIconButton(
-                    onPressed: () {
+                  RippleTap(
+                    onTap: () {
                       model.recordDetail?.shareString.share();
                     },
-                    backgroundColor: ic,
-                    iconData: FluentIcons.share_24_filled,
+                    color: ic,
+                    shape: const CircleBorder(),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Icon(
+                        Icons.share_rounded,
+                        size: 16.0,
+                      ),
+                    ),
                   ),
                   sizedBoxW12,
-                  CustomIconButton(
-                    onPressed: () {
+                  RippleTap(
+                    onTap: () {
                       model.recordDetail?.magnet.launchAppAndCopy();
                     },
-                    backgroundColor: ic,
-                    iconData: FluentIcons.clipboard_link_24_filled,
+                    color: ic,
+                    shape: const CircleBorder(),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Icon(
+                        Icons.downloading_rounded,
+                        size: 16.0,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -188,6 +174,14 @@ class RecordDetailPage extends StatelessWidget {
         ],
       ),
     );
+    return ratio < 0.1
+        ? child
+        : ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
+              child: child,
+            ),
+          );
   }
 
   Widget _buildBackground(final ThemeData theme) {
@@ -238,18 +232,17 @@ class RecordDetailPage extends StatelessWidget {
             header: WaterDropMaterialHeader(
               backgroundColor: theme.secondary,
               color: theme.secondary.isDark ? Colors.white : Colors.black,
-              distance: Screen.statusBarHeight + 42.0,
+              distance: Screens.statusBarHeight + 42.0,
             ),
             onRefresh: model.refresh,
             child: WaterfallFlow(
               padding: edgeH16T96B48WithSafeHeight,
               gridDelegate:
                   const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-                minCrossAxisExtent: 400.0,
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 16.0,
+                    minCrossAxisExtent: 400.0,
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
               ),
-              physics: const BouncingScrollPhysics(),
               children: recordDetail == null
                   ? []
                   : [
@@ -279,17 +272,7 @@ class RecordDetailPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: edge24,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            theme.backgroundColor.withOpacity(0.72),
-            theme.backgroundColor.withOpacity(0.9),
-          ],
-        ),
-        borderRadius: borderRadius16,
-      ),
+      decoration: BoxDecoration(color: theme.backgroundColor),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -298,8 +281,8 @@ class RecordDetailPage extends StatelessWidget {
               recordDetail.name,
               style: TextStyle(
                 color: theme.secondary,
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+                fontWeight: FontWeight.w700,
+                fontSize: 18.0,
               ),
             ),
           if (recordDetail.name.isNotBlank) sizedBoxH8,
@@ -312,50 +295,40 @@ class RecordDetailPage extends StatelessWidget {
               .map((e) => Text(
                     "${e.key}: ${e.value}",
                     softWrap: true,
-                    style: TextStyle(
+            style: const TextStyle(
                       height: 1.6,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                      color: theme.textTheme.subtitle1?.color,
+                      fontSize: 14.0,
                     ),
                   ))
               .toList(),
           sizedBoxH12,
           if (!tags.isNullOrEmpty)
             Wrap(
+              spacing: 4.0,
+              runSpacing: 4.0,
               children: [
-                ...List.generate(tags.length, (index) {
-                  return Container(
-                    margin: const EdgeInsets.only(
-                      right: 4.0,
-                      bottom: 4.0,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4.0,
-                      vertical: 2.0,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          theme.primary,
-                          theme.primary.withOpacity(0.56),
-                        ],
+                ...List.generate(
+                  tags.length,
+                  (index) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4.0,
+                        vertical: 2.0,
                       ),
-                      borderRadius: borderRadius2,
-                    ),
-                    child: Text(
-                      tags[index],
-                      style: TextStyle(
-                        fontSize: 10,
-                        height: 1.25,
-                        color:
-                            theme.primary.isDark ? Colors.white : Colors.black,
+                      decoration: BoxDecoration(color: theme.primary),
+                      child: Text(
+                        tags[index],
+                        style: TextStyle(
+                          fontSize: 10.0,
+                          height: 1.25,
+                          color: theme.primary.isDark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  },
+                ),
               ],
             ),
         ],
@@ -368,10 +341,9 @@ class RecordDetailPage extends StatelessWidget {
     final ThemeData theme,
     final RecordDetail detail,
   ) {
-    final Color accentTextColor =
+    final accentTextColor =
         theme.secondary.isDark ? Colors.white : Colors.black;
-    final Color primaryTextColor =
-        theme.primary.isDark ? Colors.white : Colors.black;
+    final primaryTextColor = theme.primary.isDark ? Colors.white : Colors.black;
     return Column(
       children: [
         Stack(
@@ -385,17 +357,7 @@ class RecordDetailPage extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   height: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        theme.backgroundColor.withOpacity(0.72),
-                        theme.backgroundColor.withOpacity(0.9),
-                      ],
-                    ),
-                    borderRadius: borderRadius16,
-                  ),
+                  color: theme.backgroundColor,
                 ),
               ),
             ),
@@ -405,58 +367,36 @@ class RecordDetailPage extends StatelessWidget {
                 children: [
                   _buildBangumiCover(context, detail),
                   spacer,
-                  MaterialButton(
-                    onPressed: () {
+                  RippleTap(
+                    onTap: () {
                       detail.shareString.share();
                     },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    minWidth: 0,
-                    color: accentTextColor,
-                    padding: EdgeInsets.zero,
-                    shape: circleShape,
-                    child: Container(
-                      width: 42.0,
-                      height: 42.0,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            theme.secondary.withOpacity(0.78),
-                            theme.secondary,
-                          ],
-                        ),
-                        borderRadius: borderRadius24,
-                      ),
+                    color: theme.secondary,
+                    shape: const CircleBorder(),
+                    child: SizedBox(
+                      width: 40.0,
+                      height: 40.0,
                       child: Icon(
-                        FluentIcons.share_24_filled,
+                        Icons.share_rounded,
                         color: accentTextColor,
+                        size: 20.0,
                       ),
                     ),
                   ),
                   sizedBoxW16,
-                  MaterialButton(
-                    onPressed: () {
+                  RippleTap(
+                    onTap: () {
                       detail.magnet.launchAppAndCopy();
                     },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    minWidth: 0,
-                    color: primaryTextColor,
-                    padding: EdgeInsets.zero,
-                    shape: circleShape,
-                    child: Container(
+                    color: theme.primary,
+                    shape: const CircleBorder(),
+                    child: SizedBox(
                       width: 48.0,
                       height: 48.0,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            theme.primary.withOpacity(0.78),
-                            theme.primary,
-                          ],
-                        ),
-                        borderRadius: borderRadius24,
-                      ),
                       child: Icon(
-                        FluentIcons.clipboard_link_24_filled,
+                        Icons.downloading_rounded,
                         color: primaryTextColor,
+                        size: 24.0,
                       ),
                     ),
                   ),
@@ -476,17 +416,7 @@ class RecordDetailPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: edge24,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            theme.backgroundColor.withOpacity(0.72),
-            theme.backgroundColor.withOpacity(0.9),
-          ],
-        ),
-        borderRadius: borderRadius16,
-      ),
+      decoration: BoxDecoration(color: theme.backgroundColor),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -528,15 +458,6 @@ class RecordDetailPage extends StatelessWidget {
                     aspectRatio: 3 / 4,
                     child: Container(
                       padding: edge28,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 8.0,
-                            color: Colors.black.withOpacity(0.6),
-                          ),
-                        ],
-                        borderRadius: borderRadius8,
-                      ),
                       child: Center(
                         child: SpinKitPumpingHeart(
                           duration: const Duration(milliseconds: 960),
@@ -547,9 +468,7 @@ class RecordDetailPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Positioned(
-                    child: _buildSubscribeBtn(context, recordDetail),
-                  ),
+                  _buildSubscribeBtn(context, recordDetail),
                 ],
               );
       },
@@ -559,15 +478,8 @@ class RecordDetailPage extends StatelessWidget {
             AspectRatio(
               aspectRatio: 3 / 4,
               child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 8.0,
-                      color: Colors.black.withAlpha(24),
-                    )
-                  ],
-                  borderRadius: borderRadius8,
-                  image: const DecorationImage(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
                     image: AssetImage("assets/mikan.png"),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
@@ -584,18 +496,7 @@ class RecordDetailPage extends StatelessWidget {
       frameBuilder: (_, child, ___, ____) {
         return Stack(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 8.0,
-                    color: Colors.black.withAlpha(24),
-                  )
-                ],
-                borderRadius: borderRadius8,
-              ),
-              child: ClipRRect(borderRadius: borderRadius8, child: child),
-            ),
+            child,
             Positioned(
               child: _buildSubscribeBtn(context, recordDetail),
             ),
@@ -610,56 +511,59 @@ class RecordDetailPage extends StatelessWidget {
       selector: (_, model) => model.recordDetail?.subscribed ?? false,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, subscribed, __) {
-        final Widget child = subscribed
-            ? IconButton(
-                tooltip: "取消订阅",
-                padding: edge4,
-                iconSize: 20.0,
-                icon: const Icon(
-                  FluentIcons.heart_24_filled,
-                  color: Colors.redAccent,
+        return subscribed
+            ? Tooltip(
+                message: "取消订阅",
+                child: RippleTap(
+                  child: const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Icon(
+                      Icons.favorite_rounded,
+                      color: Colors.redAccent,
+                      size: 24.0,
+                    ),
+                  ),
+                  onTap: () {
+                    context.read<OpModel>().subscribeBangumi(
+                      recordDetail.id,
+                      recordDetail.subscribed,
+                      onSuccess: () {
+                        recordDetail.subscribed = !recordDetail.subscribed;
+                        context.read<RecordDetailModel>().subscribeChanged();
+                      },
+                      onError: (msg) {
+                        "订阅失败：$msg".toast();
+                      },
+                    );
+                  },
                 ),
-                onPressed: () {
-                  context.read<OpModel>().subscribeBangumi(
-                    recordDetail.id,
-                    recordDetail.subscribed,
-                    onSuccess: () {
-                      recordDetail.subscribed = !recordDetail.subscribed;
-                      context.read<RecordDetailModel>().subscribeChanged();
-                    },
-                    onError: (msg) {
-                      "订阅失败：$msg".toast();
-                    },
-                  );
-                },
               )
-            : IconButton(
-                tooltip: "订阅",
-                padding: edge4,
-                iconSize: 20.0,
-                icon: Icon(
-                  FluentIcons.heart_24_regular,
-                  color: Colors.redAccent.shade100,
+            : Tooltip(
+                message: "订阅",
+                child: RippleTap(
+                  child: const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Icon(
+                      Icons.favorite_border_rounded,
+                      color: Colors.redAccent,
+                      size: 24.0,
+                    ),
+                  ),
+                  onTap: () {
+                    context.read<OpModel>().subscribeBangumi(
+                      recordDetail.id,
+                      recordDetail.subscribed,
+                      onSuccess: () {
+                        recordDetail.subscribed = !recordDetail.subscribed;
+                        context.read<RecordDetailModel>().subscribeChanged();
+                      },
+                      onError: (msg) {
+                        "订阅失败：$msg".toast();
+                      },
+                    );
+                  },
                 ),
-                onPressed: () {
-                  context.read<OpModel>().subscribeBangumi(
-                    recordDetail.id,
-                    recordDetail.subscribed,
-                    onSuccess: () {
-                      recordDetail.subscribed = !recordDetail.subscribed;
-                      context.read<RecordDetailModel>().subscribeChanged();
-                    },
-                    onError: (msg) {
-                      "订阅失败：$msg".toast();
-                    },
-                  );
-                },
               );
-        return SizedBox(
-          width: 28.0,
-          height: 28.0,
-          child: child,
-        );
       },
     );
   }

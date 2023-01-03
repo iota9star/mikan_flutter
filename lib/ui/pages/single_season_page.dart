@@ -47,7 +47,7 @@ class SingleSeasonPage extends StatelessWidget {
                 header: WaterDropMaterialHeader(
                   backgroundColor: theme.secondary,
                   color: theme.secondary.isDark ? Colors.white : Colors.black,
-                  distance: Screen.statusBarHeight + 42.0,
+                  distance: Screens.statusBarHeight + 42.0,
                 ),
                 onRefresh: seasonModel.refresh,
                 child: CustomScrollView(
@@ -130,18 +130,14 @@ class SingleSeasonPage extends StatelessWidget {
               Expanded(
                 child: Text(
                   bangumiRow.name,
-                  style: textStyle20B,
+                  style: textStyle18B,
                 ),
               ),
               Tooltip(
                 message: full,
                 child: Text(
                   simple,
-                  style: TextStyle(
-                    color: theme.textTheme.subtitle1?.color,
-                    fontSize: 14.0,
-                    height: 1.25,
-                  ),
+                  style: theme.textTheme.caption,
                 ),
               ),
             ],

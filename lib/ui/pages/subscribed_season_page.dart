@@ -1,6 +1,5 @@
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
@@ -12,6 +11,7 @@ import 'package:mikan_flutter/providers/op_model.dart';
 import 'package:mikan_flutter/providers/subscribed_season_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +59,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                   header: WaterDropMaterialHeader(
                     backgroundColor: theme.secondary,
                     color: theme.secondary.isDark ? Colors.white : Colors.black,
-                    distance: Screen.statusBarHeight + 42.0,
+                    distance: Screens.statusBarHeight + 42.0,
                   ),
                   footer: Indicator.footer(
                     context,
@@ -175,8 +175,8 @@ class SubscribedSeasonPage extends StatelessWidget {
                   style: textStyle20B,
                 ),
               ),
-              MaterialButton(
-                onPressed: () {
+              RightArrowButton(
+                onTap: () {
                   Navigator.pushNamed(
                     context,
                     Routes.season.name,
@@ -190,15 +190,6 @@ class SubscribedSeasonPage extends StatelessWidget {
                     ),
                   );
                 },
-                color: theme.backgroundColor,
-                minWidth: 32.0,
-                padding: EdgeInsets.zero,
-                shape: circleShape,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: const Icon(
-                  FluentIcons.chevron_right_24_regular,
-                  size: 16.0,
-                ),
               ),
             ],
           ),

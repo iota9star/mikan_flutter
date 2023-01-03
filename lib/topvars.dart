@@ -1,10 +1,7 @@
 import 'dart:ui';
 
-import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 
 const edgeH16V4 = EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0);
@@ -13,6 +10,7 @@ const edgeHT16 = EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0);
 const edgeH16T4 = EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0);
 const edgeH16T8 = EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0);
 const edgeH16B16 = EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0);
+const edgeH16B8 = EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0);
 const edgeHB16T8 =
     EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0);
 const edgeHB24 = EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0);
@@ -58,37 +56,37 @@ const edgeB16 = EdgeInsets.only(bottom: 16.0);
 const edgeV8R12 = EdgeInsets.only(top: 8.0, bottom: 8.0, right: 12.0);
 
 final edge16WithStatusBar = EdgeInsets.only(
-  top: 16.0 + Screen.statusBarHeight,
+  top: 16.0 + Screens.statusBarHeight,
   left: 16.0,
   right: 16.0,
   bottom: 16.0,
 );
 
 final edgeH24V36WithStatusBar = EdgeInsets.only(
-  top: Screen.statusBarHeight + 36.0,
+  top: Screens.statusBarHeight + 36.0,
   bottom: 36.0,
   left: 24.0,
   right: 24.0,
 );
 
 final edgeH16T96B48WithSafeHeight = EdgeInsets.only(
-  top: 96.0 + Screen.statusBarHeight,
+  top: 96.0 + Screens.statusBarHeight,
   left: 16.0,
   right: 16.0,
-  bottom: 48.0 + Screen.navBarHeight,
+  bottom: 48.0 + Screens.navBarHeight,
 );
 
 final edgeHT16B24WithNavbarHeight = EdgeInsets.only(
   top: 16.0,
   left: 16.0,
   right: 16.0,
-  bottom: 24.0 + Screen.navBarHeight,
+  bottom: 24.0 + Screens.navBarHeight,
 );
 
 final edgeH16B24WithNavbarHeight = EdgeInsets.only(
   left: 16.0,
   right: 16.0,
-  bottom: 24.0 + Screen.navBarHeight,
+  bottom: 24.0 + Screens.navBarHeight,
 );
 
 const borderRadiusT16 = BorderRadius.only(
@@ -120,6 +118,7 @@ List<BoxShadow> scrollHeaderBoxShadow(final bool hasScrolled) => hasScrolled
 
 const radius16 = Radius.circular(16.0);
 const radius10 = Radius.circular(10.0);
+const radius0 = Radius.circular(0.0);
 
 const borderRadius24 = BorderRadius.all(Radius.circular(24.0));
 const borderRadius16 = BorderRadius.all(radius16);
@@ -127,9 +126,10 @@ const borderRadius12 = BorderRadius.all(Radius.circular(12.0));
 const borderRadius10 = BorderRadius.all(radius10);
 const borderRadius8 = BorderRadius.all(Radius.circular(8.0));
 const borderRadius2 = BorderRadius.all(Radius.circular(2.0));
+const borderRadius0 = BorderRadius.all(Radius.circular(0.0));
 
 const textStyle18B = TextStyle(
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w700,
   fontSize: 18.0,
   height: 1.25,
 );
@@ -147,17 +147,17 @@ const textStyle15B500 = TextStyle(
 const textStyle14B = TextStyle(
   fontSize: 14.0,
   height: 1.25,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w700,
 );
 const textStyle15B = TextStyle(
   fontSize: 15.0,
   height: 1.25,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w700,
 );
 const textStyle16B = TextStyle(
   fontSize: 16.0,
   height: 1.25,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w700,
 );
 
 const textStyle16B500 = TextStyle(
@@ -199,18 +199,18 @@ const textStyle13B500 = TextStyle(
 
 const textStyle24B = TextStyle(
   fontSize: 24.0,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w700,
   height: 1.25,
 );
 
 const textStyle20B = TextStyle(
   fontSize: 20.0,
   height: 1.25,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w700,
 );
 
 TextStyle textStyle10WithColor(final Color color) => TextStyle(
-      fontSize: 10,
+  fontSize: 10.0,
       height: 1.25,
       color: color,
     );
@@ -231,14 +231,14 @@ const sizedBoxH56 = SizedBox(height: 56.0);
 const sizedBoxH42 = SizedBox(height: 42.0);
 
 final sliverSizedBoxH80WithNavBarHeight = SliverToBoxAdapter(
-  child: SizedBox(height: 80.0 + Screen.navBarHeight),
+  child: SizedBox(height: 80.0 + Screens.navBarHeight),
 );
 
 final sizedBoxH24WithNavBarHeight =
-    SizedBox(height: 24.0 + Screen.navBarHeight);
+    SizedBox(height: 24.0 + Screens.navBarHeight);
 
 final sliverSizedBoxH24WithNavBarHeight = SliverToBoxAdapter(
-  child: SizedBox(height: 24.0 + Screen.navBarHeight),
+  child: SizedBox(height: 24.0 + Screens.navBarHeight),
 );
 
 const spacer = Spacer();
@@ -247,8 +247,6 @@ const dur240 = Duration(milliseconds: 240);
 const dur3000 = Duration(milliseconds: 3000);
 
 const emptySliverToBoxAdapter = SliverToBoxAdapter();
-
-const circleShape = CircleBorder();
 
 final normalFormHeader = Row(
   crossAxisAlignment: CrossAxisAlignment.center,
@@ -284,23 +282,6 @@ const offsetY_1 = Offset(0, -1);
 const offsetY_2 = Offset(0, -2);
 
 final navKey = GlobalKey<NavigatorState>();
-
-final controlButtonColors = [
-  HexColor.fromHex("#fbb43a"),
-  HexColor.fromHex("#3ec544"),
-  HexColor.fromHex("#fa625c")
-];
-const controlButtonIcons = [
-  FluentIcons.subtract_24_regular,
-  FluentIcons.add_24_regular,
-  FluentIcons.dismiss_24_regular
-];
-const controlButtonTooltips = ["最小化", "最大化", "关闭"];
-final controlButtonActions = [
-  () => appWindow.minimize(),
-  () => appWindow.maximizeOrRestore(),
-  () => appWindow.close(),
-];
 
 final normalScrollBehavior = const ScrollBehavior().copyWith(
   scrollbars: false,

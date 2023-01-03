@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jiffy/jiffy.dart';
@@ -12,18 +11,8 @@ import 'package:mikan_flutter/topvars.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class HomeModel extends BaseModel {
-  /// default select home page.
-  int _selectedIndex = 1;
-
-  int get selectedIndex => _selectedIndex;
-
   HomeModel() {
     checkAppVersion();
-  }
-
-  set selectedIndex(int value) {
-    _selectedIndex = value;
-    notifyListeners();
   }
 
   bool _checkingUpgrade = false;
@@ -180,7 +169,7 @@ class HomeModel extends BaseModel {
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                           child: Icon(
-                            FluentIcons.arrow_download_24_regular,
+                            Icons.download_rounded,
                             size: 14.0,
                             color: accentTextColor,
                           ),
@@ -252,7 +241,7 @@ class HomeModel extends BaseModel {
                     "下次一定",
                     style: TextStyle(
                       fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w700,
                       color: scaffoldBackgroundColor.isDark
                           ? Colors.white
                           : Colors.black,
@@ -272,7 +261,7 @@ class HomeModel extends BaseModel {
                     "前往下载",
                     style: TextStyle(
                       fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w700,
                       color: accentTextColor,
                     ),
                   ),

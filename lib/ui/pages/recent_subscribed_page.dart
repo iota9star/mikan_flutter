@@ -42,7 +42,7 @@ class RecentSubscribedPage extends StatelessWidget {
               header: WaterDropMaterialHeader(
                 backgroundColor: theme.secondary,
                 color: theme.secondary.isDark ? Colors.white : Colors.black,
-                distance: Screen.statusBarHeight + 42.0,
+                distance: Screens.statusBarHeight + 42.0,
               ),
               footer: Indicator.footer(
                 context,
@@ -76,8 +76,8 @@ class RecentSubscribedPage extends StatelessWidget {
           return SliverGrid(
             gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
               mainAxisExtent: 150.0,
             ),
             delegate: SliverChildBuilderDelegate(

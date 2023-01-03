@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -18,8 +17,8 @@ import 'package:mikan_flutter/ui/components/rss_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
 import 'package:mikan_flutter/widget/icon_button.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -49,7 +48,7 @@ class SubscribedFragment extends StatelessWidget {
       header: WaterDropMaterialHeader(
         backgroundColor: theme.secondary,
         color: theme.secondary.isDark ? Colors.white : Colors.black,
-        distance: Screen.statusBarHeight + 42.0,
+        distance: Screens.statusBarHeight + 42.0,
       ),
       controller: subscribedModel.refreshController,
       enablePullDown: true,
@@ -103,18 +102,10 @@ class SubscribedFragment extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: 240.0,
-              margin: edgeH16V8,
+              margin: edgeH16B16,
               padding: edge24,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    theme.backgroundColor.withOpacity(0.72),
-                    theme.backgroundColor.withOpacity(0.9),
-                  ],
-                ),
-                borderRadius: borderRadius16,
+                color: theme.backgroundColor.withOpacity(0.87),
               ),
               child: centerLoading,
             ),
@@ -124,18 +115,10 @@ class SubscribedFragment extends StatelessWidget {
           return SliverToBoxAdapter(
             child: Container(
               width: double.infinity,
-              margin: edgeH16V8,
+              margin: edgeH16B16,
               padding: edge28,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    theme.backgroundColor.withOpacity(0.72),
-                    theme.backgroundColor.withOpacity(0.9),
-                  ],
-                ),
-                borderRadius: borderRadius16,
+                color: theme.backgroundColor.withOpacity(0.87),
               ),
               child: Center(
                 child: Column(
@@ -161,7 +144,7 @@ class SubscribedFragment extends StatelessWidget {
         return BangumiSliverGridFragment(
           flag: "subscribed",
           bangumis: bangumis!,
-          padding: edgeH16V8,
+          padding: edgeH16B16,
           handleSubscribe: (bangumi, flag) {
             context.read<OpModel>().subscribeBangumi(
               bangumi.id,
@@ -199,10 +182,7 @@ class SubscribedFragment extends StatelessWidget {
                 return Row(
                   children: [
                     const Expanded(
-                      child: Text(
-                        "季度订阅",
-                        style: textStyle20B,
-                      ),
+                      child: Text("季度订阅", style: textStyle18B),
                     ),
                     if (hasVal)
                       Tooltip(
@@ -215,17 +195,13 @@ class SubscribedFragment extends StatelessWidget {
                             if (updateNum > 0) "🚀 $updateNum部",
                             "🎬 ${bangumis.length}部"
                           ].join("，"),
-                          style: TextStyle(
-                            color: theme.textTheme.subtitle1?.color,
-                            fontSize: 14.0,
-                            height: 1.25,
-                          ),
+                          style: theme.textTheme.caption,
                         ),
                       ),
                     sizedBoxW16,
                     if (hasVal)
-                      MaterialButton(
-                        onPressed: () {
+                      RightArrowButton(
+                        onTap: () {
                           Navigator.pushNamed(
                             context,
                             Routes.subscribedSeason.name,
@@ -242,15 +218,6 @@ class SubscribedFragment extends StatelessWidget {
                             ),
                           );
                         },
-                        color: theme.backgroundColor,
-                        minWidth: 32.0,
-                        padding: EdgeInsets.zero,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: circleShape,
-                        child: const Icon(
-                          FluentIcons.chevron_right_24_regular,
-                          size: 16.0,
-                        ),
                       ),
                   ],
                 );
@@ -279,7 +246,7 @@ class SubscribedFragment extends StatelessWidget {
                     const Expanded(
                       child: Text(
                         "最近更新",
-                        style: textStyle20B,
+                        style: textStyle18B,
                       ),
                     ),
                     if (!isEmpty)
@@ -287,28 +254,15 @@ class SubscribedFragment extends StatelessWidget {
                         message: "最近三天共有${rss!.length}部订阅更新",
                         child: Text(
                           "🚀 ${rss.length}部",
-                          style: TextStyle(
-                            color: theme.textTheme.subtitle1?.color,
-                            fontSize: 14.0,
-                            height: 1.25,
-                          ),
+                          style: theme.textTheme.caption,
                         ),
                       ),
                     sizedBoxW16,
                     if (!isEmpty)
-                      MaterialButton(
-                        onPressed: () {
+                      RightArrowButton(
+                        onTap: () {
                           _toRecentSubscribedPage(context);
                         },
-                        color: theme.backgroundColor,
-                        minWidth: 32.0,
-                        padding: EdgeInsets.zero,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: circleShape,
-                        child: const Icon(
-                          FluentIcons.chevron_right_24_regular,
-                          size: 16.0,
-                        ),
                       ),
                   ],
                 );
@@ -331,39 +285,31 @@ class SubscribedFragment extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: 120.0,
-              margin: edgeH16V8,
+              margin: edgeH16B16,
               padding: edge24,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    theme.backgroundColor.withOpacity(0.72),
-                    theme.backgroundColor.withOpacity(0.9),
-                  ],
-                ),
-                borderRadius: borderRadius16,
+                color: theme.backgroundColor.withOpacity(0.87),
               ),
               child: centerLoading,
             ),
           );
         }
         if (rss.isSafeNotEmpty) {
+          final entries = rss!.entries.toList(growable: false);
           return SliverPadding(
-            padding: edgeH16V8,
+            padding: edgeH16B16,
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 108.0,
-                crossAxisSpacing: 12.0,
-                mainAxisSpacing: 12.0,
-                childAspectRatio: 0.76,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+                childAspectRatio: 0.64,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final entry = rss!.entries.elementAt(index);
-                  return _buildRssListItemCover(context, entry);
+                  return _buildRssListItemCover(context, entries[index]);
                 },
-                childCount: rss!.length,
+                childCount: entries.length,
               ),
             ),
           );
@@ -371,19 +317,9 @@ class SubscribedFragment extends StatelessWidget {
         return SliverToBoxAdapter(
           child: Container(
             width: double.infinity,
-            margin: edgeH16V8,
+            margin: edgeH16B16,
             padding: edge24,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  theme.backgroundColor.withOpacity(0.72),
-                  theme.backgroundColor.withOpacity(0.9),
-                ],
-              ),
-              borderRadius: borderRadius16,
-            ),
+            decoration: BoxDecoration(color: theme.backgroundColor),
             child: Center(
               child: Column(
                 children: [
@@ -432,15 +368,7 @@ class SubscribedFragment extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: TapScaleContainer(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withOpacity(0.08),
-                ),
-              ],
-            ),
+          child: ScalableRippleTap(
             onTap: () {
               Navigator.pushNamed(
                 context,
@@ -452,70 +380,65 @@ class SubscribedFragment extends StatelessWidget {
                 ),
               );
             },
-            child: ClipRRect(
-              borderRadius: borderRadius8,
-              child: Stack(
-                fit: StackFit.loose,
-                clipBehavior: Clip.antiAlias,
-                children: [
-                  Positioned.fill(
-                    child: Hero(
-                      tag: currFlag,
-                      child: Image(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (_, child, event) {
-                          return event == null
-                              ? child
-                              : Padding(
-                                  padding: edge16,
-                                  child: Center(
-                                    child: Image.asset(
-                                      "assets/mikan.png",
-                                    ),
+            child: Stack(
+              fit: StackFit.loose,
+              clipBehavior: Clip.antiAlias,
+              children: [
+                Positioned.fill(
+                  child: Hero(
+                    tag: currFlag,
+                    child: Image(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (_, child, event) {
+                        return event == null
+                            ? child
+                            : Padding(
+                                padding: edge16,
+                                child: Center(
+                                  child: Image.asset(
+                                    "assets/mikan.png",
                                   ),
-                                );
-                        },
-                        errorBuilder: (_, __, ___) {
-                          return Padding(
-                            padding: edge16,
-                            child: Center(
-                              child: Image.asset(
-                                "assets/mikan.png",
-                                colorBlendMode: BlendMode.color,
-                                color: Colors.grey,
-                              ),
+                                ),
+                              );
+                      },
+                      errorBuilder: (_, __, ___) {
+                        return Padding(
+                          padding: edge16,
+                          child: Center(
+                            child: Image.asset(
+                              "assets/mikan.png",
+                              colorBlendMode: BlendMode.color,
+                              color: Colors.grey,
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  Positioned(
-                    right: -10,
-                    top: 4,
-                    child: Transform.rotate(
-                      angle: math.pi / 4.0,
-                      child: Container(
-                        width: 42.0,
-                        color: Colors.redAccent,
-                        child: Text(
-                          badge,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 10.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0,
-                            wordSpacing: 1.0,
-                            height: 1.25,
-                          ),
+                ),
+                Positioned(
+                  right: -10,
+                  top: 4,
+                  child: Transform.rotate(
+                    angle: math.pi / 4.0,
+                    child: Container(
+                      width: 42.0,
+                      color: Colors.redAccent,
+                      child: Text(
+                        badge,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 10.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -526,7 +449,7 @@ class SubscribedFragment extends StatelessWidget {
             records.first.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: textStyle15B500,
+            style: textStyle14B500,
           ),
         )
       ],
@@ -553,22 +476,13 @@ class SubscribedFragment extends StatelessWidget {
                   const Expanded(
                     child: Text(
                       "更新列表",
-                      style: textStyle20B,
+                      style: textStyle18B,
                     ),
                   ),
-                  MaterialButton(
-                    onPressed: () {
+                  RightArrowButton(
+                    onTap: () {
                       _toRecentSubscribedPage(context);
                     },
-                    color: theme.backgroundColor,
-                    minWidth: 32.0,
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    shape: circleShape,
-                    child: const Icon(
-                      FluentIcons.chevron_right_24_regular,
-                      size: 16.0,
-                    ),
                   ),
                 ],
               ),
@@ -581,7 +495,7 @@ class SubscribedFragment extends StatelessWidget {
 
   Widget _buildRssRecordsList(final ThemeData theme) {
     return SliverPadding(
-      padding: edgeH16V8,
+      padding: edgeH16B16,
       sliver: Selector<SubscribedModel, List<RecordItem>?>(
         selector: (_, model) => model.records,
         shouldRebuild: (pre, next) => pre.ne(next),
@@ -592,7 +506,7 @@ class SubscribedFragment extends StatelessWidget {
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final RecordItem record = records![index];
+                final record = records![index];
                 return RssRecordItem(
                   index: index,
                   record: record,
@@ -610,8 +524,8 @@ class SubscribedFragment extends StatelessWidget {
             ),
             gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
-              crossAxisSpacing: 12.0,
-              mainAxisSpacing: 12.0,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
               mainAxisExtent: 150.0,
             ),
           );
@@ -669,23 +583,23 @@ class _PinedHeader extends StatelessWidget {
         return [
           Positioned(
             right: 0,
-            top: 12.0 + Screen.statusBarHeight,
-            child: CustomIconButton(
-              onPressed: () {
+            top: 12.0 + Screens.statusBarHeight,
+            child: SmallCircleButton(
+              onTap: () {
                 showSettingsPanel(context);
               },
-              backgroundColor: ic,
-              iconData: FluentIcons.settings_20_regular,
+              color: ic,
+              icon: Icons.tune_rounded,
             ),
           ),
           Positioned(
-            top: 78 * (1 - ratio) + 16 + Screen.statusBarHeight,
+            top: 78.0 * (1 - ratio) + 18.0 + Screens.statusBarHeight,
             left: 0,
             child: Text(
               "我的订阅",
               style: TextStyle(
-                fontSize: 30.0 - (ratio * 6.0),
-                fontWeight: FontWeight.bold,
+                fontSize: 24.0 - (ratio * 4.0),
+                fontWeight: FontWeight.w700,
                 height: 1.25,
               ),
             ),

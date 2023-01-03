@@ -51,7 +51,7 @@ class SeasonListPage extends StatelessWidget {
                   header: WaterDropMaterialHeader(
                     backgroundColor: theme.secondary,
                     color: theme.secondary.isDark ? Colors.white : Colors.black,
-                    distance: Screen.statusBarHeight + 42.0,
+                    distance: Screens.statusBarHeight + 42.0,
                   ),
                   footer: Indicator.footer(
                     context,
@@ -81,8 +81,8 @@ class SeasonListPage extends StatelessWidget {
       slivers: [
         _buildHeader(),
         ...List.generate(seasons.length, (index) {
-          final SeasonBangumis seasonBangumis = seasons[index];
-          final String seasonTitle = seasonBangumis.season.title;
+          final seasonBangumis = seasons[index];
+          final seasonTitle = seasonBangumis.season.title;
           return MultiSliver(
             pushPinnedChildren: true,
             children: <Widget>[
@@ -90,14 +90,14 @@ class SeasonListPage extends StatelessWidget {
               ...List.generate(
                 seasonBangumis.bangumiRows.length,
                 (ind) {
-                  final BangumiRow bangumiRow = seasonBangumis.bangumiRows[ind];
+                  final bangumiRow = seasonBangumis.bangumiRows[ind];
                   return MultiSliver(
                     pushPinnedChildren: true,
                     children: <Widget>[
                       _buildBangumiRowSection(theme, bangumiRow),
                       BangumiSliverGridFragment(
                         flag: seasonTitle,
-                        padding: edge16,
+                        padding: edgeH16B16,
                         bangumis: bangumiRow.bangumis,
                         handleSubscribe: (bangumi, flag) {
                           context.read<OpModel>().subscribeBangumi(
@@ -133,11 +133,7 @@ class SeasonListPage extends StatelessWidget {
           padding: edgeH16T8,
           child: Text(
             seasonTitle,
-            style: const TextStyle(
-              fontSize: 20,
-              height: 1.25,
-              fontWeight: FontWeight.bold,
-            ),
+            style: textStyle18B,
           ),
         ),
       ),
@@ -175,18 +171,14 @@ class SeasonListPage extends StatelessWidget {
               Expanded(
                 child: Text(
                   bangumiRow.name,
-                  style: textStyle18B,
+                  style: textStyle16B,
                 ),
               ),
               Tooltip(
                 message: full,
                 child: Text(
                   simple,
-                  style: TextStyle(
-                    color: theme.textTheme.subtitle1?.color,
-                    fontSize: 14.0,
-                    height: 1.25,
-                  ),
+                  style: theme.textTheme.caption,
                 ),
               ),
             ],

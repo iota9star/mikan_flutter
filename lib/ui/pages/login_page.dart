@@ -1,5 +1,4 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -8,6 +7,7 @@ import 'package:mikan_flutter/providers/index_model.dart';
 import 'package:mikan_flutter/providers/login_model.dart';
 import 'package:mikan_flutter/providers/subscribed_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:provider/provider.dart';
 
 @FFRoute(
@@ -52,26 +52,27 @@ class LoginPage extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               Navigator.pushNamed(
-                                  context, Routes.register.name);
+                                context,
+                                Routes.register.name,
+                              );
                             },
                             child: const Text("还没有账号？赶紧来注册一个吧~"),
                           ),
                           sizedBoxH16,
                           Row(
                             children: [
-                              MaterialButton(
-                                onPressed: () {
+                              RippleTap(
+                                onTap: () {
                                   Navigator.of(context).pop();
                                 },
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                minWidth: 0.0,
-                                padding: edge16,
-                                shape: circleShape,
                                 color: theme.backgroundColor,
-                                child: const Icon(
-                                  FluentIcons.chevron_left_24_regular,
-                                  size: 16.0,
+                                child: const SizedBox(
+                                  width: 40.0,
+                                  height: 40.0,
+                                  child: Icon(
+                                    Icons.west_rounded,
+                                    size: 20.0,
+                                  ),
                                 ),
                               ),
                               sizedBoxW16,
@@ -128,7 +129,7 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(
                   color: iconColor,
                   fontSize: 14.0,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               sizedBoxW12,
@@ -188,15 +189,16 @@ class LoginPage extends StatelessWidget {
         border: InputBorder.none,
         labelText: '用户名',
         hintText: '请输入用户名',
-        hintStyle: const TextStyle(fontSize: 14.0),
+        isCollapsed: true,
         prefixIcon: Icon(
-          FluentIcons.person_24_regular,
+          Icons.perm_identity_rounded,
           color: theme.secondary,
         ),
       ),
       validator: (value) {
         return value.isNullOrBlank ? "用户名不能为空" : null;
       },
+      textAlignVertical: TextAlignVertical.center,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
     );
@@ -216,21 +218,21 @@ class LoginPage extends StatelessWidget {
           controller: loginModel.passwordController,
           decoration: InputDecoration(
             border: InputBorder.none,
+            isCollapsed: true,
             labelText: '密码',
             hintText: '请输入密码',
-            hintStyle: const TextStyle(fontSize: 14.0, letterSpacing: 0.0),
             prefixIcon: Icon(
-              FluentIcons.password_24_regular,
+              Icons.password_rounded,
               color: theme.secondary,
             ),
             suffixIcon: IconButton(
               icon: showPassword
                   ? Icon(
-                      FluentIcons.eye_24_regular,
+                      Icons.visibility_rounded,
                       color: theme.secondary,
                     )
                   : Icon(
-                      FluentIcons.eye_off_24_regular,
+                Icons.visibility_off_rounded,
                       color: theme.secondary,
                     ),
               onPressed: () {
@@ -243,6 +245,7 @@ class LoginPage extends StatelessWidget {
             if (value!.length < 6) return "密码最少6位";
             return null;
           },
+          textAlignVertical: TextAlignVertical.center,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
         );

@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -29,7 +28,7 @@ class ListFragment extends StatelessWidget {
         header: WaterDropMaterialHeader(
           backgroundColor: theme.secondary,
           color: theme.secondary.isDark ? Colors.white : Colors.black,
-          distance: Screen.statusBarHeight + 42.0,
+          distance: Screens.statusBarHeight + 42.0,
         ),
         footer: Indicator.footer(
           context,
@@ -83,9 +82,9 @@ class ListFragment extends StatelessWidget {
             ),
             gridDelegate:
                 const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-              minCrossAxisExtent: 360,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+              minCrossAxisExtent: 360.0,
             ),
           );
         },
@@ -114,23 +113,23 @@ class _PinedHeader extends StatelessWidget {
         return [
           Positioned(
             right: 0,
-            top: 12.0 + Screen.statusBarHeight,
-            child: CustomIconButton(
-              iconData: FluentIcons.search_24_regular,
-              backgroundColor: ic,
-              onPressed: () {
+            top: 12.0 + Screens.statusBarHeight,
+            child: SmallCircleButton(
+              icon: Icons.search_rounded,
+              color: ic,
+              onTap: () {
                 showSearchPanel(context);
               },
             ),
           ),
           Positioned(
-            top: 78 * (1 - ratio) + 16 + Screen.statusBarHeight,
-            left: 0,
+            top: 78.0 * (1 - ratio) + 18.0 + Screens.statusBarHeight,
+            left: 0.0,
             child: Text(
               "最新发布",
               style: TextStyle(
-                fontSize: 30.0 - (ratio * 6.0),
-                fontWeight: FontWeight.bold,
+                fontSize: 24.0 - (ratio * 4.0),
+                fontWeight: FontWeight.w700,
                 height: 1.25,
               ),
             ),

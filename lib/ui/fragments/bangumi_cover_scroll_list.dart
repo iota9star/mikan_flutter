@@ -87,19 +87,18 @@ class _BangumiCoverScrollListFragmentState
     }
     return GridView.builder(
       controller: _scrollController,
-      padding: edge16,
+      padding: edge8,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 156,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
+        maxCrossAxisExtent: 156.0,
+        crossAxisSpacing: 8.0,
+        mainAxisSpacing: 8.0,
         childAspectRatio: 3 / 4,
       ),
       itemBuilder: (_, index) {
         final bangumi = bangumis.elementAt(index % length);
         return Container(
           decoration: BoxDecoration(
-            borderRadius: borderRadius8,
             image: DecorationImage(
               image: CacheImageProvider(bangumi.cover),
               fit: BoxFit.cover,

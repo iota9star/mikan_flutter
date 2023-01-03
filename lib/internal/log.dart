@@ -1,7 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 const _esc = '\x1B[';
 const _reset = '${_esc}0m';
@@ -15,7 +15,7 @@ const _cyan = '${_esc}36m';
 const _white = '${_esc}37m';
 const _grey = '${_esc}90m';
 const _line =
-    "════════════════════════════════════════════════════════════════════════════════════════════════════";
+    '════════════════════════════════════════════════════════════════════════════════════════════════════';
 
 extension Log on Object? {
   void debug({String? tag, StackTrace? stackTrace, int level = 2}) {
@@ -36,18 +36,20 @@ extension Log on Object? {
     StackTrace? stackTrace,
     int level = 2,
   }) {
-    e(msg: msg, tag: tag, error: this, stackTrace: stackTrace, level: level);
+    e(
+      msg: msg,
+      tag: tag,
+      error: this,
+      stackTrace: stackTrace,
+      level: level,
+    );
   }
 
-  static void d(
-    Object? msg, {
+  static void d(Object? msg, {
     String? tag,
     StackTrace? stackTrace,
     int level = 1,
   }) {
-    if (!kDebugMode) {
-      return;
-    }
     final track = tag ?? _trackStackTraceId(StackTrace.current, level);
     _log(
       msg: msg,
@@ -58,8 +60,7 @@ extension Log on Object? {
     );
   }
 
-  static void i(
-    Object? msg, {
+  static void i(Object? msg, {
     String? tag,
     StackTrace? stackTrace,
     int level = 1,
@@ -74,8 +75,7 @@ extension Log on Object? {
     );
   }
 
-  static void w(
-    Object? msg, {
+  static void w(Object? msg, {
     String? tag,
     StackTrace? stackTrace,
     int level = 1,
@@ -108,7 +108,7 @@ extension Log on Object? {
     );
   }
 
-  static _log({
+  static void _log({
     Object? msg,
     required String level,
     required String levelColor,
@@ -116,27 +116,40 @@ extension Log on Object? {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    final es = [error, stackTrace].whereNotNull().join("\n\n");
+    final es = [error, stackTrace].whereNotNull().join('\n\n');
     final hasError = es.isNotEmpty;
     final buffer = StringBuffer();
     buffer.write(_wrapReverse(_wrapBold(_wrapColor(levelColor, level))));
-    buffer.write(" ");
+    buffer.write(' ');
     buffer.write(_wrapColor(_white, _logTime()));
-    buffer.write(" ");
+    buffer.write(' ');
     buffer.write(_wrapColor(_white, track));
-    buffer.write(" ");
-    buffer.write(_wrapReverse(_wrapColor(levelColor, _wrapBold(" => "))));
-    buffer.write(" ");
+    // buffer.write(" ");
+    // buffer.write(_wrapReverse(_wrapColor(levelColor, _wrapBold(" -> "))));
+    buffer.write(' ');
     if (msg != null) {
-      buffer.write(msg.toString());
+      if (msg is Function) {
+        msg = msg.call();
+      }
+      if (msg is Map || msg is Iterable) {
+        final encoder = JsonEncoder.withIndent('  ', (o) => o.toString());
+        buffer.writeln();
+        buffer.write(encoder.convert(msg));
+      } else {
+        buffer.write(msg);
+      }
     }
     if (hasError) {
       buffer.writeln();
       buffer.writeln(_wrapColor(levelColor, _line));
       buffer.writeln(_wrapColor(levelColor, es));
-      buffer.write(_wrapColor(levelColor, _line));
+      buffer.writeln(_wrapColor(levelColor, _line));
     }
-    stdout.writeln(buffer.toString());
+    if (Platform.isIOS || Platform.isMacOS) {
+      stdout.writeln(buffer.toString());
+    } else {
+      print(buffer.toString());
+    }
   }
 
   static String _trackStackTraceId(StackTrace stackTrace, int level) {
@@ -144,7 +157,8 @@ extension Log on Object? {
         .toString()
         .split('\n')[level]
         .replaceAll(RegExp(r'(#\d+\s+)'), '')
-        .replaceAll(RegExp(r'(<anonymous closure>)'), '()')
+        .replaceAll(RegExp('(<anonymous closure>)'), '()')
+        // .replaceAll(RegExp(r'\s\((.+?):\d+:\d+\)'), '')
         .replaceAll('. (', '.() (');
   }
 

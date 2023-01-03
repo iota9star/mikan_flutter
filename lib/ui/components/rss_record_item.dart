@@ -4,7 +4,7 @@ import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 
 @immutable
 class RssRecordItem extends StatelessWidget {
@@ -35,26 +35,16 @@ class RssRecordItem extends StatelessWidget {
     final heroTag = "rss:${record.id}:${record.cover}:${record.torrent}";
     final cover = Container(
       decoration: BoxDecoration(
-        borderRadius: borderRadius16,
         image: DecorationImage(
           image: CacheImageProvider(record.cover),
           fit: BoxFit.cover,
         ),
       ),
       foregroundDecoration: BoxDecoration(
-        borderRadius: borderRadius16,
-        gradient: LinearGradient(
-          colors: [
-            theme.backgroundColor.withOpacity(0.64),
-            theme.backgroundColor.withOpacity(0.87),
-            theme.backgroundColor,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: theme.backgroundColor.withOpacity(0.87),
       ),
     );
-    return TapScaleContainer(
+    return ScalableRippleTap(
       onTap: onTap,
       child: Stack(
         children: [
@@ -69,6 +59,7 @@ class RssRecordItem extends StatelessWidget {
           Positioned.fill(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: () {
@@ -83,7 +74,7 @@ class RssRecordItem extends StatelessWidget {
                     );
                   },
                   child: Padding(
-                    padding: edgeHT16,
+                    padding: edgeH16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -94,7 +85,7 @@ class RssRecordItem extends StatelessWidget {
                                 record.name,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: textStyle20B,
+                                style: textStyle18B,
                               ),
                             ),
                           ],
@@ -103,24 +94,23 @@ class RssRecordItem extends StatelessWidget {
                           record.publishAt,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: textStyle12,
+                          style: theme.textTheme.caption,
                         ),
                       ],
                     ),
                   ),
                 ),
                 Padding(
-                  padding: edgeH16T8,
+                  padding: edgeH16T4,
                   child: Text(
                     record.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: textStyle15B500,
+                    style: textStyle13,
                   ),
                 ),
-                sizedBoxH8,
                 Container(
-                  margin: edgeH16,
+                  margin: edgeH16T8,
                   width: double.infinity,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -131,17 +121,7 @@ class RssRecordItem extends StatelessWidget {
                           Container(
                             margin: edgeR4,
                             padding: edgeH4V2,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  theme.secondary,
-                                  theme.secondary.withOpacity(0.56),
-                                ],
-                              ),
-                              borderRadius: borderRadius2,
-                            ),
+                            decoration: BoxDecoration(color: theme.secondary),
                             child: Text(
                               record.size,
                               style: accentTagStyle,
@@ -152,17 +132,7 @@ class RssRecordItem extends StatelessWidget {
                             Container(
                               margin: edgeR4,
                               padding: edgeH4V2,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    theme.primary,
-                                    theme.primary.withOpacity(0.56),
-                                  ],
-                                ),
-                                borderRadius: borderRadius2,
-                              ),
+                              decoration: BoxDecoration(color: theme.primary),
                               child: Text(
                                 tag,
                                 style: primaryTagStyle,

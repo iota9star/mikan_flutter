@@ -43,7 +43,7 @@ class _LicenseDetailState extends State<LicenseDetail> {
                 top: 8.0,
                 left: 16.0,
                 right: 16.0,
-                bottom: 24.0 + Screen.navBarHeight,
+                bottom: 24.0 + Screens.navBarHeight,
               ),
               sliver: FutureBuilder<List<Widget>>(
                 future: _licenses,
@@ -126,7 +126,7 @@ class _LicenseDetailState extends State<LicenseDetail> {
             child: Text(
               paragraph.text,
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
                 fontFamily: "mono",
                 height: 1.5,
               ),

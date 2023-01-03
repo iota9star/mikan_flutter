@@ -1,5 +1,4 @@
 import 'package:extended_sliver/extended_sliver.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
@@ -20,9 +19,8 @@ import 'package:mikan_flutter/ui/fragments/bangumi_sliver_grid_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/search_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/select_season_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/settings_fragment.dart';
-import 'package:mikan_flutter/widget/icon_button.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -59,7 +57,7 @@ class _IndexFragmentState extends State<IndexFragment> {
             header: WaterDropMaterialHeader(
               backgroundColor: theme.secondary,
               color: theme.secondary.isDark ? Colors.white : Colors.black,
-              distance: Screen.statusBarHeight + 42.0,
+              distance: Screens.statusBarHeight + 42.0,
             ),
             onRefresh: indexModel.refresh,
             child: CustomScrollView(
@@ -69,13 +67,13 @@ class _IndexFragmentState extends State<IndexFragment> {
                 ...List.generate(
                   bangumiRows.length,
                   (index) {
-                    final BangumiRow bangumiRow = bangumiRows[index];
+                    final bangumiRow = bangumiRows[index];
                     return MultiSliver(
                       pushPinnedChildren: true,
                       children: [
                         _buildWeekSection(theme, bangumiRow),
                         BangumiSliverGridFragment(
-                          padding: edgeHB16T4,
+                          padding: edgeH16B16,
                           bangumis: bangumiRow.bangumis,
                           handleSubscribe: (bangumi, flag) {
                             context.read<OpModel>().subscribeBangumi(
@@ -129,9 +127,7 @@ class _IndexFragmentState extends State<IndexFragment> {
         offset: offsetY_1,
         child: Container(
           padding: edgeH16V8,
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-          ),
+          decoration: BoxDecoration(color: theme.scaffoldBackgroundColor),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -139,18 +135,14 @@ class _IndexFragmentState extends State<IndexFragment> {
               Expanded(
                 child: Text(
                   bangumiRow.name,
-                  style: textStyle20B,
+                  style: textStyle18B,
                 ),
               ),
               Tooltip(
                 message: full,
                 child: Text(
                   simple,
-                  style: TextStyle(
-                    color: theme.textTheme.subtitle1?.color,
-                    fontSize: 14.0,
-                    height: 1.25,
-                  ),
+                  style: theme.textTheme.caption,
                 ),
               ),
             ],
@@ -190,32 +182,25 @@ class _IndexFragmentState extends State<IndexFragment> {
                       }
                       return Hero(
                         tag: currFlag,
-                        child: TapScaleContainer(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              Routes.bangumi.name,
-                              arguments: Routes.bangumi.d(
-                                heroTag: currFlag,
-                                bangumiId: carousel.id,
-                                cover: carousel.cover,
-                              ),
-                            );
-                          },
-                          margin: EdgeInsets.symmetric(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
                             horizontal: hor,
                             vertical: ver > 8.0 ? 8.0 : ver,
                           ),
-                          decoration: BoxDecoration(
-                            borderRadius: borderRadius16,
+                          child: ScalableRippleTap(
                             color: theme.backgroundColor,
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 8,
-                                color: Colors.black.withOpacity(0.08),
-                              )
-                            ],
-                            image: DecorationImage(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                Routes.bangumi.name,
+                                arguments: Routes.bangumi.d(
+                                  heroTag: currFlag,
+                                  bangumiId: carousel.id,
+                                  cover: carousel.cover,
+                                ),
+                              );
+                            },
+                            child: Image(
                               fit: BoxFit.cover,
                               image: CacheImageProvider(carousel.cover),
                             ),
@@ -255,35 +240,30 @@ class _IndexFragmentState extends State<IndexFragment> {
           pushPinnedChildren: true,
           children: [
             SliverPinnedToBoxAdapter(
-                child: Container(
-              padding: edgeH16V8,
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  const Expanded(
-                    child: Text(
-                      "最近更新 • 剧场版/OVA",
-                      style: textStyle20B,
-                    ),
-                  ),
-                  Tooltip(
-                    message: full,
-                    child: Text(
-                      simple,
-                      style: TextStyle(
-                        color: theme.textTheme.subtitle1?.color,
-                        fontSize: 14.0,
-                        height: 1.25,
+              child: Container(
+                padding: edgeH16V8,
+                decoration: BoxDecoration(color: theme.scaffoldBackgroundColor),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Expanded(
+                      child: Text(
+                        "最近更新 • 剧场版/OVA",
+                        style: textStyle18B,
                       ),
                     ),
-                  ),
-                ],
+                    Tooltip(
+                      message: full,
+                      child: Text(
+                        simple,
+                        style: theme.textTheme.caption,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )),
+            ),
             SliverPadding(
               padding: edgeHB16T4,
               sliver: SliverWaterfallFlow(
@@ -324,9 +304,8 @@ void showSearchPanel(final BuildContext context) {
   showCupertinoModalBottomSheet(
     context: context,
     expand: true,
-    bounce: true,
     enableDrag: false,
-    topRadius: radius16,
+    topRadius: radius0,
     builder: (_) {
       return const SearchFragment();
     },
@@ -336,7 +315,7 @@ void showSearchPanel(final BuildContext context) {
 void showSettingsPanel(final BuildContext context) {
   showCupertinoModalBottomSheet(
     context: context,
-    topRadius: radius16,
+    topRadius: radius0,
     builder: (_) {
       return const SettingsFragment();
     },
@@ -346,7 +325,7 @@ void showSettingsPanel(final BuildContext context) {
 void showYearSeasonBottomSheet(final BuildContext context) {
   showCupertinoModalBottomSheet(
     context: context,
-    topRadius: radius16,
+    topRadius: radius0,
     builder: (_) {
       return const SelectSeasonFragment();
     },
@@ -364,12 +343,12 @@ class _PinedHeader extends StatelessWidget {
       end: theme.scaffoldBackgroundColor,
     );
     return StackSliverPinnedHeader(
-      minExtent: Screen.statusBarHeight + 76,
+      minExtent: Screens.statusBarHeight + 78.0,
       childrenBuilder: (context, ratio) {
         final ic = it.transform(ratio);
         return [
           Positioned(
-            top: 52 * (1 - ratio) + 16 + Screen.statusBarHeight,
+            top: 52.0 * (1 - ratio) + 16.0 + Screens.statusBarHeight,
             left: 0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,7 +361,7 @@ class _PinedHeader extends StatelessWidget {
                     final withoutName = user == null || user.name.isNullOrBlank;
                     return Text(
                       withoutName ? "Mikan Project" : "Hi, ${user.name}",
-                      style: textStyle14B500,
+                      style: textStyle14,
                     );
                   },
                 ),
@@ -397,22 +376,27 @@ class _PinedHeader extends StatelessWidget {
                             : Text(
                                 season.title,
                                 style: TextStyle(
-                                  fontSize: 30.0 - (ratio * 6.0),
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24.0 - (ratio * 4.0),
+                                  fontWeight: FontWeight.w700,
                                   height: 1.25,
                                 ),
                               );
                       },
                     ),
                     sizedBoxW8,
-                    CustomIconButton(
-                      onPressed: () {
+                    RippleTap(
+                      onTap: () {
                         showYearSeasonBottomSheet(context);
                       },
-                      size: 28.0,
-                      backgroundColor: ic,
-                      iconData: FluentIcons.chevron_down_24_regular,
-                      iconSize: 14.0,
+                      shape: const CircleBorder(),
+                      color: ic,
+                      child: const Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 20.0,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -421,26 +405,29 @@ class _PinedHeader extends StatelessWidget {
           ),
           Positioned(
             right: 0,
-            top: 12.0 + Screen.statusBarHeight,
+            top: 12.0 + Screens.statusBarHeight,
             child: Row(
               children: [
-                MaterialButton(
-                  onPressed: () {
+                RippleTap(
+                  onTap: () {
                     showSearchPanel(context);
                   },
-                  minWidth: 48.0,
-                  padding: edge8,
-                  shape: circleShape,
-                  child: const Icon(FluentIcons.search_24_regular),
+                  shape: const CircleBorder(),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.search_rounded),
+                  ),
                 ),
-                MaterialButton(
-                  onPressed: () {
+                sizedBoxW8,
+                RippleTap(
+                  onTap: () {
                     showSettingsPanel(context);
                   },
-                  minWidth: 48.0,
-                  padding: edge8,
-                  shape: circleShape,
-                  child: _buildAvatar(),
+                  shape: const CircleBorder(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _buildAvatar(),
+                  ),
                 ),
               ],
             ),

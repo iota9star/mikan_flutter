@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:mikan_flutter/internal/log.dart';
 
-class Screen {
+class Screens {
   static final MediaQueryData mediaQueryData =
       MediaQueryData.fromWindow(window);
   static final Size screenPhysicalSize = window.physicalSize;
@@ -19,7 +19,7 @@ class Screen {
   static final double navBarHeight = safePadding.bottom;
   static final bool isTablet = screenSize.shortestSide >= 600;
 
-  const Screen._();
+  const Screens._();
 
   static void screenInfo() {
     "screen info."

@@ -1,10 +1,9 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/widget/icon_button.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 
 @immutable
 class SimpleRecordItem extends StatelessWidget {
@@ -29,27 +28,19 @@ class SimpleRecordItem extends StatelessWidget {
     final TextStyle primaryTagStyle = textStyle10WithColor(
       theme.primary.isDark ? Colors.white : Colors.black,
     );
-    return TapScaleContainer(
+    return ScalableRippleTap(
       onTap: onTap,
-      decoration: BoxDecoration(
-        color: theme.backgroundColor,
-        borderRadius: borderRadius16,
-      ),
+      color: theme.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              record.publishAt,
-              style: textStyle18B,
+              record.title,
+              style: textStyle14B500,
             ),
             sizedBoxH8,
-            Text(
-              record.title,
-              style: textStyle15B500,
-            ),
-            sizedBoxH4,
             Wrap(
               spacing: 4.0,
               runSpacing: 4.0,
@@ -57,17 +48,7 @@ class SimpleRecordItem extends StatelessWidget {
                 if (record.size.isNotBlank)
                   Container(
                     padding: edgeH4V2,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          theme.secondary,
-                          theme.secondary.withOpacity(0.56),
-                        ],
-                      ),
-                      borderRadius: borderRadius2,
-                    ),
+                    decoration: BoxDecoration(color: theme.secondary),
                     child: Text(
                       record.size,
                       style: accentTagStyle,
@@ -77,17 +58,7 @@ class SimpleRecordItem extends StatelessWidget {
                   ...List.generate(record.tags.length, (index) {
                     return Container(
                       padding: edgeH4V2,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            theme.primary,
-                            theme.primary.withOpacity(0.56),
-                          ],
-                        ),
-                        borderRadius: borderRadius2,
-                      ),
+                      decoration: BoxDecoration(color: theme.primary),
                       child: Text(
                         record.tags[index],
                         style: primaryTagStyle,
@@ -96,42 +67,23 @@ class SimpleRecordItem extends StatelessWidget {
                   }),
               ],
             ),
-            sizedBoxH4,
+            sizedBoxH8,
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                CustomIconButton(
-                  iconData: FluentIcons.arrow_download_24_filled,
-                  tooltip: "复制并尝试打开种子链接",
-                  backgroundColor: theme.scaffoldBackgroundColor,
-                  onPressed: () {
-                    record.torrent.launchAppAndCopy();
-                  },
-                  iconSize: 12.0,
-                  size: 28.0,
+                Expanded(
+                  child: Text(
+                    record.publishAt,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.caption,
+                  ),
                 ),
                 sizedBoxW8,
-                CustomIconButton(
-                  iconData: FluentIcons.clipboard_link_24_filled,
-                  backgroundColor: theme.scaffoldBackgroundColor,
-                  tooltip: "复制并尝试打开磁力链接",
-                  iconSize: 12.0,
-                  size: 28.0,
-                  onPressed: () {
-                    record.magnet.launchAppAndCopy();
-                  },
-                ),
+                TorrentButton(payload: record.torrent),
                 sizedBoxW8,
-                CustomIconButton(
-                  iconData: FluentIcons.share_24_filled,
-                  backgroundColor: theme.scaffoldBackgroundColor,
-                  tooltip: "分享",
-                  iconSize: 12.0,
-                  size: 28.0,
-                  onPressed: () {
-                    record.shareString.share();
-                  },
-                ),
+                MagnetButton(payload: record.magnet),
+                sizedBoxW8,
+                ShareButton(payload: record.shareString),
               ],
             ),
           ],

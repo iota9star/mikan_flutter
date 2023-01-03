@@ -1,10 +1,10 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/providers/forgot_password_model.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -43,29 +43,28 @@ class ForgotPasswordPage extends StatelessWidget {
                           normalFormHeader,
                           sizedBoxH42,
                           _buildEmailField(theme, forgotModel),
-                          sizedBoxH56,
+                          sizedBoxH42,
                           Row(
                             children: [
-                              MaterialButton(
-                                onPressed: () {
+                              RippleTap(
+                                onTap: () {
                                   Navigator.of(context).pop();
                                 },
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                minWidth: 0.0,
-                                padding: edge16,
-                                shape: circleShape,
                                 color: theme.backgroundColor,
-                                child: const Icon(
-                                  FluentIcons.chevron_left_24_regular,
-                                  size: 16.0,
+                                child: const SizedBox(
+                                  width: 40.0,
+                                  height: 40.0,
+                                  child: Icon(
+                                    Icons.west_rounded,
+                                    size: 20.0,
+                                  ),
                                 ),
                               ),
                               sizedBoxW16,
                               Expanded(child: _buildSubmitButton(theme)),
                             ],
                           ),
-                          sizedBoxH56,
+                          sizedBoxH42,
                         ],
                       ),
                     ),
@@ -110,7 +109,7 @@ class ForgotPasswordPage extends StatelessWidget {
                 style: TextStyle(
                   color: iconColor,
                   fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               sizedBoxW12,
@@ -136,11 +135,11 @@ class ForgotPasswordPage extends StatelessWidget {
       cursorColor: theme.secondary,
       decoration: InputDecoration(
         border: InputBorder.none,
+        isCollapsed: true,
         labelText: '您的邮箱',
         hintText: '请输入邮箱地址',
-        hintStyle: const TextStyle(fontSize: 14.0),
         prefixIcon: Icon(
-          FluentIcons.mail_24_regular,
+          Icons.email_rounded,
           color: theme.secondary,
         ),
       ),
@@ -150,12 +149,13 @@ class ForgotPasswordPage extends StatelessWidget {
         }
         return value.isNullOrBlank ? "用户名不能为空" : null;
       },
+      textAlignVertical: TextAlignVertical.center,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
     );
   }
 
-  _showForgotPasswordConfirmationPanel(
+  void _showForgotPasswordConfirmationPanel(
     final BuildContext context,
     final ThemeData theme,
   ) {

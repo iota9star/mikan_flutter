@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -9,7 +8,7 @@ import 'package:mikan_flutter/model/theme_item.dart';
 import 'package:mikan_flutter/providers/theme_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/theme_edit_fragment.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -19,140 +18,114 @@ class ThemePanelFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
     final themeModel = Provider.of<ThemeModel>(context, listen: false);
     return Container(
       margin: edgeH16,
       decoration: BoxDecoration(
-        borderRadius: borderRadius16,
         color: theme.backgroundColor,
       ),
-      child: ValueListenableBuilder(
+      padding: edge16,
+      child: ValueListenableBuilder<Box<ThemeItem>>(
         valueListenable: Hive.box<ThemeItem>(HiveBoxKey.themes).listenable(),
-        builder: (context, Box<ThemeItem> box, widget) {
-          final int themeNum = box.values.length;
-          return GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: edge8,
-            shrinkWrap: true,
-            itemBuilder: (_, index) {
-              if (index == themeNum) {
-                return Padding(
-                  padding: edge8,
-                  child: MaterialButton(
-                    onPressed: () {
-                      _showEditThemePanel(context);
-                    },
-                    minWidth: 32.0,
-                    shape: circleShape,
-                    color: theme.scaffoldBackgroundColor,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: EdgeInsets.zero,
-                    child: const Icon(
-                      FluentIcons.add_24_regular,
-                      size: 16.0,
-                    ),
-                  ),
-                );
-              }
-              final ThemeItem themeItem = box.getAt(index)!;
-              final List<Color> outerColors = [
-                Color(themeItem.primaryColor),
-                Color(themeItem.accentColor),
-                if (themeItem.autoMode || !themeItem.isDark)
-                  Color(themeItem.lightScaffoldBackgroundColor),
-                if (themeItem.autoMode || themeItem.isDark)
-                  Color(themeItem.darkScaffoldBackgroundColor),
-                if (themeItem.autoMode || !themeItem.isDark)
-                  Color(themeItem.lightBackgroundColor),
-                if (themeItem.autoMode || themeItem.isDark)
-                  Color(themeItem.darkBackgroundColor),
-              ];
-              final List<Color> innerColors = themeItem.autoMode
-                  ? [Colors.white, Colors.black]
-                  : themeItem.isDark
-                      ? [Colors.black]
-                      : [Colors.white];
-              return themeModel.themeItem.id == themeItem.id
-                  ? TapScaleContainer(
-                      onTap: () {
-                        if (themeItem.id == 1) return "默认主题不可修改".toast();
-                        _showEditThemePanel(context, themeItem: themeItem);
-                      },
-                      curve: Curves.linear,
-                      margin: edge8,
-                      padding: edge2,
-                      decoration: BoxDecoration(
-                        borderRadius: borderRadius24,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 6.0,
-                          ),
-                        ],
-                        border: Border.all(
-                          color: theme.secondary,
-                          width: 2.0,
-                        ),
-                      ),
-                      child: CustomPaint(
-                        size: const Size.square(36.0),
-                        painter: ColorPiePainter(
-                          outerColors: outerColors,
-                          innerColors: innerColors,
-                        ),
-                      ),
+        builder: (context, box, widget) {
+          final values = box.values.toList(growable: false);
+          Widget buildItem(ThemeItem themeItem) {
+            final List<Color> outerColors = [
+              Color(themeItem.primaryColor),
+              Color(themeItem.accentColor),
+            ];
+            final selected = themeModel.themeItem.id == themeItem.id;
+            final selectedColor = theme.textTheme.bodyText1!.color!;
+            final circle = Container(
+              width: 40.0,
+              height: 40.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: outerColors,
+                  begin: AlignmentDirectional.topStart,
+                  end: AlignmentDirectional.bottomCenter,
+                  stops: const [0.0, 0.78],
+                ),
+                border: selected
+                    ? Border.all(
+                        color: selectedColor,
+                        width: 2.0,
+                      )
+                    : null,
+                shape: BoxShape.circle,
+              ),
+              child: selected
+                  ? Icon(
+                      Icons.done_rounded,
+                      size: 20.0,
+                      color: selectedColor,
                     )
-                  : TapScaleContainer(
-                      onTap: () {
-                        themeModel.themeItem = themeItem;
-                      },
-                      onLongPress: () {
-                        if (themeItem.id == 1) {
-                          "默认主题不可修改".toast();
-                          return;
-                        }
-                        _showEditThemePanel(context, themeItem: themeItem);
-                      },
-                      curve: Curves.linear,
-                      margin: edge8,
-                      padding: EdgeInsets.zero,
-                      decoration: BoxDecoration(
-                        borderRadius: borderRadius24,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 6.0,
-                          ),
-                        ],
-                      ),
-                      child: CustomPaint(
-                        size: const Size.square(40.0),
-                        painter: ColorPiePainter(
-                          outerColors: outerColors,
-                          innerColors: innerColors,
-                        ),
-                      ),
-                    );
-            },
-            itemCount: themeNum + 1,
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 56.0,
-            ),
+                  : null,
+            );
+            return selected
+                ? ScalableRippleTap(
+                    shape: const CircleBorder(),
+                    onTap: () {
+                      if (themeItem.id == 1) {
+                        "默认主题不可修改".toast();
+                        return;
+                      }
+                      _showEditThemePanel(context, themeItem: themeItem);
+                    },
+                    child: circle,
+                  )
+                : ScalableRippleTap(
+                    onTap: () {
+                      themeModel.themeItem = themeItem;
+                    },
+                    onLongPress: () {
+                      if (themeItem.id == 1) {
+                        "默认主题不可修改".toast();
+                        return;
+                      }
+                      _showEditThemePanel(context, themeItem: themeItem);
+                    },
+                    shape: const CircleBorder(),
+                    child: circle,
+                  );
+          }
+
+          return Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: [
+              for (ThemeItem theme in values) buildItem(theme),
+              ScalableRippleTap(
+                onTap: () {
+                  _showEditThemePanel(context);
+                },
+                shape: const CircleBorder(),
+                color: theme.scaffoldBackgroundColor,
+                child: const SizedBox(
+                  width: 40.0,
+                  height: 40.0,
+                  child: Icon(
+                    Icons.add_rounded,
+                    size: 16.0,
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
     );
   }
 
-  _showEditThemePanel(
+  void _showEditThemePanel(
     final BuildContext context, {
     final ThemeItem? themeItem,
   }) {
     showCupertinoModalBottomSheet(
       context: context,
       expand: false,
-      topRadius: radius16,
+      topRadius: radius0,
       builder: (context) {
         return ThemeEditFragment(themeItem: themeItem);
       },

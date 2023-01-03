@@ -94,29 +94,14 @@ extension NullableStringExt on String? {
     showToastWidget(
       Builder(
         builder: (context) {
-          final Color bgc = Theme.of(context).secondary;
+          final bgc = Theme.of(context).secondary;
           return Stack(
             alignment: AlignmentDirectional.center,
             children: [
               Container(
                 padding: edgeH12V8,
                 margin: edgeH24,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [bgc, bgc.withOpacity(0.87)],
-                  ),
-                  borderRadius: borderRadius8,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.024),
-                      offset: const Offset(0, 1),
-                      blurRadius: 3.0,
-                      spreadRadius: 3.0,
-                    ),
-                  ],
-                ),
+                decoration: BoxDecoration(color: bgc),
                 child: Text(
                   this!,
                   maxLines: 1,

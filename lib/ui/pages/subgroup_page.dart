@@ -48,7 +48,7 @@ class SubgroupPage extends StatelessWidget {
                   header: WaterDropMaterialHeader(
                     backgroundColor: theme.secondary,
                     color: theme.secondary.isDark ? Colors.white : Colors.black,
-                    distance: Screen.statusBarHeight + 42.0,
+                    distance: Screens.statusBarHeight + 42.0,
                   ),
                   enablePullDown: true,
                   enablePullUp: false,
@@ -83,14 +83,14 @@ class SubgroupPage extends StatelessWidget {
           ),
         if (galleries.isSafeNotEmpty)
           ...List.generate(galleries.length, (index) {
-            final SeasonGallery gallery = galleries[index];
+            final gallery = galleries[index];
             return MultiSliver(
               pushPinnedChildren: true,
               children: <Widget>[
                 _buildYearSeasonSection(theme, gallery.title),
                 BangumiSliverGridFragment(
                   flag: gallery.title,
-                  padding: edgeHB16T4,
+                  padding: edgeH16B16,
                   bangumis: gallery.bangumis,
                   handleSubscribe: (bangumi, flag) {
                     context.read<OpModel>().subscribeBangumi(
@@ -122,7 +122,7 @@ class SubgroupPage extends StatelessWidget {
           color: theme.scaffoldBackgroundColor,
           child: Text(
             section,
-            style: textStyle20B,
+            style: textStyle18B,
           ),
         ),
       ),

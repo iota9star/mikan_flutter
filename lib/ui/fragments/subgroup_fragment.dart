@@ -4,6 +4,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/subgroup.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 
 class SubgroupFragment extends StatelessWidget {
   final List<Subgroup> subgroups;
@@ -14,20 +15,25 @@ class SubgroupFragment extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Material(
-      color: theme.backgroundColor,
+      color: theme.scaffoldBackgroundColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: edgeHT16B8,
-            child: Text("请选择字幕组"),
+          Container(
+            width: double.infinity,
+            padding: edge16,
+            decoration: BoxDecoration(color: theme.backgroundColor),
+            child: const Text(
+              "请选择字幕组",
+              style: textStyle18B,
+            ),
           ),
           ...List.generate(
             subgroups.length,
             (index) {
               final Subgroup subgroup = subgroups[index];
-              return InkWell(
+              return RippleTap(
                 onTap: () {
                   Navigator.pushNamed(
                     context,
@@ -35,23 +41,16 @@ class SubgroupFragment extends StatelessWidget {
                     arguments: Routes.subgroup.d(subgroup: subgroup),
                   );
                 },
-                child: Container(
-                  padding: edgeH16V8,
+                child: Padding(
+                  padding: edge16,
                   child: Row(
                     children: [
                       Container(
                         width: 24.0,
                         height: 24.0,
                         decoration: BoxDecoration(
-                          borderRadius: borderRadius12,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              theme.primary,
-                              theme.primary.withOpacity(0.56),
-                            ],
-                          ),
+                          borderRadius: borderRadius16,
+                          color: theme.primary,
                         ),
                         child: Center(
                           child: Text(
@@ -70,7 +69,8 @@ class SubgroupFragment extends StatelessWidget {
                       Expanded(
                         child: Text(
                           subgroup.name,
-                          style: textStyle16B,
+                          maxLines: 1,
+                          style: textStyle15B,
                         ),
                       ),
                     ],
@@ -79,7 +79,7 @@ class SubgroupFragment extends StatelessWidget {
               );
             },
           ),
-          SizedBox(height: 8 + Screen.navBarHeight),
+          SizedBox(height: 8 + Screens.navBarHeight),
         ],
       ),
     );

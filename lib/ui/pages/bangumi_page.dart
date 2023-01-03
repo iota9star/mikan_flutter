@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
@@ -12,12 +11,12 @@ import 'package:mikan_flutter/internal/image_provider.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/model/bangumi_details.dart';
-import 'package:mikan_flutter/model/record_item.dart';
 import 'package:mikan_flutter/model/subgroup_bangumi.dart';
 import 'package:mikan_flutter/providers/bangumi_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_bangumis_fragment.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -44,9 +43,11 @@ class BangumiPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final bgct =
-        ColorTween(begin: Colors.transparent, end: theme.backgroundColor);
+    final theme = Theme.of(context);
+    final bgct = ColorTween(
+      begin: theme.backgroundColor.withOpacity(0.0),
+      end: theme.backgroundColor.withOpacity(0.87),
+    );
     final it = ColorTween(
       begin: theme.backgroundColor,
       end: theme.scaffoldBackgroundColor,
@@ -99,7 +100,6 @@ class BangumiPage extends StatelessWidget {
                       builder: (_, ratio, __) {
                         final bgc = bgct.transform(ratio < 0.2 ? 0 : ratio);
                         final ic = it.transform(ratio);
-                        final shadowRadius = 3.0 * ratio;
                         return _buildHeader(
                           context,
                           theme,
@@ -107,7 +107,6 @@ class BangumiPage extends StatelessWidget {
                           ratio,
                           bgc,
                           ic,
-                          shadowRadius,
                         );
                       },
                     ),
@@ -128,50 +127,19 @@ class BangumiPage extends StatelessWidget {
     double ratio,
     Color? bgc,
     Color? ic,
-    double shadowRadius,
   ) {
-    final bottomRadius = Radius.circular(16 * ratio);
-    return Container(
-      decoration: BoxDecoration(
-        color: bgc,
-        borderRadius: BorderRadius.only(
-          bottomLeft: bottomRadius,
-          bottomRight: bottomRadius,
-        ),
-        boxShadow: shadowRadius <= 0.36
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.024),
-                  offset: const Offset(0, 1),
-                  blurRadius: shadowRadius,
-                  spreadRadius: shadowRadius,
-                ),
-              ],
-      ),
+    final child = Container(
+      decoration: BoxDecoration(color: bgc),
       padding: EdgeInsets.only(
-        top: 12 + Screen.statusBarHeight,
+        top: 12 + Screens.statusBarHeight,
         left: 16.0,
         right: 16.0,
         bottom: 12.0,
       ),
       child: Row(
         children: [
-          MaterialButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            color: ic,
-            minWidth: 32.0,
-            padding: EdgeInsets.zero,
-            shape: circleShape,
-            child: const Icon(
-              FluentIcons.chevron_left_24_regular,
-              size: 16.0,
-            ),
-          ),
-          sizedBoxW12,
+          CircleBackButton(color: ic),
+          sizedBoxW16,
           Expanded(
             child: Opacity(
               opacity: ratio,
@@ -190,52 +158,49 @@ class BangumiPage extends StatelessWidget {
                           value,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                            height: 1.25,
-                          ),
+                          style: textStyle20B,
                         );
                       },
                     ),
                   ),
                   sizedBoxW12,
-                  MaterialButton(
-                    onPressed: () {
+                  RippleTap(
+                    onTap: () {
                       model.bangumiDetail?.shareString.share();
                     },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     color: ic,
-                    minWidth: 32.0,
-                    padding: EdgeInsets.zero,
-                    shape: circleShape,
-                    child: const Icon(
-                      FluentIcons.share_24_filled,
-                      size: 16.0,
+                    shape: const CircleBorder(),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Icon(
+                        Icons.share_rounded,
+                        size: 16.0,
+                      ),
                     ),
                   ),
-                  sizedBoxW12,
-                  MaterialButton(
-                    onPressed: () {
+                  sizedBoxW8,
+                  RippleTap(
+                    onTap: () {
                       model.changeSubscribe();
                     },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     color: ic,
-                    minWidth: 32.0,
-                    padding: EdgeInsets.zero,
-                    shape: circleShape,
-                    child: Selector<BangumiModel, bool>(
-                      selector: (_, model) =>
-                          model.bangumiDetail?.subscribed == true,
-                      shouldRebuild: (pre, next) => pre != next,
-                      builder: (_, subscribed, __) {
-                        return Icon(
-                          subscribed
-                              ? FluentIcons.heart_24_filled
-                              : FluentIcons.heart_24_regular,
-                          size: 16.0,
-                        );
-                      },
+                    shape: const CircleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Selector<BangumiModel, bool>(
+                        selector: (_, model) =>
+                            model.bangumiDetail?.subscribed == true,
+                        shouldRebuild: (pre, next) => pre != next,
+                        builder: (_, subscribed, __) {
+                          return Icon(
+                            subscribed
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            color: subscribed ? Colors.redAccent : null,
+                            size: 16.0,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -245,6 +210,14 @@ class BangumiPage extends StatelessWidget {
         ],
       ),
     );
+    return ratio <= 0.1
+        ? child
+        : ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaY: 16.0, sigmaX: 16.0),
+              child: child,
+            ),
+          );
   }
 
   Widget _buildList(
@@ -290,17 +263,16 @@ class BangumiPage extends StatelessWidget {
           header: WaterDropMaterialHeader(
             backgroundColor: theme.secondary,
             color: theme.secondary.isDark ? Colors.white : Colors.black,
-            distance: Screen.statusBarHeight + 42.0,
+            distance: Screens.statusBarHeight + 42.0,
           ),
           onRefresh: model.load,
           child: WaterfallFlow(
             padding: edgeH16T96B48WithSafeHeight,
-            physics: const BouncingScrollPhysics(),
             gridDelegate:
                 const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 400.0,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
+                  minCrossAxisExtent: 400.0,
+              crossAxisSpacing: 4.0,
+              mainAxisSpacing: 4.0,
             ),
             children: items,
           ),
@@ -318,64 +290,46 @@ class BangumiPage extends StatelessWidget {
     return subgroups.values.map((e) {
       final length = e.records.length;
       return Container(
-        padding: edge24,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              theme.backgroundColor.withOpacity(0.72),
-              theme.backgroundColor.withOpacity(0.9),
-            ],
-          ),
-          borderRadius: borderRadius16,
-        ),
+        decoration: BoxDecoration(color: theme.backgroundColor),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    e.name,
-                    style: TextStyle(
-                      color: theme.secondary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                      height: 1.25,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 20.0,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      e.name,
+                      style: TextStyle(
+                        color: theme.secondary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20.0,
+                        height: 1.25,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 20.0,
-                  height: 20.0,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: EdgeInsets.zero,
-                    ),
-                    onPressed: () {
+                  RightArrowButton(
+                    onTap: () {
                       _showSubgroupPanel(context, model, e.dataId);
                     },
-                    child: Icon(
-                      FluentIcons.chevron_right_24_regular,
-                      size: 20.0,
-                      color: theme.secondary,
-                    ),
+                    color: theme.scaffoldBackgroundColor,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            sizedBoxH24,
             ListView.separated(
               itemCount: length > 4 ? 4 : length,
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, ind) {
-                final RecordItem record = e.records[ind];
-                return TapScaleContainer(
+                final record = e.records[ind];
+                return RippleTap(
                   onTap: () {
                     Navigator.pushNamed(
                       context,
@@ -383,90 +337,45 @@ class BangumiPage extends StatelessWidget {
                       arguments: Routes.recordDetail.d(url: record.url),
                     );
                   },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        record.title,
-                        style: textStyle15B500,
-                      ),
-                      sizedBoxH12,
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            record.publishAt,
-                            style: textStyle12,
-                          ),
-                          spacer,
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                padding: EdgeInsets.zero,
-                              ),
-                              onPressed: () {
-                                record.torrent.launchAppAndCopy();
-                              },
-                              child: Icon(
-                                FluentIcons.arrow_download_24_filled,
-                                size: 20.0,
-                                color: theme.secondary,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 12.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          record.title,
+                          style: textStyle14B500,
+                        ),
+                        sizedBoxH12,
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                record.publishAt,
+                                style: theme.textTheme.caption,
                               ),
                             ),
-                          ),
-                          sizedBoxW16,
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                padding: EdgeInsets.zero,
-                              ),
-                              onPressed: () {
-                                record.magnet.launchAppAndCopy();
-                              },
-                              child: Icon(
-                                FluentIcons.clipboard_link_24_filled,
-                                size: 20.0,
-                                color: theme.secondary,
-                              ),
-                            ),
-                          ),
-                          sizedBoxW16,
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                padding: EdgeInsets.zero,
-                              ),
-                              onPressed: () {
-                                record.shareString.share();
-                              },
-                              child: Icon(
-                                FluentIcons.share_24_filled,
-                                size: 20.0,
-                                color: theme.secondary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            sizedBoxW8,
+                            TorrentButton(payload: record.torrent),
+                            sizedBoxW8,
+                            MagnetButton(payload: record.magnet),
+                            sizedBoxW8,
+                            ShareButton(payload: record.shareString),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
               separatorBuilder: (_, __) {
-                return const Padding(
-                  padding: edgeV8,
-                  child: Divider(),
-                );
+                return const Divider();
               },
             ),
+            sizedBoxH24,
           ],
         ),
       );
@@ -477,17 +386,7 @@ class BangumiPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: edge24,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            theme.backgroundColor.withOpacity(0.72),
-            theme.backgroundColor.withOpacity(0.9),
-          ],
-        ),
-        borderRadius: borderRadius16,
-      ),
+      color: theme.backgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -495,7 +394,7 @@ class BangumiPage extends StatelessWidget {
             "概况简介",
             style: textStyle18B,
           ),
-          sizedBoxH8,
+          sizedBoxH12,
           Text(
             detail.intro,
             textAlign: TextAlign.justify,
@@ -515,21 +414,12 @@ class BangumiPage extends StatelessWidget {
     final ThemeData theme,
     final BangumiModel model,
   ) {
-    final subgroups = model.bangumiDetail?.subgroupBangumis.entries;
+    final subgroups =
+        model.bangumiDetail?.subgroupBangumis.entries.toList(growable: false);
     return Container(
       width: double.infinity,
       padding: edge24,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            theme.backgroundColor.withOpacity(0.72),
-            theme.backgroundColor.withOpacity(0.9),
-          ],
-        ),
-        borderRadius: borderRadius16,
-      ),
+      decoration: BoxDecoration(color: theme.backgroundColor),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -537,28 +427,36 @@ class BangumiPage extends StatelessWidget {
             "字幕组",
             style: textStyle18B,
           ),
-          sizedBoxH8,
+          sizedBoxH12,
           Wrap(
             spacing: 8.0,
             runSpacing: 8.0,
             children: List.generate(subgroups!.length, (index) {
-              final entry = subgroups.elementAt(index);
-              final String groupName = entry.value.name;
-              return ActionChip(
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                tooltip: groupName,
-                label: Text(
-                  groupName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: theme.secondary,
+              final entry = subgroups[index];
+              final groupName = entry.value.name;
+              return Tooltip(
+                message: groupName,
+                child: RippleTap(
+                  color: theme.secondary.withOpacity(0.1),
+                  onTap: () {
+                    _showSubgroupPanel(context, model, entry.key);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4.0,
+                    ),
+                    child: Text(
+                      groupName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: theme.secondary,
+                        height: 1.25,
+                      ),
+                    ),
                   ),
                 ),
-                backgroundColor: theme.secondary.withOpacity(0.18),
-                onPressed: () {
-                  _showSubgroupPanel(context, model, entry.key);
-                },
               );
             }),
           ),
@@ -587,17 +485,7 @@ class BangumiPage extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    theme.backgroundColor.withOpacity(0.72),
-                    theme.backgroundColor.withOpacity(0.9),
-                  ],
-                ),
-                borderRadius: borderRadius16,
-              ),
+              decoration: BoxDecoration(color: theme.backgroundColor),
             ),
           ),
         ),
@@ -607,55 +495,32 @@ class BangumiPage extends StatelessWidget {
             children: [
               _buildCover(cover, model),
               spacer,
-              MaterialButton(
-                onPressed: () {
+              RippleTap(
+                onTap: () {
                   model.bangumiDetail?.shareString.share();
                 },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minWidth: 0,
-                color: accentTextColor,
-                padding: EdgeInsets.zero,
-                shape: circleShape,
-                child: Container(
-                  width: 42.0,
-                  height: 42.0,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        theme.secondary.withOpacity(0.78),
-                        theme.secondary,
-                      ],
-                    ),
-                    borderRadius: borderRadius24,
-                  ),
+                color: theme.secondary,
+                shape: const CircleBorder(),
+                child: SizedBox(
+                  width: 40.0,
+                  height: 40.0,
                   child: Icon(
-                    FluentIcons.share_24_filled,
+                    Icons.share_rounded,
                     color: accentTextColor,
+                    size: 20.0,
                   ),
                 ),
               ),
               sizedBoxW16,
-              MaterialButton(
-                onPressed: () {
+              RippleTap(
+                onTap: () {
                   model.changeSubscribe();
                 },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minWidth: 0,
-                color: primaryTextColor,
-                padding: EdgeInsets.zero,
-                shape: circleShape,
-                child: Container(
+                color: theme.primaryColor,
+                shape: const CircleBorder(),
+                child: SizedBox(
                   width: 48.0,
                   height: 48.0,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        theme.primary.withOpacity(0.78),
-                        theme.primary,
-                      ],
-                    ),
-                    borderRadius: borderRadius24,
-                  ),
                   child: Selector<BangumiModel, bool>(
                     selector: (_, model) =>
                         model.bangumiDetail?.subscribed == true,
@@ -663,9 +528,10 @@ class BangumiPage extends StatelessWidget {
                     builder: (_, subscribed, __) {
                       return Icon(
                         subscribed
-                            ? FluentIcons.heart_24_filled
-                            : FluentIcons.heart_24_regular,
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
                         color: primaryTextColor,
+                        size: 24.0,
                       );
                     },
                   ),
@@ -682,17 +548,7 @@ class BangumiPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: edge24,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            theme.backgroundColor.withOpacity(0.72),
-            theme.backgroundColor.withOpacity(0.9),
-          ],
-        ),
-        borderRadius: borderRadius16,
-      ),
+      decoration: BoxDecoration(color: theme.backgroundColor),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -700,25 +556,21 @@ class BangumiPage extends StatelessWidget {
             detail.name,
             style: TextStyle(
               color: theme.secondary,
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+              fontWeight: FontWeight.w700,
+              fontSize: 18.0,
             ),
           ),
-          sizedBoxH8,
+          sizedBoxH12,
           ...detail.more.entries.mapIndexed((index, e) {
             final child = Row(
               children: [
                 Text(
                   "${e.key}：",
                   softWrap: true,
-                  style: const TextStyle(
-                    height: 1.25,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textStyle14,
                 ),
                 e.value.startsWith("http")
-                    ? InkWell(
+                    ? RippleTap(
                         onTap: () {
                           e.value.launchAppAndCopy();
                         },
@@ -729,7 +581,6 @@ class BangumiPage extends StatelessWidget {
                             color: theme.secondary,
                             height: 1.25,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       )
@@ -739,7 +590,6 @@ class BangumiPage extends StatelessWidget {
                         style: const TextStyle(
                           height: 1.25,
                           fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       )
               ],
@@ -769,15 +619,6 @@ class BangumiPage extends StatelessWidget {
                   tag: heroTag,
                   child: Container(
                     padding: edge28,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 8.0,
-                          color: Colors.black.withOpacity(0.6),
-                        ),
-                      ],
-                      borderRadius: borderRadius8,
-                    ),
                     child: Center(
                       child: SpinKitPumpingHeart(
                         duration: const Duration(milliseconds: 960),
@@ -796,15 +637,8 @@ class BangumiPage extends StatelessWidget {
           child: Hero(
             tag: heroTag,
             child: Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 8.0,
-                    color: Colors.black.withAlpha(24),
-                  )
-                ],
-                borderRadius: borderRadius8,
-                image: const DecorationImage(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
                   image: AssetImage("assets/mikan.png"),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
@@ -817,24 +651,13 @@ class BangumiPage extends StatelessWidget {
       frameBuilder: (_, child, ___, ____) {
         return Hero(
           tag: heroTag,
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: Colors.black.withAlpha(24),
-                )
-              ],
-              borderRadius: borderRadius8,
-            ),
-            child: ClipRRect(borderRadius: borderRadius8, child: child),
-          ),
+          child: child,
         );
       },
     );
   }
 
-  _showSubgroupPanel(
+  void _showSubgroupPanel(
     final BuildContext context,
     final BangumiModel model,
     final String dataId,
@@ -842,7 +665,7 @@ class BangumiPage extends StatelessWidget {
     showCupertinoModalBottomSheet(
       context: context,
       expand: true,
-      topRadius: radius16,
+      topRadius: radius0,
       builder: (context) {
         return SubgroupBangumisFragment(bangumiModel: model, dataId: dataId);
       },

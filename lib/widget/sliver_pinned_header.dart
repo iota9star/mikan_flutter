@@ -1,6 +1,6 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/widget/icon_button.dart';
@@ -31,8 +31,8 @@ class SimpleSliverPinnedHeader extends StatelessWidget {
       begin: theme.scaffoldBackgroundColor,
       end: theme.backgroundColor,
     );
-    final maxHeight = maxExtent ?? Screen.statusBarHeight + 128;
-    final minHeight = minExtent ?? Screen.statusBarHeight + 72;
+    final maxHeight = maxExtent ?? Screens.statusBarHeight + 128;
+    final minHeight = minExtent ?? Screens.statusBarHeight + 72;
     final offsetHeight = maxHeight - minHeight;
     return SliverPersistentHeader(
       delegate: WrapSliverPersistentHeaderDelegate(
@@ -45,34 +45,21 @@ class SimpleSliverPinnedHeader extends StatelessWidget {
         ) {
           final offsetRatio = math.min(shrinkOffset / offsetHeight, 1.0);
           final bgc = bgcTween.transform(offsetRatio);
-          final radius = Radius.circular(16.0 * offsetRatio);
-          final shadowRadius = 3.0 * offsetRatio;
-          return Container(
-            decoration: BoxDecoration(
-              color: bgc,
-              borderRadius: BorderRadius.only(
-                bottomLeft: radius,
-                bottomRight: radius,
+          return ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
+              child: Container(
+                decoration: BoxDecoration(color: bgc?.withOpacity(0.87)),
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 10.0,
+                ),
+                child: Align(
+                  alignment: alignment,
+                  child: builder(context, offsetRatio),
+                ),
               ),
-              boxShadow: offsetRatio == 0
-                  ? null
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: const Offset(0, 1),
-                        blurRadius: shadowRadius,
-                        spreadRadius: shadowRadius,
-                      ),
-                    ],
-            ),
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: 10.0,
-            ),
-            child: Align(
-              alignment: alignment,
-              child: builder(context, offsetRatio),
             ),
           );
         },
@@ -102,8 +89,8 @@ class StackSliverPinnedHeader extends StatelessWidget {
       begin: theme.scaffoldBackgroundColor,
       end: theme.backgroundColor,
     );
-    final maxHeight = maxExtent ?? Screen.statusBarHeight + 136;
-    final minHeight = minExtent ?? Screen.statusBarHeight + 60;
+    final maxHeight = maxExtent ?? Screens.statusBarHeight + 136.0;
+    final minHeight = minExtent ?? Screens.statusBarHeight + 60.0;
     final offsetHeight = maxHeight - minHeight;
     return SliverPersistentHeader(
       delegate: WrapSliverPersistentHeaderDelegate(
@@ -116,32 +103,16 @@ class StackSliverPinnedHeader extends StatelessWidget {
         ) {
           final offsetRatio = math.min(shrinkOffset / offsetHeight, 1.0);
           final bgc = bgcTween.transform(offsetRatio);
-          final radius = Radius.circular(16.0 * offsetRatio);
-          final shadowRadius = 3.0 * offsetRatio;
-          return Container(
-            decoration: BoxDecoration(
-              color: bgc,
-              borderRadius: BorderRadius.only(
-                bottomLeft: radius,
-                bottomRight: radius,
+          return ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaY: 16.0, sigmaX: 16.0),
+              child: Container(
+                decoration: BoxDecoration(color: bgc?.withOpacity(0.87)),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Stack(
+                  children: childrenBuilder(context, offsetRatio),
+                ),
               ),
-              boxShadow: offsetRatio == 0
-                  ? null
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.024),
-                        offset: const Offset(0, 1),
-                        blurRadius: shadowRadius,
-                        spreadRadius: shadowRadius,
-                      ),
-                    ],
-            ),
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-            ),
-            child: Stack(
-              children: childrenBuilder(context, offsetRatio),
             ),
           );
         },
@@ -172,23 +143,17 @@ class SliverPinnedTitleHeader extends StatelessWidget {
         return [
           Positioned(
             left: 0,
-            top: 12.0 + Screen.statusBarHeight,
-            child: CustomIconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              backgroundColor: ic,
-              iconData: FluentIcons.chevron_left_24_regular,
-            ),
+            top: 12.0 + Screens.statusBarHeight,
+            child: CircleBackButton(color: ic),
           ),
           Positioned(
-            top: 78 * (1 - ratio) + 14 + Screen.statusBarHeight,
-            left: ratio * 44,
+            top: 78.0 * (1 - ratio) + 18.0 + Screens.statusBarHeight,
+            left: ratio * 56.0,
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 30.0 - (ratio * 6.0),
-                fontWeight: FontWeight.bold,
+                fontSize: 24.0 - (ratio * 4.0),
+                fontWeight: FontWeight.w700,
                 height: 1.25,
               ),
             ),

@@ -1,23 +1,26 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 @FFArgumentImport()
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
-import 'package:mikan_flutter/providers/home_model.dart';
 import 'package:mikan_flutter/ui/fragments/index_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/list_fragment.dart';
 import 'package:mikan_flutter/ui/fragments/subscribed_fragment.dart';
 import 'package:mikan_flutter/widget/bottom_bar_view.dart';
-import 'package:provider/provider.dart';
 
 @FFRoute(
   name: "home",
   routeName: "/",
 )
-@immutable
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -27,57 +30,47 @@ class HomePage extends StatelessWidget {
         body: Stack(
           children: [
             Positioned.fill(
-              child: Selector<HomeModel, int>(
-                selector: (_, model) => model.selectedIndex,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (_, selectIndex, __) {
-                  return IndexedStack(
-                    index: selectIndex,
-                    children: const [
-                      ListFragment(),
-                      IndexFragment(),
-                      SubscribedFragment(),
-                    ],
-                  );
-                },
+              child: IndexedStack(
+                index: _selectedIndex,
+                children: const [
+                  ListFragment(),
+                  IndexFragment(),
+                  SubscribedFragment(),
+                ],
               ),
             ),
             Positioned(
-              bottom: 16 + Screen.navBarHeight,
+              bottom: 8.0 + Screens.navBarHeight,
               left: 24.0,
               right: 24.0,
-              child: Selector<HomeModel, int>(
-                selector: (_, model) => model.selectedIndex,
-                shouldRebuild: (pre, next) => pre != next,
-                builder: (_, selectIndex, __) {
-                  return Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 300.0),
-                      child: BottomBarView(
-                        items: [
-                          BarItem(
-                            icon: FluentIcons.layer_24_regular,
-                            selectedIcon: FluentIcons.receipt_24_filled,
-                            isSelected: selectIndex == 0,
-                          ),
-                          BarItem(
-                            icon: FluentIcons.sticker_24_regular,
-                            selectedIconPath: "assets/mikan.png",
-                            isSelected: selectIndex == 1,
-                          ),
-                          BarItem(
-                            icon: FluentIcons.leaf_one_24_regular,
-                            selectedIcon: FluentIcons.leaf_three_24_filled,
-                            isSelected: selectIndex == 2,
-                          ),
-                        ],
-                        onItemClick: (index) {
-                          context.read<HomeModel>().selectedIndex = index;
-                        },
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 300.0),
+                  child: BottomBarView(
+                    items: [
+                      BarItem(
+                        icon: Icons.segment_rounded,
+                        selectedIcon: Icons.receipt_long_rounded,
+                        isSelected: _selectedIndex == 0,
                       ),
-                    ),
-                  );
-                },
+                      BarItem(
+                        icon: Icons.local_fire_department_rounded,
+                        selectedIconPath: "assets/mikan.png",
+                        isSelected: _selectedIndex == 1,
+                      ),
+                      BarItem(
+                        icon: Icons.person_rounded,
+                        selectedIcon: Icons.perm_identity_rounded,
+                        isSelected: _selectedIndex == 2,
+                      ),
+                    ],
+                    onItemClick: (index) {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                  ),
+                ),
               ),
             )
           ],

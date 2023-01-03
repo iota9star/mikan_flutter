@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/extension.dart';
+import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 
 class BarItem {
   IconData? icon;
@@ -29,8 +31,8 @@ class BottomBarView extends StatefulWidget {
     Key? key,
     required this.items,
     required this.onItemClick,
-    this.height = 56,
-    this.iconSize = 30,
+    this.height = 56.0,
+    this.iconSize = 28.0,
   })  : assert(height > iconSize),
         super(key: key);
 
@@ -61,16 +63,12 @@ class BottomBarViewState extends State<BottomBarView>
   Widget build(BuildContext context) {
     final bgc = Theme.of(context).backgroundColor;
     return ClipRRect(
-      borderRadius: BorderRadius.circular(widget.height),
+      borderRadius: borderRadius16,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
           height: widget.height,
-          decoration: BoxDecoration(
-            color: bgc.withOpacity(0.8),
-            border: Border.all(color: bgc.withOpacity(0.9), width: 2.0),
-            borderRadius: BorderRadius.circular(widget.height),
-          ),
+          decoration: BoxDecoration(color: bgc.withOpacity(0.9)),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -91,8 +89,8 @@ class BottomBarViewState extends State<BottomBarView>
         return _BottomBarItemView(
           barItem: widget.items[i],
           removeAllSelect: () {
-            setRemoveAllSelection(widget.items[i]);
             widget.onItemClick(i);
+            setRemoveAllSelection(widget.items[i]);
           },
         );
       },
@@ -138,7 +136,6 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     )..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           if (!mounted) return;
-          widget.removeAllSelect();
           _animationController.reverse();
         }
       });
@@ -181,40 +178,36 @@ class _BottomBarItemViewState extends State<_BottomBarItemView>
     final ThemeData theme = Theme.of(context);
     return AspectRatio(
       aspectRatio: 1,
-      child: Center(
-        child: InkWell(
-          splashColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          onTap: () {
-            if (!widget.barItem.isSelected) {
-              setAnimation();
-            }
-            widget.barItem.onClick?.call();
-          },
-          child: IgnorePointer(
-            child: Stack(
-              fit: StackFit.expand,
-              alignment: Alignment.center,
-              children: <Widget>[
-                ScaleTransition(
-                  alignment: Alignment.center,
-                  scale: Tween<double>(begin: 0.88, end: 1.0).animate(
-                    CurvedAnimation(
-                      parent: _animationController,
-                      curve: const Interval(
-                        0.1,
-                        1.0,
-                        curve: Curves.linear,
-                      ),
+      child: RippleTap(
+        onTap: () {
+          if (!widget.barItem.isSelected) {
+            setAnimation();
+          }
+          widget.removeAllSelect();
+          widget.barItem.onClick?.call();
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Stack(
+            fit: StackFit.expand,
+            alignment: Alignment.center,
+            children: <Widget>[
+              ScaleTransition(
+                alignment: Alignment.center,
+                scale: Tween<double>(begin: 0.88, end: 1.0).animate(
+                  CurvedAnimation(
+                    parent: _animationController,
+                    curve: const Interval(
+                      0.1,
+                      1.0,
+                      curve: Curves.linear,
                     ),
                   ),
-                  child: _toBarIcon(theme.secondary, widget.barItem),
                 ),
-                ..._buildPointWidgets(theme),
-              ],
-            ),
+                child: _toBarIcon(theme.secondary, widget.barItem),
+              ),
+              ..._buildPointWidgets(theme),
+            ],
           ),
         ),
       ),

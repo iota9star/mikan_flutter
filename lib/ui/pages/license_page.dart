@@ -6,6 +6,7 @@ import 'package:mikan_flutter/internal/extension.dart';
 import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/topvars.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -84,48 +85,41 @@ class LicenseList extends StatelessWidget {
                             final String packageName = data.packages[index];
                             final List<int> bindings =
                                 data.packageLicenseBindings[packageName]!;
-                            return Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed(
-                                    Routes.licenseDetail.name,
-                                    arguments: Routes.licenseDetail.d(
-                                      packageName: packageName,
-                                      licenseEntries: bindings
-                                          .map((int i) => data.licenses[i])
-                                          .toList(growable: false),
+                            return ScalableRippleTap(
+                              color: theme.backgroundColor,
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  Routes.licenseDetail.name,
+                                  arguments: Routes.licenseDetail.d(
+                                    packageName: packageName,
+                                    licenseEntries: bindings
+                                        .map((int i) => data.licenses[i])
+                                        .toList(growable: false),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      packageName,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 18.0,
+                                        height: 1.25,
+                                        fontFamily: "mono",
+                                      ),
                                     ),
-                                  );
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(16.0),
-                                  decoration: BoxDecoration(
-                                    color: theme.backgroundColor,
-                                    borderRadius: borderRadius16,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        packageName,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18.0,
-                                          height: 1.25,
-                                          fontFamily: "mono",
-                                        ),
+                                    sizedBoxH8,
+                                    Text(
+                                      "${bindings.length}条协议",
+                                      style: const TextStyle(
+                                        fontFamily: "mono",
                                       ),
-                                      sizedBoxH8,
-                                      Text(
-                                        "${bindings.length}条协议",
-                                        style: const TextStyle(
-                                          fontFamily: "mono",
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             );
@@ -134,8 +128,8 @@ class LicenseList extends StatelessWidget {
                         ),
                         gridDelegate:
                             const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-                          crossAxisSpacing: 12.0,
-                          mainAxisSpacing: 12.0,
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0,
                           minCrossAxisExtent: 240.0,
                         ),
                       ),
@@ -148,7 +142,7 @@ class LicenseList extends StatelessWidget {
                   child: Padding(
                 padding: EdgeInsets.only(
                   top: 24.0,
-                  bottom: 24.0 + Screen.navBarHeight,
+                  bottom: 24.0 + Screens.navBarHeight,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

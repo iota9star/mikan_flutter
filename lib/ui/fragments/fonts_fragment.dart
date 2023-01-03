@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -6,9 +5,12 @@ import 'package:mikan_flutter/internal/http_cache_manager.dart';
 import 'package:mikan_flutter/model/fonts.dart';
 import 'package:mikan_flutter/providers/fonts_model.dart';
 import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
+import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 @immutable
 class FontsFragment extends StatelessWidget {
@@ -16,19 +18,19 @@ class FontsFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final FontsModel fontsModel =
-        Provider.of<FontsModel>(context, listen: false);
+    final theme = Theme.of(context);
+    final fontsModel = Provider.of<FontsModel>(context, listen: false);
 
-    final TextStyle accentTagStyle = textStyle10WithColor(
+    final accentTagStyle = textStyle10WithColor(
       theme.secondary.isDark ? Colors.white : Colors.black,
     );
-    final TextStyle primaryTagStyle = textStyle10WithColor(
+    final primaryTagStyle = textStyle10WithColor(
       theme.primary.isDark ? Colors.white : Colors.black,
     );
     return Scaffold(
-      body: Column(
-        children: [
+      body: CustomScrollView(
+        controller: ModalScrollController.of(context),
+        slivers: [
           _buildHeader(context, theme, fontsModel),
           _buildList(
             context,
@@ -37,45 +39,47 @@ class FontsFragment extends StatelessWidget {
             accentTagStyle,
             fontsModel,
           ),
+          sliverSizedBoxH24WithNavBarHeight,
         ],
       ),
     );
   }
 
-  Expanded _buildList(
+  Widget _buildList(
     BuildContext context,
     ThemeData theme,
     TextStyle primaryTagStyle,
     TextStyle accentTagStyle,
     FontsModel model,
   ) {
-    return Expanded(
-      child: Selector<FontsModel, List<Font>>(
+    return SliverPadding(
+      padding: edgeH16,
+      sliver: Selector<FontsModel, List<Font>>(
         shouldRebuild: (pre, next) => pre.ne(next),
         selector: (_, model) => model.fonts,
         builder: (_, fonts, __) {
           if (model.fonts.isEmpty) {
             return centerLoading;
           }
-          return GridView.builder(
-            controller: ModalScrollController.of(context),
-            itemCount: fonts.length,
-            padding: edge16,
-            itemBuilder: (_, index) {
-              final Font font = fonts[index];
-              return _buildFontItem(
-                theme,
-                primaryTagStyle,
-                accentTagStyle,
-                model,
-                font,
-              );
-            },
-            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
+          return SliverWaterfallFlow(
+            gridDelegate:
+                const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
-              mainAxisSpacing: 16.0,
-              crossAxisSpacing: 16.0,
-              mainAxisExtent: 102.0,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (_, index) {
+                final Font font = fonts[index];
+                return _buildFontItem(
+                  theme,
+                  primaryTagStyle,
+                  accentTagStyle,
+                  model,
+                  font,
+                );
+              },
+              childCount: fonts.length,
             ),
           );
         },
@@ -83,170 +87,146 @@ class FontsFragment extends StatelessWidget {
     );
   }
 
-  Padding _buildHeader(
+  Widget _buildHeader(
     BuildContext context,
     ThemeData theme,
     FontsModel model,
   ) {
-    return Padding(
-      padding: edge16,
-      child: Row(
-        children: [
-          MaterialButton(
-            minWidth: 32.0,
-            color: theme.backgroundColor,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: circleShape,
-            padding: EdgeInsets.zero,
-            child: const Icon(
-              FluentIcons.chevron_left_24_regular,
-              size: 16.0,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+    final it = ColorTween(
+      begin: theme.backgroundColor,
+      end: theme.scaffoldBackgroundColor,
+    );
+    return StackSliverPinnedHeader(
+      maxExtent: 136.0,
+      minExtent: 60.0,
+      childrenBuilder: (context, ratio) {
+        final ic = it.transform(ratio);
+        final titleRight = ratio * 56.0;
+        return [
+          Positioned(
+            left: 0,
+            top: 12.0,
+            child: CircleBackButton(color: ic),
           ),
-          sizedBoxW12,
-          const Expanded(
+          Positioned(
+            right: 0,
+            top: 12.0,
+            child: Tooltip(
+              message: '重置默认字体',
+              child: SmallCircleButton(
+                color: ic,
+                icon: Icons.restart_alt_rounded,
+                onTap: () {
+                  model.resetDefaultFont();
+                },
+              ),
+            ),
+          ),
+          Positioned(
+            top: 78.0 * (1 - ratio) + 18.0,
+            left: titleRight,
+            right: titleRight,
             child: Text(
-              "字体管理",
-              style: textStyle24B,
+              '字体管理',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 24.0 - (ratio * 4.0),
+                fontWeight: FontWeight.w700,
+                height: 1.25,
+              ),
             ),
           ),
-          MaterialButton(
-            minWidth: 32.0,
-            color: theme.backgroundColor,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: circleShape,
-            padding: EdgeInsets.zero,
-            child: const Icon(
-              FluentIcons.arrow_reset_24_regular,
-              size: 16.0,
-            ),
-            onPressed: () {
-              model.resetDefaultFont();
-            },
-          ),
-        ],
-      ),
+        ];
+      },
     );
   }
 
-  TapScaleContainer _buildFontItem(
+  Widget _buildFontItem(
     ThemeData theme,
     TextStyle primaryTagStyle,
     TextStyle accentTagStyle,
     FontsModel model,
     Font font,
   ) {
-    return TapScaleContainer(
+    return ScalableRippleTap(
       onTap: () {
         model.enableFont(font);
       },
-      padding: edge16,
-      decoration: BoxDecoration(
-        borderRadius: borderRadius16,
-        gradient: LinearGradient(
-          colors: [
-            theme.backgroundColor.withOpacity(0.64),
-            theme.backgroundColor.withOpacity(0.87),
-            theme.backgroundColor,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                font.name,
-                style: textStyle18B,
-              ),
-              sizedBoxW12,
-              TapScaleContainer(
-                onTap: () {},
-                margin: edgeR4,
-                padding: edgeH4V2,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      theme.primary,
-                      theme.primary.withOpacity(0.56),
-                    ],
+      color: theme.backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  font.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textStyle18B,
+                ),
+                sizedBoxW12,
+                ScalableRippleTap(
+                  onTap: () {},
+                  color: theme.primary,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4.0,
+                      vertical: 1.0,
+                    ),
+                    child: Text(
+                      "${font.files.length}个字体",
+                      style: primaryTagStyle,
+                    ),
                   ),
-                  borderRadius: borderRadius2,
                 ),
-                child: Text(
-                  "${font.files.length}个字体",
-                  style: primaryTagStyle,
-                ),
-              ),
-              TapScaleContainer(
-                onTap: () {
-                  font.official.launchAppAndCopy();
-                },
-                margin: edgeR4,
-                padding: edgeH4V2,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      theme.secondary,
-                      theme.secondary.withOpacity(0.56),
-                    ],
+                sizedBoxW4,
+                ScalableRippleTap(
+                  onTap: () {
+                    font.official.launchAppAndCopy();
+                  },
+                  color: theme.secondary,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4.0,
+                      vertical: 1.0,
+                    ),
+                    child: Text(
+                      "官网",
+                      style: primaryTagStyle,
+                    ),
                   ),
-                  borderRadius: borderRadius2,
                 ),
-                child: Text(
-                  "官网",
-                  style: primaryTagStyle,
-                ),
-              ),
-              TapScaleContainer(
-                onTap: () {
-                  font.license.url.launchAppAndCopy();
-                },
-                margin: edgeR4,
-                padding: edgeH4V2,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      theme.secondary,
-                      theme.secondary.withOpacity(0.56),
-                    ],
+                sizedBoxW4,
+                ScalableRippleTap(
+                  onTap: () {
+                    font.license.url.launchAppAndCopy();
+                  },
+                  color: theme.secondary,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4.0,
+                      vertical: 1.0,
+                    ),
+                    child: Text(
+                      font.license.name,
+                      style: accentTagStyle,
+                    ),
                   ),
-                  borderRadius: borderRadius2,
                 ),
-                child: Text(
-                  font.license.name,
-                  style: accentTagStyle,
-                ),
-              ),
-              spacer,
-              _buildLoadingOrChecked(theme, model, font)
-            ],
-          ),
-          sizedBoxH8,
-          Tooltip(
-            message: font.desc,
-            padding: edgeH12V8,
-            margin: edgeH16,
-            child: Text(
+                spacer,
+                _buildLoadingOrChecked(theme, model, font)
+              ],
+            ),
+            sizedBoxH8,
+            Text(
               font.desc,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
               style: textStyle14,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -266,7 +246,7 @@ class FontsFragment extends StatelessWidget {
         if (event.percent == 1) {
           if (model.enableFontFamily == font.id) {
             return Icon(
-              FluentIcons.checkmark_starburst_16_filled,
+              Icons.task_alt_rounded,
               color: theme.secondary,
               size: 24.0,
             );

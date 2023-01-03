@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mikan_flutter/internal/delegate.dart';
 import 'package:mikan_flutter/internal/extension.dart';
@@ -10,6 +9,7 @@ import 'package:mikan_flutter/providers/bangumi_model.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/components/simple_record_item.dart';
 import 'package:mikan_flutter/ui/fragments/subgroup_fragment.dart';
+import 'package:mikan_flutter/widget/icon_button.dart';
 import 'package:mikan_flutter/widget/refresh_indicator.dart';
 import 'package:mikan_flutter/widget/sliver_pinned_header.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -81,26 +81,29 @@ class SubgroupBangumisFragment extends StatelessWidget {
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, records, __) {
           return SliverWaterfallFlow(
-            delegate: SliverChildBuilderDelegate((context, ind) {
-              final RecordItem record = records[ind];
-              return SimpleRecordItem(
-                index: ind,
-                theme: theme,
-                record: record,
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    Routes.recordDetail.name,
-                    arguments: Routes.recordDetail.d(url: record.url),
-                  );
-                },
-              );
-            }, childCount: records.length),
+            delegate: SliverChildBuilderDelegate(
+              (context, ind) {
+                final RecordItem record = records[ind];
+                return SimpleRecordItem(
+                  index: ind,
+                  theme: theme,
+                  record: record,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.recordDetail.name,
+                      arguments: Routes.recordDetail.d(url: record.url),
+                    );
+                  },
+                );
+              },
+              childCount: records.length,
+            ),
             gridDelegate:
                 const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
-              mainAxisSpacing: 16.0,
-              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
             ),
           );
         },
@@ -121,25 +124,12 @@ class SubgroupBangumisFragment extends StatelessWidget {
       minExtent: 60.0,
       childrenBuilder: (context, ratio) {
         final ic = it.transform(ratio);
-        final titleRight = ratio * 44;
+        final titleRight = ratio * 56.0;
         return [
           Positioned(
             left: 0,
             top: 12.0,
-            child: MaterialButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              color: ic,
-              minWidth: 32.0,
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: circleShape,
-              child: const Icon(
-                FluentIcons.chevron_left_24_regular,
-                size: 16.0,
-              ),
-            ),
+            child: CircleBackButton(color: ic),
           ),
           if (subgroupBangumi.subgroups.isNotEmpty)
             Positioned(
@@ -147,11 +137,11 @@ class SubgroupBangumisFragment extends StatelessWidget {
               top: 12.0,
               child: Tooltip(
                 message: '查看字幕组详情',
-                child: MaterialButton(
-                  onPressed: () {
-                    final List<Subgroup> subgroups = subgroupBangumi.subgroups;
+                child: SmallCircleButton(
+                  onTap: () {
+                    final subgroups = subgroupBangumi.subgroups;
                     if (subgroups.length == 1) {
-                      final Subgroup subgroup = subgroups[0];
+                      final subgroup = subgroups[0];
                       Navigator.pushNamed(
                         context,
                         Routes.subgroup.name,
@@ -165,19 +155,12 @@ class SubgroupBangumisFragment extends StatelessWidget {
                     }
                   },
                   color: ic,
-                  minWidth: 32.0,
-                  padding: EdgeInsets.zero,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: circleShape,
-                  child: const Icon(
-                    FluentIcons.shifts_team_24_regular,
-                    size: 16.0,
-                  ),
+                  icon: Icons.groups_rounded,
                 ),
               ),
             ),
           Positioned(
-            top: 78 * (1 - ratio) + 16,
+            top: 78.0 * (1 - ratio) + 18.0,
             left: titleRight,
             right: titleRight,
             child: Text(
@@ -185,8 +168,8 @@ class SubgroupBangumisFragment extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 30.0 - (ratio * 6.0),
-                fontWeight: FontWeight.bold,
+                fontSize: 24.0 - (ratio * 4.0),
+                fontWeight: FontWeight.w700,
                 height: 1.25,
               ),
             ),
@@ -196,14 +179,14 @@ class SubgroupBangumisFragment extends StatelessWidget {
     );
   }
 
-  _showSubgroupPanel(
+  void _showSubgroupPanel(
     final BuildContext context,
     final List<Subgroup> subgroups,
   ) {
     showCupertinoModalBottomSheet(
       context: context,
       expand: false,
-      topRadius: radius16,
+      topRadius: radius0,
       builder: (context) {
         return SubgroupFragment(subgroups: subgroups);
       },

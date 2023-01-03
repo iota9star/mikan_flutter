@@ -5,7 +5,7 @@ import 'package:mikan_flutter/internal/screen.dart';
 import 'package:mikan_flutter/mikan_flutter_routes.dart';
 import 'package:mikan_flutter/topvars.dart';
 import 'package:mikan_flutter/ui/fragments/bangumi_cover_scroll_list.dart';
-import 'package:mikan_flutter/widget/tap_scale_container.dart';
+import 'package:mikan_flutter/widget/ripple_tap.dart';
 
 @FFRoute(
   name: "splash",
@@ -40,7 +40,7 @@ class SplashPage extends StatelessWidget {
     return Positioned(
       left: 0,
       right: 0,
-      bottom: 128.0 + Screen.navBarHeight,
+      bottom: 128.0 + Screens.navBarHeight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -50,10 +50,14 @@ class SplashPage extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done) {
                 toHome(context);
               }
-              return TapScaleContainer(
-                child: Image.asset(
-                  "assets/mikan.png",
-                  width: 108,
+              return ScalableRippleTap(
+                shape: const CircleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Image.asset(
+                    "assets/mikan.png",
+                    width: 108,
+                  ),
                 ),
                 onTap: () {
                   toHome(context);
@@ -65,7 +69,7 @@ class SplashPage extends StatelessWidget {
           Text(
             "蜜柑计划",
             style: TextStyle(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
               fontSize: 18.0,
               color: Colors.white.withOpacity(0.87),
               shadows: [

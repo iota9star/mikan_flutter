@@ -192,8 +192,8 @@ class MikanApp extends StatelessWidget {
               ).observer,
             FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
               //you can track page here
-              final RouteSettings? oldSettings = oldRoute?.settings;
-              final RouteSettings? newSettings = newRoute?.settings;
+              final oldSettings = oldRoute?.settings;
+              final newSettings = newRoute?.settings;
               "route change: "
                       "${oldSettings?.name} => ${newSettings?.name}"
                   .debug();
