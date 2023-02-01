@@ -201,6 +201,16 @@ class LoginPage extends StatelessWidget {
       textAlignVertical: TextAlignVertical.center,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
+      autofillHints: const [
+        AutofillHints.name,
+        AutofillHints.namePrefix,
+        AutofillHints.nameSuffix,
+        AutofillHints.newUsername,
+        AutofillHints.username,
+        AutofillHints.nickname,
+        AutofillHints.email,
+        AutofillHints.telephoneNumber,
+      ],
     );
   }
 
@@ -248,6 +258,9 @@ class LoginPage extends StatelessWidget {
           textAlignVertical: TextAlignVertical.center,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
+          autofillHints: const [
+            AutofillHints.password,
+          ],
         );
       },
     );

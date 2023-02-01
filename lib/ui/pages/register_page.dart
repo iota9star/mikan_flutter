@@ -166,6 +166,16 @@ class RegisterPage extends StatelessWidget {
       textAlignVertical: TextAlignVertical.center,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
+      autofillHints: const [
+        AutofillHints.name,
+        AutofillHints.namePrefix,
+        AutofillHints.nameSuffix,
+        AutofillHints.newUsername,
+        AutofillHints.username,
+        AutofillHints.nickname,
+        AutofillHints.email,
+        AutofillHints.telephoneNumber,
+      ],
     );
   }
 
@@ -194,6 +204,9 @@ class RegisterPage extends StatelessWidget {
       textAlignVertical: TextAlignVertical.center,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
+      autofillHints: const [
+        AutofillHints.email,
+      ],
     );
   }
 
@@ -273,6 +286,9 @@ class RegisterPage extends StatelessWidget {
           textAlignVertical: TextAlignVertical.center,
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.visiblePassword,
+          autofillHints: const [
+            AutofillHints.password,
+          ],
         );
       },
     );
@@ -324,6 +340,9 @@ class RegisterPage extends StatelessWidget {
           textAlignVertical: TextAlignVertical.center,
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.visiblePassword,
+          autofillHints: const [
+            AutofillHints.password,
+          ],
         );
       },
     );
