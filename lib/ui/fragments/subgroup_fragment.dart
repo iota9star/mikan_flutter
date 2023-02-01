@@ -23,7 +23,7 @@ class SubgroupFragment extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: edge16,
-            decoration: BoxDecoration(color: theme.backgroundColor),
+            decoration: BoxDecoration(color: theme.colorScheme.background),
             child: const Text(
               "请选择字幕组",
               style: textStyle18B,

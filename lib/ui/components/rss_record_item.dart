@@ -41,7 +41,7 @@ class RssRecordItem extends StatelessWidget {
         ),
       ),
       foregroundDecoration: BoxDecoration(
-        color: theme.backgroundColor.withOpacity(0.87),
+        color: theme.colorScheme.background.withOpacity(0.87),
       ),
     );
     return ScalableRippleTap(
@@ -94,7 +94,7 @@ class RssRecordItem extends StatelessWidget {
                           record.publishAt,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.caption,
+                          style: theme.textTheme.bodySmall,
                         ),
                       ],
                     ),

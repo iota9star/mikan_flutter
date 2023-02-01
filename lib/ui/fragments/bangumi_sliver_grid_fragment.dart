@@ -77,7 +77,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
       children: [
         Expanded(
           child: ScalableRippleTap(
-            color: theme.backgroundColor,
+            color: theme.colorScheme.background,
             onTap: () {
               if (bangumi.grey) {
                 "此番组下暂无作品".toast();
@@ -170,7 +170,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
             bangumi.updateAt,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.caption,
+            style: theme.textTheme.bodySmall,
           )
       ],
     );

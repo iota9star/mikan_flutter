@@ -29,7 +29,7 @@ class SimpleSliverPinnedHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final bgcTween = ColorTween(
       begin: theme.scaffoldBackgroundColor,
-      end: theme.backgroundColor,
+      end: theme.colorScheme.background,
     );
     final maxHeight = maxExtent ?? Screens.statusBarHeight + 128;
     final minHeight = minExtent ?? Screens.statusBarHeight + 72;
@@ -87,7 +87,7 @@ class StackSliverPinnedHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final bgcTween = ColorTween(
       begin: theme.scaffoldBackgroundColor,
-      end: theme.backgroundColor,
+      end: theme.colorScheme.background,
     );
     final maxHeight = maxExtent ?? Screens.statusBarHeight + 136.0;
     final minHeight = minExtent ?? Screens.statusBarHeight + 60.0;
@@ -134,7 +134,7 @@ class SliverPinnedTitleHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final it = ColorTween(
-      begin: theme.backgroundColor,
+      begin: theme.colorScheme.background,
       end: theme.scaffoldBackgroundColor,
     );
     return StackSliverPinnedHeader(

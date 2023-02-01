@@ -45,11 +45,11 @@ class BangumiPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bgct = ColorTween(
-      begin: theme.backgroundColor.withOpacity(0.0),
-      end: theme.backgroundColor.withOpacity(0.87),
+      begin: theme.colorScheme.background.withOpacity(0.0),
+      end: theme.colorScheme.background.withOpacity(0.87),
     );
     final it = ColorTween(
-      begin: theme.backgroundColor,
+      begin: theme.colorScheme.background,
       end: theme.scaffoldBackgroundColor,
     );
     return AnnotatedRegion(
@@ -290,7 +290,7 @@ class BangumiPage extends StatelessWidget {
     return subgroups.values.map((e) {
       final length = e.records.length;
       return Container(
-        decoration: BoxDecoration(color: theme.backgroundColor),
+        decoration: BoxDecoration(color: theme.colorScheme.background),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -355,7 +355,7 @@ class BangumiPage extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 record.publishAt,
-                                style: theme.textTheme.caption,
+                                style: theme.textTheme.bodySmall,
                               ),
                             ),
                             sizedBoxW8,
@@ -386,7 +386,7 @@ class BangumiPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: edge24,
-      color: theme.backgroundColor,
+      color: theme.colorScheme.background,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -419,7 +419,7 @@ class BangumiPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: edge24,
-      decoration: BoxDecoration(color: theme.backgroundColor),
+      decoration: BoxDecoration(color: theme.colorScheme.background),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -485,7 +485,7 @@ class BangumiPage extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              decoration: BoxDecoration(color: theme.backgroundColor),
+              decoration: BoxDecoration(color: theme.colorScheme.background),
             ),
           ),
         ),
@@ -548,7 +548,7 @@ class BangumiPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: edge24,
-      decoration: BoxDecoration(color: theme.backgroundColor),
+      decoration: BoxDecoration(color: theme.colorScheme.background),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

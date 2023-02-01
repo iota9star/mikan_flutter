@@ -50,7 +50,7 @@ class ForgotPasswordPage extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context).pop();
                                 },
-                                color: theme.backgroundColor,
+                                color: theme.colorScheme.background,
                                 child: const SizedBox(
                                   width: 40.0,
                                   height: 40.0,
@@ -162,7 +162,7 @@ class ForgotPasswordPage extends StatelessWidget {
     showCupertinoModalBottomSheet(
       context: context,
       topRadius: radius16,
-      backgroundColor: theme.backgroundColor,
+      backgroundColor: theme.colorScheme.background,
       builder: (context) {
         return Material(
           color: Colors.transparent,
@@ -173,8 +173,8 @@ class ForgotPasswordPage extends StatelessWidget {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  theme.backgroundColor.withOpacity(0.72),
-                  theme.backgroundColor.withOpacity(0.9),
+                  theme.colorScheme.background.withOpacity(0.72),
+                  theme.colorScheme.background.withOpacity(0.9),
                 ],
               ),
             ),

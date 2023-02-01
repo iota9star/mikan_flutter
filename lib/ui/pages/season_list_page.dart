@@ -178,7 +178,7 @@ class SeasonListPage extends StatelessWidget {
                 message: full,
                 child: Text(
                   simple,
-                  style: theme.textTheme.caption,
+                  style: theme.textTheme.bodySmall,
                 ),
               ),
             ],

@@ -30,7 +30,7 @@ class OVARecordItem extends StatelessWidget {
     );
     return ScalableRippleTap(
       onTap: onTap,
-      color: theme.backgroundColor,
+      color: theme.colorScheme.background,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -84,7 +84,7 @@ class OVARecordItem extends StatelessWidget {
                     record.publishAt,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.caption,
+                    style: theme.textTheme.bodySmall,
                   ),
                 ),
                 sizedBoxW8,

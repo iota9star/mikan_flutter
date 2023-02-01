@@ -60,7 +60,7 @@ class RegisterPage extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context).pop();
                                 },
-                                color: theme.backgroundColor,
+                                color: theme.colorScheme.background,
                                 child: const SizedBox(
                                   width: 40.0,
                                   height: 40.0,

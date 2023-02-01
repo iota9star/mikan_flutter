@@ -90,7 +90,7 @@ class CircleBackButton extends StatelessWidget {
       onTap: () {
         Navigator.pop(context);
       },
-      color: color ?? Theme.of(context).backgroundColor,
+      color: color ?? Theme.of(context).colorScheme.background,
       shape: const CircleBorder(),
       child: const Padding(
         padding: EdgeInsets.all(8.0),
@@ -118,7 +118,7 @@ class SmallCircleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return RippleTap(
       onTap: onTap,
-      color: color ?? Theme.of(context).backgroundColor,
+      color: color ?? Theme.of(context).colorScheme.background,
       shape: const CircleBorder(),
       child: Padding(
         padding: const EdgeInsets.all(8.0),

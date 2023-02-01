@@ -104,7 +104,7 @@ class _PinedHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final it = ColorTween(
-      begin: theme.backgroundColor,
+      begin: theme.colorScheme.background,
       end: theme.scaffoldBackgroundColor,
     );
     return StackSliverPinnedHeader(

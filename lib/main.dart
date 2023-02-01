@@ -163,7 +163,7 @@ class MikanApp extends StatelessWidget {
     final BuildContext context,
     final ThemeModel themeModel,
   ) {
-    final ThemeData theme = themeModel.theme(darkTheme: !isMobile);
+    final theme = themeModel.theme();
     return Theme(
       data: theme,
       child: OKToast(
@@ -190,14 +190,16 @@ class MikanApp extends StatelessWidget {
                 context,
                 listen: false,
               ).observer,
-            FFNavigatorObserver(routeChange: (newRoute, oldRoute) {
-              //you can track page here
-              final oldSettings = oldRoute?.settings;
-              final newSettings = newRoute?.settings;
-              "route change: "
-                      "${oldSettings?.name} => ${newSettings?.name}"
-                  .debug();
-            }),
+            FFNavigatorObserver(
+              routeChange: (newRoute, oldRoute) {
+                //you can track page here
+                final oldSettings = oldRoute?.settings;
+                final newSettings = newRoute?.settings;
+                "route change: "
+                        "${oldSettings?.name} => ${newSettings?.name}"
+                    .debug();
+              },
+            ),
           ],
         ),
       ),

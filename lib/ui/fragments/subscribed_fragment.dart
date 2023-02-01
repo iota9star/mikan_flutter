@@ -105,7 +105,7 @@ class SubscribedFragment extends StatelessWidget {
               margin: edgeH16B16,
               padding: edge24,
               decoration: BoxDecoration(
-                color: theme.backgroundColor.withOpacity(0.87),
+                color: theme.colorScheme.background.withOpacity(0.87),
               ),
               child: centerLoading,
             ),
@@ -118,7 +118,7 @@ class SubscribedFragment extends StatelessWidget {
               margin: edgeH16B16,
               padding: edge28,
               decoration: BoxDecoration(
-                color: theme.backgroundColor.withOpacity(0.87),
+                color: theme.colorScheme.background.withOpacity(0.87),
               ),
               child: Center(
                 child: Column(
@@ -195,7 +195,7 @@ class SubscribedFragment extends StatelessWidget {
                             if (updateNum > 0) "🚀 $updateNum部",
                             "🎬 ${bangumis.length}部"
                           ].join("，"),
-                          style: theme.textTheme.caption,
+                          style: theme.textTheme.bodySmall,
                         ),
                       ),
                     sizedBoxW16,
@@ -254,7 +254,7 @@ class SubscribedFragment extends StatelessWidget {
                         message: "最近三天共有${rss!.length}部订阅更新",
                         child: Text(
                           "🚀 ${rss.length}部",
-                          style: theme.textTheme.caption,
+                          style: theme.textTheme.bodySmall,
                         ),
                       ),
                     sizedBoxW16,
@@ -288,7 +288,7 @@ class SubscribedFragment extends StatelessWidget {
               margin: edgeH16B16,
               padding: edge24,
               decoration: BoxDecoration(
-                color: theme.backgroundColor.withOpacity(0.87),
+                color: theme.colorScheme.background.withOpacity(0.87),
               ),
               child: centerLoading,
             ),
@@ -319,7 +319,7 @@ class SubscribedFragment extends StatelessWidget {
             width: double.infinity,
             margin: edgeH16B16,
             padding: edge24,
-            decoration: BoxDecoration(color: theme.backgroundColor),
+            decoration: BoxDecoration(color: theme.colorScheme.background),
             child: Center(
               child: Column(
                 children: [
@@ -574,7 +574,7 @@ class _PinedHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final it = ColorTween(
-      begin: theme.backgroundColor,
+      begin: theme.colorScheme.background,
       end: theme.scaffoldBackgroundColor,
     );
     return StackSliverPinnedHeader(

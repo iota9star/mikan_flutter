@@ -142,7 +142,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                 message: full,
                 child: Text(
                   simple,
-                  style: theme.textTheme.caption,
+                  style: theme.textTheme.bodySmall,
                 ),
               ),
             ],
@@ -188,7 +188,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                             vertical: ver > 8.0 ? 8.0 : ver,
                           ),
                           child: ScalableRippleTap(
-                            color: theme.backgroundColor,
+                            color: theme.colorScheme.background,
                             onTap: () {
                               Navigator.pushNamed(
                                 context,
@@ -257,7 +257,7 @@ class _IndexFragmentState extends State<IndexFragment> {
                       message: full,
                       child: Text(
                         simple,
-                        style: theme.textTheme.caption,
+                        style: theme.textTheme.bodySmall,
                       ),
                     ),
                   ],
@@ -339,7 +339,7 @@ class _PinedHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final it = ColorTween(
-      begin: theme.backgroundColor,
+      begin: theme.colorScheme.background,
       end: theme.scaffoldBackgroundColor,
     );
     return StackSliverPinnedHeader(

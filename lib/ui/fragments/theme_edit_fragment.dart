@@ -20,7 +20,7 @@ class ThemeEditFragment extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => ThemeEditModel(themeItem, context.read<ThemeModel>()),
       child: Material(
-        color: theme.backgroundColor,
+        color: theme.colorScheme.background,
         child: _buildThemeFactoryWrapper(theme),
       ),
     );
@@ -378,7 +378,7 @@ class ThemeEditFragment extends StatelessWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: borderRadius16,
           ),
-          backgroundColor: theme.backgroundColor,
+          backgroundColor: theme.colorScheme.background,
           content: SingleChildScrollView(
             child: ColorPicker(
               color: color,

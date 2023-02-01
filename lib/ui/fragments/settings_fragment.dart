@@ -101,7 +101,7 @@ class SettingsFragment extends StatelessWidget {
               child: AnimatedContainer(
                 decoration: BoxDecoration(
                   color: (hasScrolled
-                          ? theme.backgroundColor
+                          ? theme.colorScheme.background
                           : theme.scaffoldBackgroundColor)
                       .withOpacity(0.87),
                 ),
@@ -177,7 +177,7 @@ class SettingsFragment extends StatelessWidget {
       child: Padding(
         padding: edgeH16T8,
         child: RippleTap(
-          color: theme.backgroundColor,
+          color: theme.colorScheme.background,
           onTap: () {
             _showFontManageModal(context);
           },
@@ -209,7 +209,7 @@ class SettingsFragment extends StatelessWidget {
       child: Padding(
         padding: edgeH16,
         child: RippleTap(
-          color: theme.backgroundColor,
+          color: theme.colorScheme.background,
           onTap: () {
             Navigator.of(context).pushNamed(Routes.license.name);
           },
@@ -242,7 +242,7 @@ class SettingsFragment extends StatelessWidget {
       child: Padding(
         padding: edgeH16T8,
         child: RippleTap(
-          color: theme.backgroundColor,
+          color: theme.colorScheme.background,
           onTap: () async {
             final cleared = await _showClearCacheModal(context, theme);
             if (cleared == true) {
@@ -267,7 +267,7 @@ class SettingsFragment extends StatelessWidget {
                   builder: (context, value, _) {
                     return Text(
                       value,
-                      style: theme.textTheme.caption,
+                      style: theme.textTheme.bodySmall,
                     );
                   },
                 ),
@@ -284,7 +284,7 @@ class SettingsFragment extends StatelessWidget {
       child: Padding(
         padding: edgeH16T8,
         child: RippleTap(
-          color: theme.backgroundColor,
+          color: theme.colorScheme.background,
           onTap: () {
             launchUrlString(
                 "https://github.com/iota9star/mikan_flutter/blob/master/PrivacyPolicy.md");
@@ -316,7 +316,7 @@ class SettingsFragment extends StatelessWidget {
       child: Padding(
         padding: edgeH16T8,
         child: RippleTap(
-          color: theme.backgroundColor,
+          color: theme.colorScheme.background,
           onTap: () {
             final HomeModel homeModel =
                 Provider.of<HomeModel>(context, listen: false);
@@ -376,7 +376,7 @@ class SettingsFragment extends StatelessWidget {
               children: [
                 Container(
                   padding: edge16,
-                  color: theme.backgroundColor,
+                  color: theme.colorScheme.background,
                   child: Row(
                     children: [
                       Icon(

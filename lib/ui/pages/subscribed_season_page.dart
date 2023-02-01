@@ -141,8 +141,8 @@ class SubscribedSeasonPage extends StatelessWidget {
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
             colors: [
-              theme.backgroundColor.withOpacity(0.72),
-              theme.backgroundColor.withOpacity(0.9),
+              theme.colorScheme.background.withOpacity(0.72),
+              theme.colorScheme.background.withOpacity(0.9),
             ],
           ),
           borderRadius: borderRadius16,

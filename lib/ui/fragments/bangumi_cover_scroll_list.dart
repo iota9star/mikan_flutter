@@ -65,7 +65,7 @@ class _BangumiCoverScrollListFragmentState
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Colors.transparent, theme.backgroundColor],
+          colors: [Colors.transparent, theme.colorScheme.background],
         ),
       ),
       child: Selector<IndexModel, List<BangumiRow>>(

@@ -41,7 +41,7 @@ class SelectSeasonFragment extends StatelessWidget {
     return SliverPinnedToBoxAdapter(
       child: Container(
         padding: edge16,
-        decoration: BoxDecoration(color: theme.backgroundColor),
+        decoration: BoxDecoration(color: theme.colorScheme.background),
         child: Row(
           children: <Widget>[
             const Expanded(

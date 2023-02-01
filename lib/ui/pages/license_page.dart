@@ -86,7 +86,7 @@ class LicenseList extends StatelessWidget {
                             final List<int> bindings =
                                 data.packageLicenseBindings[packageName]!;
                             return ScalableRippleTap(
-                              color: theme.backgroundColor,
+                              color: theme.colorScheme.background,
                               onTap: () {
                                 Navigator.of(context).pushNamed(
                                   Routes.licenseDetail.name,

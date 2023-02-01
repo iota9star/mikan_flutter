@@ -62,7 +62,7 @@ class HomeModel extends BaseModel {
     Map<String, dynamic> release,
   ) {
     final ThemeData theme = Theme.of(context);
-    final Color backgroundColor = theme.backgroundColor;
+    final Color backgroundColor = theme.colorScheme.background;
     final Color scaffoldBackgroundColor = theme.scaffoldBackgroundColor;
     final Color accentTextColor =
         theme.secondary.isDark ? Colors.white : Colors.black;

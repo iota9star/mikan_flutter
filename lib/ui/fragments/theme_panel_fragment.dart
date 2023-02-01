@@ -23,7 +23,7 @@ class ThemePanelFragment extends StatelessWidget {
     return Container(
       margin: edgeH16,
       decoration: BoxDecoration(
-        color: theme.backgroundColor,
+        color: theme.colorScheme.background,
       ),
       padding: edge16,
       child: ValueListenableBuilder<Box<ThemeItem>>(
@@ -36,7 +36,7 @@ class ThemePanelFragment extends StatelessWidget {
               Color(themeItem.accentColor),
             ];
             final selected = themeModel.themeItem.id == themeItem.id;
-            final selectedColor = theme.textTheme.bodyText1!.color!;
+            final selectedColor = theme.textTheme.bodyLarge!.color!;
             final circle = Container(
               width: 40.0,
               height: 40.0,

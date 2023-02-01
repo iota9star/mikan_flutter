@@ -61,7 +61,7 @@ class BottomBarViewState extends State<BottomBarView>
 
   @override
   Widget build(BuildContext context) {
-    final bgc = Theme.of(context).backgroundColor;
+    final bgc = Theme.of(context).colorScheme.background;
     return ClipRRect(
       borderRadius: borderRadius16,
       child: BackdropFilter(

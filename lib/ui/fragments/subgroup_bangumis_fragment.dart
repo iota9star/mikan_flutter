@@ -116,7 +116,7 @@ class SubgroupBangumisFragment extends StatelessWidget {
     final SubgroupBangumi subgroupBangumi,
   ) {
     final it = ColorTween(
-      begin: theme.backgroundColor,
+      begin: theme.colorScheme.background,
       end: theme.scaffoldBackgroundColor,
     );
     return StackSliverPinnedHeader(

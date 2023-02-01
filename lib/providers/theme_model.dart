@@ -57,7 +57,6 @@ class ThemeModel extends BaseModel {
       primaryColor: primaryColor,
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       fontFamily: fontFamily,
-      backgroundColor: backgroundColor,
       splashColor: accentColor.withOpacity(0.27),
       colorScheme: isDark
           ? ColorScheme.dark(

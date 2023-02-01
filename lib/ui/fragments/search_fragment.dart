@@ -117,7 +117,7 @@ class SearchFragment extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15.0,
                 height: 1.25,
-                color: theme.textTheme.caption?.color,
+                color: theme.textTheme.bodySmall?.color,
               ),
             ),
           ),
@@ -191,7 +191,7 @@ class SearchFragment extends StatelessWidget {
         padding: edgeH16B8,
         child: Text(
           "相关推荐",
-          style: theme.textTheme.caption?.copyWith(fontSize: 15.0),
+          style: theme.textTheme.bodySmall?.copyWith(fontSize: 15.0),
         ),
       ),
     );
@@ -284,7 +284,7 @@ class SearchFragment extends StatelessWidget {
         padding: edgeH16B8,
         child: Text(
           "字幕组",
-          style: theme.textTheme.caption?.copyWith(fontSize: 15.0),
+          style: theme.textTheme.bodySmall?.copyWith(fontSize: 15.0),
         ),
       ),
     );
@@ -295,7 +295,7 @@ class SearchFragment extends StatelessWidget {
     final SearchModel searchModel,
   ) {
     final it = ColorTween(
-      begin: theme.backgroundColor,
+      begin: theme.colorScheme.background,
       end: theme.scaffoldBackgroundColor,
     );
     return StackSliverPinnedHeader(

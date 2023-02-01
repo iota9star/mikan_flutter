@@ -93,7 +93,7 @@ class FontsFragment extends StatelessWidget {
     FontsModel model,
   ) {
     final it = ColorTween(
-      begin: theme.backgroundColor,
+      begin: theme.colorScheme.background,
       end: theme.scaffoldBackgroundColor,
     );
     return StackSliverPinnedHeader(
@@ -153,7 +153,7 @@ class FontsFragment extends StatelessWidget {
       onTap: () {
         model.enableFont(font);
       },
-      color: theme.backgroundColor,
+      color: theme.colorScheme.background,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
