@@ -16,7 +16,7 @@ dependencies:
   firebase_analytics: ^10.1.0
   firebase_crashlytics: ^3.0.9
   path_provider: ^2.0.11
-  dio: ^4.0.6
+  dio: ^5.0.3
   dio_cookie_manager: ^2.0.0
   html: ^0.15.1
   provider: ^6.0.5
