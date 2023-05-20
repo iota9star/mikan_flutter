@@ -1,5 +1,5 @@
-import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/model/subgroup.dart';
+import 'record_item.dart';
+import 'subgroup.dart';
 
 class SubgroupBangumi {
   late String name;

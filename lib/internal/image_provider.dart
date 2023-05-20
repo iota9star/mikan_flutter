@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -9,14 +11,13 @@ import 'package:flutter/painting.dart' as painting;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-/// The dart:io implementation of [painting.NetworkImage].
 @immutable
-class CacheImageProvider extends painting.ImageProvider<painting.NetworkImage>
+class CacheImage extends painting.ImageProvider<painting.NetworkImage>
     implements painting.NetworkImage {
   /// Creates an object that fetches the image at the given URL.
   ///
   /// The arguments [url] and [scale] must not be null.
-  const CacheImageProvider(this.url, {this.scale = 1.0, this.headers});
+  const CacheImage(this.url, {this.scale = 1.0, this.headers});
 
   @override
   final String url;
@@ -28,23 +29,34 @@ class CacheImageProvider extends painting.ImageProvider<painting.NetworkImage>
   final Map<String, String>? headers;
 
   @override
-  Future<CacheImageProvider> obtainKey(
-      painting.ImageConfiguration configuration) {
-    return SynchronousFuture<CacheImageProvider>(this);
+  Future<CacheImage> obtainKey(
+    painting.ImageConfiguration configuration,
+  ) {
+    return SynchronousFuture<CacheImage>(this);
   }
 
-  InformationCollector? _imageStreamInformationCollector(
+  @override
+  ImageStreamCompleter load(
     painting.NetworkImage key,
+    painting.DecoderCallback decode,
   ) {
-    InformationCollector? collector;
-    assert(() {
-      collector = () => <DiagnosticsNode>[
-            DiagnosticsProperty<painting.ImageProvider>('Image provider', this),
-            DiagnosticsProperty<NetworkImage>('Image key', key),
-          ];
-      return true;
-    }());
-    return collector;
+    // Ownership of this controller is handed off to [_loadAsync]; it is that
+    // method's responsibility to close the controller's stream when the image
+    // has been loaded or an error is thrown.
+    final StreamController<ImageChunkEvent> chunkEvents =
+        StreamController<ImageChunkEvent>();
+
+    return MultiFrameImageStreamCompleter(
+      codec:
+          _loadAsync(key as CacheImage, chunkEvents, decodeDeprecated: decode),
+      chunkEvents: chunkEvents.stream,
+      scale: key.scale,
+      debugLabel: key.url,
+      informationCollector: () => <DiagnosticsNode>[
+        DiagnosticsProperty<painting.ImageProvider>('Image provider', this),
+        DiagnosticsProperty<painting.NetworkImage>('Image key', key),
+      ],
+    );
   }
 
   @override
@@ -59,11 +71,41 @@ class CacheImageProvider extends painting.ImageProvider<painting.NetworkImage>
         StreamController<ImageChunkEvent>();
 
     return MultiFrameImageStreamCompleter(
+      codec: _loadAsync(
+        key as CacheImage,
+        chunkEvents,
+        decodeBufferDeprecated: decode,
+      ),
       chunkEvents: chunkEvents.stream,
-      codec: _loadAsync(key, chunkEvents, decode),
       scale: key.scale,
       debugLabel: key.url,
-      informationCollector: _imageStreamInformationCollector(key),
+      informationCollector: () => <DiagnosticsNode>[
+        DiagnosticsProperty<painting.ImageProvider>('Image provider', this),
+        DiagnosticsProperty<painting.NetworkImage>('Image key', key),
+      ],
+    );
+  }
+
+  @override
+  ImageStreamCompleter loadImage(
+    painting.NetworkImage key,
+    painting.ImageDecoderCallback decode,
+  ) {
+    // Ownership of this controller is handed off to [_loadAsync]; it is that
+    // method's responsibility to close the controller's stream when the image
+    // has been loaded or an error is thrown.
+    final StreamController<ImageChunkEvent> chunkEvents =
+        StreamController<ImageChunkEvent>();
+
+    return MultiFrameImageStreamCompleter(
+      codec: _loadAsync(key as CacheImage, chunkEvents, decode: decode),
+      chunkEvents: chunkEvents.stream,
+      scale: key.scale,
+      debugLabel: key.url,
+      informationCollector: () => <DiagnosticsNode>[
+        DiagnosticsProperty<painting.ImageProvider>('Image provider', this),
+        DiagnosticsProperty<painting.NetworkImage>('Image key', key),
+      ],
     );
   }
 
@@ -85,48 +127,23 @@ class CacheImageProvider extends painting.ImageProvider<painting.NetworkImage>
     return client;
   }
 
-  Future<Directory> _getCacheDir() async {
-    final String cacheDir;
-    if (Platform.isWindows) {
-      cacheDir = join(
-          (await getTemporaryDirectory()).path,
-          (await getApplicationSupportDirectory())
-              .parent
-              .path
-              .split(Platform.pathSeparator)
-              .last,
-          "cache-image");
-    } else {
-      cacheDir = join((await getTemporaryDirectory()).path, "cache-image");
-    }
-    final Directory dir = Directory(cacheDir);
-    if (!dir.existsSync()) {
-      await dir.create(recursive: true);
-    }
-    return dir;
-  }
-
-  File _childFile(Directory parentDir, String fileName) {
-    return File(join(parentDir.path, fileName));
-  }
-
   Future<ui.Codec> _loadAsync(
-    painting.NetworkImage key,
-    StreamController<ImageChunkEvent> chunkEvents,
-    painting.DecoderBufferCallback decode,
-  ) async {
+    CacheImage key,
+    StreamController<ImageChunkEvent> chunkEvents, {
+    painting.ImageDecoderCallback? decode,
+    painting.DecoderBufferCallback? decodeBufferDeprecated,
+    painting.DecoderCallback? decodeDeprecated,
+  }) async {
     try {
       assert(key == this);
       final cacheKey = base64Url.encode(utf8.encode(key.url));
-      final Directory parentDir = await _getCacheDir();
-      final File cacheFile = _childFile(parentDir, cacheKey);
+      final cacheFile = await _getCacheFile(cacheKey);
       if (cacheFile.existsSync()) {
-        final buffer = await cacheFile.readAsBytes();
-        final immutableBuffer = await ui.ImmutableBuffer.fromUint8List(buffer);
-        return decode(immutableBuffer);
+        final bytes = await cacheFile.readAsBytes();
+        return _decode(bytes, decode, decodeBufferDeprecated, decodeDeprecated);
       }
-      final Uri resolved = Uri.base.resolve(key.url);
 
+      final Uri resolved = Uri.base.resolve(key.url);
       final HttpClientRequest request = await _httpClient.getUrl(resolved);
 
       headers?.forEach((String name, String value) {
@@ -137,28 +154,43 @@ class CacheImageProvider extends painting.ImageProvider<painting.NetworkImage>
         // The network may be only temporarily unavailable, or the file will be
         // added on the server later. Avoid having future calls to resolve
         // fail to check the network again.
-        await response.drain<List<int>>();
+        await response.drain<List<int>>(<int>[]);
         throw painting.NetworkImageLoadException(
-            statusCode: response.statusCode, uri: resolved);
+          statusCode: response.statusCode,
+          uri: resolved,
+        );
       }
 
       final Uint8List bytes = await consolidateHttpClientResponseBytes(
         response,
         onBytesReceived: (int cumulative, int? total) {
-          chunkEvents.add(ImageChunkEvent(
-            cumulativeBytesLoaded: cumulative,
-            expectedTotalBytes: total,
-          ));
+          chunkEvents.add(
+            ImageChunkEvent(
+              cumulativeBytesLoaded: cumulative,
+              expectedTotalBytes: total,
+            ),
+          );
         },
       );
       if (bytes.lengthInBytes == 0) {
         throw Exception('NetworkImage is an empty file: $resolved');
       }
-
-      await cacheFile.writeAsBytes(bytes);
-      final ui.ImmutableBuffer buffer =
-          await ui.ImmutableBuffer.fromUint8List(bytes);
-      return decode(buffer);
+      final ui.Codec codec;
+      try {
+        codec = await _decode(
+          bytes,
+          decode,
+          decodeBufferDeprecated,
+          decodeDeprecated,
+        );
+      } finally {
+        try {
+          final file = await _getCacheFile('$cacheKey.tmp');
+          await file.writeAsBytes(bytes);
+          await file.rename(cacheFile.path);
+        } catch (_) {}
+      }
+      return codec;
     } catch (e) {
       // Depending on where the exception was thrown, the image cache may not
       // have had a chance to track the key in the cache at all.
@@ -168,16 +200,62 @@ class CacheImageProvider extends painting.ImageProvider<painting.NetworkImage>
       });
       rethrow;
     } finally {
-      chunkEvents.close();
+      unawaited(chunkEvents.close());
     }
   }
 
-  @override
-  bool operator ==(Object other) =>
-      other is CacheImageProvider && url == other.url && scale == other.scale;
+  Future<ui.Codec> _decode(
+    Uint8List bytes,
+    ImageDecoderCallback? decode,
+    DecoderBufferCallback? decodeBufferDeprecated,
+    DecoderCallback? decodeDeprecated,
+  ) async {
+    if (decode != null) {
+      final ui.ImmutableBuffer buffer =
+          await ui.ImmutableBuffer.fromUint8List(bytes);
+      return decode(buffer);
+    } else if (decodeBufferDeprecated != null) {
+      final ui.ImmutableBuffer buffer =
+          await ui.ImmutableBuffer.fromUint8List(bytes);
+      return decodeBufferDeprecated(buffer);
+    } else {
+      assert(decodeDeprecated != null);
+      return decodeDeprecated!(bytes);
+    }
+  }
+
+  Future<File> _getCacheFile(String fileName) async {
+    final String cacheDir;
+    if (Platform.isWindows) {
+      cacheDir = join(
+        (await getTemporaryDirectory()).path,
+        (await getApplicationSupportDirectory())
+            .parent
+            .path
+            .split(Platform.pathSeparator)
+            .last,
+        'images',
+      );
+    } else {
+      cacheDir = join((await getTemporaryDirectory()).path, 'images');
+    }
+    final dir = Directory(cacheDir);
+    if (!dir.existsSync()) {
+      await dir.create(recursive: true);
+    }
+    return File(join(dir.path, fileName));
+  }
 
   @override
-  int get hashCode => url.hashCode ^ scale.hashCode;
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is CacheImage && other.url == url && other.scale == scale;
+  }
+
+  @override
+  int get hashCode => Object.hash(url, scale);
 
   @override
   String toString() =>

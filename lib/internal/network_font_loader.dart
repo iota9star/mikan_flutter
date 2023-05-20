@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:mikan_flutter/internal/http_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 
-class NetworkFontLoader {
-  final String _cacheDir;
+import 'http_cache_manager.dart';
 
+class NetworkFontLoader {
   NetworkFontLoader._(this._cacheDir);
+
+  final String _cacheDir;
 
   static late final NetworkFontLoader _fontManager;
 
@@ -17,11 +18,11 @@ class NetworkFontLoader {
   static Future<void> init({String? cacheDir}) async {
     if (cacheDir == null || cacheDir.isEmpty) {
       cacheDir =
-          "${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}font_manager_cache";
+          '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}fonts';
     }
     final Directory directory = Directory(cacheDir);
     if (!directory.existsSync()) {
-      directory.create(recursive: true);
+      await directory.create(recursive: true);
     }
     _fontManager = NetworkFontLoader._(cacheDir);
   }
@@ -57,7 +58,7 @@ class NetworkFontLoader {
       cancelable: cancelable,
     );
     if (file == null) {
-      return Future.error("Get font<$url> error");
+      return Future.error('Get font<$url> error');
     }
     final Uint8List bytes = await file.readAsBytes();
     return ByteData.view(bytes.buffer);
@@ -83,7 +84,7 @@ class NetworkFontLoader {
         });
       }
       final FontLoader fontLoader = FontLoader(fontFamily);
-      for (String url in urls) {
+      for (final String url in urls) {
         final Future<ByteData> bytes = _loadFont(
           url,
           headers: headers,
@@ -95,7 +96,7 @@ class NetworkFontLoader {
       }
       await fontLoader.load();
     } finally {
-      eventBus?.close();
+      await eventBus?.close();
       _loadingFonts.remove(fontFamily);
     }
   }

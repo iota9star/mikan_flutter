@@ -1,210 +1,218 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:mikan_flutter/internal/consts.dart';
-import 'package:mikan_flutter/internal/http.dart';
+
+import 'consts.dart';
+import 'http.dart';
 
 class Repo {
   const Repo._();
 
-  static Future<Resp> season(final String year, final String season) async {
-    final parameters = {"year": year, "seasonStr": season};
-    final extra = {"$MikanFunc": MikanFunc.season};
-    final Options options = Options(extra: extra);
-    return await Http.get(
-      MikanUrl.seasonUpdate,
+  static Future<Resp> season(String year, String season) {
+    final parameters = {'year': year, 'seasonStr': season};
+    final extra = {'$MikanFunc': MikanFunc.season};
+    final Options options = Options(
+      extra: extra,
+    );
+    return Http.get(
+      MikanUrls.seasonUpdate,
       queryParameters: parameters,
       options: options,
     );
   }
 
-  static Future<Resp> day(final int pre, final int end) async {
-    final parameters = {"predate": pre, "enddate": end, "maximumitems": 16};
-    final extra = {"$MikanFunc": MikanFunc.day};
+  static Future<Resp> day(int pre, int end) {
+    final parameters = {'predate': pre, 'enddate': end, 'maximumitems': 16};
+    final extra = {'$MikanFunc': MikanFunc.day};
     final Options options = Options(extra: extra);
-    return await Http.get(
-      MikanUrl.dayUpdate,
+    return Http.get(
+      MikanUrls.dayUpdate,
       queryParameters: parameters,
       options: options,
     );
   }
 
-  static Future<Resp> ova() async {
-    return await day(-1, -1);
+  static Future<Resp> ova() {
+    return day(-1, -1);
   }
 
   static Future<Resp> search(
-    final String? keywords, {
-    final String? subgroupId,
-  }) async {
-    final parameters = {"searchstr": keywords, "subgroupid": subgroupId};
-    final extra = {"$MikanFunc": MikanFunc.search};
+    String? keywords, {
+    String? subgroupId,
+  }) {
+    final parameters = {'searchstr': keywords, 'subgroupid': subgroupId};
+    final extra = {'$MikanFunc': MikanFunc.search};
     final Options options = Options(extra: extra);
-    return await Http.get(
-      MikanUrl.search,
+    return Http.get(
+      MikanUrls.search,
       queryParameters: parameters,
       options: options,
     );
   }
 
-  static Future<Resp> list(final int? page) async {
-    final extra = {"$MikanFunc": MikanFunc.list};
+  static Future<Resp> list(int? page) {
+    final extra = {'$MikanFunc': MikanFunc.list};
     final Options options = Options(extra: extra);
-    return await Http.get("${MikanUrl.list}/${page ?? ""}", options: options);
+    return Http.get("${MikanUrls.list}/${page ?? ""}", options: options);
   }
 
-  static Future<Resp> index() async {
-    final extra = {"$MikanFunc": MikanFunc.index};
+  static Future<Resp> index() {
+    final extra = {'$MikanFunc': MikanFunc.index};
     final Options options = Options(extra: extra);
-    return await Http.get(MikanUrl.baseUrl, options: options);
+    return Http.get(MikanUrls.baseUrl, options: options);
   }
 
-  static Future<Resp> subgroup(final String? subgroupId) async {
-    final extra = {"$MikanFunc": MikanFunc.subgroup};
+  static Future<Resp> subgroup(String? subgroupId) {
+    final extra = {'$MikanFunc': MikanFunc.subgroup};
     final Options options = Options(extra: extra);
-    return await Http.get("${MikanUrl.subgroup}/$subgroupId", options: options);
+    return Http.get(
+      '${MikanUrls.subgroup}/$subgroupId',
+      options: options,
+    );
   }
 
-  static Future<Resp> bangumi(final String id) async {
-    final extra = {"$MikanFunc": MikanFunc.bangumi};
+  static Future<Resp> bangumi(String id) {
+    final extra = {'$MikanFunc': MikanFunc.bangumi};
     final Options options = Options(extra: extra);
-    return await Http.get("${MikanUrl.bangumi}/$id", options: options);
+    return Http.get('${MikanUrls.bangumi}/$id', options: options);
   }
 
   static Future<Resp> bangumiMore(
-    final String bangumiId,
-    final String subgroupId,
-    final int take,
-  ) async {
-    final extra = {"$MikanFunc": MikanFunc.bangumiMore};
+    String bangumiId,
+    String subgroupId,
+    int take,
+  ) {
+    final extra = {'$MikanFunc': MikanFunc.bangumiMore};
     final Options options = Options(extra: extra);
-    return await Http.get(
-      MikanUrl.bangumiMore,
+    return Http.get(
+      MikanUrls.bangumiMore,
       queryParameters: {
-        "bangumiId": bangumiId,
-        "subtitleGroupId": subgroupId,
-        "take": take,
+        'bangumiId': bangumiId,
+        'subtitleGroupId': subgroupId,
+        'take': take,
       },
       options: options,
     );
   }
 
-  static Future<Resp> details(final String url) async {
-    final extra = {"$MikanFunc": MikanFunc.details};
+  static Future<Resp> details(String url) {
+    final extra = {'$MikanFunc': MikanFunc.details};
     final Options options = Options(extra: extra);
-    return await Http.get(url, options: options);
+    return Http.get(url, options: options);
   }
 
   static Future<Resp> subscribeBangumi(
-    final int bangumiId,
-    final bool subscribe, {
-    final int? subgroupId,
-  }) async {
+    int bangumiId,
+    bool subscribe, {
+    int? subgroupId,
+  }) {
     final Options options = Options(
       contentType: Headers.jsonContentType,
       responseType: ResponseType.json,
     );
-    return await Http.postJSON(
-      subscribe ? MikanUrl.unsubscribeBangumi : MikanUrl.subscribeBangumi,
+    return Http.postJSON(
+      (subscribe ? MikanUrls.unsubscribeBangumi : MikanUrls.subscribeBangumi),
       data: <String, dynamic>{
-        "BangumiID": bangumiId,
-        "SubtitleGroupID": subgroupId,
+        'BangumiID': bangumiId,
+        'SubtitleGroupID': subgroupId,
       },
       options: options,
     );
   }
 
   static Future<Resp> mySubscribedSeasonBangumi(
-      final String year, final String season) async {
+    String year,
+    String season,
+  ) {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.subscribedSeason},
+      extra: {'$MikanFunc': MikanFunc.subscribedSeason},
     );
-    return await Http.get(
-      MikanUrl.subscribedSeason,
+    return Http.get(
+      MikanUrls.subscribedSeason,
       queryParameters: <String, dynamic>{
-        "year": year,
-        "seasonStr": season,
+        'year': year,
+        'seasonStr': season,
       },
       options: options,
     );
   }
 
-  static Future<Resp> login(final Map<String, dynamic> params) async {
+  static Future<Resp> login(Map<String, dynamic> params) {
     final Options options = Options(
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.plain,
     );
-    return await Http.postForm(
-      MikanUrl.login,
-      queryParameters: {"ReturnUrl": "/"},
+    return Http.postForm(
+      MikanUrls.login,
+      queryParameters: {'ReturnUrl': '/'},
       data: params,
       options: options,
     );
   }
 
-  static Future<Resp> register(final Map<String, dynamic> params) async {
+  static Future<Resp> register(Map<String, dynamic> params) {
     final Options options = Options(
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.plain,
     );
-    return await Http.postForm(
-      MikanUrl.register,
+    return Http.postForm(
+      MikanUrls.register,
       data: params,
       options: options,
     );
   }
 
-  static Future<Resp> forgotPassword(final Map<String, dynamic> params) async {
+  static Future<Resp> forgotPassword(Map<String, dynamic> params) {
     final Options options = Options(
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.plain,
     );
-    return await Http.postForm(
-      MikanUrl.forgotPassword,
+    return Http.postForm(
+      MikanUrls.forgotPassword,
       data: params,
       options: options,
     );
   }
 
-  static Future<Resp> refreshLoginToken() async {
+  static Future<Resp> refreshLoginToken() {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.refreshLoginToken},
+      extra: {'$MikanFunc': MikanFunc.refreshLoginToken},
     );
-    return await Http.get(
-      MikanUrl.mySubscribed,
+    return Http.get(
+      MikanUrls.mySubscribed,
       options: options,
     );
   }
 
-  static Future<Resp> refreshForgotPasswordToken() async {
+  static Future<Resp> refreshForgotPasswordToken() {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.refreshForgotPasswordToken},
+      extra: {'$MikanFunc': MikanFunc.refreshForgotPasswordToken},
     );
-    return await Http.get(
-      MikanUrl.forgotPassword,
+    return Http.get(
+      MikanUrls.forgotPassword,
       options: options,
     );
   }
 
-  static Future<Resp> refreshRegisterToken() async {
+  static Future<Resp> refreshRegisterToken() {
     final Options options = Options(
-      extra: {"$MikanFunc": MikanFunc.refreshRegisterToken},
+      extra: {'$MikanFunc': MikanFunc.refreshRegisterToken},
     );
-    return await Http.get(
-      MikanUrl.register,
+    return Http.get(
+      MikanUrls.register,
       options: options,
     );
   }
 
-  static Future<Resp> fonts() async {
+  static Future<Resp> fonts() {
     final Options options = Options(
-      extra: {"$ExtraUrl": ExtraUrl.fontsManifest},
+      extra: {'$ExtraUrl': ExtraUrl.fontsManifest},
       contentType: ContentType.json.toString(),
     );
-    return await Http.get(ExtraUrl.fontsManifest, options: options);
+    return Http.get(ExtraUrl.fontsManifest, options: options);
   }
 
-  static Future<Resp> release() async {
-    return await Http.get(ExtraUrl.releaseVersion);
+  static Future<Resp> release() {
+    return Http.get(ExtraUrl.releaseVersion);
   }
 }

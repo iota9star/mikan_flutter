@@ -1,6 +1,6 @@
-import 'package:mikan_flutter/internal/consts.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/model/subgroup.dart';
+import '../internal/consts.dart';
+import '../internal/extension.dart';
+import 'subgroup.dart';
 
 class RecordDetail {
   late String id;
@@ -12,7 +12,7 @@ class RecordDetail {
   late List<Subgroup> subgroups = [];
 
   // 详情地址
-  late String url = "";
+  late String url = '';
 
   // 标题
   late String title;
@@ -24,75 +24,75 @@ class RecordDetail {
   late String torrent;
   late List<String> tags;
 
-  String get shareString {
+  late final String share = () {
     final StringBuffer sb = StringBuffer();
     if (name.isNotBlank) {
       sb
-        ..write("番组名称：")
+        ..write('番组名称：')
         ..write(name)
-        ..write("\n");
+        ..write('\n');
     }
     if (id.isNotBlank) {
       sb
-        ..write("番组地址：")
-        ..write(MikanUrl.baseUrl)
-        ..write(MikanUrl.bangumi)
+        ..write('番组地址：')
+        ..write(MikanUrls.baseUrl)
+        ..write(MikanUrls.bangumi)
         ..write(id)
-        ..write("\n");
+        ..write('\n');
     }
     if (title.isNotBlank) {
       sb
-        ..write("标题：")
+        ..write('标题：')
         ..write(title)
-        ..write("\n");
+        ..write('\n');
     }
     if (more.isSafeNotEmpty) {
       more.forEach((key, value) {
         sb
           ..write(key)
-          ..write("：")
+          ..write('：')
           ..write(value)
-          ..write("\n");
+          ..write('\n');
       });
     }
     if (subgroups.isSafeNotEmpty) {
       sb
-        ..write("字幕组：")
-        ..write(subgroups.map((e) => e.name).join(" "))
-        ..write("\n");
+        ..write('字幕组：')
+        ..write(subgroups.map((e) => e.name).join(' '))
+        ..write('\n');
     }
     if (url.isNotBlank) {
       sb
-        ..write("详情地址：")
+        ..write('详情地址：')
         ..write(url)
-        ..write("\n");
+        ..write('\n');
     }
     if (tags.isSafeNotEmpty) {
       sb
-        ..write("标签：")
-        ..write(tags.join("，"))
-        ..write("\n");
+        ..write('标签：')
+        ..write(tags.join('，'))
+        ..write('\n');
     }
     if (cover.isNotBlank) {
       sb
-        ..write("封面地址：")
+        ..write('封面地址：')
         ..write(cover)
-        ..write("\n");
+        ..write('\n');
     }
     if (magnet.isNotBlank) {
       sb
-        ..write("磁链地址：")
+        ..write('磁链地址：')
         ..write(magnet)
-        ..write("\n");
+        ..write('\n');
     }
     if (torrent.isNotBlank) {
       sb
-        ..write("种子地址：")
+        ..write('种子地址：')
         ..write(torrent)
-        ..write("\n");
+        ..write('\n');
     }
     return sb.toString();
-  }
+  }();
 
   @override
   bool operator ==(Object other) =>

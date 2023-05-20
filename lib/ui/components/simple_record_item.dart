@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/icon_button.dart';
-import 'package:mikan_flutter/widget/ripple_tap.dart';
+
+import '../../internal/extension.dart';
+import '../../model/record_item.dart';
+import '../../topvars.dart';
+import '../../widget/icon_button.dart';
+import '../../widget/scalable_tap.dart';
 
 @immutable
 class SimpleRecordItem extends StatelessWidget {
+  const SimpleRecordItem({
+    super.key,
+    required this.index,
+    required this.record,
+    required this.onTap,
+    required this.theme,
+  });
+
   final int index;
   final RecordItem record;
   final ThemeData theme;
   final VoidCallback onTap;
 
-  const SimpleRecordItem({
-    Key? key,
-    required this.index,
-    required this.record,
-    required this.onTap,
-    required this.theme,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    final TextStyle accentTagStyle = textStyle10WithColor(
-      theme.secondary.isDark ? Colors.white : Colors.black,
+    final accentTagStyle = theme.textTheme.labelMedium!.copyWith(
+      color: theme.colorScheme.onSecondary,
     );
-    final TextStyle primaryTagStyle = textStyle10WithColor(
-      theme.primary.isDark ? Colors.white : Colors.black,
+    final primaryTagStyle = accentTagStyle.copyWith(
+      color: theme.colorScheme.onPrimary,
     );
-    return ScalableRippleTap(
+    return ScalableCard(
       onTap: onTap,
-      color: theme.colorScheme.background,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -38,52 +38,64 @@ class SimpleRecordItem extends StatelessWidget {
           children: <Widget>[
             Text(
               record.title,
-              style: textStyle14B500,
-            ),
-            sizedBoxH8,
-            Wrap(
-              spacing: 4.0,
-              runSpacing: 4.0,
-              children: [
-                if (record.size.isNotBlank)
-                  Container(
-                    padding: edgeH4V2,
-                    decoration: BoxDecoration(color: theme.secondary),
-                    child: Text(
-                      record.size,
-                      style: accentTagStyle,
-                    ),
-                  ),
-                if (!record.tags.isNullOrEmpty)
-                  ...List.generate(record.tags.length, (index) {
-                    return Container(
-                      padding: edgeH4V2,
-                      decoration: BoxDecoration(color: theme.primary),
-                      child: Text(
-                        record.tags[index],
-                        style: primaryTagStyle,
-                      ),
-                    );
-                  }),
-              ],
+              style: theme.textTheme.bodyMedium,
             ),
             sizedBoxH8,
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Text(
-                    record.publishAt,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        runSpacing: 4.0,
+                        spacing: 4.0,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          if (record.size.isNotBlank)
+                            Container(
+                              padding: edgeH4V2,
+                              decoration: BoxDecoration(
+                                color: theme.secondary,
+                                borderRadius: borderRadius4,
+                              ),
+                              child: Text(
+                                record.size,
+                                style: accentTagStyle,
+                              ),
+                            ),
+                          if (!record.tags.isNullOrEmpty)
+                            ...List.generate(record.tags.length, (index) {
+                              return Container(
+                                padding: edgeH4V2,
+                                decoration: BoxDecoration(
+                                  color: theme.primary,
+                                  borderRadius: borderRadius4,
+                                ),
+                                child: Text(
+                                  record.tags[index],
+                                  style: primaryTagStyle,
+                                ),
+                              );
+                            }),
+                        ],
+                      ),
+                      sizedBoxH4,
+                      Text(
+                        record.publishAt,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
                   ),
                 ),
                 sizedBoxW8,
-                TorrentButton(payload: record.torrent),
-                sizedBoxW8,
-                MagnetButton(payload: record.magnet),
-                sizedBoxW8,
-                ShareButton(payload: record.shareString),
+                TMSMenuButton(
+                  torrent: record.torrent,
+                  magnet: record.magnet,
+                  share: record.share,
+                ),
               ],
             ),
           ],

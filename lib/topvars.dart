@@ -1,15 +1,21 @@
-import 'dart:ui';
+import 'dart:math' as math;
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/screen.dart';
+
+import 'internal/kit.dart';
 
 const edgeH16V4 = EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0);
 const edgeH16V8 = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
+const edgeH24T16 = EdgeInsets.only(left: 24.0, right: 24.0, top: 16.0);
+const edgeH24T8 = EdgeInsets.only(left: 24.0, right: 24.0, top: 8.0);
+const edgeH24V8 = EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0);
 const edgeHT16 = EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0);
 const edgeH16T4 = EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0);
 const edgeH16T8 = EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0);
 const edgeH16B16 = EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0);
+const edgeH24B16 = EdgeInsets.only(left: 24.0, right: 24.0, bottom: 16.0);
 const edgeH16B8 = EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0);
 const edgeHB16T8 =
     EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0);
@@ -26,24 +32,31 @@ const edge4 = EdgeInsets.all(4.0);
 const edge2 = EdgeInsets.all(2.0);
 const edgeV4 = EdgeInsets.symmetric(vertical: 4.0);
 const edgeV8 = EdgeInsets.symmetric(vertical: 8.0);
+const edgeV16 = EdgeInsets.symmetric(vertical: 16.0);
 const edge24 = EdgeInsets.all(24.0);
 const edge28 = EdgeInsets.all(28.0);
 const edgeH12V8 = EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
 const edgeH16 = EdgeInsets.symmetric(horizontal: 16.0);
 const edgeH24 = EdgeInsets.symmetric(horizontal: 24.0);
+const edgeS24E12 = EdgeInsetsDirectional.only(start: 24.0, end: 12.0);
+const edgeH24V16 = EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0);
 const edgeH8 = EdgeInsets.symmetric(horizontal: 8.0);
 const edgeH4 = EdgeInsets.symmetric(horizontal: 4.0);
 const edgeH16V12 = EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0);
+const edgeH24V12 = EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0);
 const edgeH8V6 = EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0);
 const edgeT2 = EdgeInsets.only(top: 2.0);
 const edgeR4 = EdgeInsets.only(right: 4.0);
 const edgeR16 = EdgeInsets.only(right: 16.0);
 const edgeH4V2 = EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0);
+const edgeH6V2 = EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0);
 const edgeRB4 = EdgeInsets.only(right: 4.0, bottom: 4.0);
 const edgeVT16R8 =
     EdgeInsets.only(right: 8.0, left: 16.0, top: 16.0, bottom: 16.0);
 const edgeHB16T4 =
     EdgeInsets.only(top: 4.0, left: 16.0, right: 16.0, bottom: 16.0);
+const edgeH24B16T4 =
+    EdgeInsets.only(top: 4.0, left: 24.0, right: 24.0, bottom: 16.0);
 
 const edgeHB16T24 =
     EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 16.0);
@@ -55,57 +68,61 @@ const edgeT16B12 = EdgeInsets.only(top: 16.0, bottom: 12.0);
 const edgeB16 = EdgeInsets.only(bottom: 16.0);
 const edgeV8R12 = EdgeInsets.only(top: 8.0, bottom: 8.0, right: 12.0);
 
-final edge16WithStatusBar = EdgeInsets.only(
-  top: 16.0 + Screens.statusBarHeight,
-  left: 16.0,
-  right: 16.0,
-  bottom: 16.0,
+EdgeInsets edge16WithStatusBar(BuildContext context) => EdgeInsets.only(
+      top: 16.0 + context.statusBarHeight,
+      left: 16.0,
+      right: 16.0,
+      bottom: 16.0,
+    );
+
+EdgeInsets edgeH24V36WithStatusBar(BuildContext context) => EdgeInsets.only(
+      top: context.statusBarHeight + 36.0,
+      bottom: 36.0,
+      left: 24.0,
+      right: 24.0,
+    );
+
+EdgeInsets edgeH16T96B48WithSafeHeight(BuildContext context) => EdgeInsets.only(
+      top: 96.0 + context.statusBarHeight,
+      left: 16.0,
+      right: 16.0,
+      bottom: 48.0 + context.navBarHeight,
+    );
+
+EdgeInsets edgeHT16B24WithNavbarHeight(BuildContext context) => EdgeInsets.only(
+      top: 16.0,
+      left: 16.0,
+      right: 16.0,
+      bottom: 24.0 + context.navBarHeight,
+    );
+
+EdgeInsets edgeH16B24WithNavbarHeight(BuildContext context) => EdgeInsets.only(
+      left: 16.0,
+      right: 16.0,
+      bottom: 24.0 + context.navBarHeight,
+    );
+
+const borderRadiusT16 = BorderRadius.vertical(
+  top: radius16,
 );
 
-final edgeH24V36WithStatusBar = EdgeInsets.only(
-  top: Screens.statusBarHeight + 36.0,
-  bottom: 36.0,
-  left: 24.0,
-  right: 24.0,
+const borderRadiusT28 = BorderRadius.vertical(
+  top: radius28,
 );
 
-final edgeH16T96B48WithSafeHeight = EdgeInsets.only(
-  top: 96.0 + Screens.statusBarHeight,
-  left: 16.0,
-  right: 16.0,
-  bottom: 48.0 + Screens.navBarHeight,
-);
-
-final edgeHT16B24WithNavbarHeight = EdgeInsets.only(
-  top: 16.0,
-  left: 16.0,
-  right: 16.0,
-  bottom: 24.0 + Screens.navBarHeight,
-);
-
-final edgeH16B24WithNavbarHeight = EdgeInsets.only(
-  left: 16.0,
-  right: 16.0,
-  bottom: 24.0 + Screens.navBarHeight,
-);
-
-const borderRadiusT16 = BorderRadius.only(
-  topRight: radius16,
-  topLeft: radius16,
-);
 const borderRadiusB16 = BorderRadius.only(
   bottomLeft: radius16,
   bottomRight: radius16,
 );
 
-BorderRadius scrollHeaderBorderRadius(final bool hasScrolled) => hasScrolled
+BorderRadius scrollHeaderBorderRadius(bool hasScrolled) => hasScrolled
     ? const BorderRadius.only(
         bottomLeft: radius16,
         bottomRight: radius16,
       )
     : BorderRadius.zero;
 
-List<BoxShadow> scrollHeaderBoxShadow(final bool hasScrolled) => hasScrolled
+List<BoxShadow> scrollHeaderBoxShadow(bool hasScrolled) => hasScrolled
     ? [
         BoxShadow(
           color: Colors.black.withOpacity(0.024),
@@ -117,103 +134,22 @@ List<BoxShadow> scrollHeaderBoxShadow(final bool hasScrolled) => hasScrolled
     : const [];
 
 const radius16 = Radius.circular(16.0);
+const radius28 = Radius.circular(28.0);
 const radius10 = Radius.circular(10.0);
-const radius0 = Radius.circular(0.0);
+const radius0 = Radius.zero;
 
 const borderRadius24 = BorderRadius.all(Radius.circular(24.0));
 const borderRadius16 = BorderRadius.all(radius16);
 const borderRadius12 = BorderRadius.all(Radius.circular(12.0));
+const borderRadius28 = BorderRadius.all(Radius.circular(28.0));
+const borderRadiusVT28 = BorderRadius.vertical(top: Radius.circular(28.0));
 const borderRadius10 = BorderRadius.all(radius10);
 const borderRadius8 = BorderRadius.all(Radius.circular(8.0));
 const borderRadius2 = BorderRadius.all(Radius.circular(2.0));
-const borderRadius0 = BorderRadius.all(Radius.circular(0.0));
-
-const textStyle18B = TextStyle(
-  fontWeight: FontWeight.w700,
-  fontSize: 18.0,
-  height: 1.25,
-);
-
-const textStyle14B500 = TextStyle(
-  fontSize: 14.0,
-  height: 1.25,
-  fontWeight: FontWeight.w500,
-);
-const textStyle15B500 = TextStyle(
-  fontSize: 15.0,
-  height: 1.25,
-  fontWeight: FontWeight.w500,
-);
-const textStyle14B = TextStyle(
-  fontSize: 14.0,
-  height: 1.25,
-  fontWeight: FontWeight.w700,
-);
-const textStyle15B = TextStyle(
-  fontSize: 15.0,
-  height: 1.25,
-  fontWeight: FontWeight.w700,
-);
-const textStyle16B = TextStyle(
-  fontSize: 16.0,
-  height: 1.25,
-  fontWeight: FontWeight.w700,
-);
-
-const textStyle16B500 = TextStyle(
-  fontSize: 16.0,
-  height: 1.25,
-  fontWeight: FontWeight.w500,
-);
-
-const textStyle16 = TextStyle(
-  fontSize: 16.0,
-  height: 1.25,
-);
-
-const textStyle14 = TextStyle(
-  fontSize: 14.0,
-  height: 1.25,
-);
-
-const textStyle13 = TextStyle(
-  fontSize: 13.0,
-  height: 1.25,
-);
-
-const textStyle12 = TextStyle(
-  fontSize: 12.0,
-  height: 1.25,
-);
-
-const textStyle10 = TextStyle(
-  fontSize: 10.0,
-  height: 1.25,
-);
-
-const textStyle13B500 = TextStyle(
-  fontSize: 13.0,
-  height: 1.25,
-  fontWeight: FontWeight.w500,
-);
-
-const textStyle24B = TextStyle(
-  fontSize: 24.0,
-  fontWeight: FontWeight.w700,
-  height: 1.25,
-);
-
-const textStyle20B = TextStyle(
-  fontSize: 20.0,
-  height: 1.25,
-  fontWeight: FontWeight.w700,
-);
-
-TextStyle textStyle10WithColor(final Color color) => TextStyle(
-  fontSize: 10.0,
-      height: 1.25,
-      color: color,
-    );
+const borderRadius4 = BorderRadius.all(Radius.circular(4.0));
+const borderRadius0 = BorderRadius.zero;
+const borderRadiusCircle = BorderRadius.all(Radius.circular(9999999.0));
+const borderRadiusBottom16 = BorderRadius.vertical(bottom: radius16);
 
 const sizedBox = SizedBox.shrink();
 const sizedBoxW24 = SizedBox(width: 24.0);
@@ -230,16 +166,18 @@ const sizedBoxH4 = SizedBox(height: 4.0);
 const sizedBoxH56 = SizedBox(height: 56.0);
 const sizedBoxH42 = SizedBox(height: 42.0);
 
-final sliverSizedBoxH80WithNavBarHeight = SliverToBoxAdapter(
-  child: SizedBox(height: 80.0 + Screens.navBarHeight),
-);
+Widget sliverSizedBoxH80WithNavBarHeight(BuildContext context) =>
+    SliverToBoxAdapter(
+      child: SizedBox(height: 80.0 + context.navBarHeight),
+    );
 
-final sizedBoxH24WithNavBarHeight =
-    SizedBox(height: 24.0 + Screens.navBarHeight);
+Widget sizedBoxH24WithNavBarHeight(BuildContext context) =>
+    SizedBox(height: 24.0 + context.navBarHeight);
 
-final sliverSizedBoxH24WithNavBarHeight = SliverToBoxAdapter(
-  child: SizedBox(height: 24.0 + Screens.navBarHeight),
-);
+Widget sliverSizedBoxH24WithNavBarHeight(BuildContext context) =>
+    SliverToBoxAdapter(
+      child: SizedBox(height: 24.0 + context.navBarHeight),
+    );
 
 const spacer = Spacer();
 
@@ -248,44 +186,34 @@ const dur3000 = Duration(milliseconds: 3000);
 
 const emptySliverToBoxAdapter = SliverToBoxAdapter();
 
-final normalFormHeader = Row(
-  crossAxisAlignment: CrossAxisAlignment.center,
-  children: <Widget>[
-    Image.asset(
-      "assets/mikan.png",
-      width: 72.0,
-    ),
-    sizedBoxW24,
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: const <Widget>[
-        Text(
-          "Mikan Project",
-          style: TextStyle(fontSize: 14.0),
-        ),
-        Text(
-          "蜜柑计划",
-          style: TextStyle(
-            fontSize: 32.0,
-            height: 1.25,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    )
-  ],
+const centerLoading = Center(child: CupertinoActivityIndicator());
+
+double kMaterialHeaderFactorFactor(double overscrollFraction) =>
+    2.0 * math.pow(1 - overscrollFraction, 2);
+
+const defaultHeader = MaterialHeader(
+  triggerOffset: 180.0,
+  hapticFeedback: true,
+  frictionFactor: kMaterialHeaderFactorFactor,
 );
 
-const centerLoading = Center(child: CupertinoActivityIndicator());
+Footer defaultFooter(BuildContext context) {
+  final theme = Theme.of(context);
+  return ClassicFooter(
+    hapticFeedback: true,
+    noMoreText: '没啦。。。',
+    dragText: '使点劲，没吃饭吗？',
+    armedText: '赶紧松手，遭不住了',
+    readyText: '快了，快了',
+    processingText: '马上粗来，别慌',
+    processedText: '哦了，哦了',
+    failedText: '失败了，再接再励',
+    textStyle: theme.textTheme.titleMedium,
+    showMessage: false,
+  );
+}
 
 const offsetY_1 = Offset(0, -1);
 const offsetY_2 = Offset(0, -2);
 
 final navKey = GlobalKey<NavigatorState>();
-
-final normalScrollBehavior = const ScrollBehavior().copyWith(
-  scrollbars: false,
-  dragDevices: PointerDeviceKind.values.toSet(),
-  physics: const BouncingScrollPhysics(),
-  platform: TargetPlatform.iOS,
-);

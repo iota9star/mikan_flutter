@@ -1,14 +1,14 @@
-import 'package:mikan_flutter/model/bangumi_row.dart';
-import 'package:mikan_flutter/model/season.dart';
+import 'bangumi_row.dart';
+import 'season.dart';
 
 class SeasonBangumis {
-  final Season season;
-  final List<BangumiRow> bangumiRows;
-
   SeasonBangumis({
     required this.season,
     required this.bangumiRows,
   });
+
+  final Season season;
+  final List<BangumiRow> bangumiRows;
 
   @override
   bool operator ==(Object other) =>

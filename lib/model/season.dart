@@ -1,22 +1,11 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/internal/hive.dart';
+
+import '../internal/hive.dart';
 
 part 'season.g.dart';
 
 @HiveType(typeId: MyHive.mikanSeason)
 class Season extends HiveObject {
-  @HiveField(0)
-  late String year = "";
-
-  @HiveField(1)
-  late String season = "";
-
-  @HiveField(2)
-  late String title = "";
-
-  @HiveField(3)
-  late bool active = false;
-
   Season({
     required this.year,
     required this.season,
@@ -25,6 +14,18 @@ class Season extends HiveObject {
   });
 
   Season.empty();
+
+  @HiveField(0)
+  late String year = '';
+
+  @HiveField(1)
+  late String season = '';
+
+  @HiveField(2)
+  late String title = '';
+
+  @HiveField(3)
+  late bool active = false;
 
   @override
   bool operator ==(Object other) =>

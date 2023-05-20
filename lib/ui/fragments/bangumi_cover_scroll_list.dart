@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/image_provider.dart';
-import 'package:mikan_flutter/model/bangumi_row.dart';
-import 'package:mikan_flutter/providers/index_model.dart';
-import 'package:mikan_flutter/topvars.dart';
 import 'package:provider/provider.dart';
 
+import '../../internal/image_provider.dart';
+import '../../model/bangumi_row.dart';
+import '../../providers/index_model.dart';
+import '../../topvars.dart';
+
 class BangumiCoverScrollListFragment extends StatefulWidget {
-  const BangumiCoverScrollListFragment({Key? key}) : super(key: key);
+  const BangumiCoverScrollListFragment({super.key});
 
   @override
   State<StatefulWidget> createState() => _BangumiCoverScrollListFragmentState();
@@ -27,7 +28,9 @@ class _BangumiCoverScrollListFragmentState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      if (_animating) return;
+      if (_animating) {
+        return;
+      }
       if (_scrollController.hasClients) {
         _animating = true;
         _scrollController
@@ -52,33 +55,16 @@ class _BangumiCoverScrollListFragmentState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      foregroundDecoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.black54, Colors.black12, Colors.black87],
-          stops: [0, 0.72, 1.0],
-        ),
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.transparent, theme.colorScheme.background],
-        ),
-      ),
-      child: Selector<IndexModel, List<BangumiRow>>(
-        selector: (_, model) => model.bangumiRows,
-        shouldRebuild: (pre, next) => pre.length != next.length,
-        builder: (_, bangumiRows, __) {
-          return _buildList(bangumiRows);
-        },
-      ),
+    return Selector<IndexModel, List<BangumiRow>>(
+      selector: (_, model) => model.bangumiRows,
+      shouldRebuild: (pre, next) => pre.length != next.length,
+      builder: (_, bangumiRows, __) {
+        return _buildList(theme, bangumiRows);
+      },
     );
   }
 
-  Widget _buildList(List<BangumiRow> bangumiRows) {
+  Widget _buildList(ThemeData theme, List<BangumiRow> bangumiRows) {
     final bangumis =
         bangumiRows.map((e) => e.bangumis).expand((element) => element);
     final length = bangumis.length;
@@ -87,23 +73,16 @@ class _BangumiCoverScrollListFragmentState
     }
     return GridView.builder(
       controller: _scrollController,
-      padding: edge8,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 156.0,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
-        childAspectRatio: 3 / 4,
+        maxCrossAxisExtent: 400.0,
+        childAspectRatio: 0.75,
       ),
       itemBuilder: (_, index) {
         final bangumi = bangumis.elementAt(index % length);
-        return Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: CacheImageProvider(bangumi.cover),
-              fit: BoxFit.cover,
-            ),
-          ),
+        return Image(
+          image: CacheImage(bangumi.cover),
+          fit: BoxFit.cover,
         );
       },
     );

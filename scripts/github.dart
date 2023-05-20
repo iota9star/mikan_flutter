@@ -15,21 +15,21 @@ enum Fun {
 }
 
 Future<void> main(List<String> arguments) async {
-  var parser = ArgParser()
+  final parser = ArgParser()
     ..addOption('fun', abbr: 'f', allowed: Fun.values.map((e) => e.name))
     ..addOption('token', abbr: 't')
     ..addOption('artifacts', abbr: 'a');
-  var parse = parser.parse(arguments);
-  var token = parse['token'];
-  var artifacts = parse['artifacts'];
-  var shell = Shell();
-  var result = await shell.run("git remote -v");
-  var urlParts =
-  result.first.stdout.toString().trim().split("\n").last.split("/");
-  var repo = [
+  final parse = parser.parse(arguments);
+  final token = parse['token'];
+  final artifacts = parse['artifacts'];
+  final shell = Shell();
+  final result = await shell.run('git remote -v');
+  final urlParts =
+      result.first.stdout.toString().trim().split('\n').last.split('/');
+  final repo = [
     urlParts[urlParts.length - 2],
-    urlParts[urlParts.length - 1].split(" ").first.replaceAll(".git", '')
-  ].join("/");
+    urlParts[urlParts.length - 1].split(' ').first.replaceAll('.git', '')
+  ].join('/');
   switch (Fun.values.firstWhere((e) => e.name == parse['fun'])) {
     case Fun.release:
       await _release(
@@ -38,7 +38,6 @@ Future<void> main(List<String> arguments) async {
         token: token,
         artifacts: artifacts,
       );
-      break;
   }
 }
 
@@ -48,22 +47,22 @@ Future<void> _release({
   required String repo,
   required String artifacts,
 }) async {
-  await shell.run("git remote set-url origin https://$token@github.com/$repo");
-  var result = await shell.run("git show -s");
-  var commitId =
-  RegExp(r"\s([a-z\d]{40})\s").firstMatch(result.first.stdout)?.group(1);
+  await shell.run('git remote set-url origin https://$token@github.com/$repo');
+  var result = await shell.run('git show -s');
+  final commitId =
+      RegExp(r'\s([a-z\d]{40})\s').firstMatch(result.first.stdout)?.group(1);
   if (commitId == null) {
     throw StateError("Can't get ref.");
   }
   result = await shell.run('git log --pretty=format:"%an;%ae" $commitId -1');
-  var pair = result.first.stdout.toString().split(";");
-  var ref = commitId.substring(0, 7);
-  var root = Directory.current;
-  var pubspec = File(join(root.path, 'pubspec.yaml'));
-  var yaml = loadYaml(pubspec.readAsStringSync());
-  var version = yaml['version'] as String;
-  var verArr = version.split('+');
-  var tag = "v${verArr.first}_$ref";
+  final pair = result.first.stdout.toString().split(';');
+  final ref = commitId.substring(0, 7);
+  final root = Directory.current;
+  final pubspec = File(join(root.path, 'pubspec.yaml'));
+  final yaml = loadYaml(pubspec.readAsStringSync());
+  final version = yaml['version'] as String;
+  final verArr = version.split('+');
+  final tag = 'v${verArr.first}_$ref';
   // result = await shell.run("git branch");
   // var branch = result.first.stdout
   //     .toString()
@@ -71,24 +70,24 @@ Future<void> _release({
   //     .firstWhere((e) => e.startsWith("*"))
   //     .split(" ")
   //     .last;
-  result = await shell.run("git ls-remote --tags");
-  var tags = result.first.stdout.toString();
-  var has =
-  tags.split("\n").any((s) => s.split("refs/tags/").last.startsWith(tag));
+  result = await shell.run('git ls-remote --tags');
+  final tags = result.first.stdout.toString();
+  final has =
+      tags.split('\n').any((s) => s.split('refs/tags/').last.startsWith(tag));
   if (!has) {
     try {
-      await shell.run("git"
-          " -c user.name=${pair[0]}"
-          " -c user.email=${pair[1]}"
-          " tag $tag");
-      await shell.run("git push origin $tag");
+      await shell.run('git'
+          ' -c user.name=${pair[0]}'
+          ' -c user.email=${pair[1]}'
+          ' tag $tag');
+      await shell.run('git push origin $tag');
     } catch (e) {
       print(e);
     }
   }
   dynamic id;
   try {
-    var response = await http.get(
+    final response = await http.get(
       Uri.parse('https://api.github.com/repos/$repo/releases/tags/$tag'),
       headers: {
         'Authorization': 'Bearer $token',
@@ -100,16 +99,16 @@ Future<void> _release({
     print(e);
   }
   if (id == null) {
-    var data = jsonEncode({
-      "tag_name": tag,
-      "target_commitish": "main",
-      "name": tag,
-      "body": "",
-      "draft": false,
-      "prerelease": false,
-      "generate_release_notes": true
+    final data = jsonEncode({
+      'tag_name': tag,
+      'target_commitish': 'main',
+      'name': tag,
+      'body': '',
+      'draft': false,
+      'prerelease': false,
+      'generate_release_notes': true
     });
-    var response = await http.post(
+    final response = await http.post(
       Uri.parse('https://api.github.com/repos/$repo/releases'),
       body: data,
       headers: {
@@ -123,30 +122,31 @@ Future<void> _release({
   if (id == null) {
     throw StateError(result.first.stdout);
   }
-  var files = Glob(artifacts, recursive: true).listSync(root: root.path);
-  var response = await http.get(
+  final files = Glob(artifacts, recursive: true).listSync(root: root.path);
+  final response = await http.get(
     Uri.parse('https://api.github.com/repos/$repo/releases/$id/assets'),
     headers: {
       'Authorization': 'Bearer $token',
       'Accept': 'application/vnd.github.v3+json',
     },
   );
-  var assets = jsonDecode(response.body) as List?;
+  final assets = jsonDecode(response.body) as List?;
   print('assets: ${assets?.map((e) => e['name'])}');
-  for (var file in files) {
+  for (final file in files) {
     if (file is File) {
-      var filePath = file.absolute.path;
-      var fileName = basename(filePath);
+      final filePath = file.absolute.path;
+      final fileName = basename(filePath);
       print('prepare upload: $filePath');
-      var exist = assets?.firstWhereOrNull((e) {
+      final exist = assets?.firstWhereOrNull((e) {
         return e['name'] == fileName;
       });
       if (exist != null) {
         print('exist asset: ${exist?['name']}');
         // delete exist assert
-        var response = await http.delete(
+        final response = await http.delete(
           Uri.parse(
-              'https://api.github.com/repos/$repo/releases/assets/${exist['id']}'),
+            'https://api.github.com/repos/$repo/releases/assets/${exist['id']}',
+          ),
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/vnd.github.v3+json',
@@ -155,17 +155,18 @@ Future<void> _release({
         print('delete end: ${response.statusCode}');
       }
       // upload asset.
-      var request = http.MultipartRequest(
+      final request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'https://uploads.github.com/repos/$repo/releases/$id/assets?name=$fileName'),
+          'https://uploads.github.com/repos/$repo/releases/$id/assets?name=$fileName',
+        ),
       );
       request.files.add(await http.MultipartFile.fromPath('file', filePath));
       request.headers.addAll({
         'Authorization': 'Bearer $token',
         'Accept': 'application/vnd.github.v3+json',
       });
-      var response = await request.send();
+      final response = await request.send();
       print('upload end: ${response.statusCode}, $filePath');
     }
   }

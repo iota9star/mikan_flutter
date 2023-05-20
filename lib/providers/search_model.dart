@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/hive.dart';
-import 'package:mikan_flutter/internal/repo.dart';
-import 'package:mikan_flutter/model/search.dart';
-import 'package:mikan_flutter/providers/base_model.dart';
 
-class SearchModel extends CancelableBaseModel {
+import '../internal/extension.dart';
+import '../internal/hive.dart';
+import '../internal/repo.dart';
+import '../model/search.dart';
+import 'base_model.dart';
+
+class SearchModel extends BaseModel {
   final TextEditingController _keywordsController = TextEditingController();
 
   TextEditingController get keywordsController => _keywordsController;
@@ -26,18 +27,17 @@ class SearchModel extends CancelableBaseModel {
 
   bool get loading => _loading;
 
-  set subgroupId(final String? value) {
+  set subgroupId( String? value) {
     _subgroupId = _subgroupId == value ? null : value;
     _searching(keywords, subgroupId: _subgroupId);
   }
 
-  search(final String keywords) {
+  void search(String keywords) {
     _searchResult = null;
     _keywordsController.value = TextEditingValue(
       text: keywords,
       selection: TextSelection.fromPosition(
         TextPosition(
-          affinity: TextAffinity.downstream,
           offset: keywords.length,
         ),
       ),
@@ -45,21 +45,21 @@ class SearchModel extends CancelableBaseModel {
     _searching(keywords);
   }
 
-  _searching(final String? keywords, {final String? subgroupId}) async {
+  Future<void> _searching( String? keywords, {String? subgroupId}) async {
     if (keywords.isNullOrBlank) {
-      return "请输入搜索关键字".toast();
+      return '请输入搜索关键字'.toast();
     }
     _keywords = keywords;
     _loading = true;
     notifyListeners();
-    final resp = await (this + Repo.search(keywords, subgroupId: subgroupId));
+    final resp = await  Repo.search(keywords, subgroupId: subgroupId);
     if (resp.success) {
       _searchResult = resp.data;
-      if (_searchResult?.records.isNotEmpty == true) {
+      if (_searchResult?.records.isNotEmpty ?? false) {
         _saveNewKeywords(keywords!);
       }
     } else {
-      "搜索出错啦：${resp.msg}".toast();
+      '搜索出错啦：${resp.msg}'.toast();
     }
     _loading = false;
     notifyListeners();
@@ -68,7 +68,9 @@ class SearchModel extends CancelableBaseModel {
   void _saveNewKeywords(String keywords) {
     final List<String> history =
         MyHive.db.get(HiveDBKey.mikanSearch, defaultValue: <String>[]);
-    if (history.contains(keywords)) return;
+    if (history.contains(keywords)) {
+      return;
+    }
     history.insert(0, keywords);
     if (history.length > 8) {
       history.remove(history.last);

@@ -1,16 +1,17 @@
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/http.dart';
-import 'package:mikan_flutter/internal/repo.dart';
-import 'package:mikan_flutter/model/season.dart';
-import 'package:mikan_flutter/model/season_bangumi_rows.dart';
-import 'package:mikan_flutter/model/year_season.dart';
-import 'package:mikan_flutter/providers/base_model.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 
-class SeasonListModel extends CancelableBaseModel {
-  bool _loading = false;
+import '../internal/extension.dart';
+import '../internal/repo.dart';
+import '../model/season.dart';
+import '../model/season_bangumi_rows.dart';
+import '../model/year_season.dart';
+import 'base_model.dart';
 
-  bool get loading => _loading;
+class SeasonListModel extends BaseModel {
+  SeasonListModel(this._years) {
+    _seasons =
+        _years.map((e) => e.seasons).expand((element) => element).toList();
+  }
 
   List<Season> _seasons = [];
 
@@ -18,64 +19,42 @@ class SeasonListModel extends CancelableBaseModel {
 
   int _loadIndex = 0;
 
-  SeasonListModel(this._years) {
-    _seasons =
-        _years.map((e) => e.seasons).expand((element) => element).toList();
-    Future.delayed(const Duration(milliseconds: 250), () {
-      _refreshController.requestRefresh();
-    });
-  }
-
   final List<YearSeason> _years;
-  List<SeasonBangumis> _seasonBangumis = [];
+  List<SeasonBangumis> _bangumis = [];
 
-  List<SeasonBangumis> get seasonBangumis => _seasonBangumis;
+  List<SeasonBangumis> get bangumis => _bangumis;
 
-  final RefreshController _refreshController = RefreshController();
-
-  RefreshController get refreshController => _refreshController;
-
-  _loadSeasonBangumis() async {
+  Future<IndicatorResult> _loadBangumis() async {
     if (_loadIndex >= _seasons.length) {
-      return _refreshController.loadNoData();
+      return IndicatorResult.noMore;
     }
-    _loading = true;
-    final Season season = _seasons[_loadIndex];
-    final Resp resp = await (this + Repo.season(season.year, season.season));
-    _loading = false;
+    final season = _seasons[_loadIndex];
+    final resp = await Repo.season(season.year, season.season);
     if (resp.success) {
-      final SeasonBangumis seasonBangumis = SeasonBangumis(
+      final seasonBangumis = SeasonBangumis(
         season: season,
         bangumiRows: resp.data ?? [],
       );
       if (_loadIndex == 0) {
-        _seasonBangumis = [seasonBangumis];
+        _bangumis = [seasonBangumis];
       } else {
-        _seasonBangumis = [..._seasonBangumis, seasonBangumis];
+        _bangumis = [..._bangumis, seasonBangumis];
       }
       _loadIndex++;
-      _refreshController.completed();
       notifyListeners();
+      return IndicatorResult.success;
     } else {
-      _refreshController.failed();
-      "获取${season.title}失败：${resp.msg}".toast();
+      '获取 ${season.title} 失败：${resp.msg}'.toast();
+      return IndicatorResult.fail;
     }
   }
 
-  refresh() async {
-    if (_loading) return "加载中，请等待加载完成";
+  Future<IndicatorResult> refresh() {
     _loadIndex = 0;
-    await _loadSeasonBangumis();
+    return _loadBangumis();
   }
 
-  loadMore() async {
-    if (_loading) return "加载中，请等待加载完成";
-    await _loadSeasonBangumis();
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
+  Future<IndicatorResult> loadMore() {
+    return _loadBangumis();
   }
 }

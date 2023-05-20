@@ -1,15 +1,24 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/internal/hive.dart';
-import 'package:mikan_flutter/model/bangumi_row.dart';
-import 'package:mikan_flutter/model/carousel.dart';
-import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/model/user.dart';
-import 'package:mikan_flutter/model/year_season.dart';
+
+import '../internal/hive.dart';
+import 'bangumi_row.dart';
+import 'carousel.dart';
+import 'record_item.dart';
+import 'user.dart';
+import 'year_season.dart';
 
 part 'index.g.dart';
 
 @HiveType(typeId: MyHive.mikanIndex)
 class Index extends HiveObject {
+  Index({
+    required this.years,
+    required this.bangumiRows,
+    required this.rss,
+    required this.carousels,
+    this.user,
+  });
+
   @HiveField(0)
   final List<YearSeason> years;
 
@@ -24,14 +33,6 @@ class Index extends HiveObject {
 
   @HiveField(4)
   final User? user;
-
-  Index({
-    required this.years,
-    required this.bangumiRows,
-    required this.rss,
-    required this.carousels,
-    this.user,
-  });
 
   @override
   bool operator ==(Object other) =>

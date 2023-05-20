@@ -2,7 +2,7 @@
 // ignore_for_file: lines_longer_than_80_chars, avoid_classes_with_only_static_members
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -57,7 +57,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDPj6xwYmdFGuCUHeSEt6mD4AjGw-_M1kM',
-    appId: '1:626809778849:ios:1c4a98399392e2c7edb6e0',
+    appId: '1:626809778849:ios:d580f4b3810bebb7edb6e0',
     messagingSenderId: '626809778849',
     projectId: 'flutter-mikan',
     databaseURL: 'https://flutter-mikan.firebaseio.com',
@@ -65,8 +65,8 @@ class DefaultFirebaseOptions {
     androidClientId:
         '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
     iosClientId:
-        '626809778849-d4af03hv97s0d57gvlhh0gqhvs5hmniq.apps.googleusercontent.com',
-    iosBundleId: 'io.nichijou.flutter.mikan1',
+        '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
+    iosBundleId: 'io.nichijou.flutter.mikan',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

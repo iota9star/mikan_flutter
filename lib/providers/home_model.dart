@@ -1,14 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/hive.dart';
-import 'package:mikan_flutter/internal/http.dart';
-import 'package:mikan_flutter/internal/log.dart';
-import 'package:mikan_flutter/internal/repo.dart';
-import 'package:mikan_flutter/providers/base_model.dart';
-import 'package:mikan_flutter/topvars.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+import '../internal/extension.dart';
+import '../internal/hive.dart';
+import '../internal/http.dart';
+import '../internal/log.dart';
+import '../internal/repo.dart';
+import '../topvars.dart';
+import '../widget/bottom_sheet.dart';
+import 'base_model.dart';
 
 class HomeModel extends BaseModel {
   HomeModel() {
@@ -20,37 +23,42 @@ class HomeModel extends BaseModel {
   bool get checkingUpgrade => _checkingUpgrade;
 
   Future<void> checkAppVersion([bool autoCheck = true]) async {
-    if (_checkingUpgrade) return;
+    if (_checkingUpgrade) {
+      return;
+    }
     _checkingUpgrade = true;
     notifyListeners();
     try {
-      final String pubspec = await rootBundle.loadString("assets/pubspec.yaml");
+      final String pubspec = await rootBundle.loadString('assets/pubspec.yaml');
       final String version =
           "v${pubspec.split("\n").firstWhere((line) => line.startsWith("version:")).split(" ").last.split("+").first}";
       final Resp resp = await Repo.release();
-      if (!resp.success) return;
-      final String lastVersion = resp.data["tag_name"];
+      if (!resp.success) {
+        return;
+      }
+      final String lastVersion = resp.data['tag_name'];
       final String ignoreVersion = MyHive.db.get(HiveDBKey.ignoreUpdateVersion);
       // ignore update version.
-      if (autoCheck && ignoreVersion == lastVersion) return;
+      if (autoCheck && ignoreVersion == lastVersion) {
+        return;
+      }
       if (lastVersion.compareTo(version) > 0) {
-        showCupertinoModalBottomSheet(
-          context: navKey.currentState!.context,
-          expand: false,
-          topRadius: radius16,
-          isDismissible: false,
-          enableDrag: false,
-          builder: (context) {
-            return _buildUpgradeWidget(context, resp.data);
-          },
+        unawaited(
+          // ignore: use_build_context_synchronously
+          MBottomSheet.show(
+            navKey.currentState!.context,
+            (context) => MBottomSheet(
+              child: _buildUpgradeWidget(context, resp.data),
+            ),
+          ),
         );
       } else {
         if (!autoCheck) {
-          "没有检测到更新".toast();
+          '没有检测到更新'.toast();
         }
       }
     } catch (e, s) {
-      e.error(stackTrace: s);
+      e.$error(stackTrace: s);
     } finally {
       _checkingUpgrade = false;
       notifyListeners();
@@ -66,8 +74,7 @@ class HomeModel extends BaseModel {
     final Color scaffoldBackgroundColor = theme.scaffoldBackgroundColor;
     final Color accentTextColor =
         theme.secondary.isDark ? Colors.white : Colors.black;
-    final TextStyle accentTagStyle = textStyle10WithColor(accentTextColor);
-    final jiffy = Jiffy(release["published_at"])..add(hours: 8);
+    final jiffy = Jiffy.parse(release['published_at'])..add(hours: 8);
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -81,7 +88,7 @@ class HomeModel extends BaseModel {
             end: Alignment.bottomRight,
           ),
         ),
-        padding: edgeHT16B24WithNavbarHeight,
+        padding: edgeHT16B24WithNavbarHeight(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +96,7 @@ class HomeModel extends BaseModel {
             Row(
               children: [
                 Image.asset(
-                  "assets/mikan.png",
+                  'assets/mikan.png',
                   height: 42.0,
                   width: 42.0,
                 ),
@@ -98,8 +105,7 @@ class HomeModel extends BaseModel {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "发现新版本，嘿嘿嘿...",
-                      style: textStyle16B500,
+                      '发现新版本，嘿嘿嘿...',
                     ),
                     Row(
                       children: [
@@ -116,15 +122,13 @@ class HomeModel extends BaseModel {
                             ),
                             borderRadius: borderRadius2,
                           ),
-                          child: Text(
-                            "New",
-                            style: accentTagStyle,
+                          child: const Text(
+                            'New',
                           ),
                         ),
                         sizedBoxW4,
                         Text(
                           "${release["tag_name"]} ${jiffy.yMMMMEEEEdjm}",
-                          style: textStyle12,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -136,10 +140,10 @@ class HomeModel extends BaseModel {
             ),
             sizedBoxH8,
             Text(
-              "下载速度可能很慢哦，dddd.",
+              '下载速度可能很慢哦，dddd.',
               style: TextStyle(fontSize: 12.0, color: theme.primary),
             ),
-            for (final item in release["assets"])
+            for (final item in release['assets'])
               Container(
                 margin: edgeV4,
                 padding: edge12,
@@ -152,13 +156,12 @@ class HomeModel extends BaseModel {
                     Row(
                       children: [
                         Text(
-                          item["name"],
-                          style: textStyle16B500,
+                          item['name'],
                         ),
                         spacer,
                         MaterialButton(
                           onPressed: () {
-                            item["browser_download_url"]
+                            item['browser_download_url']
                                 .toString()
                                 .launchAppAndCopy();
                           },
@@ -195,23 +198,22 @@ class HomeModel extends BaseModel {
                           ),
                           child: Text(
                             <String?>{
-                                  "arm64-v8a",
-                                  "armeabi-v7a",
-                                  "x86_64",
-                                  "universal",
-                                  "win32"
+                                  'arm64-v8a',
+                                  'armeabi-v7a',
+                                  'x86_64',
+                                  'universal',
+                                  'win32'
                                 }.firstWhere(
-                                    (arch) => item["name"].contains(arch),
-                                    orElse: () => null) ??
-                                "universal",
-                            style: accentTagStyle,
+                                  (arch) => item['name'].contains(arch),
+                                  orElse: () => null,
+                                ) ??
+                                'universal',
                           ),
                         ),
                         spacer,
                         Text(
-                          (item["size"] / 1024 / 1024).toStringAsFixed(2) +
-                              "MB",
-                          style: textStyle12,
+                          (item['size'] / 1024 / 1024).toStringAsFixed(2) +
+                              'MB',
                         ),
                       ],
                     ),
@@ -226,7 +228,7 @@ class HomeModel extends BaseModel {
                   onPressed: () {
                     MyHive.db.put(
                       HiveDBKey.ignoreUpdateVersion,
-                      release["tag_name"],
+                      release['tag_name'],
                     );
                     Navigator.pop(context);
                   },
@@ -238,7 +240,7 @@ class HomeModel extends BaseModel {
                     backgroundColor: scaffoldBackgroundColor,
                   ),
                   child: Text(
-                    "下次一定",
+                    '下次一定',
                     style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w700,
@@ -258,7 +260,7 @@ class HomeModel extends BaseModel {
                     ),
                   ),
                   child: Text(
-                    "前往下载",
+                    '前往下载',
                     style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w700,

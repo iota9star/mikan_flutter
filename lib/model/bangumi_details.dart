@@ -1,5 +1,5 @@
-import 'package:mikan_flutter/internal/consts.dart';
-import 'package:mikan_flutter/model/subgroup_bangumi.dart';
+import '../internal/consts.dart';
+import 'subgroup_bangumi.dart';
 
 class BangumiDetail {
   late String id;
@@ -10,9 +10,7 @@ class BangumiDetail {
   late String intro;
   late Map<String, SubgroupBangumi> subgroupBangumis;
 
-  String get shareString {
-    return "$name：${MikanUrl.baseUrl}${MikanUrl.bangumi}/$id";
-  }
+  late final String share = '$name：${MikanUrls.baseUrl}${MikanUrls.bangumi}/$id';
 
   @override
   bool operator ==(Object other) =>

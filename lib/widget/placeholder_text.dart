@@ -7,7 +7,7 @@ typedef PlaceholderBuilder = List<Widget> Function(List<String> macthed);
 class PlaceholderText extends StatelessWidget {
   const PlaceholderText(
     this.text, {
-    Key? key,
+    super.key,
     this.onMatched,
     this.regExp,
     this.onText,
@@ -23,7 +23,7 @@ class PlaceholderText extends StatelessWidget {
     this.semanticsLabel,
     this.textWidthBasis,
     this.textHeightBehavior,
-  }) : super(key: key);
+  });
 
   /// origin text
   final String text;

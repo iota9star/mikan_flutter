@@ -1,16 +1,17 @@
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/http.dart';
-import 'package:mikan_flutter/internal/repo.dart';
-import 'package:mikan_flutter/model/season.dart';
-import 'package:mikan_flutter/model/season_gallery.dart';
-import 'package:mikan_flutter/model/year_season.dart';
-import 'package:mikan_flutter/providers/base_model.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 
-class SubscribedSeasonModel extends CancelableBaseModel {
-  bool _loading = false;
+import '../internal/extension.dart';
+import '../internal/repo.dart';
+import '../model/season.dart';
+import '../model/season_gallery.dart';
+import '../model/year_season.dart';
+import 'base_model.dart';
 
-  bool get loading => _loading;
+class SubscribedSeasonModel extends BaseModel {
+  SubscribedSeasonModel(this._years, this._galleries) {
+    _seasons =
+        _years.map((e) => e.seasons).expand((element) => element).toList();
+  }
 
   late List<Season> _seasons;
 
@@ -18,33 +19,21 @@ class SubscribedSeasonModel extends CancelableBaseModel {
 
   int _loadIndex = 1;
 
-  SubscribedSeasonModel(this._years, this._galleries) {
-    _seasons =
-        _years.map((e) => e.seasons).expand((element) => element).toList();
-  }
-
   final List<YearSeason> _years;
 
   List<SeasonGallery> _galleries;
 
   List<SeasonGallery> get galleries => _galleries;
 
-  final RefreshController _refreshController =
-      RefreshController(initialLoadStatus: LoadStatus.canLoading);
-
-  RefreshController get refreshController => _refreshController;
-
-  _loadSeasonBangumis() async {
+  Future<IndicatorResult> _loadBangumis() async {
     if (_loadIndex >= _seasons.length) {
-      return _refreshController.loadNoData();
+      return IndicatorResult.noMore;
     }
-    _loading = true;
-    final Season season = _seasons[_loadIndex];
-    final Resp resp = await (this +
-        Repo.mySubscribedSeasonBangumi(season.year, season.season));
-    _loading = false;
+    final season = _seasons[_loadIndex];
+    final resp =
+        await Repo.mySubscribedSeasonBangumi(season.year, season.season);
     if (resp.success) {
-      final SeasonGallery seasonGallery = SeasonGallery(
+      final seasonGallery = SeasonGallery(
         year: season.year,
         season: season.season,
         title: season.title,
@@ -57,28 +46,20 @@ class SubscribedSeasonModel extends CancelableBaseModel {
         _galleries = [..._galleries, seasonGallery];
       }
       _loadIndex++;
-      _refreshController.completed();
       notifyListeners();
+      return IndicatorResult.success;
     } else {
-      _refreshController.failed();
-      "获取${season.title}订阅失败：${resp.msg}".toast();
+      '获取 ${season.title} 订阅失败：${resp.msg}'.toast();
+      return IndicatorResult.fail;
     }
   }
 
-  refresh() async {
-    if (_loading) return "加载中，请等待加载完成";
+  Future<IndicatorResult> refresh() {
     _loadIndex = 0;
-    await _loadSeasonBangumis();
+    return _loadBangumis();
   }
 
-  loadMore() async {
-    if (_loading) return "加载中，请等待加载完成";
-    await _loadSeasonBangumis();
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
+  Future<IndicatorResult> loadMore() {
+    return _loadBangumis();
   }
 }

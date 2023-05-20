@@ -1,51 +1,33 @@
-import 'dart:ui';
+import 'package:easy_refresh/easy_refresh.dart';
 
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/http.dart';
-import 'package:mikan_flutter/internal/repo.dart';
-import 'package:mikan_flutter/model/record_details.dart';
-import 'package:mikan_flutter/providers/base_model.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../internal/extension.dart';
+import '../internal/repo.dart';
+import '../model/record_details.dart';
+import 'base_model.dart';
 
-class RecordDetailModel extends CancelableBaseModel {
+class RecordDetailModel extends BaseModel {
+  RecordDetailModel(this.url);
+
   final String url;
-
-  Size? coverSize;
 
   RecordDetail? _recordDetail;
 
   RecordDetail? get recordDetail => _recordDetail;
 
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
-
-  RefreshController get refreshController => _refreshController;
-
-  RecordDetailModel(this.url);
-
-  Color? _coverMainColor;
-
-  Color? get coverMainColor => _coverMainColor;
-
-  refresh() async {
-    final Resp resp = await (this + Repo.details(url));
-    _refreshController.refreshCompleted();
+  Future<IndicatorResult> refresh() async {
+    final resp = await Repo.details(url);
     if (resp.success) {
       _recordDetail = resp.data;
-      "加载成功".toast();
+      '加载成功'.toast();
+      notifyListeners();
+      return IndicatorResult.success;
     } else {
-      "获取详情失败：${resp.msg}".toast();
+      '获取详情失败：${resp.msg}'.toast();
+      return IndicatorResult.fail;
     }
-    notifyListeners();
   }
 
-  subscribeChanged() {
+  void subscribeChanged() {
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
   }
 }

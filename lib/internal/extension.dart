@@ -7,27 +7,35 @@ import 'package:android_intent_plus/flag.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mikan_flutter/topvars.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import '../topvars.dart';
 
 extension IterableExt<T> on Iterable<T>? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
 
   bool get isSafeNotEmpty => !isNullOrEmpty;
 
-  T? getOrNull(final int index) {
-    if (isNullOrEmpty) return null;
+  T? getOrNull(int index) {
+    if (isNullOrEmpty) {
+      return null;
+    }
     return this!.elementAt(index);
   }
 
   bool eq(Iterable<T>? other) {
-    if (this == null) return other == null;
-    if (other == null || this!.length != other.length) return false;
+    if (this == null) {
+      return other == null;
+    }
+    if (other == null || this!.length != other.length) {
+      return false;
+    }
     for (int index = 0; index < this!.length; index += 1) {
-      if (this!.elementAt(index) != other.elementAt(index)) return false;
+      if (this!.elementAt(index) != other.elementAt(index)) {
+        return false;
+      }
     }
     return true;
   }
@@ -42,18 +50,24 @@ extension BoolExt on bool {
 extension ListExt<T> on List<T>? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
 
-  bool get isSafeNotEmpty => !isNullOrEmpty;
-
-  T? getOrNull(final int index) {
-    if (isNullOrEmpty) return null;
+  T? getOrNull(int index) {
+    if (isNullOrEmpty) {
+      return null;
+    }
     return this![index];
   }
 
   bool eq(List<T>? other) {
-    if (this == null) return other == null;
-    if (other == null || this!.length != other.length) return false;
+    if (this == null) {
+      return other == null;
+    }
+    if (other == null || this!.length != other.length) {
+      return false;
+    }
     for (int index = 0; index < this!.length; index += 1) {
-      if (this![index] != other[index]) return false;
+      if (this![index] != other[index]) {
+        return false;
+      }
     }
     return true;
   }
@@ -67,8 +81,12 @@ extension MapExt<K, V> on Map<K, V>? {
   bool get isSafeNotEmpty => !isNullOrEmpty;
 
   bool eq(Map<K, V>? other) {
-    if (this == null) return other == null;
-    if (other == null || this!.length != other.length) return false;
+    if (this == null) {
+      return other == null;
+    }
+    if (other == null || this!.length != other.length) {
+      return false;
+    }
     for (final K key in this!.keys) {
       if (!other.containsKey(key) || other[key] != this![key]) {
         return false;
@@ -87,74 +105,89 @@ extension NullableStringExt on String? {
 
   bool get isNotBlank => this != null && !this!.isBlank;
 
-  toast() async {
+  void toast() {
     if (isNullOrBlank) {
       return;
     }
     showToastWidget(
-      Builder(
-        builder: (context) {
-          final bgc = Theme.of(context).secondary;
-          return Stack(
-            alignment: AlignmentDirectional.center,
-            children: [
-              Container(
-                padding: edgeH12V8,
-                margin: edgeH24,
-                decoration: BoxDecoration(color: bgc),
-                child: Text(
-                  this!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: bgc.isDark ? Colors.white : Colors.black,
+      Material(
+        color: Colors.transparent,
+        child: Builder(
+          builder: (context) {
+            final theme = Theme.of(context);
+            return Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                Container(
+                  padding: edgeH16V8,
+                  margin: edgeH24,
+                  decoration: BoxDecoration(
+                    color: theme.secondary,
+                    borderRadius: borderRadius28,
+                  ),
+                  child: Text(
+                    this!,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color:
+                          theme.secondary.isDark ? Colors.white : Colors.black,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  launchAppAndCopy() async {
-    if (isNullOrBlank) return "内容为空，取消操作".toast();
+  Future<void> launchAppAndCopy() async {
+    if (isNullOrBlank) {
+      return '内容为空，取消操作'.toast();
+    }
     Future doOtherAction() async {
       if (await canLaunchUrlString(this!)) {
         await launchUrlString(this!);
       } else {
-        "未找到可打开应用".toast();
+        '未找到可打开应用'.toast();
       }
     }
 
     await FlutterClipboard.copy(this!);
     if (Platform.isAndroid) {
-      AndroidIntent(
-        action: "android.intent.action.VIEW",
-        flags: [
-          Flag.FLAG_ACTIVITY_NEW_TASK,
-          Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-        ],
-        data: this!,
-      ).launch().catchError((e, s) async {
-        e.debug(stackTrace: s);
-        await doOtherAction();
-      });
+      unawaited(
+        AndroidIntent(
+          action: 'android.intent.action.VIEW',
+          flags: [
+            Flag.FLAG_ACTIVITY_NEW_TASK,
+            Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+          ],
+          data: this,
+        ).launch().catchError((e, s) async {
+          e.debug(stackTrace: s);
+          await doOtherAction();
+        }),
+      );
     } else {
       await doOtherAction();
     }
   }
 
-  copy() {
-    if (isNullOrBlank) return "内容为空，取消操作".toast();
-    FlutterClipboard.copy(this!).then((_) => "成功复制到剪切板".toast());
+  void copy() {
+    if (isNullOrBlank) {
+      return '内容为空，取消操作'.toast();
+    }
+    FlutterClipboard.copy(this!).then((_) => '成功复制到剪切板'.toast());
   }
 
-  share() {
-    if (isNullOrBlank) return "内容为空，取消操作".toast();
+  void share() {
+    if (isNullOrBlank) {
+      return '内容为空，取消操作'.toast();
+    }
     Share.share(this!);
-    FlutterClipboard.copy(this!).then((_) => "尝试分享，并复制到剪切板".toast());
+    FlutterClipboard.copy(this!).then((_) => '尝试分享，并复制到剪切板'.toast());
   }
 }
 
@@ -163,7 +196,7 @@ extension StringExt on String {
     if (length == 0) {
       return true;
     }
-    for (int value in runes) {
+    for (final int value in runes) {
       if (!_isWhitespace(value)) {
         return false;
       }
@@ -187,7 +220,7 @@ extension StringExt on String {
       rune == 0xFEFF;
 
   String fillChar(String value, String char) {
-    int offset = value.length - length;
+    final int offset = value.length - length;
     String newVal = this;
     if (offset > 0) {
       for (int i = 0; i < offset; i++) {
@@ -198,34 +231,14 @@ extension StringExt on String {
   }
 }
 
-extension RefreshControllerExt on RefreshController {
-  completed({bool noMore = false}) {
-    if (isRefresh) {
-      refreshCompleted();
-    } else if (isLoading) {
-      if (noMore) {
-        loadNoData();
-      } else {
-        loadComplete();
-      }
-    }
-  }
-
-  failed() {
-    if (isRefresh) {
-      refreshFailed();
-    } else if (isLoading) {
-      loadFailed();
-    }
-  }
-}
-
 /// https://stackoverflow.com/a/50081214/10064463
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    if (hexString.length == 6 || hexString.length == 7) {
+      buffer.write('ff');
+    }
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
@@ -258,9 +271,16 @@ const SystemUiOverlayStyle darkSystemUiOverlayStyle = SystemUiOverlayStyle(
 
 extension BuildContextExt on BuildContext {
   SystemUiOverlayStyle get fitSystemUiOverlayStyle {
-    var isDark2 = Theme.of(this).scaffoldBackgroundColor.isDark;
-    return isDark2 ? lightSystemUiOverlayStyle : darkSystemUiOverlayStyle;
+    return Theme.of(this).colorScheme.background.isDark
+        ? lightSystemUiOverlayStyle
+        : darkSystemUiOverlayStyle;
   }
+
+  ThemeData get theme => Theme.of(this);
+
+  TextTheme get textTheme => theme.textTheme;
+
+  ColorScheme get colors => theme.colorScheme;
 }
 
 extension BrightnessColor on Color {
@@ -302,8 +322,10 @@ extension ThemeDataExt on ThemeData {
 }
 
 extension StateExt on State {
-  setSafeState(VoidCallback cb) {
-    // ignore: invalid_use_of_protected_member
-    if (mounted) setState(cb);
+  void setSafeState(VoidCallback cb) {
+    if (mounted) {
+      // ignore: invalid_use_of_protected_member
+      setState(cb);
+    }
   }
 }

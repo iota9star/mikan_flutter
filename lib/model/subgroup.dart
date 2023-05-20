@@ -1,20 +1,21 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/internal/hive.dart';
+
+import '../internal/hive.dart';
 
 part 'subgroup.g.dart';
 
 @HiveType(typeId: MyHive.mikanSubgroup)
 class Subgroup extends HiveObject {
+  Subgroup({
+    this.id,
+    required this.name,
+  });
+
   @HiveField(0)
   String? id;
 
   @HiveField(1)
   String name;
-
-  Subgroup({
-    this.id,
-    required this.name,
-  });
 
   @override
   bool operator ==(Object other) =>

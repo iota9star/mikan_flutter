@@ -1,24 +1,27 @@
-import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/http.dart';
-import 'package:mikan_flutter/internal/repo.dart';
-import 'package:mikan_flutter/internal/store.dart';
-import 'package:mikan_flutter/providers/base_model.dart';
+import 'dart:async';
 
-class LoginModel extends CancelableBaseModel {
+import 'package:flutter/material.dart';
+
+import '../internal/extension.dart';
+import '../internal/hive.dart';
+import '../internal/http.dart';
+import '../internal/repo.dart';
+import 'base_model.dart';
+
+class LoginModel extends BaseModel {
+  LoginModel() {
+    final login = MyHive.getLogin();
+    _accountController.text = login['UserName'] ?? '';
+    _passwordController.text = login['Password'] ?? '';
+    _rememberMe = login['RememberMe'] ?? false;
+  }
+
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   TextEditingController get accountController => _accountController;
 
   TextEditingController get passwordController => _passwordController;
-
-  LoginModel() {
-    final login = Store.getLogin();
-    _accountController.text = login["UserName"] ?? "";
-    _passwordController.text = login["Password"] ?? "";
-    _rememberMe = login["RememberMe"] ?? false;
-  }
 
   bool _rememberMe = false;
 
@@ -42,47 +45,47 @@ class LoginModel extends CancelableBaseModel {
     notifyListeners();
   }
 
-  submit(VoidCallback loginSuccess) async {
+  Future<void> submit(VoidCallback loginSuccess) async {
     _loading = true;
     notifyListeners();
-    final Resp tokenResp = await (this + Repo.refreshLoginToken());
+    final Resp tokenResp = await  Repo.refreshLoginToken();
     if (!tokenResp.success) {
       _loading = false;
       notifyListeners();
-      return "获取登录参数失败".toast();
+      return '获取登录参数失败'.toast();
     }
     final String token = tokenResp.data;
     if (token.isNullOrBlank) {
       _loading = false;
       notifyListeners();
-      return "获取登录参数为空，请稍候重试".toast();
+      return '获取登录参数为空，请稍候重试'.toast();
     }
     final Map<String, dynamic> loginParams = {
-      "UserName": _accountController.text,
-      "Password": _passwordController.text,
-      "RememberMe": _rememberMe,
-      "__RequestVerificationToken": token
+      'UserName': _accountController.text,
+      'Password': _passwordController.text,
+      'RememberMe': _rememberMe,
+      '__RequestVerificationToken': token
     };
-    final Resp resp = await (this + Repo.login(loginParams));
+    final Resp resp = await  Repo.login(loginParams);
     _loading = false;
     notifyListeners();
     if (resp.success) {
       if (_rememberMe) {
-        Store.setLogin(loginParams);
+        MyHive.setLogin(loginParams);
       } else {
-        Store.removeLogin();
+        unawaited(MyHive.removeLogin());
       }
-      "登录成功".toast();
+      '登录成功'.toast();
       loginSuccess.call();
     } else {
-      "${resp.msg}".toast();
+      '${resp.msg}'.toast();
     }
   }
 
   ValueNotifier<bool> can = ValueNotifier(false);
 
   @override
-  void dispose() {
+  Future<void> dispose() async {
     _accountController.dispose();
     _passwordController.dispose();
     super.dispose();

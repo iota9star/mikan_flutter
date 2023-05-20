@@ -5,13 +5,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-#  push:
-#    branches:
-#      - main
-#      - master
-#    tags-ignore:
-#      - v**
-#  workflow_dispatch:
   workflow_dispatch:
     inputs:
       TAG:
@@ -39,8 +32,8 @@ jobs:
         run: |
           \cp -f pubspec.yaml assets/
           flutter pub get
-          flutter build apk --release
-          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release
+          flutter build apk --release --tree-shake-icons
+          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --tree-shake-icons
           mkdir -p releases
           mv -f build/app/outputs/flutter-apk/*-release.apk releases
           mv -f releases/app-release.apk releases/app-universal-release.apk
@@ -87,7 +80,7 @@ jobs:
           Copy-Item -Path pubspec.yaml -Destination assets -Force
           flutter pub get
           flutter config --enable-windows-desktop
-          flutter build windows --release --no-tree-shake-icons
+          flutter build windows --release --tree-shake-icons
           Compress-Archive -Path build/windows/runner/Release/* windows-win32-release.zip -Force
           & "${env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" windows_inno_setup.iss
       - name: Release build
@@ -111,22 +104,12 @@ jobs:
         uses: devbotsxyz/xcode-select@v1
       - name: Build macos
         env:
-          MACOS_CERTIFICATES: ${{ secrets.MACOS_CERTIFICATES }}
-          MACOS_CERTIFICATES_PWD: ${{ secrets.MACOS_CERTIFICATES_PWD }}
-          MACOS_IDENTITY: ${{ secrets.MACOS_IDENTITY }}
           MACOS_APP_RELEASE_PATH: build/macos/Build/Products/Release
         run: |
           cp -f pubspec.yaml assets/
           flutter config --enable-macos-desktop
           flutter pub get
-          flutter build macos --release
-          echo $MACOS_CERTIFICATES | base64 --decode > Certificates.p12
-          security create-keychain -p $MACOS_CERTIFICATES_PWD build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p $MACOS_CERTIFICATES_PWD build.keychain
-          security import Certificates.p12 -k build.keychain -P $MACOS_CERTIFICATES_PWD -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $MACOS_CERTIFICATES_PWD build.keychain
-          /usr/bin/codesign --force --deep -s $MACOS_IDENTITY ./$MACOS_APP_RELEASE_PATH/MikanProject.app
+          flutter build macos --release --tree-shake-icons
           brew install create-dmg
           cd $MACOS_APP_RELEASE_PATH
           create-dmg \
@@ -135,12 +118,12 @@ jobs:
             --window-size 800 529 \
             --icon-size 130 \
             --text-size 14 \
-            --icon "MikanProject.app" 260 250 \
-            --hide-extension "MikanProject.app" \
+            --icon "mikan.app" 260 250 \
+            --hide-extension "mikan.app" \
             --app-drop-link 540 250 \
             --hdiutil-quiet \
             "MikanProject.dmg" \
-            "MikanProject.app"
+            "mikan.app"
           cd ../../../../../
           mv $MACOS_APP_RELEASE_PATH/MikanProject.dmg macos-release.dmg
       - name: Release build

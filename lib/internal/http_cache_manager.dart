@@ -6,16 +6,16 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HttpCacheManager {
-  final String _cacheDir;
-
   HttpCacheManager._(this._cacheDir);
+
+  final String _cacheDir;
 
   static late final HttpCacheManager _httpCacheManager;
 
   static Future<void> init({String? cacheDir}) async {
     if (cacheDir == null || cacheDir.isEmpty) {
       cacheDir =
-          "${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}http_cache_manager";
+          '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}http_cache_manager';
     }
     _httpCacheManager = HttpCacheManager._(cacheDir);
   }
@@ -41,20 +41,20 @@ class HttpCacheManager {
       return _tasks[url]!.future;
     }
     final Completer<File?> completer = Completer();
-    _httpCacheManager
-        ._(
-      url,
-      cacheKey: cacheKey,
-      cacheDir: cacheDir,
-      headers: headers,
-      chunkEvents: chunkEvents,
-      cancelable: cancelable,
-    )
-        .then((value) {
-      completer.complete(value);
-    }).catchError((error, stackTrace) {
-      completer.completeError(error, stackTrace);
-    }).whenComplete(() => _tasks.remove(url));
+    unawaited(
+      _httpCacheManager
+          ._(
+            url,
+            cacheKey: cacheKey,
+            cacheDir: cacheDir,
+            headers: headers,
+            chunkEvents: chunkEvents,
+            cancelable: cancelable,
+          )
+          .then(completer.complete)
+          .catchError(completer.completeError)
+          .whenComplete(() => _tasks.remove(url)),
+    );
     _tasks[url] = completer;
     return Future.any([
       if (cancelable != null)
@@ -81,7 +81,7 @@ class HttpCacheManager {
       } else {
         cacheDir = (await getTemporaryDirectory()).path +
             Platform.pathSeparator +
-            (_cacheDir);
+            _cacheDir;
       }
     }
     final Directory dir = Directory(cacheDir);
@@ -104,21 +104,25 @@ class HttpCacheManager {
     Cancelable? cancelable,
   }) async {
     final Uri uri = Uri.parse(url);
-    final HttpClientResponse checkResp =
+    final checkResp =
         await _createNewRequest(uri, withBody: false, headers: headers);
 
-    final String rawFileKey =
-        cacheKey ?? base64Url.encode(utf8.encode(url)).toString();
-    final Directory parentDir = await _getCacheDir(cacheDir);
-    final File rawFile = _childFile(parentDir, rawFileKey);
+    final rawFileKey = cacheKey ?? base64Url.encode(utf8.encode(url));
+    final parentDir = await _getCacheDir(cacheDir);
+    final rawFile = _childFile(parentDir, rawFileKey);
+
+    if (rawFile.existsSync()) {
+      await _justFinished(uri, rawFile, chunkEvents);
+      return rawFile;
+    }
 
     // if request error, use cache.
     if (checkResp.statusCode != HttpStatus.ok) {
       checkResp.listen(null);
-      if (rawFile.existsSync()) {
-        await _justFinished(uri, rawFile, chunkEvents);
-        return rawFile;
-      }
+      // if (rawFile.existsSync()) {
+      //   await _justFinished(uri, rawFile, chunkEvents);
+      //   return rawFile;
+      // }
       return null;
     }
 
@@ -132,7 +136,7 @@ class HttpCacheManager {
     if (cacheControl != null) {
       if (cacheControl.contains('no-store')) {
         // no cache, download now.
-        return await _nrw(uri, rawFile, tempFile, chunkEvents: chunkEvents);
+        return _nrw(uri, rawFile, tempFile, chunkEvents: chunkEvents);
       } else {
         String maxAgeKey = 'max-age';
         if (cacheControl.contains(maxAgeKey)) {
@@ -148,7 +152,7 @@ class HttpCacheManager {
           final String seconds = RegExp(r'\d+').stringMatch(maxAgeStr)!;
           final int maxAge = int.parse(seconds) * 1000;
           final String newFlag =
-              '${checkResp.headers.value(HttpHeaders.etagHeader).toString()}_${checkResp.headers.value(HttpHeaders.lastModifiedHeader).toString()}';
+              '${checkResp.headers.value(HttpHeaders.etagHeader)}_${checkResp.headers.value(HttpHeaders.lastModifiedHeader)}';
           final File lockFile = _childFile(parentDir, '$rawFileKey.lock');
           String? lockStr = _lockCache[url];
           if (lockStr == null) {
@@ -172,7 +176,7 @@ class HttpCacheManager {
           final String newLockStr = <dynamic>[millis, newFlag].join('@');
           _lockCache[url] = newLockStr;
           // we don't care lock str already written in file.
-          lockFile.writeAsString(newLockStr);
+          unawaited(lockFile.writeAsString(newLockStr));
         }
       }
     }
@@ -205,7 +209,7 @@ class HttpCacheManager {
       );
       if (resp.statusCode == HttpStatus.partialContent) {
         // is ok, continue download.
-        return await _rw(
+        return _rw(
           uri,
           resp,
           rawFile,
@@ -217,7 +221,7 @@ class HttpCacheManager {
         );
       } else if (resp.statusCode == HttpStatus.requestedRangeNotSatisfiable) {
         // 416 Requested Range Not Satisfiable
-        return await _nrw(
+        return _nrw(
           uri,
           rawFile,
           tempFile,
@@ -225,7 +229,7 @@ class HttpCacheManager {
           cancelable: cancelable,
         );
       } else if (resp.statusCode == HttpStatus.ok) {
-        return await _rw(
+        return _rw(
           uri,
           resp,
           rawFile,
@@ -239,7 +243,7 @@ class HttpCacheManager {
         return null;
       }
     } else {
-      return await _nrw(
+      return _nrw(
         uri,
         rawFile,
         tempFile,
@@ -256,11 +260,13 @@ class HttpCacheManager {
   ) async {
     if (chunkEvents != null) {
       final int length = await rawFile.length();
-      chunkEvents.add(ProgressChunkEvent(
-        key: uri,
-        progress: length,
-        total: length,
-      ));
+      chunkEvents.add(
+        ProgressChunkEvent(
+          key: uri,
+          progress: length,
+          total: length,
+        ),
+      );
     }
   }
 
@@ -280,7 +286,7 @@ class HttpCacheManager {
       resp.listen(null);
       return null;
     }
-    return await _rw(
+    return _rw(
       uri,
       resp,
       rawFile,
@@ -310,18 +316,20 @@ class HttpCacheManager {
     late StreamSubscription<List<int>> subscription;
     subscription = response.listen(
       (List<int> bytes) {
-        if (cancelable?.isCancelled == true) {
+        if (cancelable?.isCancelled ?? false) {
           subscription.cancel();
           ioSink.close();
           return;
         }
         ioSink.add(bytes);
         received += bytes.length;
-        chunkEvents?.add(ProgressChunkEvent(
-          key: uri,
-          progress: received,
-          total: total,
-        ));
+        chunkEvents?.add(
+          ProgressChunkEvent(
+            key: uri,
+            progress: received,
+            total: total,
+          ),
+        );
       },
       onDone: () async {
         try {
@@ -331,11 +339,13 @@ class HttpCacheManager {
             final List<int> convert = gzip.decoder.convert(buffer);
             buffer = Uint8List.fromList(convert);
             await tempFile.writeAsBytes(convert);
-            chunkEvents?.add(ProgressChunkEvent(
-              key: uri,
-              progress: buffer.length,
-              total: buffer.length,
-            ));
+            chunkEvents?.add(
+              ProgressChunkEvent(
+                key: uri,
+                progress: buffer.length,
+                total: buffer.length,
+              ),
+            );
           }
           await tempFile.rename(rawFile.path);
           completer.complete(rawFile);
@@ -363,7 +373,7 @@ class HttpCacheManager {
     Uri uri, {
     Map<String, dynamic>? headers,
     bool withBody = true,
-    _BeforeRequest? beforeRequest,
+    void Function(HttpClientRequest)? beforeRequest,
   }) async {
     final HttpClientRequest request =
         await (withBody ? _client.getUrl(uri) : _client.headUrl(uri));
@@ -371,7 +381,7 @@ class HttpCacheManager {
       request.headers.add(key, value);
     });
     beforeRequest?.call(request);
-    return await request.close();
+    return request.close();
   }
 }
 
@@ -399,22 +409,22 @@ class Cancelable {
     for (final FutureOrVoidCallback f in _onBeforeCancels) {
       await f.call();
     }
-    _completer.complete(reason ?? "Cancel...");
+    _completer.complete(reason ?? 'Cancel...');
     _isCancelled = true;
   }
 }
 
 @immutable
 class ProgressChunkEvent {
-  final dynamic key;
-  final int progress;
-  final int? total;
-
   const ProgressChunkEvent({
     required this.key,
     required this.progress,
     required this.total,
   });
+
+  final dynamic key;
+  final int progress;
+  final int? total;
 
   double? get percent =>
       total == null || total == 0 ? null : (progress / total!).clamp(0, 1);
@@ -434,7 +444,5 @@ class ProgressChunkEvent {
   @override
   int get hashCode => key.hashCode;
 }
-
-typedef _BeforeRequest = void Function(HttpClientRequest request);
 
 typedef FutureOrVoidCallback = FutureOr<void> Function();

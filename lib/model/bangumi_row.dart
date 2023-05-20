@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/internal/hive.dart';
-import 'package:mikan_flutter/model/bangumi.dart';
+
+import '../internal/hive.dart';
+import 'bangumi.dart';
 
 part 'bangumi_row.g.dart';
 

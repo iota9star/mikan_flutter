@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/internal/hive.dart';
-import 'package:mikan_flutter/model/season.dart';
+
+import '../internal/hive.dart';
+import 'season.dart';
 
 part 'year_season.g.dart';
 

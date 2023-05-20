@@ -38,8 +38,10 @@ class SliverGridDelegateWithMinCrossAxisExtent extends SliverGridDelegate {
     if (crossAxisCount <= 0) {
       crossAxisCount = 1;
     }
-    final double usableCrossAxisExtent = math.max(0.0,
-        constraints.crossAxisExtent - crossAxisSpacing * (crossAxisCount - 1));
+    final double usableCrossAxisExtent = math.max(
+      0.0,
+      constraints.crossAxisExtent - crossAxisSpacing * (crossAxisCount - 1),
+    );
     final double childCrossAxisExtent = usableCrossAxisExtent / crossAxisCount;
     final double childMainAxisExtent =
         mainAxisExtent ?? childCrossAxisExtent / childAspectRatio;
@@ -67,21 +69,13 @@ class SliverWaterfallFlowDelegateWithMinCrossAxisExtent
     extends SliverWaterfallFlowDelegate {
   const SliverWaterfallFlowDelegateWithMinCrossAxisExtent({
     required this.minCrossAxisExtent,
-    double mainAxisSpacing = 0.0,
-    double crossAxisSpacing = 0.0,
-    LastChildLayoutTypeBuilder? lastChildLayoutTypeBuilder,
-    CollectGarbage? collectGarbage,
-    ViewportBuilder? viewportBuilder,
-    bool closeToTrailing = false,
-  })  : assert(minCrossAxisExtent >= 0),
-        super(
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-          lastChildLayoutTypeBuilder: lastChildLayoutTypeBuilder,
-          collectGarbage: collectGarbage,
-          viewportBuilder: viewportBuilder,
-          closeToTrailing: closeToTrailing,
-        );
+    super.mainAxisSpacing,
+    super.crossAxisSpacing,
+    super.lastChildLayoutTypeBuilder,
+    super.collectGarbage,
+    super.viewportBuilder,
+    super.closeToTrailing,
+  }) : assert(minCrossAxisExtent >= 0);
 
   final double minCrossAxisExtent;
 

@@ -1,40 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/icon_button.dart';
-import 'package:mikan_flutter/widget/ripple_tap.dart';
+
+import '../../internal/extension.dart';
+import '../../model/record_item.dart';
+import '../../topvars.dart';
+import '../../widget/icon_button.dart';
+import '../../widget/scalable_tap.dart';
 
 @immutable
 class OVARecordItem extends StatelessWidget {
-  final int index;
-  final RecordItem record;
-  final ThemeData theme;
-  final VoidCallback onTap;
-
   const OVARecordItem({
-    Key? key,
+    super.key,
     required this.index,
     required this.record,
     required this.onTap,
-    required this.theme,
-  }) : super(key: key);
+  });
+
+  final int index;
+  final RecordItem record;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final accentTagStyle = textStyle10WithColor(
-      theme.secondary.isDark ? Colors.white : Colors.black,
+    final theme = Theme.of(context);
+    final accentTagStyle = theme.textTheme.labelSmall?.copyWith(
+      color: theme.secondary.isDark ? Colors.white : Colors.black,
     );
-    final primaryTagStyle = textStyle10WithColor(
-      theme.primary.isDark ? Colors.white : Colors.black,
+    final primaryTagStyle = accentTagStyle?.copyWith(
+      color: theme.primary.isDark ? Colors.white : Colors.black,
     );
-    return ScalableRippleTap(
+    return ScalableCard(
       onTap: onTap,
-      color: theme.colorScheme.background,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Tooltip(
               message: record.title,
@@ -42,57 +41,67 @@ class OVARecordItem extends StatelessWidget {
               margin: edgeH16,
               child: Text(
                 record.title,
-                style: textStyle14B500,
+                style: theme.textTheme.bodyMedium,
               ),
             ),
             sizedBoxH8,
-            Wrap(
-              runSpacing: 4.0,
-              spacing: 4.0,
-              children: [
-                if (record.size.isNotBlank)
-                  Container(
-                    padding: edgeH4V2,
-                    decoration: BoxDecoration(color: theme.secondary),
-                    child: Text(
-                      record.size,
-                      style: accentTagStyle,
-                    ),
-                  ),
-                if (!record.tags.isNullOrEmpty)
-                  ...List.generate(
-                    record.tags.length,
-                    (index) {
-                      return Container(
-                        padding: edgeH4V2,
-                        decoration: BoxDecoration(color: theme.primary),
-                        child: Text(
-                          record.tags[index],
-                          style: primaryTagStyle,
-                        ),
-                      );
-                    },
-                  ),
-              ],
-            ),
-            sizedBoxH8,
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Text(
-                    record.publishAt,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        runSpacing: 4.0,
+                        spacing: 4.0,
+                        children: [
+                          if (record.size.isNotBlank)
+                            Container(
+                              padding: edgeH4V2,
+                              decoration: BoxDecoration(
+                                color: theme.secondary,
+                                borderRadius: borderRadius4,
+                              ),
+                              child: Text(
+                                record.size,
+                                style: accentTagStyle,
+                              ),
+                            ),
+                          if (!record.tags.isNullOrEmpty)
+                            ...List.generate(
+                              record.tags.length,
+                              (index) {
+                                return Container(
+                                  padding: edgeH4V2,
+                                  decoration: BoxDecoration(
+                                    color: theme.primary,
+                                    borderRadius: borderRadius4,
+                                  ),
+                                  child: Text(
+                                    record.tags[index],
+                                    style: primaryTagStyle,
+                                  ),
+                                );
+                              },
+                            ),
+                        ],
+                      ),
+                      sizedBoxH4,
+                      Text(
+                        record.publishAt,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
                   ),
                 ),
                 sizedBoxW8,
-                TorrentButton(payload: record.torrent),
-                sizedBoxW8,
-                MagnetButton(payload: record.magnet),
-                sizedBoxW8,
-                ShareButton(payload: record.shareString),
+                TMSMenuButton(
+                  torrent: record.torrent,
+                  magnet: record.magnet,
+                  share: record.share,
+                ),
               ],
             ),
           ],

@@ -1,12 +1,6 @@
-import 'package:mikan_flutter/model/bangumi.dart';
+import 'bangumi.dart';
 
 class SeasonGallery {
-  late String year = "";
-  late String season = "";
-  late String title = "";
-  late bool active = false;
-  late List<Bangumi> bangumis;
-
   SeasonGallery({
     required this.year,
     required this.season,
@@ -16,6 +10,12 @@ class SeasonGallery {
   });
 
   SeasonGallery.empty();
+
+  late String year = '';
+  late String season = '';
+  late String title = '';
+  late bool active = false;
+  late List<Bangumi> bangumis;
 
   @override
   bool operator ==(Object other) =>

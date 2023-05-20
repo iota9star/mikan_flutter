@@ -5,12 +5,8 @@ import 'package:collection/collection.dart';
 
 const _esc = '\x1B[';
 const _reset = '${_esc}0m';
-const _black = '${_esc}30m';
 const _red = '${_esc}31m';
-const _green = '${_esc}32m';
 const _yellow = '${_esc}33m';
-const _blue = '${_esc}34m';
-const _magenta = '${_esc}35m';
 const _cyan = '${_esc}36m';
 const _white = '${_esc}37m';
 const _grey = '${_esc}90m';
@@ -18,19 +14,19 @@ const _line =
     '════════════════════════════════════════════════════════════════════════════════════════════════════';
 
 extension Log on Object? {
-  void debug({String? tag, StackTrace? stackTrace, int level = 2}) {
+  void $debug({String? tag, StackTrace? stackTrace, int level = 2}) {
     d(this, tag: tag, stackTrace: stackTrace, level: level);
   }
 
-  void info({String? tag, StackTrace? stackTrace, int level = 2}) {
+  void $info({String? tag, StackTrace? stackTrace, int level = 2}) {
     i(this, tag: tag, stackTrace: stackTrace, level: level);
   }
 
-  void warn({String? tag, StackTrace? stackTrace, int level = 2}) {
+  void $warn({String? tag, StackTrace? stackTrace, int level = 2}) {
     w(this, tag: tag, stackTrace: stackTrace, level: level);
   }
 
-  void error({
+  void $error({
     Object? msg,
     String? tag,
     StackTrace? stackTrace,
@@ -45,7 +41,8 @@ extension Log on Object? {
     );
   }
 
-  static void d(Object? msg, {
+  static void d(
+    Object? msg, {
     String? tag,
     StackTrace? stackTrace,
     int level = 1,
@@ -60,7 +57,8 @@ extension Log on Object? {
     );
   }
 
-  static void i(Object? msg, {
+  static void i(
+    Object? msg, {
     String? tag,
     StackTrace? stackTrace,
     int level = 1,
@@ -75,7 +73,8 @@ extension Log on Object? {
     );
   }
 
-  static void w(Object? msg, {
+  static void w(
+    Object? msg, {
     String? tag,
     StackTrace? stackTrace,
     int level = 1,
@@ -148,7 +147,7 @@ extension Log on Object? {
     if (Platform.isIOS || Platform.isMacOS) {
       stdout.writeln(buffer.toString());
     } else {
-      print(buffer.toString());
+      print(buffer);
     }
   }
 

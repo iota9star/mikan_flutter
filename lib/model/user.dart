@@ -1,11 +1,18 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/hive.dart';
+
+import '../internal/extension.dart';
+import '../internal/hive.dart';
 
 part 'user.g.dart';
 
 @HiveType(typeId: MyHive.mikanUser)
 class User extends HiveObject {
+
+  User({
+    this.name,
+    this.avatar,
+    this.token,
+  });
   @HiveField(0)
   String? name;
 
@@ -16,12 +23,6 @@ class User extends HiveObject {
   String? token;
 
   bool get hasLogin => name.isNotBlank && avatar.isNotBlank;
-
-  User({
-    this.name,
-    this.avatar,
-    this.token,
-  });
 
   @override
   bool operator ==(Object other) =>

@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "io.nichijou.flutter" "\0"
-            VALUE "FileDescription", "蜜柑计划" "\0"
+            VALUE "FileDescription", "MikanProject" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "mikan_flutter" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 io.nichijou.flutter. All rights reserved." "\0"
-            VALUE "OriginalFilename", "mikan_flutter.exe" "\0"
-            VALUE "ProductName", "mikan_flutter" "\0"
+            VALUE "InternalName", "mikan" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 io.nichijou.flutter. All rights reserved." "\0"
+            VALUE "OriginalFilename", "mikan.exe" "\0"
+            VALUE "ProductName", "mikan" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

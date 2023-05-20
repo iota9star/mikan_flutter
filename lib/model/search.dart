@@ -1,17 +1,17 @@
-import 'package:mikan_flutter/model/bangumi.dart';
-import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/model/subgroup.dart';
+import 'bangumi.dart';
+import 'record_item.dart';
+import 'subgroup.dart';
 
 class SearchResult {
-  final List<Bangumi> bangumis;
-  final List<Subgroup> subgroups;
-  final List<RecordItem> records;
-
   SearchResult({
     required this.bangumis,
     required this.subgroups,
     required this.records,
   });
+
+  final List<Bangumi> bangumis;
+  final List<Subgroup> subgroups;
+  final List<RecordItem> records;
 
   @override
   bool operator ==(Object other) =>

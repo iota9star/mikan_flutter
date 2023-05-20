@@ -1,11 +1,8 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class RippleTap extends StatelessWidget {
   const RippleTap({
-    Key? key,
+    super.key,
     required this.child,
     this.onTap,
     this.onTapDown,
@@ -24,7 +21,7 @@ class RippleTap extends StatelessWidget {
     this.borderOnForeground = true,
     this.clipBehavior = Clip.antiAlias,
     this.animationDuration = kThemeChangeDuration,
-  }) : super(key: key);
+  });
 
   final Widget child;
 
@@ -200,15 +197,7 @@ class RippleTap extends StatelessWidget {
       child: InkResponse(
         highlightShape: BoxShape.rectangle,
         containedInkWell: true,
-        onTap: () {
-          if (MediaQueryData.fromWindow(ui.window).viewInsets.bottom > 0) {
-            SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
-          }
-          if (onTap != null) {
-            Feedback.forTap(context);
-          }
-          onTap?.call();
-        },
+        onTap: onTap,
         onTapDown: onTapDown,
         onTapCancel: onTapCancel,
         onTapUp: onTapUp,
@@ -222,7 +211,7 @@ class RippleTap extends StatelessWidget {
 
 class ScalableRippleTap extends StatefulWidget {
   const ScalableRippleTap({
-    Key? key,
+    super.key,
     required this.child,
     this.onTap,
     this.type = MaterialType.canvas,
@@ -239,7 +228,7 @@ class ScalableRippleTap extends StatefulWidget {
     this.transform,
     this.onDoubleTap,
     this.onLongPress,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

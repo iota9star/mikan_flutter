@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/internal/hive.dart';
+import '../internal/hive.dart';
 
 part 'carousel.g.dart';
 

@@ -1,42 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:mikan_flutter/internal/extension.dart';
-import 'package:mikan_flutter/internal/image_provider.dart';
-import 'package:mikan_flutter/mikan_flutter_routes.dart';
-import 'package:mikan_flutter/model/record_item.dart';
-import 'package:mikan_flutter/topvars.dart';
-import 'package:mikan_flutter/widget/ripple_tap.dart';
+
+import '../../internal/extension.dart';
+import '../../internal/image_provider.dart';
+import '../../mikan_routes.dart';
+import '../../model/record_item.dart';
+import '../../topvars.dart';
+import '../../widget/icon_button.dart';
+import '../../widget/ripple_tap.dart';
+import '../../widget/scalable_tap.dart';
 
 @immutable
 class RssRecordItem extends StatelessWidget {
-  final int index;
-  final RecordItem record;
-  final ThemeData theme;
-  final VoidCallback onTap;
-  final bool enableHero;
-
   const RssRecordItem({
-    Key? key,
+    super.key,
     required this.index,
     required this.record,
     required this.onTap,
-    required this.theme,
     this.enableHero = true,
-  }) : super(key: key);
+  });
+
+  final int index;
+  final RecordItem record;
+  final VoidCallback onTap;
+  final bool enableHero;
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle accentTagStyle = textStyle10WithColor(
-      theme.secondary.isDark ? Colors.white : Colors.black,
+    final theme = Theme.of(context);
+    final accentTagStyle = theme.textTheme.labelSmall?.copyWith(
+      color: theme.secondary.isDark ? Colors.white : Colors.black,
+      height: 1.25,
     );
-    final TextStyle primaryTagStyle = textStyle10WithColor(
-      theme.primary.isDark ? Colors.white : Colors.black,
+    final primaryTagStyle = accentTagStyle?.copyWith(
+      color: theme.primary.isDark ? Colors.white : Colors.black,
     );
     final List<String> tags = record.tags;
-    final heroTag = "rss:${record.id}:${record.cover}:${record.torrent}";
+    final heroTag = 'rss:${record.id}:${record.cover}:${record.torrent}';
     final cover = Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: CacheImageProvider(record.cover),
+          image: CacheImage(record.cover),
           fit: BoxFit.cover,
         ),
       ),
@@ -44,7 +47,7 @@ class RssRecordItem extends StatelessWidget {
         color: theme.colorScheme.background.withOpacity(0.87),
       ),
     );
-    return ScalableRippleTap(
+    return ScalableCard(
       onTap: onTap,
       child: Stack(
         children: [
@@ -61,7 +64,8 @@ class RssRecordItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
+                RippleTap(
+                  borderRadius: borderRadius12,
                   onTap: () {
                     Navigator.pushNamed(
                       context,
@@ -70,58 +74,70 @@ class RssRecordItem extends StatelessWidget {
                         bangumiId: record.id!,
                         cover: record.cover,
                         heroTag: heroTag,
+                        title: record.name,
                       ),
                     );
                   },
                   child: Padding(
-                    padding: edgeH16,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    padding: edgeH16V12,
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                record.name,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Tooltip(
+                                message: record.name,
+                                child: Text(
+                                  record.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.titleMedium,
+                                ),
+                              ),
+                              Text(
+                                record.publishAt,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: textStyle18B,
+                                style: theme.textTheme.bodySmall,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        Text(
-                          record.publishAt,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall,
+                        TMSMenuButton(
+                          torrent: record.torrent,
+                          magnet: record.magnet,
+                          share: record.share,
                         ),
                       ],
                     ),
                   ),
                 ),
+                spacer,
                 Padding(
-                  padding: edgeH16T4,
+                  padding: edgeH16,
                   child: Text(
-                    record.title,
+                    '${record.title}\n',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: textStyle13,
+                    style: theme.textTheme.bodyMedium,
                   ),
                 ),
                 Container(
-                  margin: edgeH16T8,
+                  padding: edgeHB16T4,
                   width: double.infinity,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         if (record.size.isNotBlank)
                           Container(
                             margin: edgeR4,
                             padding: edgeH4V2,
-                            decoration: BoxDecoration(color: theme.secondary),
+                            decoration: BoxDecoration(
+                              color: theme.secondary,
+                              borderRadius: borderRadius4,
+                            ),
                             child: Text(
                               record.size,
                               style: accentTagStyle,
@@ -132,7 +148,10 @@ class RssRecordItem extends StatelessWidget {
                             Container(
                               margin: edgeR4,
                               padding: edgeH4V2,
-                              decoration: BoxDecoration(color: theme.primary),
+                              decoration: BoxDecoration(
+                                color: theme.primary,
+                                borderRadius: borderRadius4,
+                              ),
                               child: Text(
                                 tag,
                                 style: primaryTagStyle,

@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
-import 'package:mikan_flutter/internal/hive.dart';
+
+import '../internal/hive.dart';
 
 part 'bangumi.g.dart';
 
@@ -11,7 +12,7 @@ class Bangumi extends HiveObject {
 
   // 更新时间
   @HiveField(1)
-  late String updateAt = "";
+  late String updateAt = '';
 
   // 更新的数量
   @HiveField(2)
@@ -33,7 +34,7 @@ class Bangumi extends HiveObject {
   late bool grey = false;
 
   @HiveField(8)
-  late String week = "";
+  late String week = '';
 
   @override
   bool operator ==(Object other) =>
