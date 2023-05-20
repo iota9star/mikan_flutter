@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
               ? Row(
                   children: [
                     NavigationRail(
+                      labelType: NavigationRailLabelType.all,
                       destinations: const [
                         NavigationRailDestination(
                           icon: Icon(Icons.segment_rounded),
