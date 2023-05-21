@@ -40,7 +40,7 @@ class ForgotPasswordModel extends BaseModel {
       '重置密码邮件发送成功'.toast();
       onSuccess.call();
     } else {
-      '重置密码邮件失败，请稍候重试：${resp.msg}'.toast();
+      '重置密码邮件失败，请稍候重试 ${resp.msg ?? ''}'.toast();
     }
   }
 

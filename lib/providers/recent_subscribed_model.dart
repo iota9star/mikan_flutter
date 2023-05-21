@@ -41,7 +41,7 @@ class RecentSubscribedModel extends BaseModel {
         }
       }
     } else {
-      '获取最近更新失败：${resp.msg}'.toast();
+      '获取最近更新失败 ${resp.msg ?? ''}'.toast();
       return IndicatorResult.fail;
     }
   }

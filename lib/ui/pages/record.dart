@@ -16,7 +16,6 @@ import '../../providers/op_model.dart';
 import '../../providers/record_detail_model.dart';
 import '../../topvars.dart';
 import '../../widget/icon_button.dart';
-import '../../widget/ripple_tap.dart';
 
 @FFRoute(name: '/record')
 @immutable
@@ -110,6 +109,7 @@ class Record extends StatelessWidget {
                                   },
                                   icon: const Icon(Icons.share_rounded),
                                 ),
+                                _buildSubscribeBtn(context, model),
                                 IconButton(
                                   onPressed: () {
                                     model.recordDetail?.magnet
@@ -167,7 +167,7 @@ class Record extends StatelessWidget {
                                 gradient: LinearGradient(
                                   colors: [
                                     theme.colorScheme.background
-                                        .withOpacity(0.72),
+                                        .withOpacity(0.64),
                                     theme.colorScheme.background,
                                   ],
                                   begin: Alignment.topCenter,
@@ -298,126 +298,95 @@ class Record extends StatelessWidget {
 
   Widget _buildBangumiCover(
     BuildContext context,
-    RecordDetail recordDetail,
+    RecordDetail record,
   ) {
     return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+      borderRadius: borderRadius12,
       child: Image(
-        image: CacheImage(recordDetail.cover),
+        image: CacheImage(record.cover),
         width: 136.0,
         loadingBuilder: (_, child, event) {
           return event == null
               ? child
-              : Stack(
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 3 / 4,
-                      child: Container(
-                        padding: edge28,
-                        child: Center(
-                          child: Image.asset(
-                            'assets/mikan.png',
-                          ),
-                        ),
+              : AspectRatio(
+                  aspectRatio: 3 / 4,
+                  child: Container(
+                    padding: edge28,
+                    child: Center(
+                      child: Image.asset(
+                        'assets/mikan.png',
                       ),
                     ),
-                    _buildSubscribeBtn(context, recordDetail),
-                  ],
+                  ),
                 );
         },
         errorBuilder: (_, __, ___) {
-          return Stack(
-            children: [
-              AspectRatio(
-                aspectRatio: 3 / 4,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/mikan.png'),
-                      fit: BoxFit.cover,
-                      colorFilter:
-                          ColorFilter.mode(Colors.grey, BlendMode.color),
-                    ),
-                  ),
+          return AspectRatio(
+            aspectRatio: 3 / 4,
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/mikan.png'),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
                 ),
               ),
-              Positioned(
-                child: _buildSubscribeBtn(context, recordDetail),
-              ),
-            ],
+            ),
           );
         },
         frameBuilder: (_, child, ___, ____) {
-          return Stack(
-            children: [
-              child,
-              Positioned(
-                child: _buildSubscribeBtn(context, recordDetail),
-              ),
-            ],
-          );
+          return child;
         },
       ),
     );
   }
 
-  Widget _buildSubscribeBtn(BuildContext context, RecordDetail recordDetail) {
+  Widget _buildSubscribeBtn(BuildContext context, RecordDetailModel model) {
     return Selector<RecordDetailModel, bool>(
       selector: (_, model) => model.recordDetail?.subscribed ?? false,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, subscribed, __) {
+        final recordDetail = model.recordDetail;
+        if (recordDetail == null) {
+          return const SizedBox();
+        }
         return subscribed
-            ? Tooltip(
-                message: '取消订阅',
-                child: RippleTap(
-                  child: const Padding(
-                    padding: EdgeInsets.all(6.0),
-                    child: Icon(
-                      Icons.favorite_rounded,
-                      color: Colors.redAccent,
-                      size: 24.0,
-                    ),
-                  ),
-                  onTap: () {
-                    context.read<OpModel>().subscribeBangumi(
-                      recordDetail.id,
-                      recordDetail.subscribed,
-                      onSuccess: () {
-                        recordDetail.subscribed = !recordDetail.subscribed;
-                        context.read<RecordDetailModel>().subscribeChanged();
-                      },
-                      onError: (msg) {
-                        '订阅失败：$msg'.toast();
-                      },
-                    );
-                  },
+            ? IconButton(
+                tooltip: '取消订阅',
+                icon: const Icon(
+                  Icons.favorite_rounded,
+                  color: Colors.redAccent,
                 ),
+                onPressed: () {
+                  context.read<OpModel>().subscribeBangumi(
+                    recordDetail.id,
+                    recordDetail.subscribed,
+                    onSuccess: () {
+                      recordDetail.subscribed = !recordDetail.subscribed;
+                      context.read<RecordDetailModel>().subscribeChanged();
+                    },
+                    onError: (msg) {
+                      '订阅失败：$msg'.toast();
+                    },
+                  );
+                },
               )
-            : Tooltip(
-                message: '订阅',
-                child: RippleTap(
-                  child: const Padding(
-                    padding: EdgeInsets.all(6.0),
-                    child: Icon(
-                      Icons.favorite_border_rounded,
-                      color: Colors.redAccent,
-                      size: 24.0,
-                    ),
-                  ),
-                  onTap: () {
-                    context.read<OpModel>().subscribeBangumi(
-                      recordDetail.id,
-                      recordDetail.subscribed,
-                      onSuccess: () {
-                        recordDetail.subscribed = !recordDetail.subscribed;
-                        context.read<RecordDetailModel>().subscribeChanged();
-                      },
-                      onError: (msg) {
-                        '订阅失败：$msg'.toast();
-                      },
-                    );
-                  },
-                ),
+            : IconButton(
+                tooltip: '订阅',
+                icon: const Icon(Icons.favorite_border_rounded),
+                onPressed: () {
+                  context.read<OpModel>().subscribeBangumi(
+                    recordDetail.id,
+                    recordDetail.subscribed,
+                    onSuccess: () {
+                      recordDetail.subscribed = !recordDetail.subscribed;
+                      context.read<RecordDetailModel>().subscribeChanged();
+                    },
+                    onError: (msg) {
+                      '订阅失败：$msg'.toast();
+                    },
+                  );
+                },
               );
       },
     );

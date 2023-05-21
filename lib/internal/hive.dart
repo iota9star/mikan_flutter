@@ -140,7 +140,7 @@ class MyHive {
   static int getColorSeed() {
     return settings.get(
       SettingsHiveKey.colorSeed,
-      defaultValue: Colors.pinkAccent.value,
+      defaultValue: Colors.green.value,
     );
   }
 

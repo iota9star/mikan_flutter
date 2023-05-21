@@ -22,7 +22,7 @@ class RecordDetailModel extends BaseModel {
       notifyListeners();
       return IndicatorResult.success;
     } else {
-      '获取详情失败：${resp.msg}'.toast();
+      '获取详情失败 ${resp.msg ?? ''}'.toast();
       return IndicatorResult.fail;
     }
   }

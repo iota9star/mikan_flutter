@@ -59,7 +59,7 @@ class IndexModel extends BaseModel {
       _ovas = resp.data;
       unawaited(MyHive.db.put(HiveDBKey.mikanOva, _ovas));
     } else {
-      '获取OVA失败：${resp.msg}'.toast();
+      '获取OVA失败 ${resp.msg ?? ''}'.toast();
     }
     notifyListeners();
   }
@@ -73,7 +73,7 @@ class IndexModel extends BaseModel {
       '加载完成'.toast();
       notifyListeners();
     } else {
-      '获取首页数据失败：${resp.msg}'.toast();
+      '获取首页数据失败 ${resp.msg ?? ''}'.toast();
     }
   }
 

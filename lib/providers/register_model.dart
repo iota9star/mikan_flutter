@@ -40,7 +40,7 @@ class RegisterModel extends BaseModel {
   Future<void> submit(VoidCallback registerSuccess) async {
     _loading = true;
     notifyListeners();
-    final Resp tokenResp = await  Repo.refreshRegisterToken();
+    final Resp tokenResp = await Repo.refreshRegisterToken();
     if (!tokenResp.success) {
       _loading = false;
       notifyListeners();
@@ -60,14 +60,14 @@ class RegisterModel extends BaseModel {
       'QQ': _qqController.text,
       '__RequestVerificationToken': token
     };
-    final Resp resp = await  Repo.register(registerParams);
+    final Resp resp = await Repo.register(registerParams);
     _loading = false;
     notifyListeners();
     if (resp.success) {
       '注册成功'.toast();
       registerSuccess.call();
     } else {
-      '注册失败，请稍候重试：${resp.msg}'.toast();
+      '注册失败，请稍候重试 ${resp.msg ?? ''}'.toast();
     }
   }
 

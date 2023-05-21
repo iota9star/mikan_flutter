@@ -23,7 +23,7 @@ class SubgroupModel extends BaseModel {
       '加载成功'.toast();
       return IndicatorResult.success;
     } else {
-      '加载字幕组作品年表失败：${resp.msg}'.toast();
+      '加载字幕组作品年表失败 ${resp.msg ?? ''}'.toast();
       return IndicatorResult.fail;
     }
   }

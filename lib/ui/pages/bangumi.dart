@@ -346,7 +346,7 @@ class BangumiPage extends StatelessWidget {
                     foregroundDecoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          theme.colorScheme.background.withOpacity(0.72),
+                          theme.colorScheme.background.withOpacity(0.64),
                           theme.colorScheme.background,
                         ],
                         begin: Alignment.topCenter,

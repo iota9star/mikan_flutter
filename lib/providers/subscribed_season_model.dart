@@ -49,7 +49,7 @@ class SubscribedSeasonModel extends BaseModel {
       notifyListeners();
       return IndicatorResult.success;
     } else {
-      '获取 ${season.title} 订阅失败：${resp.msg}'.toast();
+      '获取 ${season.title} 订阅失败 ${resp.msg ?? ''}'.toast();
       return IndicatorResult.fail;
     }
   }

@@ -52,6 +52,7 @@ class _SplashPageState extends State<SplashPage> {
     final theme = Theme.of(context);
     return FloatingActionButton.extended(
       onPressed: () {
+        _timer?.cancel();
         Navigator.pushNamedAndRemoveUntil(
           context,
           Routes.index.name,

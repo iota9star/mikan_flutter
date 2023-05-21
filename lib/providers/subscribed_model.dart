@@ -63,7 +63,7 @@ class SubscribedModel extends BaseModel {
     if (resp.success) {
       _bangumis = resp.data;
     } else {
-      '获取季度订阅失败：${resp.msg}'.toast();
+      '获取季度订阅失败 ${resp.msg ?? ''}'.toast();
     }
     notifyListeners();
   }
@@ -76,7 +76,7 @@ class SubscribedModel extends BaseModel {
       _records = resp.data ?? [];
       _rss = groupBy(resp.data ?? [], (it) => it.id!);
     } else {
-      '获取最近更新失败：${resp.msg}'.toast();
+      '获取最近更新失败 ${resp.msg ?? ''}'.toast();
     }
     notifyListeners();
   }

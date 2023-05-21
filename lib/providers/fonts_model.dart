@@ -55,7 +55,7 @@ class FontsModel extends BaseModel {
         }
       }
     } else {
-      '获取字体列表失败：${resp.msg}'.toast();
+      '获取字体列表失败 ${resp.msg ?? ''}'.toast();
     }
     notifyListeners();
   }

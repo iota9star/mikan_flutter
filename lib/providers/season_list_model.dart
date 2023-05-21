@@ -44,7 +44,7 @@ class SeasonListModel extends BaseModel {
       notifyListeners();
       return IndicatorResult.success;
     } else {
-      '获取 ${season.title} 失败：${resp.msg}'.toast();
+      '获取 ${season.title} 失败 ${resp.msg ?? ''}'.toast();
       return IndicatorResult.fail;
     }
   }

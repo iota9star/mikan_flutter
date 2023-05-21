@@ -17,6 +17,7 @@ import '../../widget/bottom_sheet.dart';
 import '../../widget/ripple_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
 import 'card_ratio.dart';
+import 'donate.dart';
 import 'index.dart';
 import 'select_mirror.dart';
 import 'select_tablet_mode.dart';
@@ -50,6 +51,7 @@ class SettingsPanel extends StatelessWidget {
                       _buildTabletMode(context, theme),
                       _buildSection(theme, '更多'),
                       _buildMirror(context, theme),
+                      _buildDonate(context, theme),
                       _buildLicense(context, theme),
                       _buildPrivacyPolicy(context, theme),
                       _buildClearCache(context, settingsModel, theme),
@@ -310,6 +312,32 @@ class SettingsPanel extends StatelessWidget {
               ),
             ),
             const Icon(Icons.east_rounded),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDonate(BuildContext context, ThemeData theme) {
+    return RippleTap(
+      onTap: () {
+        MBottomSheet.show(
+          context,
+          (context) => const MBottomSheet(child: Donate()),
+        );
+      },
+      child: Container(
+        padding: edgeH24,
+        height: 50.0,
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                '支持一下',
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+            const Icon(Icons.thumb_up_outlined),
           ],
         ),
       ),

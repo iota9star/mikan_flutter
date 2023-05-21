@@ -27,7 +27,7 @@ class SearchModel extends BaseModel {
 
   bool get loading => _loading;
 
-  set subgroupId( String? value) {
+  set subgroupId(String? value) {
     _subgroupId = _subgroupId == value ? null : value;
     _searching(keywords, subgroupId: _subgroupId);
   }
@@ -45,21 +45,21 @@ class SearchModel extends BaseModel {
     _searching(keywords);
   }
 
-  Future<void> _searching( String? keywords, {String? subgroupId}) async {
+  Future<void> _searching(String? keywords, {String? subgroupId}) async {
     if (keywords.isNullOrBlank) {
       return '请输入搜索关键字'.toast();
     }
     _keywords = keywords;
     _loading = true;
     notifyListeners();
-    final resp = await  Repo.search(keywords, subgroupId: subgroupId);
+    final resp = await Repo.search(keywords, subgroupId: subgroupId);
     if (resp.success) {
       _searchResult = resp.data;
       if (_searchResult?.records.isNotEmpty ?? false) {
         _saveNewKeywords(keywords!);
       }
     } else {
-      '搜索出错啦：${resp.msg}'.toast();
+      '搜索出错啦 ${resp.msg ?? ''}'.toast();
     }
     _loading = false;
     notifyListeners();

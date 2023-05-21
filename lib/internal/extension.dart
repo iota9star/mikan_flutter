@@ -126,7 +126,7 @@ extension NullableStringExt on String? {
                     borderRadius: borderRadius28,
                   ),
                   child: Text(
-                    this!,
+                    this!.trim(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodyMedium?.copyWith(
