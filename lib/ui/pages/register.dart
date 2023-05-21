@@ -11,10 +11,15 @@ import '../../topvars.dart';
 
 @FFRoute(name: '/register')
 @immutable
-class RegisterPage extends StatelessWidget {
-  RegisterPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {

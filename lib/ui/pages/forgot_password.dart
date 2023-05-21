@@ -10,10 +10,15 @@ import '../fragments/forgot_password_confirm.dart';
 
 @FFRoute(name: '/forget-password')
 @immutable
-class ForgotPasswordPage extends StatelessWidget {
-  ForgotPasswordPage({super.key});
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+}
+
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
