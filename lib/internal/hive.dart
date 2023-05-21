@@ -172,6 +172,18 @@ class MyHive {
     return settings.put(SettingsHiveKey.mirrorUrl, url);
   }
 
+  static TabletMode getTabletMode() {
+    final mode = settings.get(
+      SettingsHiveKey.tabletMode,
+      defaultValue: TabletMode.auto.name,
+    );
+    return TabletMode.values.firstWhere((e) => e.name == mode);
+  }
+
+  static Future<void> setTabletMode(TabletMode mode) {
+    return settings.put(SettingsHiveKey.tabletMode, mode.name);
+  }
+
   static double getCardRatio() {
     final value = settings.get(
       SettingsHiveKey.cardRatio,
@@ -211,4 +223,22 @@ class SettingsHiveKey {
   static const String themeMode = 'THEME_MODE';
   static const String mirrorUrl = 'MIRROR_URL';
   static const String cardRatio = 'CARD_RATIO';
+  static const String tabletMode = 'TABLET_MODE';
+}
+
+enum TabletMode {
+  tablet('平板模式'),
+  auto('自动'),
+  disable('禁用'),
+  ;
+
+  const TabletMode(this.label);
+
+  final String label;
+
+  bool get isTablet => this == TabletMode.tablet;
+
+  bool get isAuto => this == TabletMode.auto;
+
+  bool get isDisable => this == TabletMode.disable;
 }

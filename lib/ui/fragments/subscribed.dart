@@ -18,6 +18,7 @@ import '../../widget/sliver_pinned_header.dart';
 import '../components/rss_record_item.dart';
 import 'bangumi_sliver_grid.dart';
 import 'index.dart';
+import 'select_tablet_mode.dart';
 
 @immutable
 class SubscribedFragment extends StatelessWidget {
@@ -533,18 +534,23 @@ class _PinedHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPinnedAppBar(
-      title: '我的订阅',
-      autoImplLeading: false,
-      actions: [
-        if (context.isHandset)
-          IconButton(
-            onPressed: () {
-              showSettingsPanel(context);
-            },
-            icon: const Icon(Icons.tune_rounded),
-          )
-      ],
+    return TabletModeBuilder(
+      builder: (context, isTablet, child) {
+        return SliverPinnedAppBar(
+          title: '我的订阅',
+          autoImplLeading: false,
+          actions: isTablet
+              ? null
+              : [
+                  IconButton(
+                    onPressed: () {
+                      showSettingsPanel(context);
+                    },
+                    icon: const Icon(Icons.tune_rounded),
+                  )
+                ],
+        );
+      },
     );
   }
 }

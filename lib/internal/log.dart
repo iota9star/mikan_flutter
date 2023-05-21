@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 const _esc = '\x1B[';
 const _reset = '${_esc}0m';
@@ -9,7 +10,7 @@ const _red = '${_esc}31m';
 const _yellow = '${_esc}33m';
 const _cyan = '${_esc}36m';
 const _white = '${_esc}37m';
-const _grey = '${_esc}90m';
+const _green = '${_esc}32m';
 const _line =
     '════════════════════════════════════════════════════════════════════════════════════════════════════';
 
@@ -47,13 +48,16 @@ extension Log on Object? {
     StackTrace? stackTrace,
     int level = 1,
   }) {
+    if(!kDebugMode){
+      return;
+    }
     final track = tag ?? _trackStackTraceId(StackTrace.current, level);
     _log(
       msg: msg,
       track: track,
       stackTrace: stackTrace,
       level: ' D ',
-      levelColor: _grey,
+      levelColor: _green,
     );
   }
 
@@ -63,6 +67,9 @@ extension Log on Object? {
     StackTrace? stackTrace,
     int level = 1,
   }) {
+    if(!kDebugMode){
+      return;
+    }
     final track = tag ?? _trackStackTraceId(StackTrace.current, level);
     _log(
       msg: msg,
@@ -79,6 +86,9 @@ extension Log on Object? {
     StackTrace? stackTrace,
     int level = 1,
   }) {
+    if(!kDebugMode){
+      return;
+    }
     final track = tag ?? _trackStackTraceId(StackTrace.current, level);
     _log(
       msg: msg,
@@ -96,6 +106,9 @@ extension Log on Object? {
     StackTrace? stackTrace,
     int level = 1,
   }) {
+    if(!kDebugMode){
+      return;
+    }
     final track = tag ?? _trackStackTraceId(StackTrace.current, level);
     _log(
       msg: msg,
@@ -175,11 +188,10 @@ extension Log on Object? {
 
   static String _logTime() {
     final now = DateTime.now();
-    return '${now.year}'
-        '-${now.month.toString().padLeft(2, '0')}'
-        '-${now.day.toString().padLeft(2, '0')}'
-        ' ${now.hour.toString().padLeft(2, '0')}'
+    return '${now.hour.toString().padLeft(2, '0')}'
         ':${now.minute.toString().padLeft(2, '0')}'
-        ':${now.second.toString().padLeft(2, '0')}';
+        ':${now.second.toString().padLeft(2, '0')}'
+        '.${now.millisecond.toString().padLeft(3, '0')}'
+    ;
   }
 }

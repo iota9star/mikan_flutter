@@ -2,6 +2,8 @@ import 'dart:core';
 
 import 'package:flutter/cupertino.dart';
 
+import 'hive.dart';
+
 extension UIKit on BuildContext {
   MediaQueryData get mediaQueryData => MediaQuery.of(this);
 
@@ -51,5 +53,19 @@ extension UIKit on BuildContext {
       return 32.0;
     }
     return 32.0;
+  }
+
+  bool get useTabletLayout {
+    final mode = MyHive.getTabletMode();
+    final bool isTablet;
+    switch (mode) {
+      case TabletMode.tablet:
+        isTablet = true;
+      case TabletMode.auto:
+        isTablet = isFoldableSmallTablet || isLargeTablet;
+      case TabletMode.disable:
+        isTablet = false;
+    }
+    return isTablet;
   }
 }

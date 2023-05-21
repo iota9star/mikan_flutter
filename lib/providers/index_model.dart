@@ -23,6 +23,7 @@ class IndexModel extends BaseModel {
         .cast<RecordItem>();
     final index = MyHive.db.get(HiveDBKey.mikanIndex);
     _bindIndexData(index);
+    refresh();
   }
 
   List<YearSeason> _years = [];
@@ -70,10 +71,10 @@ class IndexModel extends BaseModel {
       unawaited(MyHive.db.put(HiveDBKey.mikanIndex, index));
       _bindIndexData(index);
       '加载完成'.toast();
+      notifyListeners();
     } else {
       '获取首页数据失败：${resp.msg}'.toast();
     }
-    notifyListeners();
   }
 
   void _bindIndexData(Index? index) {
@@ -115,6 +116,7 @@ class IndexModel extends BaseModel {
     if (resp.success) {
       _bangumiRows = resp.data;
       '加载完成'.toast();
+      notifyListeners();
     } else {
       if (resp.msg.isNotBlank) {
         resp.msg.toast();
@@ -122,7 +124,6 @@ class IndexModel extends BaseModel {
         '加载失败'.toast();
       }
     }
-    notifyListeners();
   }
 }
 

@@ -28,6 +28,7 @@ import '../../widget/sliver_pinned_header.dart';
 import '../components/ova_record_item.dart';
 import 'bangumi_sliver_grid.dart';
 import 'select_season.dart';
+import 'select_tablet_mode.dart';
 import 'settings.dart';
 
 class IndexFragment extends StatefulWidget {
@@ -40,7 +41,7 @@ class IndexFragment extends StatefulWidget {
 class _IndexFragmentState extends State<IndexFragment> {
   final _infiniteScrollController = InfiniteScrollController();
 
-  late Timer _timer;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -56,7 +57,7 @@ class _IndexFragmentState extends State<IndexFragment> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _infiniteScrollController.dispose();
     super.dispose();
   }
@@ -76,7 +77,6 @@ class _IndexFragmentState extends State<IndexFragment> {
           return EasyRefresh.builder(
             onRefresh: indexModel.refresh,
             header: defaultHeader,
-            refreshOnStart: true,
             childBuilder: (context, physics) {
               return CustomScrollView(
                 physics: physics,
@@ -344,154 +344,159 @@ class _PinedHeader extends StatelessWidget {
     final minHeight = statusBarHeight + appbarHeight;
     final offsetHeight = maxHeight - minHeight;
     final theme = Theme.of(context);
-    return SliverPersistentHeader(
-      pinned: true,
-      delegate: WrapSliverPersistentHeaderDelegate(
-        maxExtent: maxHeight,
-        minExtent: minHeight,
-        onBuild: (
-          BuildContext context,
-          double shrinkOffset,
-          bool overlapsContent,
-        ) {
-          final offsetRatio = math.min(shrinkOffset / offsetHeight, 1.0);
-          final display = offsetRatio >= 0.8;
-          final children = <Widget>[
-            if (display)
-              RippleTap(
-                onTap: () {
-                  showYearSeasonBottomSheet(context);
-                },
-                borderRadius: borderRadius28,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 8.0,
-                  ),
-                  child: Row(
-                    children: [
-                      Selector<IndexModel, Season?>(
-                        selector: (_, model) => model.selectedSeason,
-                        shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, season, __) {
-                          return season == null
-                              ? sizedBox
-                              : Text(
-                                  season.title,
-                                  style: theme.textTheme.titleLarge,
-                                );
-                        },
+    return TabletModeBuilder(
+      builder: (context, isTablet, child) {
+        return SliverPersistentHeader(
+          pinned: true,
+          delegate: WrapSliverPersistentHeaderDelegate(
+            maxExtent: maxHeight,
+            minExtent: minHeight,
+            onBuild: (
+              BuildContext context,
+              double shrinkOffset,
+              bool overlapsContent,
+            ) {
+              final offsetRatio = math.min(shrinkOffset / offsetHeight, 1.0);
+              final display = offsetRatio >= 0.8;
+              final children = <Widget>[
+                if (display)
+                  RippleTap(
+                    onTap: () {
+                      showYearSeasonBottomSheet(context);
+                    },
+                    borderRadius: borderRadius28,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 8.0,
                       ),
-                      sizedBoxW8,
-                      const Icon(Icons.keyboard_arrow_down_rounded),
-                    ],
-                  ),
-                ),
-              ),
-            const Spacer(),
-          ];
-          if (context.isHandset) {
-            children.addAll(
-              [
-                RippleTap(
-                  onTap: () {
-                    showSearchPanel(context);
-                  },
-                  shape: const CircleBorder(),
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(Icons.search_rounded),
-                  ),
-                ),
-                buildAvatarWithAction(context),
-              ],
-            );
-          }
-          return Stack(
-            children: [
-              PositionedDirectional(
-                start: 12.0,
-                bottom: 12.0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Selector<IndexModel, User?>(
-                        selector: (_, model) => model.user,
-                        shouldRebuild: (pre, next) => pre != next,
-                        builder: (_, user, __) {
-                          final withoutName =
-                              user == null || user.name.isNullOrBlank;
-                          return Text(
-                            withoutName ? 'Mikan Project' : 'Hi, ${user.name}',
-                            style: theme.textTheme.bodySmall,
-                          );
-                        },
-                      ),
-                    ),
-                    RippleTap(
-                      onTap: () {
-                        showYearSeasonBottomSheet(context);
-                      },
-                      borderRadius: borderRadius28,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 8.0,
-                        ),
-                        child: Row(
-                          children: [
-                            Selector<IndexModel, Season?>(
-                              selector: (_, model) => model.selectedSeason,
-                              shouldRebuild: (pre, next) => pre != next,
-                              builder: (_, season, __) {
-                                return season == null
-                                    ? sizedBox
-                                    : Text(
-                                        season.title,
-                                        style: theme.textTheme.headlineMedium,
-                                      );
-                              },
-                            ),
-                            sizedBoxW8,
-                            const Icon(Icons.keyboard_arrow_down_rounded),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                left: 0.0,
-                right: 0.0,
-                top: 0.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.background,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: display
-                            ? theme.colorScheme.surfaceVariant
-                            : Colors.transparent,
+                      child: Row(
+                        children: [
+                          Selector<IndexModel, Season?>(
+                            selector: (_, model) => model.selectedSeason,
+                            shouldRebuild: (pre, next) => pre != next,
+                            builder: (_, season, __) {
+                              return season == null
+                                  ? sizedBox
+                                  : Text(
+                                      season.title,
+                                      style: theme.textTheme.titleLarge,
+                                    );
+                            },
+                          ),
+                          sizedBoxW8,
+                          const Icon(Icons.keyboard_arrow_down_rounded),
+                        ],
                       ),
                     ),
                   ),
-                  padding: EdgeInsetsDirectional.only(
+                const Spacer(),
+              ];
+              if (!isTablet) {
+                children.add(
+                  RippleTap(
+                    onTap: () {
+                      showSearchPanel(context);
+                    },
+                    shape: const CircleBorder(),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.search_rounded),
+                    ),
+                  ),
+                );
+                children.add(buildAvatarWithAction(context));
+              }
+              return Stack(
+                children: [
+                  PositionedDirectional(
                     start: 12.0,
-                    end: 12.0,
-                    top: statusBarHeight,
+                    bottom: 12.0,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Selector<IndexModel, User?>(
+                            selector: (_, model) => model.user,
+                            shouldRebuild: (pre, next) => pre != next,
+                            builder: (_, user, __) {
+                              final withoutName =
+                                  user == null || user.name.isNullOrBlank;
+                              return Text(
+                                withoutName
+                                    ? 'Mikan Project'
+                                    : 'Hi, ${user.name}',
+                                style: theme.textTheme.bodySmall,
+                              );
+                            },
+                          ),
+                        ),
+                        RippleTap(
+                          onTap: () {
+                            showYearSeasonBottomSheet(context);
+                          },
+                          borderRadius: borderRadius28,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                              vertical: 8.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Selector<IndexModel, Season?>(
+                                  selector: (_, model) => model.selectedSeason,
+                                  shouldRebuild: (pre, next) => pre != next,
+                                  builder: (_, season, __) {
+                                    return season == null
+                                        ? sizedBox
+                                        : Text(
+                                            season.title,
+                                            style:
+                                                theme.textTheme.headlineMedium,
+                                          );
+                                  },
+                                ),
+                                sizedBoxW8,
+                                const Icon(Icons.keyboard_arrow_down_rounded),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  height: statusBarHeight + appbarHeight,
-                  child: Row(children: children),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                  Positioned(
+                    left: 0.0,
+                    right: 0.0,
+                    top: 0.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.background,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: display
+                                ? theme.colorScheme.surfaceVariant
+                                : Colors.transparent,
+                          ),
+                        ),
+                      ),
+                      padding: EdgeInsetsDirectional.only(
+                        start: 12.0,
+                        end: 12.0,
+                        top: statusBarHeight,
+                      ),
+                      height: statusBarHeight + appbarHeight,
+                      child: Row(children: children),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

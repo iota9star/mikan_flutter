@@ -19,6 +19,7 @@ import '../../widget/sliver_pinned_header.dart';
 import 'card_ratio.dart';
 import 'index.dart';
 import 'select_mirror.dart';
+import 'select_tablet_mode.dart';
 import 'theme_color.dart';
 
 @immutable
@@ -41,11 +42,12 @@ class SettingsPanel extends StatelessWidget {
                 SliverList(
                   delegate: SliverChildListDelegate(
                     [
-                      _buildSection(theme, '主题'),
+                      _buildSection(theme, '界面'),
                       _buildThemeMode(theme),
                       _buildThemeColor(context, theme),
                       _buildFontManager(context, theme),
                       _buildCardRatio(context, theme),
+                      _buildTabletMode(context, theme),
                       _buildSection(theme, '更多'),
                       _buildMirror(context, theme),
                       _buildLicense(context, theme),
@@ -190,6 +192,38 @@ class SettingsPanel extends StatelessWidget {
               builder: (context, _, child) {
                 return Text(
                   MyHive.getCardRatio().toStringAsFixed(2),
+                  style: theme.textTheme.bodyMedium,
+                );
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabletMode(BuildContext context, ThemeData theme) {
+    return RippleTap(
+      onTap: () {
+        _showTabletModePanel(context);
+      },
+      child: Container(
+        height: 50.0,
+        padding: edgeH24,
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                '平板模式',
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+            ValueListenableBuilder(
+              valueListenable: MyHive.settings
+                  .listenable(keys: [SettingsHiveKey.tabletMode]),
+              builder: (context, _, child) {
+                return Text(
+                  MyHive.getTabletMode().label,
                   style: theme.textTheme.bodyMedium,
                 );
               },
@@ -460,6 +494,13 @@ class SettingsPanel extends StatelessWidget {
     MBottomSheet.show(
       context,
       (context) => const MBottomSheet(child: CardRatio()),
+    );
+  }
+
+  void _showTabletModePanel(BuildContext context) {
+    MBottomSheet.show(
+      context,
+      (context) => const MBottomSheet(child: SelectTabletMode()),
     );
   }
 }

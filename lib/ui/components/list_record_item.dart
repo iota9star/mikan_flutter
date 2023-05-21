@@ -86,22 +86,24 @@ class ListRecordItem extends StatelessWidget {
                               ),
                             ),
                             sizedBoxW8,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  subgroupsName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.titleSmall,
-                                ),
-                                Text(
-                                  record.publishAt,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.bodySmall,
-                                ),
-                              ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    subgroupsName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.titleSmall,
+                                  ),
+                                  Text(
+                                    record.publishAt,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

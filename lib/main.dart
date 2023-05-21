@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -10,16 +9,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'firebase_options.dart';
 import 'internal/extension.dart';
 import 'internal/hive.dart';
 import 'internal/http_cache_manager.dart';
+import 'internal/kit.dart';
 import 'internal/lifecycle.dart';
 import 'internal/log.dart';
 import 'internal/network_font_loader.dart';
@@ -43,7 +43,7 @@ final isDesktop = Platform.isMacOS || Platform.isLinux || Platform.isWindows;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _initDependencies();
+  await _initMisc();
   await _initWindow();
   runApp(Restart(child: const MikanApp()));
 }
@@ -65,23 +65,19 @@ Future<void> _initWindow() async {
 }
 
 Future _initFirebase() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
   await FirebaseCrashlytics.instance
       .setCrashlyticsCollectionEnabled(kDebugMode);
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-  Isolate.current.addErrorListener(
-    RawReceivePort((pair) async {
-      await FirebaseCrashlytics.instance.recordError(pair.first, pair.last);
-    }).sendPort,
-  );
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 }
 
-Future<void> _initDependencies() async {
+Future<void> _initMisc() async {
   await Future.wait([
     MyHive.init(),
     NetworkFontLoader.init(),
     HttpCacheManager.init(),
-    if (isSupportFirebase) _initFirebase()
+    if (isSupportFirebase) _initFirebase(),
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge),
   ]);
   if (Platform.isAndroid) {
     unawaited(
@@ -209,9 +205,9 @@ class _MikanAppState extends State<MikanApp> {
           initialRoute: Routes.splash.name,
           builder: (context, child) {
             return OKToast(
-              position: const ToastPosition(
+              position: ToastPosition(
                 align: Alignment.bottomCenter,
-                offset: -120.0,
+                offset: -context.screenHeight * 0.18,
               ),
               child: child!,
             );

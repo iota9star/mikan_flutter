@@ -11,6 +11,7 @@ import '../../topvars.dart';
 import '../../widget/sliver_pinned_header.dart';
 import '../components/list_record_item.dart';
 import 'index.dart';
+import 'select_tablet_mode.dart';
 
 @immutable
 class ListFragment extends StatelessWidget {
@@ -87,18 +88,23 @@ class _PinedHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPinnedAppBar(
-      title: '最新发布',
-      autoImplLeading: false,
-      actions: [
-        if (context.isHandset)
-          IconButton(
-            onPressed: () {
-              showSearchPanel(context);
-            },
-            icon: const Icon(Icons.search_rounded),
-          )
-      ],
+    return TabletModeBuilder(
+      builder: (context, isTablet, child) {
+        return SliverPinnedAppBar(
+          title: '最新发布',
+          autoImplLeading: false,
+          actions: isTablet
+              ? null
+              : [
+                  IconButton(
+                    onPressed: () {
+                      showSearchPanel(context);
+                    },
+                    icon: const Icon(Icons.search_rounded),
+                  )
+                ],
+        );
+      },
     );
   }
 }

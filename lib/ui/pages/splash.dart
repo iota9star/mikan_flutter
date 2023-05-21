@@ -24,7 +24,11 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     _timer = Timer(const Duration(seconds: 6), () {
-      Navigator.pushReplacementNamed(context, Routes.index.name);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Routes.index.name,
+        (_) => true,
+      );
     });
   }
 
@@ -48,7 +52,11 @@ class _SplashPageState extends State<SplashPage> {
     final theme = Theme.of(context);
     return FloatingActionButton.extended(
       onPressed: () {
-        Navigator.pushReplacementNamed(context, Routes.index.name);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.index.name,
+          (_) => true,
+        );
       },
       label: Row(
         mainAxisSize: MainAxisSize.min,
@@ -83,7 +91,7 @@ class _SplashPageState extends State<SplashPage> {
       children: [
         const Positioned.fill(child: BangumiCoverScrollListFragment()),
         PositionedDirectional(
-          bottom: 36.0 + context.navBarHeight,
+          bottom: context.screenHeight * 0.06,
           child: _buildAppIcon(context),
         ),
       ],
