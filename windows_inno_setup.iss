@@ -6,7 +6,7 @@
 #define MyAppVersion "1.1.1"
 #define MyAppPublisher "mikanani.me"
 #define MyAppURL "https://mikanani.me/"
-#define MyAppExeName "MikanProject.exe"
+#define MyAppExeName "mikan.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.

@@ -258,37 +258,42 @@ class SettingsPanel extends StatelessWidget {
               style: theme.textTheme.titleMedium,
             ),
           ),
-          ValueListenableBuilder(
-            valueListenable:
-                MyHive.settings.listenable(keys: [SettingsHiveKey.themeMode]),
-            builder: (context, _, child) {
-              final themeMode = MyHive.getThemeMode();
-              return Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      MyHive.setThemeMode(ThemeMode.system);
-                    },
-                    style: themeMode == ThemeMode.system ? selectedStyle : null,
-                    icon: const Icon(Icons.auto_awesome_rounded),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      MyHive.setThemeMode(ThemeMode.light);
-                    },
-                    style: themeMode == ThemeMode.light ? selectedStyle : null,
-                    icon: const Icon(Icons.light_mode_rounded),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      MyHive.setThemeMode(ThemeMode.dark);
-                    },
-                    style: themeMode == ThemeMode.dark ? selectedStyle : null,
-                    icon: const Icon(Icons.dark_mode_rounded),
-                  ),
-                ],
-              );
-            },
+          Transform.translate(
+            offset: const Offset(8.0, 0.0),
+            child: ValueListenableBuilder(
+              valueListenable:
+                  MyHive.settings.listenable(keys: [SettingsHiveKey.themeMode]),
+              builder: (context, _, child) {
+                final themeMode = MyHive.getThemeMode();
+                return Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        MyHive.setThemeMode(ThemeMode.system);
+                      },
+                      style:
+                          themeMode == ThemeMode.system ? selectedStyle : null,
+                      icon: const Icon(Icons.auto_awesome_rounded),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        MyHive.setThemeMode(ThemeMode.light);
+                      },
+                      style:
+                          themeMode == ThemeMode.light ? selectedStyle : null,
+                      icon: const Icon(Icons.light_mode_rounded),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        MyHive.setThemeMode(ThemeMode.dark);
+                      },
+                      style: themeMode == ThemeMode.dark ? selectedStyle : null,
+                      icon: const Icon(Icons.dark_mode_rounded),
+                    ),
+                  ],
+                );
+              },
+            ),
           )
         ],
       ),
@@ -498,9 +503,16 @@ class SettingsPanel extends StatelessWidget {
             ),
             ValueListenableBuilder(
               valueListenable: MyHive.settings.listenable(
-                keys: [SettingsHiveKey.colorSeed],
+                keys: [SettingsHiveKey.colorSeed, SettingsHiveKey.dynamicColor],
               ),
               builder: (context, _, child) {
+                final useDynamic = MyHive.dynamicColorEnabled();
+                if (useDynamic) {
+                  return Text(
+                    '跟随系统',
+                    style: theme.textTheme.bodyMedium,
+                  );
+                }
                 final colorSeed = MyHive.getColorSeed();
                 return Container(
                   width: 24.0,

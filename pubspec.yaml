@@ -47,6 +47,7 @@ dependencies:
   auto_size_text: ^3.0.0
   easy_refresh: ^3.3.2+1
   window_manager: ^0.3.2
+  dynamic_color: ^1.6.5
 
 dev_dependencies:
   flutter_test:

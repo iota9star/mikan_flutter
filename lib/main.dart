@@ -16,6 +16,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'internal/dynamic_color.dart';
 import 'internal/extension.dart';
 import 'internal/hive.dart';
 import 'internal/http_cache_manager.dart';
@@ -77,7 +78,6 @@ Future<void> _initMisc() async {
     NetworkFontLoader.init(),
     HttpCacheManager.init(),
     if (isSupportFirebase) _initFirebase(),
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge),
   ]);
   if (Platform.isAndroid) {
     unawaited(
@@ -161,17 +161,14 @@ class _MikanAppState extends State<MikanApp> {
   }
 
   Widget _buildMaterialApp(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: MyHive.settings.listenable(),
-      builder: (context, _, child) {
-        final fontFamily = MyHive.getFontFamily()?.value;
-        final colorSeed = Color(MyHive.getColorSeed());
-        final themeMode = MyHive.getThemeMode();
+    return ThemeProvider(
+      builder: (mode, lightColorScheme, darkColorScheme, fontFamily) {
         final navigatorObservers = [
           Lifecycle.lifecycleRouteObserver,
           if (isSupportFirebase) _observer,
           FFNavigatorObserver(
             routeChange: (newRoute, oldRoute) {
+              SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
               //you can track page here
               final oldSettings = oldRoute?.settings;
               final newSettings = newRoute?.settings;
@@ -189,18 +186,18 @@ class _MikanAppState extends State<MikanApp> {
             physics: const BouncingScrollPhysics(),
             scrollbars: false,
           ),
-          themeMode: themeMode,
+          themeMode: mode,
           theme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.light,
             fontFamily: fontFamily,
-            colorSchemeSeed: colorSeed,
+            colorScheme: lightColorScheme,
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
             fontFamily: fontFamily,
-            colorSchemeSeed: colorSeed,
+            colorScheme: darkColorScheme,
           ),
           initialRoute: Routes.splash.name,
           builder: (context, child) {
@@ -221,6 +218,81 @@ class _MikanAppState extends State<MikanApp> {
           navigatorKey: navKey,
           navigatorObservers: navigatorObservers,
           debugShowCheckedModeBanner: false,
+        );
+      },
+    );
+  }
+}
+
+class ThemeProvider extends StatefulWidget {
+  const ThemeProvider({super.key, required this.builder});
+
+  final Widget Function(
+    ThemeMode mode,
+    ColorScheme lightColorScheme,
+    ColorScheme darkColorScheme,
+    String? fontFamily,
+  ) builder;
+
+  @override
+  State<ThemeProvider> createState() => _ThemeProviderState();
+}
+
+class _ThemeProviderState extends LifecycleAppState<ThemeProvider> {
+  final _colorSchemePair = ValueNotifier<ColorSchemePair?>(null);
+
+  @override
+  void initState() {
+    super.initState();
+    _tryGetDynamicColor();
+  }
+
+  void _tryGetDynamicColor() {
+    getDynamicColorScheme().then((value) {
+      _colorSchemePair.value = value;
+      if (MyHive.dynamicColorEnabled() && value == null) {
+        MyHive.enableDynamicColor(false);
+      }
+    });
+  }
+
+  @override
+  void onResume() {
+    _tryGetDynamicColor();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: _colorSchemePair,
+      builder: (context, pair, child) {
+        return ValueListenableBuilder(
+          valueListenable: MyHive.settings.listenable(),
+          builder: (context, _, child) {
+            final fontFamily = MyHive.getFontFamily()?.value;
+            final themeMode = MyHive.getThemeMode();
+            final dynamicColorEnabled = MyHive.dynamicColorEnabled();
+            if (dynamicColorEnabled && pair != null) {
+              return widget.builder.call(
+                themeMode,
+                pair.light,
+                pair.dark,
+                fontFamily,
+              );
+            }
+            final colorSeed = Color(MyHive.getColorSeed());
+            return widget.builder.call(
+              themeMode,
+              ColorScheme.fromSeed(
+                seedColor: colorSeed,
+              ),
+              ColorScheme.fromSeed(
+                seedColor: colorSeed,
+                brightness: Brightness.dark,
+              ),
+              fontFamily,
+            );
+          },
         );
       },
     );

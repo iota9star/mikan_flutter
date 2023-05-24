@@ -148,6 +148,17 @@ class MyHive {
     return settings.put(SettingsHiveKey.colorSeed, color.value);
   }
 
+  static bool dynamicColorEnabled() {
+    return settings.get(
+      SettingsHiveKey.dynamicColor,
+      defaultValue: false,
+    );
+  }
+
+  static Future<void> enableDynamicColor(bool enable) {
+    return settings.put(SettingsHiveKey.dynamicColor, enable);
+  }
+
   static ThemeMode getThemeMode() {
     final name = settings.get(SettingsHiveKey.themeMode);
     return ThemeMode.values.firstWhereOrNull((e) => e.name == name) ??
@@ -224,6 +235,7 @@ class SettingsHiveKey {
   static const String mirrorUrl = 'MIRROR_URL';
   static const String cardRatio = 'CARD_RATIO';
   static const String tabletMode = 'TABLET_MODE';
+  static const String dynamicColor = 'DYNAMIC_COLOR';
 }
 
 enum TabletMode {

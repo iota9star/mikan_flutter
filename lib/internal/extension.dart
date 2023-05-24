@@ -141,6 +141,7 @@ extension NullableStringExt on String? {
         ),
       ),
     );
+    HapticFeedback.mediumImpact();
   }
 
   Future<void> launchAppAndCopy() async {

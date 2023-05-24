@@ -159,7 +159,8 @@ class Resolver {
         record.magnet =
             element?.attributes['data-clipboard-text']?.trim() ?? '';
         element = tempEles.getOrNull(2);
-        record.url = element?.attributes['href']?.trim() ?? '';
+        record.url =
+            MikanUrls.baseUrl + (element?.attributes['href']?.trim() ?? '');
       }
       temp = ele.querySelector('div.sk-col.pull-right')?.text.trim() ?? '';
       if (temp.isNotBlank &&
@@ -289,8 +290,8 @@ class Resolver {
       }
       record.magnet =
           elements[0].children[1].attributes['data-clipboard-text'] ?? '';
-      record.torrent =
-          MikanUrls.baseUrl + (elements[3].children[0].attributes['href'] ?? '');
+      record.torrent = MikanUrls.baseUrl +
+          (elements[3].children[0].attributes['href'] ?? '');
       searchs.add(record);
     }
     return SearchResult(
