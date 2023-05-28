@@ -267,7 +267,14 @@ class _ThemeProviderState extends LifecycleAppState<ThemeProvider> {
       valueListenable: _colorSchemePair,
       builder: (context, pair, child) {
         return ValueListenableBuilder(
-          valueListenable: MyHive.settings.listenable(),
+          valueListenable: MyHive.settings.listenable(
+            keys: [
+              SettingsHiveKey.fontFamily,
+              SettingsHiveKey.themeMode,
+              SettingsHiveKey.dynamicColor,
+              SettingsHiveKey.colorSeed,
+            ],
+          ),
           builder: (context, _, child) {
             final fontFamily = MyHive.getFontFamily()?.value;
             final themeMode = MyHive.getThemeMode();
@@ -283,9 +290,7 @@ class _ThemeProviderState extends LifecycleAppState<ThemeProvider> {
             final colorSeed = Color(MyHive.getColorSeed());
             return widget.builder.call(
               themeMode,
-              ColorScheme.fromSeed(
-                seedColor: colorSeed,
-              ),
+              ColorScheme.fromSeed(seedColor: colorSeed),
               ColorScheme.fromSeed(
                 seedColor: colorSeed,
                 brightness: Brightness.dark,

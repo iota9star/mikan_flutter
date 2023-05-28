@@ -17,6 +17,7 @@ import '../../widget/bottom_sheet.dart';
 import '../../widget/ripple_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
 import 'card_ratio.dart';
+import 'card_style.dart';
 import 'donate.dart';
 import 'index.dart';
 import 'select_mirror.dart';
@@ -47,6 +48,7 @@ class SettingsPanel extends StatelessWidget {
                       _buildThemeMode(theme),
                       _buildThemeColor(context, theme),
                       _buildFontManager(context, theme),
+                      _buildCardStyle(context, theme),
                       _buildCardRatio(context, theme),
                       _buildTabletMode(context, theme),
                       _buildSection(theme, '更多'),
@@ -175,7 +177,10 @@ class SettingsPanel extends StatelessWidget {
   Widget _buildCardRatio(BuildContext context, ThemeData theme) {
     return RippleTap(
       onTap: () {
-        _showCardRatioPanel(context);
+        MBottomSheet.show(
+          context,
+          (context) => const MBottomSheet(child: CardRatio()),
+        );
       },
       child: Container(
         height: 50.0,
@@ -204,10 +209,48 @@ class SettingsPanel extends StatelessWidget {
     );
   }
 
+  Widget _buildCardStyle(BuildContext context, ThemeData theme) {
+    return RippleTap(
+      onTap: () {
+        MBottomSheet.show(
+          context,
+          (context) => const MBottomSheet(child: CardStyle()),
+        );
+      },
+      child: Container(
+        height: 50.0,
+        padding: edgeH24,
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                '卡片样式',
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+            ValueListenableBuilder(
+              valueListenable:
+                  MyHive.settings.listenable(keys: [SettingsHiveKey.cardStyle]),
+              builder: (context, _, child) {
+                return Text(
+                  '样式${MyHive.getCardStyle()}',
+                  style: theme.textTheme.bodyMedium,
+                );
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildTabletMode(BuildContext context, ThemeData theme) {
     return RippleTap(
       onTap: () {
-        _showTabletModePanel(context);
+        MBottomSheet.show(
+          context,
+          (context) => const MBottomSheet(child: SelectTabletMode()),
+        );
       },
       child: Container(
         height: 50.0,
@@ -514,12 +557,14 @@ class SettingsPanel extends StatelessWidget {
                   );
                 }
                 final colorSeed = MyHive.getColorSeed();
-                return Container(
-                  width: 24.0,
-                  height: 24.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(colorSeed),
+                return Transform.translate(
+                  offset: const Offset(8.0, 0.0),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.circle_rounded,
+                      color: Color(colorSeed),
+                    ),
                   ),
                 );
               },
@@ -527,20 +572,6 @@ class SettingsPanel extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  void _showCardRatioPanel(BuildContext context) {
-    MBottomSheet.show(
-      context,
-      (context) => const MBottomSheet(child: CardRatio()),
-    );
-  }
-
-  void _showTabletModePanel(BuildContext context) {
-    MBottomSheet.show(
-      context,
-      (context) => const MBottomSheet(child: SelectTabletMode()),
     );
   }
 }

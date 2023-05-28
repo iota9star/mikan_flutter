@@ -109,7 +109,7 @@ class Record extends StatelessWidget {
                                   },
                                   icon: const Icon(Icons.share_rounded),
                                 ),
-                                _buildSubscribeBtn(context, model),
+                                _buildSubscribeBtn(context, theme, model),
                                 IconButton(
                                   onPressed: () {
                                     model.recordDetail?.magnet
@@ -341,7 +341,8 @@ class Record extends StatelessWidget {
     );
   }
 
-  Widget _buildSubscribeBtn(BuildContext context, RecordDetailModel model) {
+  Widget _buildSubscribeBtn(
+      BuildContext context, ThemeData theme, RecordDetailModel model) {
     return Selector<RecordDetailModel, bool>(
       selector: (_, model) => model.recordDetail?.subscribed ?? false,
       shouldRebuild: (pre, next) => pre != next,
@@ -353,9 +354,9 @@ class Record extends StatelessWidget {
         return subscribed
             ? IconButton(
                 tooltip: '取消订阅',
-                icon: const Icon(
+                icon: Icon(
                   Icons.favorite_rounded,
-                  color: Colors.redAccent,
+                  color: theme.colorScheme.error,
                 ),
                 onPressed: () {
                   context.read<OpModel>().subscribeBangumi(

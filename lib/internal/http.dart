@@ -7,8 +7,6 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:html/parser.dart';
-import 'package:isolate/isolate_runner.dart';
-import 'package:isolate/load_balancer.dart';
 import 'package:jiffy/jiffy.dart';
 
 import 'consts.dart';
@@ -23,12 +21,13 @@ class _BaseInterceptor extends InterceptorsWrapper {
     const timeout = Duration(seconds: 60);
     options.connectTimeout = timeout;
     options.receiveTimeout = timeout;
+    options.followRedirects = true;
     options.headers['user-agent'] =
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
         'AppleWebKit/537.36 (KHTML, like Gecko) '
-        'Chrome/112.0.0.0 '
+        'Chrome/113.0.0.0 '
         'Safari/537.36 '
-        'MikanFlutter/1.0.0';
+        'MikanProject/1.0.0';
     options.headers['client'] = 'MikanProject';
     options.headers['os'] = Platform.operatingSystem;
     options.headers['osv'] = Platform.operatingSystemVersion;
@@ -94,21 +93,6 @@ class _Http extends DioForNative {
     String? cookiesDir,
     BaseOptions? options,
   }) : super(options) {
-    // this.httpClientAdapter = Http2Adapter(ConnectionManager());
-    // (this.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-    //     (client) {
-    //   // config the http client
-    //   client.findProxy = (url) {
-    //     return HttpClient.findProxyFromEnvironment(url, environment: {
-    //       "http_proxy": "http://192.168.101.6:8888",
-    //       "https_proxy": "https://192.168.101.6:8888"
-    //     });
-    //   };
-    //   client.badCertificateCallback =
-    //       (X509Certificate cert, String host, int port) => true;
-    //   // you can also create a HttpClient to dio
-    //   // return HttpClient();
-    // };
     interceptors
       ..add(_BaseInterceptor())
       ..add(
@@ -125,189 +109,161 @@ class _Http extends DioForNative {
   }
 }
 
-final Future<LoadBalancer> loadBalancer =
-    LoadBalancer.create(1, IsolateRunner.spawn);
-
-class _Fetcher {
-  factory _Fetcher({
-    String? cookiesDir,
-  }) {
-    _fetcher ??= _Fetcher._(cookiesDir: cookiesDir);
-    return _fetcher!;
-  }
-
-  _Fetcher._({
-    String? cookiesDir,
-  }) {
-    _http = _Http(cookiesDir: cookiesDir);
-  }
-
-  late final _Http _http;
-  static _Fetcher? _fetcher;
-
-  static Future<Resp> _asyncInIsolate(_Protocol proto) async {
-    final ReceivePort receivePort = ReceivePort();
-    final LoadBalancer lb = await loadBalancer;
-    await lb.run(_parsingInIsolate, receivePort.sendPort);
-    final SendPort sendPort = await receivePort.first;
-    final ReceivePort resultPort = ReceivePort();
-    proto._sendPort = resultPort.sendPort;
-    sendPort.send(proto);
-    return await resultPort.first;
-  }
-
-  static void _parsingInIsolate(SendPort sendPort) {
-    final ReceivePort receivePort = ReceivePort();
-    sendPort.send(receivePort.sendPort);
-    receivePort.listen((proto) async {
-      try {
-        await Jiffy.setLocale('zh_cn');
-        final _Http http = _Fetcher(cookiesDir: proto.cookiesDir)._http;
-        Response resp;
-        if (proto.method == _RequestMethod.get) {
-          resp = await http.get(
-            proto.url,
-            queryParameters: proto.queryParameters,
-            options: proto.options,
-          );
-        } else if (proto.method == _RequestMethod.postForm) {
-          resp = await http.post(
-            proto.url,
-            data: FormData.fromMap(proto.data),
-            queryParameters: proto.queryParameters,
-            options: proto.options,
-          );
-        } else if (proto.method == _RequestMethod.postJson) {
-          resp = await http.post(
-            proto.url,
-            data: proto.data,
-            queryParameters: proto.queryParameters,
-            options: proto.options,
-          );
-        } else {
-          return proto._sendPort
-              .send(Resp(false, msg: 'Not support request method.'));
-        }
-        if (resp.statusCode == HttpStatus.ok) {
-          if (proto.method == _RequestMethod.postForm &&
-              (resp.requestOptions.path == MikanUrls.login ||
-                  resp.requestOptions.path == MikanUrls.register)) {
-            proto._sendPort.send(
-              Resp(
-                false,
-                msg: resp.requestOptions.path == MikanUrls.login
-                    ? '登录失败，请检查帐号密码后重试'
-                    : '注册失败，请检查表单正确填写后重试',
-              ),
-            );
-          } else {
-            proto._sendPort.send(Resp(true, data: resp.data));
-          }
-        } else {
-          proto._sendPort.send(
-            Resp(
-              false,
-              msg: '${resp.statusCode}: ${resp.statusMessage}',
-            ),
-          );
-        }
-      } catch (e, s) {
-        e.$error(stackTrace: s);
-        if (e is DioError) {
-          if (e.response?.statusCode == 302 &&
-              proto.method == _RequestMethod.postForm &&
-              (e.requestOptions.path == MikanUrls.login ||
-                  e.requestOptions.path == MikanUrls.register ||
-                  e.requestOptions.path == MikanUrls.forgotPassword)) {
-            proto._sendPort.send(Resp(true));
-          } else {
-            proto._sendPort.send(Resp(false, msg: e.message));
-          }
-        } else {
-          proto._sendPort.send(Resp(false, msg: e.toString()));
-        }
-      }
-    });
-  }
-}
-
 class Http {
   const Http._();
+
+  static _Http? _http;
+
+  static Future<Resp> _request(_CallOptions options) async {
+    MikanUrls.baseUrl = options.mikanBaseUrl;
+    await Jiffy.setLocale('zh_cn');
+    _http ??= _Http(cookiesDir: options.cookiesDir);
+    try {
+      Response resp;
+      if (options.method == _InnerMethod.get) {
+        resp = await _http!.get(
+          options.url,
+          queryParameters: options.queryParameters,
+          options: options.options,
+        );
+      } else if (options.method == _InnerMethod.form) {
+        resp = await _http!.post(
+          options.url,
+          data: FormData.fromMap(options.data),
+          queryParameters: options.queryParameters,
+          options: options.options,
+        );
+      } else if (options.method == _InnerMethod.json) {
+        resp = await _http!.post(
+          options.url,
+          data: options.data,
+          queryParameters: options.queryParameters,
+          options: options.options,
+        );
+      } else {
+        return Resp.error('Not support request method.');
+      }
+      if (resp.statusCode == HttpStatus.ok) {
+        if (options.method == _InnerMethod.form &&
+            (resp.requestOptions.path == MikanUrls.login ||
+                resp.requestOptions.path == MikanUrls.register)) {
+          return Resp.error(
+            resp.requestOptions.path == MikanUrls.login
+                ? '登录失败，请检查帐号密码后重试'
+                : '注册失败，请检查表单正确填写后重试',
+          );
+        } else {
+          return Resp.ok(resp.data);
+        }
+      } else {
+        return Resp.error(
+          '${resp.statusCode}: ${resp.statusMessage}',
+        );
+      }
+    } catch (e, s) {
+      e.$error(stackTrace: s);
+      if (e is DioError) {
+        if (e.response?.statusCode == 302 &&
+            options.method == _InnerMethod.form &&
+            (e.requestOptions.path == MikanUrls.login ||
+                e.requestOptions.path == MikanUrls.register ||
+                e.requestOptions.path == MikanUrls.forgotPassword)) {
+          return Resp.ok();
+        } else {
+          return Resp.error(e.message);
+        }
+      } else {
+        return Resp.error(e.toString());
+      }
+    }
+  }
 
   static Future<Resp> get(
     String url, {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) {
-    final proto = _Protocol(
+    final proto = _CallOptions(
       url,
-      _RequestMethod.get,
+      _InnerMethod.get,
+      mikanBaseUrl: MikanUrls.baseUrl,
       queryParameters: queryParameters,
       options: options,
-      cookiesDir: MyHive.cookiesPath,
+      cookiesDir: MyHive.cookiesDir,
     );
-    return _Fetcher._asyncInIsolate(proto);
+    return Isolate.run(() => _request(proto));
   }
 
-  static Future<Resp> postForm(
+  static Future<Resp> form(
     String url, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) {
-    final _Protocol proto = _Protocol(
+    final _CallOptions proto = _CallOptions(
       url,
-      _RequestMethod.postForm,
+      _InnerMethod.form,
+      mikanBaseUrl: MikanUrls.baseUrl,
       data: data,
       queryParameters: queryParameters,
       options: options,
-      cookiesDir: MyHive.cookiesPath,
+      cookiesDir: MyHive.cookiesDir,
     );
-    return _Fetcher._asyncInIsolate(proto);
+    return Isolate.run(() => _request(proto));
   }
 
-  static Future<Resp> postJSON(
+  static Future<Resp> json(
     String url, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
-    final _Protocol proto = _Protocol(
+    final _CallOptions proto = _CallOptions(
       url,
-      _RequestMethod.postJson,
+      _InnerMethod.json,
+      mikanBaseUrl: MikanUrls.baseUrl,
       data: data,
       queryParameters: queryParameters,
       options: options,
-      cookiesDir: MyHive.cookiesPath,
+      cookiesDir: MyHive.cookiesDir,
     );
-    return _Fetcher._asyncInIsolate(proto);
+    return Isolate.run(() => _request(proto));
   }
 }
 
-enum _RequestMethod { postForm, postJson, get }
+enum _InnerMethod { form, json, get }
 
-class _Protocol {
-  _Protocol(
+class _CallOptions {
+  _CallOptions(
     this.url,
     this.method, {
     this.data,
     this.queryParameters,
     this.options,
     this.cookiesDir,
+    required this.mikanBaseUrl,
   });
 
   final String url;
-  final _RequestMethod method;
+  final String mikanBaseUrl;
+  final _InnerMethod method;
   final dynamic data;
   final Map<String, dynamic>? queryParameters;
   final Options? options;
 
   final String? cookiesDir;
-  late SendPort _sendPort;
 }
 
 class Resp {
-  Resp(this.success, {this.msg, this.data});
+  Resp._(this.success, {this.msg, this.data});
+
+  factory Resp.ok([Object? data]) {
+    return Resp._(true, data: data);
+  }
+
+  factory Resp.error([String? msg]) {
+    return Resp._(false, msg: msg);
+  }
 
   final dynamic data;
   final bool success;

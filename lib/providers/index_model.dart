@@ -23,7 +23,6 @@ class IndexModel extends BaseModel {
         .cast<RecordItem>();
     final index = MyHive.db.get(HiveDBKey.mikanIndex);
     _bindIndexData(index);
-    refresh();
   }
 
   List<YearSeason> _years = [];
@@ -47,10 +46,19 @@ class IndexModel extends BaseModel {
 
   final SubscribedModel _subscribedModel;
 
+  Completer<IndicatorResult>? _completer;
+
   Future<IndicatorResult> refresh() {
-    return Future.wait([_loadIndex(), _loadOVA()])
-        .then((value) => IndicatorResult.success)
-        .catchError((_) => IndicatorResult.fail);
+    if (_completer != null) {
+      return _completer!.future;
+    }
+    final completer = Completer<IndicatorResult>();
+    _completer = completer;
+    Future.wait([_loadIndex(), _loadOVA()])
+        .then((_) => completer.complete(IndicatorResult.success))
+        .catchError((_) => completer.complete(IndicatorResult.fail))
+        .whenComplete(() => _completer = null);
+    return completer.future;
   }
 
   Future<void> _loadOVA() async {

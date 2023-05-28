@@ -6,6 +6,7 @@ import '../../internal/delegate.dart';
 import '../../internal/hive.dart';
 import '../../topvars.dart';
 import '../../widget/ripple_tap.dart';
+import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
 
 class CardRatio extends StatelessWidget {
@@ -58,99 +59,70 @@ class CardRatio extends StatelessWidget {
                       final color = isSelected
                           ? theme.colorScheme.primary
                           : theme.colorScheme.secondary;
-                      return Column(
-                        children: [
-                          RippleTap(
-                            borderRadius: borderRadius12,
-                            onTap: () {
-                              MyHive.setCardRatio(ratio);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: AspectRatio(
-                                aspectRatio: ratio - 0.05,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Stack(
-                                        children: [
-                                          Card(
-                                            margin: EdgeInsets.zero,
-                                            color: theme
-                                                .colorScheme.secondaryContainer,
-                                            child: Container(),
+                      return RippleTap(
+                        borderRadius: borderRadius12,
+                        onTap: () {
+                          MyHive.setCardRatio(ratio);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AspectRatio(
+                            aspectRatio: ratio,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Stack(
+                                    children: [
+                                      ScalableCard(
+                                        onTap: () {},
+                                        child: const SizedBox.expand(),
+                                      ),
+                                      PositionedDirectional(
+                                        end: 12.0,
+                                        top: 12.0,
+                                        child: Container(
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: ShapeDecoration(
+                                            color: color,
+                                            shape: const StadiumBorder(),
                                           ),
-                                          PositionedDirectional(
-                                            end: 12.0,
-                                            top: 12.0,
-                                            child: Container(
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: ShapeDecoration(
-                                                color: color,
-                                                shape: const StadiumBorder(),
-                                              ),
-                                              padding: edgeH6V2,
-                                              child: Text(
-                                                ratio.toString(),
-                                                style: theme
-                                                    .textTheme.labelMedium
-                                                    ?.copyWith(
-                                                  color: isSelected
-                                                      ? theme
-                                                          .colorScheme.onPrimary
-                                                      : theme.colorScheme
-                                                          .onSecondary,
-                                                ),
-                                              ),
+                                          padding: edgeH6V2,
+                                          child: Text(
+                                            ratio.toString(),
+                                            style: theme.textTheme.labelMedium
+                                                ?.copyWith(
+                                              color: isSelected
+                                                  ? theme.colorScheme.onPrimary
+                                                  : theme
+                                                      .colorScheme.onSecondary,
                                             ),
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                    sizedBoxH4,
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '你好，Mikan',
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style:
-                                                    theme.textTheme.titleSmall,
-                                              ),
-                                              Text(
-                                                '2099/12/31',
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style:
-                                                    theme.textTheme.bodySmall,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(
-                                            isSelected
-                                                ? Icons.favorite_rounded
-                                                : Icons
-                                                    .favorite_outline_rounded,
-                                            color: color,
-                                          ),
-                                          onPressed: null,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                sizedBoxH8,
+                                ScalableCard(
+                                  child: const FractionallySizedBox(
+                                    widthFactor: 0.9,
+                                    child: sizedBoxH16,
+                                  ),
+                                  onTap: () {},
+                                ),
+                                sizedBoxH8,
+                                ScalableCard(
+                                  child: const FractionallySizedBox(
+                                    widthFactor: 0.72,
+                                    child: sizedBoxH12,
+                                  ),
+                                  onTap: () {},
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       );
                     },
                     childCount: ratios.length,

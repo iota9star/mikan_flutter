@@ -26,7 +26,7 @@ class SubscribedFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
@@ -83,7 +83,6 @@ class SubscribedFragment extends StatelessWidget {
   ) {
     return Selector<SubscribedModel, List<Bangumi>?>(
       selector: (_, model) => model.bangumis,
-      shouldRebuild: (pre, next) => pre.ne(next),
       builder: (context, bangumis, __) {
         if (subscribedModel.seasonLoading) {
           return _buildLoading();

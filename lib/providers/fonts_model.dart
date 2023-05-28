@@ -14,7 +14,7 @@ import 'base_model.dart';
 
 class FontsModel extends BaseModel {
   FontsModel() {
-    _load();
+    load();
   }
 
   bool _loading = true;
@@ -35,7 +35,7 @@ class FontsModel extends BaseModel {
       <String, ProgressChunkEvent>{};
   final Map<String, Cancelable> _loadingTask = <String, Cancelable>{};
 
-  Future<void> _load() async {
+  Future<void> load() async {
     final resp = await Repo.fonts();
     _loading = false;
     if (resp.success) {

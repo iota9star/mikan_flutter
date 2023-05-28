@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import '../internal/extension.dart';
-import '../internal/http.dart';
 import '../internal/repo.dart';
 import '../model/bangumi.dart';
 import '../model/record_item.dart';
@@ -43,12 +44,36 @@ class SubscribedModel extends BaseModel {
 
   List<Bangumi>? get bangumis => _bangumis;
 
+  Completer<IndicatorResult>? _completer;
+
   Future<IndicatorResult> refresh() {
-    return Future.wait(
-      [_loadRecentRecords(), _loadMySubscribedSeasonBangumi(_season)],
-    )
-        .then((value) => IndicatorResult.success)
-        .catchError((_) => IndicatorResult.fail);
+    if (_completer != null) {
+      return _completer!.future;
+    }
+    final completer = Completer<IndicatorResult>();
+    _completer = completer;
+    Future(() {
+      _seasonLoading = true;
+      _recordsLoading = true;
+      return Future.wait(
+        [
+          _loadRecentRecords().whenComplete(() {
+            _recordsLoading = false;
+            notifyListeners();
+          }),
+          _loadMySubscribedSeasonBangumi(_season).whenComplete(() {
+            _seasonLoading = false;
+            notifyListeners();
+          })
+        ],
+      )
+          .then((value) => IndicatorResult.success)
+          .catchError((_) => IndicatorResult.fail);
+    })
+        .then(completer.complete)
+        .catchError(completer.completeError)
+        .whenComplete(() => _completer = null);
+    return completer.future;
   }
 
   Future<void> _loadMySubscribedSeasonBangumi(Season? season) async {
@@ -56,28 +81,21 @@ class SubscribedModel extends BaseModel {
       return;
     }
     _season = season;
-    _seasonLoading = true;
-    final Resp resp =
-        await Repo.mySubscribedSeasonBangumi(season.year, season.season);
-    _seasonLoading = false;
+    final resp = await Repo.mySubscribedSeasonBangumi(season.year, season.season);
     if (resp.success) {
       _bangumis = resp.data;
     } else {
       '获取季度订阅失败 ${resp.msg ?? ''}'.toast();
     }
-    notifyListeners();
   }
 
   Future<void> _loadRecentRecords() async {
-    _recordsLoading = true;
-    final Resp resp = await Repo.day(2, 1);
-    _recordsLoading = false;
+    final resp = await Repo.day(2, 1);
     if (resp.success) {
       _records = resp.data ?? [];
       _rss = groupBy(resp.data ?? [], (it) => it.id!);
     } else {
       '获取最近更新失败 ${resp.msg ?? ''}'.toast();
     }
-    notifyListeners();
   }
 }

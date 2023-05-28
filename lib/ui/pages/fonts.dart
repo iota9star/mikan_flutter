@@ -1,3 +1,4 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,29 +30,34 @@ class FontsFragment extends StatelessWidget {
       color: theme.colorScheme.onPrimary,
     );
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverPinnedAppBar(
-            title: '字体管理',
-            actions: [
-              Tooltip(
-                message: '重置默认字体',
-                child: IconButton(
-                  icon: const Icon(Icons.restart_alt_rounded),
-                  onPressed: fontsModel.resetDefaultFont,
-                ),
-              )
-            ],
-          ),
-          _buildList(
-            context,
-            theme,
-            primaryTagStyle,
-            accentTagStyle,
-            fontsModel,
-          ),
-          sliverSizedBoxH24WithNavBarHeight(context),
-        ],
+      body: EasyRefresh(
+        onRefresh: fontsModel.load,
+        header: defaultHeader,
+        refreshOnStart: true,
+        child: CustomScrollView(
+          slivers: [
+            SliverPinnedAppBar(
+              title: '字体管理',
+              actions: [
+                Tooltip(
+                  message: '重置默认字体',
+                  child: IconButton(
+                    icon: const Icon(Icons.restart_alt_rounded),
+                    onPressed: fontsModel.resetDefaultFont,
+                  ),
+                )
+              ],
+            ),
+            _buildList(
+              context,
+              theme,
+              primaryTagStyle,
+              accentTagStyle,
+              fontsModel,
+            ),
+            sliverSizedBoxH24WithNavBarHeight(context),
+          ],
+        ),
       ),
     );
   }
@@ -69,9 +75,6 @@ class FontsFragment extends StatelessWidget {
         shouldRebuild: (pre, next) => pre.ne(next),
         selector: (_, model) => model.fonts,
         builder: (_, fonts, __) {
-          if (model.fonts.isEmpty) {
-            return centerLoading;
-          }
           return SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,

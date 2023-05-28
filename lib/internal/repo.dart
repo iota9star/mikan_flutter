@@ -110,7 +110,7 @@ class Repo {
       contentType: Headers.jsonContentType,
       responseType: ResponseType.json,
     );
-    return Http.postJSON(
+    return Http.json(
       (subscribe ? MikanUrls.unsubscribeBangumi : MikanUrls.subscribeBangumi),
       data: <String, dynamic>{
         'BangumiID': bangumiId,
@@ -142,7 +142,7 @@ class Repo {
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.plain,
     );
-    return Http.postForm(
+    return Http.form(
       MikanUrls.login,
       queryParameters: {'ReturnUrl': '/'},
       data: params,
@@ -155,7 +155,7 @@ class Repo {
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.plain,
     );
-    return Http.postForm(
+    return Http.form(
       MikanUrls.register,
       data: params,
       options: options,
@@ -167,7 +167,7 @@ class Repo {
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.plain,
     );
-    return Http.postForm(
+    return Http.form(
       MikanUrls.forgotPassword,
       data: params,
       options: options,

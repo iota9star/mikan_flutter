@@ -11,6 +11,7 @@ import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
+import '../../internal/lifecycle.dart';
 import '../../mikan_routes.dart';
 import '../../model/bangumi_row.dart';
 import '../../model/carousel.dart';
@@ -38,7 +39,7 @@ class IndexFragment extends StatefulWidget {
   State<StatefulWidget> createState() => _IndexFragmentState();
 }
 
-class _IndexFragmentState extends State<IndexFragment> {
+class _IndexFragmentState extends LifecycleState<IndexFragment> {
   final _infiniteScrollController = InfiniteScrollController();
 
   Timer? _timer;
@@ -63,6 +64,13 @@ class _IndexFragmentState extends State<IndexFragment> {
   }
 
   @override
+  void onResume() {
+    if (mounted) {
+      Provider.of<IndexModel>(context, listen: false).refresh();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final indexModel = Provider.of<IndexModel>(context, listen: false);
@@ -71,9 +79,6 @@ class _IndexFragmentState extends State<IndexFragment> {
         selector: (_, model) => model.bangumiRows,
         shouldRebuild: (pre, next) => pre.ne(next),
         builder: (_, bangumiRows, __) {
-          if (bangumiRows.isNullOrEmpty) {
-            return centerLoading;
-          }
           return EasyRefresh.builder(
             onRefresh: indexModel.refresh,
             header: defaultHeader,

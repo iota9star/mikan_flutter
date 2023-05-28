@@ -39,8 +39,8 @@ class MyHive {
       getTemporaryDirectory().then((value) => cacheDir = value),
       getApplicationSupportDirectory().then((value) => filesDir = value),
     ]);
-    cookiesPath = '${filesDir.path}/cookies';
-    final directory = Directory(cookiesPath);
+    cookiesDir = '${filesDir.path}/cookies';
+    final directory = Directory(cookiesDir);
     if (!directory.existsSync()) {
       await directory.create(recursive: true);
     }
@@ -62,7 +62,7 @@ class MyHive {
   static late final Directory cacheDir;
   static late final Directory filesDir;
 
-  static late final String cookiesPath;
+  static late final String cookiesDir;
 
   static const int KB = 1024;
   static const int MB = 1024 * KB;
@@ -84,7 +84,7 @@ class MyHive {
   }
 
   static Future<void> removeCookies() async {
-    final Directory dir = Directory(cookiesPath);
+    final Directory dir = Directory(cookiesDir);
     if (dir.existsSync()) {
       await dir.delete(recursive: true);
     }
@@ -146,6 +146,14 @@ class MyHive {
 
   static Future<void> setColorSeed(Color color) {
     return settings.put(SettingsHiveKey.colorSeed, color.value);
+  }
+
+  static int getCardStyle() {
+    return settings.get(SettingsHiveKey.cardStyle, defaultValue: 1);
+  }
+
+  static Future<void> setCardStyle(int style) {
+    return settings.put(SettingsHiveKey.cardStyle, style);
   }
 
   static bool dynamicColorEnabled() {
@@ -236,6 +244,7 @@ class SettingsHiveKey {
   static const String cardRatio = 'CARD_RATIO';
   static const String tabletMode = 'TABLET_MODE';
   static const String dynamicColor = 'DYNAMIC_COLOR';
+  static const String cardStyle = 'cardStyle';
 }
 
 enum TabletMode {

@@ -34,10 +34,18 @@ class BangumiSliverGridFragment extends StatelessWidget {
       padding: edgeH24B16,
       sliver: ValueListenableBuilder(
         valueListenable: MyHive.settings.listenable(
-          keys: [SettingsHiveKey.cardRatio],
+          keys: [SettingsHiveKey.cardRatio, SettingsHiveKey.cardStyle],
         ),
         builder: (context, _, child) {
           final cardRatio = MyHive.getCardRatio();
+          final cardStyle = MyHive.getCardStyle();
+          final build = cardStyle == 1
+              ? _buildItemStyle1
+              : cardStyle == 2
+                  ? _buildItemStyle2
+                  : cardStyle == 3
+                      ? _buildItemStyle3
+                      : _buildItemStyle1;
           return SliverGrid(
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               crossAxisSpacing: context.margins,
@@ -47,7 +55,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return _buildBangumiItem(
+                return build(
                   context,
                   theme,
                   index,
@@ -62,7 +70,186 @@ class BangumiSliverGridFragment extends StatelessWidget {
     );
   }
 
-  Widget _buildBangumiItem(
+  Widget _buildItemStyle3(
+    BuildContext context,
+    ThemeData theme,
+    int index,
+    Bangumi bangumi,
+  ) {
+    final currFlag = '$flag:bangumi:$index:${bangumi.id}:${bangumi.cover}';
+    final cover = Container(
+      foregroundDecoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.black87,
+          ],
+          stops: [0.68, 1.0],
+        ),
+      ),
+      child: _buildBangumiItemCover(currFlag, bangumi),
+    );
+    return ScalableCard(
+      onTap: () {
+        if (bangumi.grey) {
+          '此番组下暂无作品'.toast();
+        } else {
+          Navigator.pushNamed(
+            context,
+            Routes.bangumi.name,
+            arguments: Routes.bangumi.d(
+              heroTag: currFlag,
+              bangumiId: bangumi.id,
+              cover: bangumi.cover,
+              title: bangumi.name,
+            ),
+          );
+        }
+      },
+      child: Stack(
+        children: [
+          Positioned.fill(child: cover),
+          if (bangumi.num != null && bangumi.num! > 0)
+            PositionedDirectional(
+              top: 12.0,
+              end: 12.0,
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: ShapeDecoration(
+                  color: theme.colorScheme.error,
+                  shape: const StadiumBorder(),
+                ),
+                padding: edgeH6V2,
+                child: Text(
+                  bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.onError,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+            ),
+          PositionedDirectional(
+            start: 4.0,
+            top: 4.0,
+            child: _buildSubscribeButton(theme, bangumi, currFlag),
+          ),
+          PositionedDirectional(
+            bottom: 12.0,
+            start: 12.0,
+            end: 12.0,
+            child: Column(
+              children: [
+                Text(
+                  bangumi.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleMedium!
+                      .copyWith(color: Colors.white),
+                ),
+                if (bangumi.updateAt.isNotBlank)
+                  Text(
+                    bangumi.updateAt,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: Colors.white70),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItemStyle2(
+    BuildContext context,
+    ThemeData theme,
+    int index,
+    Bangumi bangumi,
+  ) {
+    final currFlag = '$flag:bangumi:$index:${bangumi.id}:${bangumi.cover}';
+    final cover = _buildBangumiItemCover(currFlag, bangumi);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: ScalableCard(
+            onTap: () {
+              if (bangumi.grey) {
+                '此番组下暂无作品'.toast();
+              } else {
+                Navigator.pushNamed(
+                  context,
+                  Routes.bangumi.name,
+                  arguments: Routes.bangumi.d(
+                    heroTag: currFlag,
+                    bangumiId: bangumi.id,
+                    cover: bangumi.cover,
+                    title: bangumi.name,
+                  ),
+                );
+              }
+            },
+            child: bangumi.grey
+                ? cover
+                : Stack(
+                    children: [
+                      Positioned.fill(
+                        child: cover,
+                      ),
+                      if (bangumi.num != null && bangumi.num! > 0)
+                        PositionedDirectional(
+                          top: 12.0,
+                          end: 12.0,
+                          child: Container(
+                            clipBehavior: Clip.antiAlias,
+                            decoration: ShapeDecoration(
+                              color: theme.colorScheme.error,
+                              shape: const StadiumBorder(),
+                            ),
+                            padding: edgeH6V2,
+                            child: Text(
+                              bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onError,
+                                height: 1.25,
+                              ),
+                            ),
+                          ),
+                        ),
+                      PositionedDirectional(
+                        start: 4.0,
+                        top: 4.0,
+                        child: _buildSubscribeButton(theme, bangumi, currFlag),
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+        sizedBoxH8,
+        Text(
+          bangumi.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.titleMedium,
+        ),
+        if (bangumi.updateAt.isNotBlank)
+          Text(
+            bangumi.updateAt,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall,
+          ),
+        sizedBoxH8,
+      ],
+    );
+  }
+
+  Widget _buildItemStyle1(
     BuildContext context,
     ThemeData theme,
     int index,
@@ -112,6 +299,7 @@ class BangumiSliverGridFragment extends StatelessWidget {
                             bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
                             style: theme.textTheme.labelMedium?.copyWith(
                               color: theme.colorScheme.onError,
+                              height: 1.25,
                             ),
                           ),
                         ),
