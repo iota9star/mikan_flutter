@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:html/dom.dart';
 import 'package:jiffy/jiffy.dart';
 
+import '../model/announcement.dart';
 import '../model/bangumi.dart';
 import '../model/bangumi_details.dart';
 import '../model/bangumi_row.dart';
@@ -400,6 +401,7 @@ class Resolver {
     final List<Carousel> carousels = parseCarousel(document);
     final List<YearSeason> years = parseYearSeason(document);
     final User user = parseUser(document);
+    final List<Announcement> annos = parseAnnouncement(document);
     final Map<String, List<RecordItem>> groupedRss =
         groupBy(rss, (it) => it.id!);
     return Index(
@@ -408,6 +410,7 @@ class Resolver {
       rss: groupedRss,
       carousels: carousels,
       user: user,
+      announcements: annos,
     );
   }
 
@@ -833,5 +836,36 @@ class Resolver {
       bangumis.add(bangumi);
     }
     return bangumis;
+  }
+
+  static List<Announcement> parseAnnouncement(Document document) {
+    final annos = <Announcement>[];
+    final eles =
+        document.querySelectorAll('.announcement-popover-content > div');
+    for (final ele in eles) {
+      final date = ele.querySelector('.anndate');
+      date!.remove();
+      final nodes = <AnnouncementNode>[];
+      for (final e in ele.nodes) {
+        if (e is Element) {
+          if (e.localName == 'a') {
+            nodes.add(
+              AnnouncementNode(
+                text: '{${e.text}}',
+                place: e.attributes['href'],
+                type: 'url',
+              ),
+            );
+            continue;
+          } else if (e.localName == 'b') {
+            nodes.add(AnnouncementNode(text: '{${e.text}}', type: 'bold'));
+            continue;
+          }
+        }
+        nodes.add(AnnouncementNode(text: e.text ?? ''));
+      }
+      annos.add(Announcement(date: date.text, nodes: nodes));
+    }
+    return annos;
   }
 }

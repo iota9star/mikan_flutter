@@ -102,16 +102,6 @@ jobs:
           channel: stable
       - name: Set up xcode
         uses: devbotsxyz/xcode-select@v1
-      - name: Build iOS
-        run: |
-          cp -f pubspec.yaml assets/
-          flutter pub get
-          flutter build ios --release --tree-shake-icons
-          mkdir -p Payload
-          mv build/ios/iphoneos/Runner.app Payload
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-          brew install zip
-          zip -r ios-release.ipa Payload
       - name: Build macos
         env:
           MACOS_APP_RELEASE_PATH: build/macos/Build/Products/Release
@@ -136,11 +126,27 @@ jobs:
             "mikan.app"
           cd ../../../../../
           mv $MACOS_APP_RELEASE_PATH/MikanProject.dmg macos-release.dmg
-      - name: Release build
+      - name: Release Mac
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "macos-release.dmg,ios-release.ipa"
+          artifacts: "macos-release.dmg"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
-
+      - name: Build iOS
+        run: |
+          cp -f pubspec.yaml assets/
+          flutter pub get
+          flutter build ios --release --tree-shake-icons --no-codesign
+          mkdir -p Payload
+          mv build/ios/iphoneos/Runner.app Payload
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+          brew install zip
+          zip -r ios-release.ipa Payload
+      - name: Release iOS
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "ios-release.ipa"
+          token: ${{ secrets.ACTION_TOKEN }}
+          tag: ${{ github.event.inputs.TAG }}

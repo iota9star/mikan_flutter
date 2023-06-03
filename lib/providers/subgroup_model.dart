@@ -20,7 +20,7 @@ class SubgroupModel extends BaseModel {
     if (resp.success) {
       _galleries = resp.data;
       notifyListeners();
-      '加载成功'.toast();
+      '加载完成'.toast();
       return IndicatorResult.success;
     } else {
       '加载字幕组作品年表失败 ${resp.msg ?? ''}'.toast();

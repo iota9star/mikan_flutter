@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../model/announcement.dart';
 import '../model/bangumi.dart';
 import '../model/bangumi_row.dart';
 import '../model/carousel.dart';
@@ -30,6 +32,8 @@ class MyHive {
   static const int mikanSeason = mikanSubgroup + 1;
   static const int mikanYearSeason = mikanSeason + 1;
   static const int mikanRecordItem = mikanYearSeason + 1;
+  static const int mikanAnnouncement = mikanRecordItem + 1;
+  static const int mikanAnnouncementNode = mikanAnnouncement + 1;
 
   static late final Box settings;
   static late final Box db;
@@ -54,6 +58,8 @@ class MyHive {
     Hive.registerAdapter(SeasonAdapter());
     Hive.registerAdapter(YearSeasonAdapter());
     Hive.registerAdapter(RecordItemAdapter());
+    Hive.registerAdapter(AnnouncementAdapter());
+    Hive.registerAdapter(AnnouncementNodeAdapter());
     db = await Hive.openBox(HiveBoxKey.db);
     settings = await Hive.openBox(HiveBoxKey.settings);
     MikanUrls.baseUrl = MyHive.getMirrorUrl();
@@ -203,16 +209,28 @@ class MyHive {
     return settings.put(SettingsHiveKey.tabletMode, mode.name);
   }
 
-  static double getCardRatio() {
+  static Decimal getCardRatio() {
     final value = settings.get(
       SettingsHiveKey.cardRatio,
       defaultValue: '0.9',
     );
-    return double.parse(value);
+    return Decimal.parse(value);
   }
 
-  static Future<void> setCardRatio(double ratio) {
+  static Future<void> setCardRatio(Decimal ratio) {
     return settings.put(SettingsHiveKey.cardRatio, ratio.toString());
+  }
+
+  static Decimal getCardWidth() {
+    final value = settings.get(
+      SettingsHiveKey.cardWidth,
+      defaultValue: '200.0',
+    );
+    return Decimal.parse(value);
+  }
+
+  static Future<void> setCardWidth(Decimal width) {
+    return settings.put(SettingsHiveKey.cardWidth, width.toString());
   }
 }
 
@@ -242,9 +260,10 @@ class SettingsHiveKey {
   static const String themeMode = 'THEME_MODE';
   static const String mirrorUrl = 'MIRROR_URL';
   static const String cardRatio = 'CARD_RATIO';
+  static const String cardWidth = 'CARD_WIDTH';
+  static const String cardStyle = 'CARD_STYLE';
   static const String tabletMode = 'TABLET_MODE';
   static const String dynamicColor = 'DYNAMIC_COLOR';
-  static const String cardStyle = 'cardStyle';
 }
 
 enum TabletMode {

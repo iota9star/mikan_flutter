@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../internal/extension.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
+import '../../internal/lifecycle.dart';
 import '../../mikan_routes.dart';
 import '../../model/bangumi.dart';
 import '../../model/record_item.dart';
@@ -13,6 +16,7 @@ import '../../model/season_gallery.dart';
 import '../../providers/op_model.dart';
 import '../../providers/subscribed_model.dart';
 import '../../topvars.dart';
+import '../../widget/infinite_carousel.dart';
 import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
 import '../components/rss_record_item.dart';
@@ -21,8 +25,45 @@ import 'index.dart';
 import 'select_tablet_mode.dart';
 
 @immutable
-class SubscribedFragment extends StatelessWidget {
+class SubscribedFragment extends StatefulWidget {
   const SubscribedFragment({super.key});
+
+  @override
+  State<SubscribedFragment> createState() => _SubscribedFragmentState();
+}
+
+class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
+  final _infiniteScrollController = InfiniteScrollController();
+
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(milliseconds: 3600), (timer) {
+      if (_infiniteScrollController.hasClients) {
+        _infiniteScrollController.animateToItem(
+          (_infiniteScrollController.offset / 300.0).round() + 1,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _infiniteScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void onResume() {
+    if (mounted) {
+      Provider.of<SubscribedModel>(context, listen: false).refresh();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,39 +82,41 @@ class SubscribedFragment extends StatelessWidget {
   ) {
     final subscribedModel =
         Provider.of<SubscribedModel>(context, listen: false);
-    return EasyRefresh(
+    return EasyRefresh.builder(
       onRefresh: subscribedModel.refresh,
       refreshOnStart: true,
       header: defaultHeader,
-      footer: defaultFooter(context),
-      child: CustomScrollView(
-        slivers: [
-          const _PinedHeader(),
-          MultiSliver(
-            pushPinnedChildren: true,
-            children: [
-              _buildRssSection(context, theme),
-              _buildRssList(context, theme, subscribedModel),
-            ],
-          ),
-          MultiSliver(
-            pushPinnedChildren: true,
-            children: [
-              _buildSeasonRssSection(theme, subscribedModel),
-              _buildSeasonRssList(theme, subscribedModel),
-            ],
-          ),
-          MultiSliver(
-            pushPinnedChildren: true,
-            children: [
-              _buildRssRecordsSection(context, theme),
-              _buildRssRecordsList(context, theme),
-            ],
-          ),
-          _buildSeeMore(theme, subscribedModel),
-          sliverSizedBoxH80WithNavBarHeight(context),
-        ],
-      ),
+      childBuilder: (context, physics) {
+        return CustomScrollView(
+          physics: physics,
+          slivers: [
+            const _PinedHeader(),
+            MultiSliver(
+              pushPinnedChildren: true,
+              children: [
+                _buildRssSection(context, theme),
+                _buildRssList(context, theme, subscribedModel),
+              ],
+            ),
+            MultiSliver(
+              pushPinnedChildren: true,
+              children: [
+                _buildSeasonRssSection(theme, subscribedModel),
+                _buildSeasonRssList(theme, subscribedModel),
+              ],
+            ),
+            MultiSliver(
+              pushPinnedChildren: true,
+              children: [
+                _buildRssRecordsSection(context, theme),
+                _buildRssRecordsList(context, theme),
+              ],
+            ),
+            _buildSeeMore(theme, subscribedModel),
+            sliverSizedBoxH80WithNavBarHeight(context),
+          ],
+        );
+      },
     );
   }
 
@@ -245,19 +288,19 @@ class SubscribedFragment extends StatelessWidget {
           );
         }
         final entries = rss!.entries.toList(growable: false);
-        return SliverPadding(
-          padding: edgeH24V8,
-          sliver: SliverGrid(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200.0,
-              crossAxisSpacing: context.margins,
-              mainAxisSpacing: context.margins,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return _buildRssListItem(context, theme, entries[index]);
+        return SliverToBoxAdapter(
+          child: SizedBox(
+            height: 136.0,
+            child: InfiniteCarousel.builder(
+              itemBuilder: (context, index, realIndex) {
+                final entry = entries[index];
+                return _buildRssListItem(context, theme, index, entry);
               },
-              childCount: entries.length,
+              controller: _infiniteScrollController,
+              itemExtent: 280.0,
+              itemCount: entries.length,
+              center: false,
+              velocityFactor: 0.8,
             ),
           ),
         );
@@ -319,6 +362,7 @@ class SubscribedFragment extends StatelessWidget {
   Widget _buildRssListItem(
     BuildContext context,
     ThemeData theme,
+    int index,
     MapEntry<String, List<RecordItem>> entry,
   ) {
     final List<RecordItem> records = entry.value;
@@ -328,98 +372,108 @@ class SubscribedFragment extends StatelessWidget {
     final String bangumiId = entry.key;
     final String badge = recordsLength > 99 ? '99+' : '+$recordsLength';
     final String currFlag = 'rss:$bangumiId:$bangumiCover';
-    final imageProvider = CacheImage(bangumiCover);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: ScalableCard(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.bangumi.name,
-                      arguments: Routes.bangumi.d(
-                        heroTag: currFlag,
-                        bangumiId: bangumiId,
-                        cover: bangumiCover,
-                        title: record.name,
-                      ),
-                    );
-                  },
-                  child: Hero(
-                    tag: currFlag,
-                    child: Tooltip(
-                      message: records.first.name,
-                      child: Image(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (_, child, event) {
-                          return event == null
-                              ? child
-                              : Padding(
-                                  padding: edge16,
-                                  child: Center(
-                                    child: Image.asset(
-                                      'assets/mikan.png',
-                                    ),
-                                  ),
-                                );
-                        },
-                        errorBuilder: (_, __, ___) {
-                          return Padding(
-                            padding: edge16,
-                            child: Center(
-                              child: Image.asset(
-                                'assets/mikan.png',
-                                colorBlendMode: BlendMode.color,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(
+        start: 24.0,
+        top: 8.0,
+        bottom: 8.0,
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ScalableCard(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  Routes.bangumi.name,
+                  arguments: Routes.bangumi.d(
+                    heroTag: currFlag,
+                    bangumiId: bangumiId,
+                    cover: bangumiCover,
+                    title: record.name,
+                  ),
+                );
+              },
+              child: Hero(
+                tag: currFlag,
+                child: Tooltip(
+                  message: records.first.name,
+                  child: FadeInImage(
+                    placeholder: const AssetImage(
+                      'assets/mikan.png',
                     ),
+                    image: ResizeImage.resizeIfNeeded(
+                      (280.0 * context.devicePixelRatio).ceil(),
+                      null,
+                      CacheImage(bangumiCover),
+                    ),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              PositionedDirectional(
-                top: 12.0,
-                end: 12.0,
-                child: Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: theme.colorScheme.error,
-                    shape: const StadiumBorder(),
-                  ),
-                  padding: edgeH6V2,
-                  child: Text(
-                    badge,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.onError,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-        sizedBoxH8,
-        Text(
-          record.name,
-          style: theme.textTheme.titleMedium,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Text(
-          record.publishAt,
-          style: theme.textTheme.bodySmall,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+          PositionedDirectional(
+            top: 12.0,
+            end: 12.0,
+            child: Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                color: theme.colorScheme.error,
+                shape: const StadiumBorder(),
+              ),
+              padding: edgeH6V2,
+              child: Text(
+                badge,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onError,
+                ),
+              ),
+            ),
+          ),
+          PositionedDirectional(
+            bottom: 12.0,
+            start: 12.0,
+            end: 12.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  record.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall!.copyWith(
+                    color: Colors.white,
+                    shadows: [
+                      const BoxShadow(
+                        color: Colors.black38,
+                        blurRadius: 2.0,
+                        spreadRadius: 2.0,
+                      ),
+                    ],
+                  ),
+                ),
+                if (record.publishAt.isNotBlank)
+                  Text(
+                    record.publishAt,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall!.copyWith(
+                      color: Colors.white.withOpacity(0.87),
+                      shadows: [
+                        const BoxShadow(
+                          color: Colors.black38,
+                          blurRadius: 2.0,
+                          spreadRadius: 2.0,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -543,10 +597,16 @@ class _PinedHeader extends StatelessWidget {
               : [
                   IconButton(
                     onPressed: () {
+                      Navigator.pushNamed(context, Routes.announcements.name);
+                    },
+                    icon: const Icon(Icons.notifications_none_rounded),
+                  ),
+                  IconButton(
+                    onPressed: () {
                       showSettingsPanel(context);
                     },
                     icon: const Icon(Icons.tune_rounded),
-                  )
+                  ),
                 ],
         );
       },

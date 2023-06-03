@@ -41,11 +41,11 @@ class MikanTransformer extends SyncTransformer {
     RequestOptions options,
     ResponseBody response,
   ) async {
-    final transformResponse = await super.transformResponse(options, response);
-    if (transformResponse is String) {
+    final rep = await super.transformResponse(options, response);
+    if (rep is String) {
       final String? func = options.extra['$MikanFunc'];
       if (func.isNotBlank) {
-        final document = parse(transformResponse);
+        final document = parse(rep);
         MikanUrls.baseUrl = options.uri.origin;
         switch (func) {
           case MikanFunc.season:
@@ -81,10 +81,10 @@ class MikanTransformer extends SyncTransformer {
 
       final extra = options.extra['$ExtraUrl'];
       if (extra == ExtraUrl.fontsManifest) {
-        return jsonDecode(transformResponse);
+        return jsonDecode(rep);
       }
     }
-    return transformResponse;
+    return rep;
   }
 }
 

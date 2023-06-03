@@ -342,7 +342,10 @@ class Record extends StatelessWidget {
   }
 
   Widget _buildSubscribeBtn(
-      BuildContext context, ThemeData theme, RecordDetailModel model) {
+    BuildContext context,
+    ThemeData theme,
+    RecordDetailModel model,
+  ) {
     return Selector<RecordDetailModel, bool>(
       selector: (_, model) => model.recordDetail?.subscribed ?? false,
       shouldRebuild: (pre, next) => pre != next,

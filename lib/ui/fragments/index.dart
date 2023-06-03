@@ -39,7 +39,7 @@ class IndexFragment extends StatefulWidget {
   State<StatefulWidget> createState() => _IndexFragmentState();
 }
 
-class _IndexFragmentState extends LifecycleState<IndexFragment> {
+class _IndexFragmentState extends LifecycleAppState<IndexFragment> {
   final _infiniteScrollController = InfiniteScrollController();
 
   Timer? _timer;
@@ -479,13 +479,6 @@ class _PinedHeader extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: theme.colorScheme.background,
-                        border: Border(
-                          bottom: BorderSide(
-                            color: display
-                                ? theme.colorScheme.surfaceVariant
-                                : Colors.transparent,
-                          ),
-                        ),
                       ),
                       padding: EdgeInsetsDirectional.only(
                         start: 12.0,

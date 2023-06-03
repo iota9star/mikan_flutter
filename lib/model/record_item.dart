@@ -111,24 +111,24 @@ class RecordItem {
         ..write(tags.join('，'))
         ..write('\n');
     }
-    if (cover.isNotBlank) {
-      sb
-        ..write('封面地址：')
-        ..write(cover)
-        ..write('\n');
-    }
-    if (magnet.isNotBlank) {
-      sb
-        ..write('磁链地址：')
-        ..write(magnet)
-        ..write('\n');
-    }
-    if (torrent.isNotBlank) {
-      sb
-        ..write('种子地址：')
-        ..write(torrent)
-        ..write('\n');
-    }
+    // if (cover.isNotBlank) {
+    //   sb
+    //     ..write('封面地址：')
+    //     ..write(cover)
+    //     ..write('\n');
+    // }
+    // if (magnet.isNotBlank) {
+    //   sb
+    //     ..write('磁链地址：')
+    //     ..write(magnet)
+    //     ..write('\n');
+    // }
+    // if (torrent.isNotBlank) {
+    //   sb
+    //     ..write('种子地址：')
+    //     ..write(torrent)
+    //     ..write('\n');
+    // }
     return sb.toString();
   }();
 }

@@ -54,7 +54,7 @@ class BangumiModel extends BaseModel {
     final resp = await Repo.bangumi(id);
     if (resp.success) {
       _bangumiDetail = resp.data;
-      '加载成功'.toast();
+      '加载完成'.toast();
       _refreshFlag++;
       notifyListeners();
       return IndicatorResult.success;

@@ -1,7 +1,7 @@
 name: mikan
 description: mikanani.me
 
-version: 1.1.4+64
+version: 1.1.5+65
 
 publish_to: none
 
@@ -47,6 +47,7 @@ dependencies:
   easy_refresh: ^3.3.2+1
   window_manager: ^0.3.2
   dynamic_color: ^1.6.5
+  decimal: ^2.3.2
 
 dev_dependencies:
   flutter_test:

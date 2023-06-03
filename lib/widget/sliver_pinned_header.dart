@@ -14,9 +14,9 @@ class SliverPinnedAppBar extends StatelessWidget {
     this.leading,
     this.actions,
     this.autoImplLeading = true,
-    this.bottomBorder = true,
     this.borderRadius,
-    this.height,
+    this.minExtent,
+    this.maxExtent,
     this.startPadding,
     this.endPadding,
   });
@@ -25,18 +25,18 @@ class SliverPinnedAppBar extends StatelessWidget {
   final Widget? leading;
   final List<Widget>? actions;
   final bool autoImplLeading;
-  final bool bottomBorder;
   final BorderRadius? borderRadius;
-  final double? height;
+  final double? minExtent;
+  final double? maxExtent;
   final double? startPadding;
   final double? endPadding;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final appbarHeight = height ?? 64.0;
+    final appbarHeight = minExtent ?? 64.0;
     final statusBarHeight = context.statusBarHeight;
-    final maxHeight = statusBarHeight + 180.0;
+    final maxHeight = statusBarHeight + (maxExtent ?? 160.0);
     final minHeight = statusBarHeight + appbarHeight;
     final offsetHeight = maxHeight - minHeight;
     final canPop = ModalRoute.of(context)?.canPop ?? false;
@@ -102,15 +102,6 @@ class SliverPinnedAppBar extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: theme.colorScheme.background,
-                    border: bottomBorder
-                        ? Border(
-                            bottom: BorderSide(
-                              color: display
-                                  ? theme.colorScheme.surfaceVariant
-                                  : Colors.transparent,
-                            ),
-                          )
-                        : null,
                     borderRadius: borderRadius,
                   ),
                   padding: EdgeInsetsDirectional.only(

@@ -50,7 +50,6 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
           const SliverPinnedAppBar(
             title: '选择主题色',
             borderRadius: borderRadiusT28,
-            bottomBorder: false,
           ),
           if (_colorSchemePair != null)
             SliverToBoxAdapter(

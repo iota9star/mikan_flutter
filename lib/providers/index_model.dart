@@ -6,6 +6,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import '../internal/extension.dart';
 import '../internal/hive.dart';
 import '../internal/repo.dart';
+import '../model/announcement.dart';
 import '../model/bangumi_row.dart';
 import '../model/carousel.dart';
 import '../model/index.dart';
@@ -23,6 +24,7 @@ class IndexModel extends BaseModel {
         .cast<RecordItem>();
     final index = MyHive.db.get(HiveDBKey.mikanIndex);
     _bindIndexData(index);
+    refresh();
   }
 
   List<YearSeason> _years = [];
@@ -31,6 +33,7 @@ class IndexModel extends BaseModel {
   List<Carousel> _carousels = [];
   Season? _selectedSeason;
   User? _user;
+  List<Announcement>? _announcements;
   BangumiRow? _selectedBangumiRow;
 
   BangumiRow? get selectedBangumiRow => _selectedBangumiRow;
@@ -41,6 +44,8 @@ class IndexModel extends BaseModel {
   }
 
   Season? get selectedSeason => _selectedSeason;
+
+  List<Announcement>? get announcements => _announcements;
 
   List<RecordItem> get ovas => _ovas;
 
@@ -94,6 +99,7 @@ class IndexModel extends BaseModel {
     _selectedBangumiRow = _bangumiRows[0];
     _carousels = index.carousels;
     _user = index.user;
+    _announcements = index.announcements;
     if (years.isSafeNotEmpty) {
       for (final YearSeason year in years) {
         _selectedSeason =

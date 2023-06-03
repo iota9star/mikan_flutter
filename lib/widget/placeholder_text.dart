@@ -134,7 +134,7 @@ class PlaceholderText extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<InlineSpan> children = _buildSpans(
       text,
-      regExp ?? RegExp(r'#?\{(.+?)}', multiLine: true),
+      regExp ?? RegExp(r'\{(.+?)}', multiLine: true),
       onMatched ??
           (int position, Match matched) => TextSpan(
                 text: matched.group(1),

@@ -16,8 +16,8 @@ import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
 
 @FFRoute(name: '/fonts')
-class FontsFragment extends StatelessWidget {
-  const FontsFragment({super.key});
+class Fonts extends StatelessWidget {
+  const Fonts({super.key});
 
   @override
   Widget build(BuildContext context) {

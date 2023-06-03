@@ -10,7 +10,7 @@ class BangumiDetail {
   late String intro;
   late Map<String, SubgroupBangumi> subgroupBangumis;
 
-  late final String share = '$name：${MikanUrls.baseUrl}${MikanUrls.bangumi}/$id';
+  late final String share = '$name\n${MikanUrls.bangumi}/$id';
 
   @override
   bool operator ==(Object other) =>

@@ -23,13 +23,14 @@ class IndexAdapter extends TypeAdapter<Index> {
           MapEntry(k as String, (v as List).cast<RecordItem>())),
       carousels: (fields[3] as List).cast<Carousel>(),
       user: fields[4] as User?,
+      announcements: (fields[5] as List?)?.cast<Announcement>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Index obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.years)
       ..writeByte(1)
@@ -39,7 +40,9 @@ class IndexAdapter extends TypeAdapter<Index> {
       ..writeByte(3)
       ..write(obj.carousels)
       ..writeByte(4)
-      ..write(obj.user);
+      ..write(obj.user)
+      ..writeByte(5)
+      ..write(obj.announcements);
   }
 
   @override

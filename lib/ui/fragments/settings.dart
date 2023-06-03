@@ -18,6 +18,7 @@ import '../../widget/ripple_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
 import 'card_ratio.dart';
 import 'card_style.dart';
+import 'card_width.dart';
 import 'donate.dart';
 import 'index.dart';
 import 'select_mirror.dart';
@@ -50,6 +51,7 @@ class SettingsPanel extends StatelessWidget {
                       _buildFontManager(context, theme),
                       _buildCardStyle(context, theme),
                       _buildCardRatio(context, theme),
+                      _buildCardWidth(context, theme),
                       _buildTabletMode(context, theme),
                       _buildSection(theme, '更多'),
                       _buildMirror(context, theme),
@@ -89,8 +91,9 @@ class SettingsPanel extends StatelessWidget {
         return SliverPinnedAppBar(
           title: "Hi, ${hasLogin ? user!.name : "请登录 👉"}",
           leading: buildAvatar(user?.avatar),
-          startPadding: 24.0,
-          height: 90.0,
+          startPadding: 16.0,
+          endPadding: 8.0,
+          minExtent: 64.0,
           actions: [
             IconButton(
               onPressed: () {
@@ -177,9 +180,14 @@ class SettingsPanel extends StatelessWidget {
   Widget _buildCardRatio(BuildContext context, ThemeData theme) {
     return RippleTap(
       onTap: () {
+        Navigator.pop(context);
         MBottomSheet.show(
           context,
-          (context) => const MBottomSheet(child: CardRatio()),
+          barrierColor: Colors.transparent,
+          (context) => const MBottomSheet(
+            height: 200.0,
+            child: CardRatio(),
+          ),
         );
       },
       child: Container(
@@ -209,12 +217,57 @@ class SettingsPanel extends StatelessWidget {
     );
   }
 
+  Widget _buildCardWidth(BuildContext context, ThemeData theme) {
+    return RippleTap(
+      onTap: () {
+        Navigator.pop(context);
+        MBottomSheet.show(
+          context,
+          barrierColor: Colors.transparent,
+          (context) => const MBottomSheet(
+            height: 200.0,
+            child: CardWidth(),
+          ),
+        );
+      },
+      child: Container(
+        height: 50.0,
+        padding: edgeH24,
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                '卡片宽度',
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+            ValueListenableBuilder(
+              valueListenable:
+                  MyHive.settings.listenable(keys: [SettingsHiveKey.cardWidth]),
+              builder: (context, _, child) {
+                return Text(
+                  MyHive.getCardWidth().toStringAsFixed(0),
+                  style: theme.textTheme.bodyMedium,
+                );
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildCardStyle(BuildContext context, ThemeData theme) {
     return RippleTap(
       onTap: () {
+        Navigator.pop(context);
         MBottomSheet.show(
           context,
-          (context) => const MBottomSheet(child: CardStyle()),
+          barrierColor: Colors.transparent,
+          (context) => const MBottomSheet(
+            height: 200.0,
+            child: CardStyle(),
+          ),
         );
       },
       child: Container(

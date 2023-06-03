@@ -18,7 +18,7 @@ class RecordDetailModel extends BaseModel {
     final resp = await Repo.details(url);
     if (resp.success) {
       _recordDetail = resp.data;
-      '加载成功'.toast();
+      '加载完成'.toast();
       notifyListeners();
       return IndicatorResult.success;
     } else {

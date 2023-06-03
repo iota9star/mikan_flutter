@@ -15,6 +15,7 @@ import '../../model/season.dart';
 import '../../model/season_gallery.dart';
 import '../../model/subgroup.dart';
 import '../../model/year_season.dart';
+import 'ui/pages/announcement.dart';
 import 'ui/pages/bangumi.dart';
 import 'ui/pages/fonts.dart';
 import 'ui/pages/forgot_password.dart';
@@ -41,6 +42,16 @@ FFRouteSettings getRouteSettings({
   final Map<String, dynamic> safeArguments =
       arguments ?? const <String, dynamic>{};
   switch (name) {
+    case '/announcements':
+      return FFRouteSettings(
+        name: name,
+        arguments: arguments,
+        builder: () => Announcements(
+          key: asT<Key?>(
+            safeArguments['key'],
+          ),
+        ),
+      );
     case '/bangumi':
       return FFRouteSettings(
         name: name,
@@ -80,7 +91,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        builder: () => FontsFragment(
+        builder: () => Fonts(
           key: asT<Key?>(
             safeArguments['key'],
           ),

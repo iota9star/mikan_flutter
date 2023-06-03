@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../internal/hive.dart';
+import 'announcement.dart';
 import 'bangumi_row.dart';
 import 'carousel.dart';
 import 'record_item.dart';
@@ -17,6 +18,7 @@ class Index extends HiveObject {
     required this.rss,
     required this.carousels,
     this.user,
+    this.announcements,
   });
 
   @HiveField(0)
@@ -33,6 +35,9 @@ class Index extends HiveObject {
 
   @HiveField(4)
   final User? user;
+
+  @HiveField(5)
+  final List<Announcement>? announcements;
 
   @override
   bool operator ==(Object other) =>

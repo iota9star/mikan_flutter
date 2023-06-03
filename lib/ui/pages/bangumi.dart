@@ -75,16 +75,7 @@ class BangumiPage extends StatelessWidget {
                       builder: (_, ratio, __) {
                         final bgc = headerBackgroundColor.transform(ratio);
                         return Container(
-                          decoration: BoxDecoration(
-                            color: bgc,
-                            border: Border(
-                              bottom: BorderSide(
-                                color: ratio >= 0.99
-                                    ? theme.colorScheme.surfaceVariant
-                                    : Colors.transparent,
-                              ),
-                            ),
-                          ),
+                          decoration: BoxDecoration(color: bgc),
                           padding: EdgeInsets.only(
                             top: 12.0 + context.statusBarHeight,
                             left: 12.0,
@@ -379,7 +370,7 @@ class BangumiPage extends StatelessWidget {
                                 '${detail.name}\n',
                                 style: theme.textTheme.titleLarge
                                     ?.copyWith(color: theme.secondary),
-                                maxLines: 2,
+                                maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
