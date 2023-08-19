@@ -39,9 +39,9 @@ class MikanTransformer extends SyncTransformer {
   @override
   Future transformResponse(
     RequestOptions options,
-    ResponseBody response,
+    ResponseBody responseBody,
   ) async {
-    final rep = await super.transformResponse(options, response);
+    final rep = await super.transformResponse(options, responseBody);
     if (rep is String) {
       final String? func = options.extra['$MikanFunc'];
       if (func.isNotBlank) {
@@ -162,7 +162,7 @@ class Http {
       }
     } catch (e, s) {
       e.$error(stackTrace: s);
-      if (e is DioError) {
+      if (e is DioException) {
         if (e.response?.statusCode == 302 &&
             options.method == _InnerMethod.form &&
             (e.requestOptions.path == MikanUrls.login ||

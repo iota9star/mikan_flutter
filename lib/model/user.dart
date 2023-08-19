@@ -7,12 +7,13 @@ part 'user.g.dart';
 
 @HiveType(typeId: MyHive.mikanUser)
 class User extends HiveObject {
-
   User({
     this.name,
     this.avatar,
     this.token,
+    this.rss,
   });
+
   @HiveField(0)
   String? name;
 
@@ -21,6 +22,9 @@ class User extends HiveObject {
 
   @HiveField(2)
   String? token;
+
+  @HiveField(3)
+  String? rss;
 
   bool get hasLogin => name.isNotBlank && avatar.isNotBlank;
 
@@ -31,8 +35,10 @@ class User extends HiveObject {
           runtimeType == other.runtimeType &&
           name == other.name &&
           avatar == other.avatar &&
-          token == other.token;
+          token == other.token &&
+          rss == other.rss;
 
   @override
-  int get hashCode => name.hashCode ^ avatar.hashCode ^ token.hashCode;
+  int get hashCode =>
+      name.hashCode ^ avatar.hashCode ^ token.hashCode ^ rss.hashCode;
 }

@@ -20,19 +20,22 @@ class UserAdapter extends TypeAdapter<User> {
       name: fields[0] as String?,
       avatar: fields[1] as String?,
       token: fields[2] as String?,
+      rss: fields[3] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
       ..write(obj.avatar)
       ..writeByte(2)
-      ..write(obj.token);
+      ..write(obj.token)
+      ..writeByte(3)
+      ..write(obj.rss);
   }
 
   @override

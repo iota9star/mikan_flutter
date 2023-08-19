@@ -58,7 +58,7 @@ class RegisterModel extends BaseModel {
       'ConfirmPassword': _confirmPasswordController.text,
       'Email': _emailController.text,
       'QQ': _qqController.text,
-      '__RequestVerificationToken': token
+      '__RequestVerificationToken': token,
     };
     final Resp resp = await Repo.register(registerParams);
     _loading = false;

@@ -15,10 +15,11 @@ import '../../model/season_gallery.dart';
 import '../../model/year_season.dart';
 import '../../providers/op_model.dart';
 import '../../providers/subscribed_season_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
-import '../fragments/bangumi_sliver_grid.dart';
+import '../fragments/sliver_bangumi_list.dart';
 
 @FFRoute(name: '/subscribed/season')
 @immutable
@@ -89,7 +90,7 @@ class SubscribedSeasonPage extends StatelessWidget {
                   if (gallery.bangumis.isNullOrEmpty)
                     _buildEmptySubscribedContainer(theme)
                   else
-                    BangumiSliverGridFragment(
+                    SliverBangumiList(
                       flag: gallery.title,
                       bangumis: gallery.bangumis,
                       handleSubscribe: (bangumi, flag) {
@@ -125,10 +126,7 @@ class SubscribedSeasonPage extends StatelessWidget {
             child: Center(
               child: Column(
                 children: [
-                  Image.asset(
-                    'assets/mikan.png',
-                    width: 64.0,
-                  ),
+                  Assets.mikan.image(width: 64.0),
                   sizedBoxH12,
                   Text(
                     '>_< 您还没有订阅当前季度番组，快去添加订阅吧',

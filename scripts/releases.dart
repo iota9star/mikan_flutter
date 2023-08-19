@@ -20,13 +20,15 @@ Future<void> main() async {
       'armeabi-v7a',
       'x86_64',
       'universal',
-      'win32'
+      'win32',
     };
     final files = [
       ...result['assets'].map((it) {
         final name = it['name'];
-        final arch = arches.firstWhere(name.contains,
-            orElse: () => null,);
+        final arch = arches.firstWhere(
+          name.contains,
+          orElse: () => null,
+        );
         final size = it['size'];
         final sizefmt = (size / 1024 / 1024).toStringAsFixed(2) + 'MB';
         return {
@@ -38,7 +40,7 @@ Future<void> main() async {
           'cdl':
               'https://cdn.jsdelivr.net/gh/iota9star/mikan_flutter@master/releases/$name',
         };
-      })
+      }),
     ];
     await Jiffy.setLocale('zh_cn');
     final jiffy = Jiffy.parse(result['published_at'])..add(hours: 8);

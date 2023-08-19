@@ -31,7 +31,7 @@ class ForgotPasswordModel extends BaseModel {
     }
     final Map<String, dynamic> params = {
       'Email': _emailController.text,
-      '__RequestVerificationToken': token
+      '__RequestVerificationToken': token,
     };
     final Resp resp = await Repo.forgotPassword(params);
     _loading = false;

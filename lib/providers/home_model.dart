@@ -9,6 +9,7 @@ import '../internal/hive.dart';
 import '../internal/http.dart';
 import '../internal/log.dart';
 import '../internal/repo.dart';
+import '../res/assets.gen.dart';
 import '../topvars.dart';
 import '../widget/bottom_sheet.dart';
 import 'base_model.dart';
@@ -95,11 +96,7 @@ class HomeModel extends BaseModel {
           children: [
             Row(
               children: [
-                Image.asset(
-                  'assets/mikan.png',
-                  height: 42.0,
-                  width: 42.0,
-                ),
+                Assets.mikan.image(width: 42.0),
                 sizedBoxW12,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +130,7 @@ class HomeModel extends BaseModel {
                           maxLines: 1,
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ],
@@ -202,7 +199,7 @@ class HomeModel extends BaseModel {
                                   'armeabi-v7a',
                                   'x86_64',
                                   'universal',
-                                  'win32'
+                                  'win32',
                                 }.firstWhere(
                                   (arch) => item['name'].contains(arch),
                                   orElse: () => null,

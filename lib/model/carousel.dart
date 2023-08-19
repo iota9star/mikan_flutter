@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 import '../internal/hive.dart';
 
 part 'carousel.g.dart';

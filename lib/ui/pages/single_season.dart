@@ -13,7 +13,7 @@ import '../../providers/op_model.dart';
 import '../../providers/season_model.dart';
 import '../../topvars.dart';
 import '../../widget/sliver_pinned_header.dart';
-import '../fragments/bangumi_sliver_grid.dart';
+import '../fragments/sliver_bangumi_list.dart';
 
 @FFRoute(name: '/season')
 class SingleSeasonPage extends StatelessWidget {
@@ -47,7 +47,7 @@ class SingleSeasonPage extends StatelessWidget {
                           pushPinnedChildren: true,
                           children: [
                             _buildWeekSection(theme, bangumiRow),
-                            BangumiSliverGridFragment(
+                            SliverBangumiList(
                               bangumis: bangumiRow.bangumis,
                               handleSubscribe: (bangumi, flag) {
                                 context.read<OpModel>().subscribeBangumi(
@@ -89,14 +89,14 @@ class SingleSeasonPage extends StatelessWidget {
       if (bangumiRow.subscribedUpdatedNum > 0)
         '💖 ${bangumiRow.subscribedUpdatedNum}部',
       if (bangumiRow.subscribedNum > 0) '❤ ${bangumiRow.subscribedNum}部',
-      '🎬 ${bangumiRow.num}部'
+      '🎬 ${bangumiRow.num}部',
     ].join('，');
     final full = [
       if (bangumiRow.updatedNum > 0) '更新${bangumiRow.updatedNum}部',
       if (bangumiRow.subscribedUpdatedNum > 0)
         '订阅更新${bangumiRow.subscribedUpdatedNum}部',
       if (bangumiRow.subscribedNum > 0) '订阅${bangumiRow.subscribedNum}部',
-      '共${bangumiRow.num}部'
+      '共${bangumiRow.num}部',
     ].join('，');
 
     return SliverPinnedHeader(

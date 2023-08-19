@@ -7,6 +7,7 @@ import '../../mikan_routes.dart';
 import '../../providers/index_model.dart';
 import '../../providers/register_model.dart';
 import '../../providers/subscribed_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 
 @FFRoute(name: '/register')
@@ -43,10 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         key: _formKey,
                         child: Column(
                           children: <Widget>[
-                            Image.asset(
-                              'assets/mikan.png',
-                              width: 64.0,
-                            ),
+                            Assets.mikan.image(width: 64.0),
                             sizedBoxH8,
                             Text(
                               'Mikan Project',
@@ -76,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   child: const Icon(Icons.west_rounded),
                                 ),
                                 sizedBoxW16,
-                                Expanded(child: _buildRegisterButton(theme))
+                                Expanded(child: _buildRegisterButton(theme)),
                               ],
                             ),
                             sizedBoxH56,

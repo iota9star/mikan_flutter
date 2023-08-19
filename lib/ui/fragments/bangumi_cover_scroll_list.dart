@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../internal/image_provider.dart';
 import '../../model/bangumi_row.dart';
@@ -65,24 +66,41 @@ class _BangumiCoverScrollListFragmentState
   }
 
   Widget _buildList(ThemeData theme, List<BangumiRow> bangumiRows) {
-    final bangumis =
-        bangumiRows.map((e) => e.bangumis).expand((element) => element);
+    final bangumis = bangumiRows
+        .map((e) => e.bangumis)
+        .expand((e) => e)
+        .toList(growable: false);
     final length = bangumis.length;
     if (length == 0) {
       return sizedBox;
     }
-    return GridView.builder(
+    return WaterfallFlow.builder(
       controller: _scrollController,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 400.0,
-        childAspectRatio: 0.75,
+      gridDelegate: const SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 320.0,
+        crossAxisSpacing: 24.0,
+        mainAxisSpacing: 24.0,
       ),
+      padding: const EdgeInsets.all(24.0),
       itemBuilder: (_, index) {
-        final bangumi = bangumis.elementAt(index % length);
-        return Image(
-          image: CacheImage(bangumi.cover),
-          fit: BoxFit.cover,
+        final bangumi = bangumis[index % length];
+        return ClipRRect(
+          borderRadius: borderRadius12,
+          child: Image(
+            image: CacheImage(bangumi.cover),
+            fit: BoxFit.cover,
+            loadingBuilder: (
+              context,
+              child,
+              loadingProgress,
+            ) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return const AspectRatio(aspectRatio: 1.0);
+            },
+          ),
         );
       },
     );

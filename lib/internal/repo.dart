@@ -105,8 +105,10 @@ class Repo {
     int bangumiId,
     bool subscribe, {
     int? subgroupId,
+    // 1: 简中，2: 繁中
+    int? language,
   }) {
-    final Options options = Options(
+    final options = Options(
       contentType: Headers.jsonContentType,
       responseType: ResponseType.json,
     );
@@ -115,6 +117,7 @@ class Repo {
       data: <String, dynamic>{
         'BangumiID': bangumiId,
         'SubtitleGroupID': subgroupId,
+        if (language != null) 'Language': language,
       },
       options: options,
     );

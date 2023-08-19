@@ -11,14 +11,15 @@ import '../../internal/kit.dart';
 import '../../mikan_routes.dart';
 import '../../model/bangumi.dart';
 import '../../providers/op_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/scalable_tap.dart';
 
 typedef HandleSubscribe = void Function(Bangumi bangumi, String flag);
 
 @immutable
-class BangumiSliverGridFragment extends StatelessWidget {
-  const BangumiSliverGridFragment({
+class SliverBangumiList extends StatelessWidget {
+  const SliverBangumiList({
     super.key,
     this.flag,
     required this.bangumis,
@@ -94,51 +95,54 @@ class BangumiSliverGridFragment extends StatelessWidget {
     Bangumi bangumi,
   ) {
     final currFlag = '$flag:bangumi:${bangumi.id}:${bangumi.cover}';
-    final cover = _buildBangumiItemCover(imageWidth, currFlag, bangumi);
-    return ScalableCard(
-      onTap: () {
-        if (bangumi.grey) {
-          '此番组下暂无作品'.toast();
-        } else {
-          Navigator.pushNamed(
-            context,
-            Routes.bangumi.name,
-            arguments: Routes.bangumi.d(
-              heroTag: currFlag,
-              bangumiId: bangumi.id,
-              cover: bangumi.cover,
-              title: bangumi.name,
-            ),
-          );
-        }
-      },
-      child: Stack(
-        children: [
-          Positioned.fill(child: cover),
-          if (bangumi.num != null && bangumi.num! > 0)
-            PositionedDirectional(
-              top: 14.0,
-              end: 12.0,
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: theme.colorScheme.error,
-                  shape: const StadiumBorder(),
-                ),
-                padding: edgeH6V2,
-                child: Text(
-                  bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.colorScheme.onError,
-                    height: 1.25,
+    final cover = _buildBangumiItemCover(imageWidth, bangumi);
+    return Hero(
+      tag: currFlag,
+      child: ScalableCard(
+        onTap: () {
+          if (bangumi.grey) {
+            '此番组下暂无作品'.toast();
+          } else {
+            Navigator.pushNamed(
+              context,
+              Routes.bangumi.name,
+              arguments: Routes.bangumi.d(
+                heroTag: currFlag,
+                bangumiId: bangumi.id,
+                cover: bangumi.cover,
+                title: bangumi.name,
+              ),
+            );
+          }
+        },
+        child: Stack(
+          children: [
+            Positioned.fill(child: cover),
+            if (bangumi.num != null && bangumi.num! > 0)
+              PositionedDirectional(
+                top: 14.0,
+                end: 12.0,
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: theme.colorScheme.error,
+                    shape: const StadiumBorder(),
+                  ),
+                  padding: edgeH6V2,
+                  child: Text(
+                    bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onError,
+                      height: 1.25,
+                    ),
                   ),
                 ),
               ),
+            PositionedDirectional(
+              child: _buildSubscribeButton(theme, bangumi, currFlag),
             ),
-          PositionedDirectional(
-            child: _buildSubscribeButton(theme, bangumi, currFlag),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -162,76 +166,79 @@ class BangumiSliverGridFragment extends StatelessWidget {
           stops: [0.68, 1.0],
         ),
       ),
-      child: _buildBangumiItemCover(imageWidth, currFlag, bangumi),
+      child: _buildBangumiItemCover(imageWidth, bangumi),
     );
-    return ScalableCard(
-      onTap: () {
-        if (bangumi.grey) {
-          '此番组下暂无作品'.toast();
-        } else {
-          Navigator.pushNamed(
-            context,
-            Routes.bangumi.name,
-            arguments: Routes.bangumi.d(
-              heroTag: currFlag,
-              bangumiId: bangumi.id,
-              cover: bangumi.cover,
-              title: bangumi.name,
-            ),
-          );
-        }
-      },
-      child: Stack(
-        children: [
-          Positioned.fill(child: cover),
-          if (bangumi.num != null && bangumi.num! > 0)
-            PositionedDirectional(
-              top: 14.0,
-              end: 12.0,
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: theme.colorScheme.error,
-                  shape: const StadiumBorder(),
-                ),
-                padding: edgeH6V2,
-                child: Text(
-                  bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.colorScheme.onError,
-                    height: 1.25,
+    return Hero(
+      tag: currFlag,
+      child: ScalableCard(
+        onTap: () {
+          if (bangumi.grey) {
+            '此番组下暂无作品'.toast();
+          } else {
+            Navigator.pushNamed(
+              context,
+              Routes.bangumi.name,
+              arguments: Routes.bangumi.d(
+                heroTag: currFlag,
+                bangumiId: bangumi.id,
+                cover: bangumi.cover,
+                title: bangumi.name,
+              ),
+            );
+          }
+        },
+        child: Stack(
+          children: [
+            Positioned.fill(child: cover),
+            if (bangumi.num != null && bangumi.num! > 0)
+              PositionedDirectional(
+                top: 14.0,
+                end: 12.0,
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: theme.colorScheme.error,
+                    shape: const StadiumBorder(),
+                  ),
+                  padding: edgeH6V2,
+                  child: Text(
+                    bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onError,
+                      height: 1.25,
+                    ),
                   ),
                 ),
               ),
+            PositionedDirectional(
+              child: _buildSubscribeButton(theme, bangumi, currFlag),
             ),
-          PositionedDirectional(
-            child: _buildSubscribeButton(theme, bangumi, currFlag),
-          ),
-          PositionedDirectional(
-            bottom: 12.0,
-            start: 12.0,
-            end: 12.0,
-            child: Column(
-              children: [
-                Text(
-                  bangumi.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style:
-                      theme.textTheme.titleSmall!.copyWith(color: Colors.white),
-                ),
-                if (bangumi.updateAt.isNotBlank)
+            PositionedDirectional(
+              bottom: 12.0,
+              start: 12.0,
+              end: 12.0,
+              child: Column(
+                children: [
                   Text(
-                    bangumi.updateAt,
+                    bangumi.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall!
-                        .copyWith(color: Colors.white70),
+                    style: theme.textTheme.titleSmall!
+                        .copyWith(color: Colors.white),
                   ),
-              ],
+                  if (bangumi.updateAt.isNotBlank)
+                    Text(
+                      bangumi.updateAt,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall!
+                          .copyWith(color: Colors.white70),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -243,60 +250,64 @@ class BangumiSliverGridFragment extends StatelessWidget {
     Bangumi bangumi,
   ) {
     final currFlag = '$flag:bangumi:${bangumi.id}:${bangumi.cover}';
-    final cover = _buildBangumiItemCover(imageWidth, currFlag, bangumi);
+    final cover = _buildBangumiItemCover(imageWidth, bangumi);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: ScalableCard(
-            onTap: () {
-              if (bangumi.grey) {
-                '此番组下暂无作品'.toast();
-              } else {
-                Navigator.pushNamed(
-                  context,
-                  Routes.bangumi.name,
-                  arguments: Routes.bangumi.d(
-                    heroTag: currFlag,
-                    bangumiId: bangumi.id,
-                    cover: bangumi.cover,
-                    title: bangumi.name,
-                  ),
-                );
-              }
-            },
-            child: bangumi.grey
-                ? cover
-                : Stack(
-                    children: [
-                      Positioned.fill(
-                        child: cover,
-                      ),
-                      if (bangumi.num != null && bangumi.num! > 0)
-                        PositionedDirectional(
-                          top: 14.0,
-                          end: 12.0,
-                          child: Container(
-                            clipBehavior: Clip.antiAlias,
-                            decoration: ShapeDecoration(
-                              color: theme.colorScheme.error,
-                              shape: const StadiumBorder(),
-                            ),
-                            padding: edgeH6V2,
-                            child: Text(
-                              bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: theme.colorScheme.onError,
-                                height: 1.25,
+          child: Hero(
+            tag: currFlag,
+            child: ScalableCard(
+              onTap: () {
+                if (bangumi.grey) {
+                  '此番组下暂无作品'.toast();
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.bangumi.name,
+                    arguments: Routes.bangumi.d(
+                      heroTag: currFlag,
+                      bangumiId: bangumi.id,
+                      cover: bangumi.cover,
+                      title: bangumi.name,
+                    ),
+                  );
+                }
+              },
+              child: bangumi.grey
+                  ? cover
+                  : Stack(
+                      children: [
+                        Positioned.fill(
+                          child: cover,
+                        ),
+                        if (bangumi.num != null && bangumi.num! > 0)
+                          PositionedDirectional(
+                            top: 14.0,
+                            end: 12.0,
+                            child: Container(
+                              clipBehavior: Clip.antiAlias,
+                              decoration: ShapeDecoration(
+                                color: theme.colorScheme.error,
+                                shape: const StadiumBorder(),
+                              ),
+                              padding: edgeH6V2,
+                              child: Text(
+                                bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  color: theme.colorScheme.onError,
+                                  height: 1.25,
+                                ),
                               ),
                             ),
                           ),
+                        PositionedDirectional(
+                          child:
+                              _buildSubscribeButton(theme, bangumi, currFlag),
                         ),
-                      PositionedDirectional(
-                        child: _buildSubscribeButton(theme, bangumi, currFlag),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+            ),
           ),
         ),
         sizedBoxH8,
@@ -325,56 +336,59 @@ class BangumiSliverGridFragment extends StatelessWidget {
     Bangumi bangumi,
   ) {
     final currFlag = '$flag:bangumi:${bangumi.id}:${bangumi.cover}';
-    final cover = _buildBangumiItemCover(imageWidth, currFlag, bangumi);
+    final cover = _buildBangumiItemCover(imageWidth, bangumi);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: ScalableCard(
-            onTap: () {
-              if (bangumi.grey) {
-                '此番组下暂无作品'.toast();
-              } else {
-                Navigator.pushNamed(
-                  context,
-                  Routes.bangumi.name,
-                  arguments: Routes.bangumi.d(
-                    heroTag: currFlag,
-                    bangumiId: bangumi.id,
-                    cover: bangumi.cover,
-                    title: bangumi.name,
-                  ),
-                );
-              }
-            },
-            child: bangumi.grey || (bangumi.num == null || bangumi.num == 0)
-                ? cover
-                : Stack(
-                    children: [
-                      Positioned.fill(
-                        child: cover,
-                      ),
-                      PositionedDirectional(
-                        top: 14.0,
-                        end: 12.0,
-                        child: Container(
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: theme.colorScheme.error,
-                            shape: const StadiumBorder(),
-                          ),
-                          padding: edgeH6V2,
-                          child: Text(
-                            bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: theme.colorScheme.onError,
-                              height: 1.25,
+          child: Hero(
+            tag: currFlag,
+            child: ScalableCard(
+              onTap: () {
+                if (bangumi.grey) {
+                  '此番组下暂无作品'.toast();
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.bangumi.name,
+                    arguments: Routes.bangumi.d(
+                      heroTag: currFlag,
+                      bangumiId: bangumi.id,
+                      cover: bangumi.cover,
+                      title: bangumi.name,
+                    ),
+                  );
+                }
+              },
+              child: bangumi.grey || (bangumi.num == null || bangumi.num == 0)
+                  ? cover
+                  : Stack(
+                      children: [
+                        Positioned.fill(
+                          child: cover,
+                        ),
+                        PositionedDirectional(
+                          top: 14.0,
+                          end: 12.0,
+                          child: Container(
+                            clipBehavior: Clip.antiAlias,
+                            decoration: ShapeDecoration(
+                              color: theme.colorScheme.error,
+                              shape: const StadiumBorder(),
+                            ),
+                            padding: edgeH6V2,
+                            child: Text(
+                              bangumi.num! > 99 ? '99+' : '+${bangumi.num}',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onError,
+                                height: 1.25,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+            ),
           ),
         ),
         sizedBoxH8,
@@ -456,33 +470,38 @@ class BangumiSliverGridFragment extends StatelessWidget {
 
   Widget _buildBangumiItemCover(
     int cacheWidth,
-    String currFlag,
     Bangumi bangumi,
   ) {
-    return Hero(
-      tag: currFlag,
-      child: FadeInImage(
-        placeholder: const AssetImage('assets/mikan.png'),
-        image: ResizeImage.resizeIfNeeded(
-          cacheWidth,
-          null,
-          CacheImage(bangumi.cover),
-        ),
-        fit: BoxFit.cover,
-        imageErrorBuilder: (_, __, ___) {
-          return _buildBangumiItemError();
-        },
+    final image = FadeInImage(
+      placeholder: Assets.mikan.provider(),
+      image: ResizeImage.resizeIfNeeded(
+        cacheWidth,
+        null,
+        CacheImage(bangumi.cover),
       ),
+      fit: BoxFit.cover,
+      imageErrorBuilder: (_, __, ___) {
+        return _buildBangumiItemError();
+      },
     );
+    return bangumi.grey
+        ? ColorFiltered(
+            colorFilter: const ColorFilter.mode(
+              Colors.grey,
+              BlendMode.saturation,
+            ),
+            child: image,
+          )
+        : image;
   }
 
   Widget _buildBangumiItemError() {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/mikan.png'),
+          image: Assets.mikan.provider(),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+          colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.color),
         ),
       ),
     );

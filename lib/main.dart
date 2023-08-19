@@ -11,8 +11,8 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -20,9 +20,9 @@ import 'internal/dynamic_color.dart';
 import 'internal/extension.dart';
 import 'internal/hive.dart';
 import 'internal/http_cache_manager.dart';
-import 'internal/kit.dart';
 import 'internal/lifecycle.dart';
 import 'internal/log.dart';
+import 'internal/method.dart';
 import 'internal/network_font_loader.dart';
 import 'mikan_route.dart';
 import 'mikan_routes.dart';
@@ -33,7 +33,9 @@ import 'providers/list_model.dart';
 import 'providers/op_model.dart';
 import 'providers/subscribed_model.dart';
 import 'topvars.dart';
+import 'widget/loading.dart';
 import 'widget/restart.dart';
+import 'widget/toast.dart';
 
 final _analytics = FirebaseAnalytics.instance;
 final _observer = FirebaseAnalyticsObserver(analytics: _analytics);
@@ -165,6 +167,7 @@ class _MikanAppState extends State<MikanApp> {
       builder: (mode, lightColorScheme, darkColorScheme, fontFamily) {
         final navigatorObservers = [
           Lifecycle.lifecycleRouteObserver,
+          FlutterSmartDialog.observer,
           if (isSupportFirebase) _observer,
           FFNavigatorObserver(
             routeChange: (newRoute, oldRoute) {
@@ -192,23 +195,24 @@ class _MikanAppState extends State<MikanApp> {
             brightness: Brightness.light,
             fontFamily: fontFamily,
             colorScheme: lightColorScheme,
+            visualDensity: VisualDensity.standard,
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
             fontFamily: fontFamily,
             colorScheme: darkColorScheme,
+            visualDensity: VisualDensity.standard,
           ),
           initialRoute: Routes.splash.name,
-          builder: (context, child) {
-            return OKToast(
-              position: ToastPosition(
-                align: Alignment.bottomCenter,
-                offset: -context.screenHeight * 0.18,
-              ),
-              child: child!,
-            );
-          },
+          builder: FlutterSmartDialog.init(
+            toastBuilder: (msg) => ToastWidget(msg: msg),
+            loadingBuilder: (msg) => LoadingWidget(msg: msg),
+            builder: (context, child) => GestureDetector(
+              onTap: hideKeyboard,
+              child: child,
+            ),
+          ),
           onGenerateRoute: (RouteSettings settings) {
             return onGenerateRoute(
               settings: settings,

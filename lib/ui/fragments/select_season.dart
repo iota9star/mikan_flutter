@@ -69,21 +69,23 @@ class SelectSeasonFragment extends StatelessWidget {
               return Tooltip(
                 message: season.title,
                 child: RippleTap(
-                  color: selected ? theme.primary : theme.secondary,
+                  color: selected
+                      ? theme.primary.withOpacity(0.38)
+                      : theme.secondary.withOpacity(0.1),
                   borderRadius: borderRadius8,
                   onTap: () {
                     Navigator.pop(context);
                     indexModel.selectSeason(season);
                   },
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 8.0,
+                    ),
                     child: Text(
                       season.season,
-                      style: theme.textTheme.bodyLarge!.copyWith(
-                        color: selected
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSecondary,
-                      ),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.labelLarge,
                     ),
                   ),
                 ),
@@ -120,7 +122,7 @@ class SelectSeasonFragment extends StatelessWidget {
                       width: 78.0,
                       child: Text(
                         year.year,
-                        style: theme.textTheme.headlineSmall,
+                        style: theme.textTheme.titleLarge,
                       ),
                     ),
                     sizedBoxW12,

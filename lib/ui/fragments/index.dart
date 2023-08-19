@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -11,7 +12,6 @@ import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
-import '../../internal/lifecycle.dart';
 import '../../mikan_routes.dart';
 import '../../model/bangumi_row.dart';
 import '../../model/carousel.dart';
@@ -22,15 +22,14 @@ import '../../providers/index_model.dart';
 import '../../providers/op_model.dart';
 import '../../topvars.dart';
 import '../../widget/bottom_sheet.dart';
-import '../../widget/infinite_carousel.dart';
 import '../../widget/ripple_tap.dart';
 import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
 import '../components/ova_record_item.dart';
-import 'bangumi_sliver_grid.dart';
 import 'select_season.dart';
 import 'select_tablet_mode.dart';
 import 'settings.dart';
+import 'sliver_bangumi_list.dart';
 
 class IndexFragment extends StatefulWidget {
   const IndexFragment({super.key});
@@ -39,7 +38,7 @@ class IndexFragment extends StatefulWidget {
   State<StatefulWidget> createState() => _IndexFragmentState();
 }
 
-class _IndexFragmentState extends LifecycleAppState<IndexFragment> {
+class _IndexFragmentState extends State<IndexFragment> {
   final _infiniteScrollController = InfiniteScrollController();
 
   Timer? _timer;
@@ -61,13 +60,6 @@ class _IndexFragmentState extends LifecycleAppState<IndexFragment> {
     _timer?.cancel();
     _infiniteScrollController.dispose();
     super.dispose();
-  }
-
-  @override
-  void onResume() {
-    if (mounted) {
-      Provider.of<IndexModel>(context, listen: false).refresh();
-    }
   }
 
   @override
@@ -96,7 +88,7 @@ class _IndexFragmentState extends LifecycleAppState<IndexFragment> {
                         pushPinnedChildren: true,
                         children: [
                           _buildWeekSection(theme, bangumiRow),
-                          BangumiSliverGridFragment(
+                          SliverBangumiList(
                             bangumis: bangumiRow.bangumis,
                             handleSubscribe: (bangumi, flag) {
                               context.read<OpModel>().subscribeBangumi(
@@ -138,14 +130,14 @@ class _IndexFragmentState extends LifecycleAppState<IndexFragment> {
       if (bangumiRow.subscribedUpdatedNum > 0)
         '💖 ${bangumiRow.subscribedUpdatedNum}部',
       if (bangumiRow.subscribedNum > 0) '❤ ${bangumiRow.subscribedNum}部',
-      '🎬 ${bangumiRow.num}部'
+      '🎬 ${bangumiRow.num}部',
     ].join('，');
     final full = [
       if (bangumiRow.updatedNum > 0) '更新${bangumiRow.updatedNum}部',
       if (bangumiRow.subscribedUpdatedNum > 0)
         '订阅更新${bangumiRow.subscribedUpdatedNum}部',
       if (bangumiRow.subscribedNum > 0) '订阅${bangumiRow.subscribedNum}部',
-      '共${bangumiRow.num}部'
+      '共${bangumiRow.num}部',
     ].join('，');
 
     return SliverPinnedHeader(
@@ -189,7 +181,7 @@ class _IndexFragmentState extends LifecycleAppState<IndexFragment> {
         if (carousels.isNotEmpty) {
           return SliverToBoxAdapter(
             child: SizedBox(
-              height: 180.0,
+              height: 160.0,
               child: InfiniteCarousel.builder(
                 itemBuilder: (context, index, realIndex) {
                   final carousel = carousels[index];
@@ -479,6 +471,15 @@ class _PinedHeader extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: theme.colorScheme.background,
+                        border: offsetRatio > 0.1
+                            ? Border(
+                                bottom: Divider.createBorderSide(
+                                  context,
+                                  color: theme.colorScheme.outlineVariant,
+                                  width: 0.0,
+                                ),
+                              )
+                            : null,
                       ),
                       padding: EdgeInsetsDirectional.only(
                         start: 12.0,

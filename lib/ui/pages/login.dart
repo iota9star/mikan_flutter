@@ -7,6 +7,7 @@ import '../../mikan_routes.dart';
 import '../../providers/index_model.dart';
 import '../../providers/login_model.dart';
 import '../../providers/subscribed_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 
 @FFRoute(name: '/login')
@@ -42,10 +43,7 @@ class _LoginPageState extends State<LoginPage> {
                         key: _formKey,
                         child: Column(
                           children: <Widget>[
-                            Image.asset(
-                              'assets/mikan.png',
-                              width: 64.0,
-                            ),
+                            Assets.mikan.image(width: 64.0),
                             sizedBoxH8,
                             Text(
                               'Mikan Project',
@@ -151,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.of(context).pushNamed(Routes.forgetPassword.name);
           },
           child: const Text('忘记密码'),
-        )
+        ),
       ],
     );
   }

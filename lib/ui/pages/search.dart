@@ -1,20 +1,22 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+import '../../internal/consts.dart';
 import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/hive.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
+import '../../internal/method.dart';
 import '../../mikan_routes.dart';
 import '../../model/bangumi.dart';
 import '../../model/record_item.dart';
 import '../../model/subgroup.dart';
 import '../../providers/search_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/ripple_tap.dart';
 import '../../widget/scalable_tap.dart';
@@ -22,8 +24,8 @@ import '../../widget/sliver_pinned_header.dart';
 import '../components/simple_record_item.dart';
 
 @FFRoute(name: '/search')
-class SearchFragment extends StatelessWidget {
-  const SearchFragment({super.key});
+class Search extends StatelessWidget {
+  const Search({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,28 @@ class SearchFragment extends StatelessWidget {
             return Scaffold(
               body: CustomScrollView(
                 slivers: [
-                  const SliverPinnedAppBar(title: '搜索'),
+                  SliverPinnedAppBar(
+                    title: '搜索',
+                    actions: [
+                      Selector<SearchModel, bool>(
+                        selector: (_, model) => model.loading,
+                        shouldRebuild: (pre, next) => pre != next,
+                        builder: (_, loading, __) {
+                          if (loading) {
+                            return IconButton(
+                              icon: const SizedBox(
+                                width: 24.0,
+                                height: 24.0,
+                                child: CircularProgressIndicator(),
+                              ),
+                              onPressed: () {},
+                            );
+                          }
+                          return sizedBox;
+                        },
+                      ),
+                    ],
+                  ),
                   _buildHeaderSearchField(theme, searchModel),
                   _buildSearchHistory(theme, searchModel),
                   _buildSubgroupSection(theme),
@@ -242,7 +265,9 @@ class SearchFragment extends StatelessWidget {
       builder: (_, subgroupId, __) {
         final selected = subgroup.id == subgroupId;
         return RippleTap(
-          color: selected ? theme.primary : theme.secondary,
+          color: selected
+              ? theme.primary.withOpacity(0.38)
+              : theme.secondary.withOpacity(0.1),
           borderRadius: borderRadius8,
           onTap: () {
             searchModel.subgroupId = subgroup.id;
@@ -250,17 +275,13 @@ class SearchFragment extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 12.0,
-              vertical: 6.0,
+              vertical: 8.0,
             ),
             child: Text(
               subgroup.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.labelLarge!.copyWith(
-                color: selected
-                    ? theme.colorScheme.onPrimary
-                    : theme.colorScheme.onSecondary,
-              ),
+              style: theme.textTheme.labelLarge,
             ),
           ),
         );
@@ -298,32 +319,57 @@ class SearchFragment extends StatelessWidget {
         child: TextField(
           decoration: InputDecoration(
             labelText: '请输入关键字',
-            prefixIcon: const Icon(Icons.search_rounded),
+            prefixIcon: const Icon(
+              Icons.search_rounded,
+              size: 24.0,
+            ),
             isDense: true,
             border: const OutlineInputBorder(),
-            suffixIcon: Selector<SearchModel, bool>(
-              selector: (_, model) => model.loading,
-              shouldRebuild: (pre, next) => pre != next,
-              builder: (_, loading, __) {
-                if (loading) {
-                  return const CupertinoActivityIndicator();
-                }
-                return ValueListenableBuilder(
-                  valueListenable: searchModel.keywordsController,
-                  builder: (context, v, child) {
-                    if (v.text.isNotEmpty) {
-                      return IconButton(
-                        onPressed: () {
-                          searchModel.keywordsController.clear();
-                        },
-                        icon: const Icon(Icons.clear),
-                      );
-                    }
-                    return sizedBox;
-                  },
-                );
-              },
+            suffixIcon: Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8.0),
+              child: ValueListenableBuilder(
+                valueListenable: searchModel.keywordsController,
+                builder: (context, v, child) {
+                  if (v.text.isNotEmpty) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            searchModel.keywordsController.clear();
+                          },
+                          icon: const Icon(
+                            Icons.clear_rounded,
+                            size: 24.0,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.rss_feed_rounded,
+                            size: 24.0,
+                          ),
+                          onPressed: () {
+                            '${MikanUrls.baseUrl}/RSS/Search?searcher=${Uri.encodeComponent(searchModel.keywordsController.text)}'
+                                .copy();
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                  return IconButton(
+                    icon: const Icon(
+                      Icons.rss_feed_rounded,
+                      size: 24.0,
+                    ),
+                    onPressed: () {
+                      '${MikanUrls.baseUrl}/RSS/Search?searcher=${Uri.encodeComponent(searchModel.keywordsController.text)}'
+                          .copy();
+                    },
+                  );
+                },
+              ),
             ),
+            suffixIconConstraints: const BoxConstraints(),
           ),
           autofocus: true,
           textInputAction: TextInputAction.search,
@@ -376,9 +422,7 @@ class SearchFragment extends StatelessWidget {
                           child: Container(
                             padding: edge28,
                             child: Center(
-                              child: Image.asset(
-                                'assets/mikan.png',
-                              ),
+                              child: Assets.mikan.image(),
                             ),
                           ),
                         );
@@ -387,11 +431,11 @@ class SearchFragment extends StatelessWidget {
                   return Hero(
                     tag: currFlag,
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/mikan.png'),
+                          image: Assets.mikan.provider(),
                           fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
+                          colorFilter: const ColorFilter.mode(
                             Colors.grey,
                             BlendMode.color,
                           ),
@@ -451,6 +495,7 @@ class SearchFragment extends StatelessWidget {
                           color: theme.primary.withOpacity(0.1),
                           borderRadius: borderRadius8,
                           onTap: () {
+                            hideKeyboard();
                             searchModel.search(it);
                           },
                           child: Padding(

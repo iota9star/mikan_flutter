@@ -7,11 +7,9 @@ import 'package:android_intent_plus/flag.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-import '../topvars.dart';
 
 extension IterableExt<T> on Iterable<T>? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
@@ -109,37 +107,9 @@ extension NullableStringExt on String? {
     if (isNullOrBlank) {
       return;
     }
-    showToastWidget(
-      Material(
-        color: Colors.transparent,
-        child: Builder(
-          builder: (context) {
-            final theme = Theme.of(context);
-            return Stack(
-              alignment: AlignmentDirectional.center,
-              children: [
-                Container(
-                  padding: edgeH16V8,
-                  margin: edgeH24,
-                  decoration: BoxDecoration(
-                    color: theme.secondary,
-                    borderRadius: borderRadius28,
-                  ),
-                  child: Text(
-                    this!.trim(),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          theme.secondary.isDark ? Colors.white : Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+    SmartDialog.showToast(
+      this!,
+      alignment: const AlignmentDirectional(0.0, 0.72),
     );
     HapticFeedback.mediumImpact();
   }
@@ -163,7 +133,7 @@ extension NullableStringExt on String? {
           action: 'android.intent.action.VIEW',
           flags: [
             Flag.FLAG_ACTIVITY_NEW_TASK,
-            Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+            Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED,
           ],
           data: this,
         ).launch().catchError((e, s) async {
@@ -180,7 +150,7 @@ extension NullableStringExt on String? {
     if (isNullOrBlank) {
       return '内容为空，取消操作'.toast();
     }
-    FlutterClipboard.copy(this!).then((_) => '成功复制到剪切板'.toast());
+    FlutterClipboard.copy(this!).then((_) => '已复制到剪切板'.toast());
   }
 
   void share() {

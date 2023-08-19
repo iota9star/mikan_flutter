@@ -48,7 +48,7 @@ class LoginModel extends BaseModel {
   Future<void> submit(VoidCallback loginSuccess) async {
     _loading = true;
     notifyListeners();
-    final Resp tokenResp = await  Repo.refreshLoginToken();
+    final Resp tokenResp = await Repo.refreshLoginToken();
     if (!tokenResp.success) {
       _loading = false;
       notifyListeners();
@@ -64,9 +64,9 @@ class LoginModel extends BaseModel {
       'UserName': _accountController.text,
       'Password': _passwordController.text,
       'RememberMe': _rememberMe,
-      '__RequestVerificationToken': token
+      '__RequestVerificationToken': token,
     };
-    final Resp resp = await  Repo.login(loginParams);
+    final Resp resp = await Repo.login(loginParams);
     _loading = false;
     notifyListeners();
     if (resp.success) {

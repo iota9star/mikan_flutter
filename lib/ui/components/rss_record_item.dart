@@ -163,7 +163,7 @@ class RssRecordItem extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

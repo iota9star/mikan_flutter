@@ -26,6 +26,7 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
         onPause();
     }
   }
@@ -137,6 +138,7 @@ abstract class LifecycleAppState<T extends StatefulWidget> extends State<T>
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
         onPause();
     }
   }

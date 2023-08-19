@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../internal/extension.dart';
 import '../../providers/forgot_password_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/bottom_sheet.dart';
 import '../fragments/forgot_password_confirm.dart';
@@ -43,7 +44,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         child: Column(
                           children: <Widget>[
                             Image.asset(
-                              'assets/mikan.png',
+                              Assets.mikan.path,
                               width: 64.0,
                             ),
                             sizedBoxH8,

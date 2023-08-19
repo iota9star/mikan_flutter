@@ -6,6 +6,9 @@ class SubgroupBangumi {
   late String dataId;
   late List<Subgroup> subgroups;
   late bool subscribed;
+  String? sublang;
+  String? rss;
+  late int state;
   late List<RecordItem> records;
 
   @override
@@ -17,6 +20,9 @@ class SubgroupBangumi {
           dataId == other.dataId &&
           subgroups == other.subgroups &&
           subscribed == other.subscribed &&
+          sublang == other.sublang &&
+          rss == other.rss &&
+          state == other.state &&
           records == other.records;
 
   @override
@@ -25,5 +31,8 @@ class SubgroupBangumi {
       dataId.hashCode ^
       subgroups.hashCode ^
       subscribed.hashCode ^
+      sublang.hashCode ^
+      rss.hashCode ^
+      state.hashCode ^
       records.hashCode;
 }

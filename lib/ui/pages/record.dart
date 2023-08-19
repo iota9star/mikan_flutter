@@ -14,6 +14,7 @@ import '../../internal/kit.dart';
 import '../../model/record_details.dart';
 import '../../providers/op_model.dart';
 import '../../providers/record_detail_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/icon_button.dart';
 
@@ -313,9 +314,7 @@ class Record extends StatelessWidget {
                   child: Container(
                     padding: edge28,
                     child: Center(
-                      child: Image.asset(
-                        'assets/mikan.png',
-                      ),
+                      child: Assets.mikan.image(),
                     ),
                   ),
                 );
@@ -324,11 +323,14 @@ class Record extends StatelessWidget {
           return AspectRatio(
             aspectRatio: 3 / 4,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/mikan.png'),
+                  image: Assets.mikan.provider(),
                   fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+                  colorFilter: const ColorFilter.mode(
+                    Colors.grey,
+                    BlendMode.color,
+                  ),
                 ),
               ),
             ),
@@ -404,7 +406,7 @@ class Record extends StatelessWidget {
         color: Colors.grey.withOpacity(0.24),
         child: Center(
           child: Image.asset(
-            'assets/mikan.png',
+            Assets.mikan.path,
             width: 56.0,
           ),
         ),

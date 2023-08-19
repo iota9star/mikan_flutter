@@ -45,7 +45,7 @@ class Fonts extends StatelessWidget {
                     icon: const Icon(Icons.restart_alt_rounded),
                     onPressed: fontsModel.resetDefaultFont,
                   ),
-                )
+                ),
               ],
             ),
             _buildList(
@@ -127,7 +127,7 @@ class Fonts extends StatelessWidget {
                   ),
                 ),
                 sizedBoxW4,
-                _buildLoadingOrChecked(theme, model, font)
+                _buildLoadingOrChecked(theme, model, font),
               ],
             ),
             sizedBoxH4,

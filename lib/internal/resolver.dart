@@ -187,10 +187,15 @@ class Resolver {
         .querySelector('#login input[name=__RequestVerificationToken]')
         ?.attributes['value']
         ?.trim();
+    final rss = document
+        .querySelector('#an-episode-updates .mikan-rss')
+        ?.attributes['href']
+        ?.trim();
     return User(
       name: name,
       avatar: avatar == null ? null : MikanUrls.baseUrl + avatar,
       token: token,
+      rss: rss == null ? null : MikanUrls.baseUrl + rss,
     );
   }
 
@@ -603,8 +608,23 @@ class Resolver {
         } else {
           subgroupBangumi.name = temp!;
         }
-        subgroupBangumi.subscribed =
-            element.querySelector('.subscribed')?.text.trim() == '已订阅';
+        final subele = element.querySelector('.subscribed')!;
+        subgroupBangumi.subscribed = !subele.attributes.containsKey('style');
+        subgroupBangumi.sublang = subele.text;
+        if (subgroupBangumi.subscribed) {
+          if (subgroupBangumi.sublang == '简中') {
+            subgroupBangumi.state = 1;
+          } else if (subgroupBangumi.sublang == '繁中') {
+            subgroupBangumi.state = 2;
+          } else {
+            subgroupBangumi.state = 0;
+          }
+        } else {
+          subgroupBangumi.state = -1;
+        }
+        final rss =
+            element.querySelector('.mikan-rss')?.attributes['href']?.trim();
+        subgroupBangumi.rss = rss == null ? null : MikanUrls.baseUrl + rss;
         subgroups = [];
         elements = element.querySelectorAll('ul > li > a');
         if (elements.isSafeNotEmpty) {

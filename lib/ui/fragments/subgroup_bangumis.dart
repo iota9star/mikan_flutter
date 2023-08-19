@@ -46,14 +46,21 @@ class SubgroupBangumis extends StatelessWidget {
                   SliverPinnedAppBar(
                     title: subgroupBangumi.name,
                     actions: [
+                      if (!subgroupBangumi.rss.isNullOrBlank)
+                        IconButton(
+                          onPressed: () {
+                            subgroupBangumi.rss.copy();
+                          },
+                          icon: const Icon(Icons.rss_feed_rounded),
+                        ),
                       IconButton(
                         tooltip: '查看字幕组',
                         onPressed: () {
                           final subgroups = subgroupBangumi.subgroups;
                           showSelectSubgroupPanel(context, subgroups);
                         },
-                        icon: const Icon(Icons.person_outline_rounded),
-                      )
+                        icon: const Icon(Icons.group_rounded),
+                      ),
                     ],
                   ),
                   _buildList(

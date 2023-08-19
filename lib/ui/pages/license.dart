@@ -7,6 +7,7 @@ import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/kit.dart';
 import '../../mikan_routes.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
@@ -41,12 +42,10 @@ class LicenseList extends StatelessWidget {
                       child: Container(
                         height: 120.0,
                         width: 120.0,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage(
-                              'assets/mikan.png',
-                            ),
-                            colorFilter: ColorFilter.mode(
+                            image: Assets.mikan.provider(),
+                            colorFilter: const ColorFilter.mode(
                               Colors.grey,
                               BlendMode.color,
                             ),
@@ -146,7 +145,7 @@ class LicenseList extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
-                        'assets/mikan.png',
+                        Assets.mikan.path,
                         width: 36.0,
                       ),
                       sizedBoxW12,

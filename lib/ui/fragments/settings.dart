@@ -12,6 +12,7 @@ import '../../model/user.dart';
 import '../../providers/home_model.dart';
 import '../../providers/index_model.dart';
 import '../../providers/settings_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/bottom_sheet.dart';
 import '../../widget/ripple_tap.dart';
@@ -134,7 +135,7 @@ class SettingsPanel extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                 );
               },
-            )
+            ),
           ],
         ),
       ),
@@ -170,7 +171,7 @@ class SettingsPanel extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                 );
               },
-            )
+            ),
           ],
         ),
       ),
@@ -210,7 +211,7 @@ class SettingsPanel extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                 );
               },
-            )
+            ),
           ],
         ),
       ),
@@ -250,7 +251,7 @@ class SettingsPanel extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                 );
               },
-            )
+            ),
           ],
         ),
       ),
@@ -290,7 +291,7 @@ class SettingsPanel extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                 );
               },
-            )
+            ),
           ],
         ),
       ),
@@ -325,7 +326,7 @@ class SettingsPanel extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                 );
               },
-            )
+            ),
           ],
         ),
       ),
@@ -390,7 +391,7 @@ class SettingsPanel extends StatelessWidget {
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );
@@ -571,7 +572,7 @@ class SettingsPanel extends StatelessWidget {
                 });
               },
               child: const Text('确定'),
-            )
+            ),
           ],
         );
       },
@@ -613,7 +614,13 @@ class SettingsPanel extends StatelessWidget {
                 return Transform.translate(
                   offset: const Offset(8.0, 0.0),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      MBottomSheet.show(
+                        context,
+                        (context) =>
+                            const MBottomSheet(child: ThemeColorPanel()),
+                      );
+                    },
                     icon: Icon(
                       Icons.circle_rounded,
                       color: Color(colorSeed),
@@ -638,27 +645,13 @@ Widget buildAvatar(String? avatar) {
             width: 36.0,
             height: 36.0,
             loadingBuilder: (_, child, event) {
-              return event == null
-                  ? child
-                  : Image.asset(
-                      'assets/mikan.png',
-                      width: 36.0,
-                      height: 36.0,
-                    );
+              return event == null ? child : Assets.mikan.image(width: 36.0);
             },
             errorBuilder: (_, __, ___) {
-              return Image.asset(
-                'assets/mikan.png',
-                width: 36.0,
-                height: 36.0,
-              );
+              return Assets.mikan.image(width: 36.0);
             },
           )
-        : Image.asset(
-            'assets/mikan.png',
-            width: 36.0,
-            height: 36.0,
-          ),
+        : Assets.mikan.image(width: 36.0),
   );
 }
 

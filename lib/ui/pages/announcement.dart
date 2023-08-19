@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../internal/extension.dart';
 import '../../model/announcement.dart';
 import '../../providers/index_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/placeholder_text.dart';
 import '../../widget/sliver_pinned_header.dart';
@@ -36,10 +37,7 @@ class Announcements extends StatelessWidget {
                       child: Center(
                         child: Column(
                           children: [
-                            Image.asset(
-                              'assets/mikan.png',
-                              width: 64.0,
-                            ),
+                            Assets.mikan.image(width: 64.0),
                             sizedBoxH12,
                             Text(
                               '暂无数据',

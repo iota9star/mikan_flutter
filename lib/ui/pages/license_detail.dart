@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 
 import '../../internal/extension.dart';
 import '../../internal/kit.dart';
+import '../../res/assets.gen.dart';
 import '../../widget/sliver_pinned_header.dart';
 
 @FFRoute(name: '/license/detail')
@@ -52,12 +53,10 @@ class _LicenseDetailState extends State<LicenseDetail> {
                         child: Container(
                           height: 120.0,
                           width: 120.0,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage(
-                                'assets/mikan.png',
-                              ),
-                              colorFilter: ColorFilter.mode(
+                              image: Assets.mikan.provider(),
+                              colorFilter: const ColorFilter.mode(
                                 Colors.grey,
                                 BlendMode.color,
                               ),

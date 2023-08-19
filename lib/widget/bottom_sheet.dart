@@ -19,15 +19,20 @@ class MBottomSheet extends StatelessWidget {
     BuildContext context,
     WidgetBuilder builder, {
     Color? barrierColor,
+    bool isScrollControlled = true,
+    bool enableDrag = true,
+    bool isDismissible = true,
   }) {
     return showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      enableDrag: true,
-      isDismissible: true,
+      isScrollControlled: isScrollControlled,
+      enableDrag: enableDrag,
+      isDismissible: isDismissible,
       barrierColor: barrierColor,
-      backgroundColor: Colors.transparent,
+      backgroundColor:
+          Theme.of(context).colorScheme.primaryContainer.withOpacity(0.12),
       builder: builder,
+      elevation: 0.0,
     );
   }
 

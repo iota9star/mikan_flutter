@@ -14,8 +14,6 @@ import 'base_model.dart';
 class SubscribedModel extends BaseModel {
   SubscribedModel();
 
-  bool _seasonLoading = true;
-  bool _recordsLoading = true;
   Season? _season;
   List<Bangumi>? _bangumis;
   Map<String, List<RecordItem>>? _rss;
@@ -36,10 +34,6 @@ class SubscribedModel extends BaseModel {
 
   List<RecordItem>? get records => _records;
 
-  bool get seasonLoading => _seasonLoading;
-
-  bool get recordsLoading => _recordsLoading;
-
   Season? get season => _season;
 
   List<Bangumi>? get bangumis => _bangumis;
@@ -53,18 +47,10 @@ class SubscribedModel extends BaseModel {
     final completer = Completer<IndicatorResult>();
     _completer = completer;
     Future(() {
-      _seasonLoading = true;
-      _recordsLoading = true;
       return Future.wait(
         [
-          _loadRecentRecords().whenComplete(() {
-            _recordsLoading = false;
-            notifyListeners();
-          }),
-          _loadMySubscribedSeasonBangumi(_season).whenComplete(() {
-            _seasonLoading = false;
-            notifyListeners();
-          })
+          _loadRecentRecords(),
+          _loadMySubscribedSeasonBangumi(_season),
         ],
       )
           .then((value) => IndicatorResult.success)
@@ -81,9 +67,11 @@ class SubscribedModel extends BaseModel {
       return;
     }
     _season = season;
-    final resp = await Repo.mySubscribedSeasonBangumi(season.year, season.season);
+    final resp =
+        await Repo.mySubscribedSeasonBangumi(season.year, season.season);
     if (resp.success) {
       _bangumis = resp.data;
+      notifyListeners();
     } else {
       '获取季度订阅失败 ${resp.msg ?? ''}'.toast();
     }
@@ -94,6 +82,7 @@ class SubscribedModel extends BaseModel {
     if (resp.success) {
       _records = resp.data ?? [];
       _rss = groupBy(resp.data ?? [], (it) => it.id!);
+      notifyListeners();
     } else {
       '获取最近更新失败 ${resp.msg ?? ''}'.toast();
     }

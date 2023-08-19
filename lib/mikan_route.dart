@@ -180,7 +180,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        builder: () => SearchFragment(
+        builder: () => Search(
           key: asT<Key?>(
             safeArguments['key'],
           ),

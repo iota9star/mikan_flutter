@@ -47,10 +47,7 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverPinnedAppBar(
-            title: '选择主题色',
-            borderRadius: borderRadiusT28,
-          ),
+          const SliverPinnedAppBar(title: '选择主题色'),
           if (_colorSchemePair != null)
             SliverToBoxAdapter(
               child: Padding(
@@ -80,7 +77,7 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
                             value: v,
                           );
                         },
-                      )
+                      ),
                     ],
                   ),
                 ),

@@ -13,7 +13,7 @@ import '../../providers/op_model.dart';
 import '../../providers/subgroup_model.dart';
 import '../../topvars.dart';
 import '../../widget/sliver_pinned_header.dart';
-import '../fragments/bangumi_sliver_grid.dart';
+import '../fragments/sliver_bangumi_list.dart';
 
 @FFRoute(name: '/subgroup')
 @immutable
@@ -71,7 +71,7 @@ class SubgroupPage extends StatelessWidget {
       pushPinnedChildren: true,
       children: <Widget>[
         _buildYearSeasonSection(theme, gallery.title),
-        BangumiSliverGridFragment(
+        SliverBangumiList(
           flag: gallery.title,
           bangumis: gallery.bangumis,
           handleSubscribe: (bangumi, flag) {

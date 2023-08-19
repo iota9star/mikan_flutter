@@ -28,7 +28,7 @@ Future<void> main(List<String> arguments) async {
       result.first.stdout.toString().trim().split('\n').last.split('/');
   final repo = [
     urlParts[urlParts.length - 2],
-    urlParts[urlParts.length - 1].split(' ').first.replaceAll('.git', '')
+    urlParts[urlParts.length - 1].split(' ').first.replaceAll('.git', ''),
   ].join('/');
   switch (Fun.values.firstWhere((e) => e.name == parse['fun'])) {
     case Fun.release:
@@ -106,7 +106,7 @@ Future<void> _release({
       'body': '',
       'draft': false,
       'prerelease': false,
-      'generate_release_notes': true
+      'generate_release_notes': true,
     });
     final response = await http.post(
       Uri.parse('https://api.github.com/repos/$repo/releases'),

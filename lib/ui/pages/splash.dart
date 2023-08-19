@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../internal/extension.dart';
 import '../../internal/kit.dart';
 import '../../mikan_routes.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../fragments/bangumi_cover_scroll_list.dart';
 
@@ -62,27 +63,24 @@ class _SplashPageState extends State<SplashPage> {
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(
-            'assets/mikan.png',
-            width: 42.0,
-            isAntiAlias: true,
-          ),
+          Assets.mikan.image(width: 42.0),
           sizedBoxW12,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Mikan Project',
-                style: theme.textTheme.titleMedium,
+                '马上进入',
+                style: theme.textTheme.titleMedium!.copyWith(height: 1.24),
               ),
               Text(
-                '点我进入',
-                style: theme.textTheme.bodySmall,
+                'Mikan Project',
+                style: theme.textTheme.bodySmall!.copyWith(height: 1.25),
               ),
             ],
           ),
         ],
       ),
+      extendedPadding: const EdgeInsets.symmetric(horizontal: 12.0),
     );
   }
 

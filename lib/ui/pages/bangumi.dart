@@ -12,12 +12,14 @@ import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
 import '../../mikan_routes.dart';
 import '../../providers/bangumi_model.dart';
+import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/bottom_sheet.dart';
 import '../../widget/icon_button.dart';
 import '../../widget/ripple_tap.dart';
 import '../../widget/scalable_tap.dart';
 import '../fragments/subgroup_bangumis.dart';
+import '../fragments/subgroup_subscribe.dart';
 
 @FFRoute(name: '/bangumi')
 @immutable
@@ -179,118 +181,144 @@ class BangumiPage extends StatelessWidget {
           for (final e in subgroups) {
             final length = e.value.records.length;
             final maxItemLen = length > 4 ? 4 : length;
-            subList.addAll([
-              sizedBoxH24,
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      e.value.name,
-                      style: theme.textTheme.titleLarge,
-                    ),
-                  ),
-                  Transform.translate(
-                    offset: const Offset(12.0, 0.0),
-                    child: IconButton(
-                      onPressed: () {
-                        _showSubgroupPanel(context, model, e.value.dataId);
-                      },
-                      icon: const Icon(Icons.east_rounded),
-                    ),
-                  ),
-                ],
-              ),
-              sizedBoxH12,
-              for (int index = 0; index < maxItemLen; index++)
-                () {
-                  final record = e.value.records[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: ScalableCard(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          Routes.record.name,
-                          arguments: Routes.record.d(url: record.url),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              record.title,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                            sizedBoxH12,
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Wrap(
-                                        runSpacing: 4.0,
-                                        spacing: 4.0,
-                                        children: [
-                                          if (record.size.isNotBlank)
-                                            Container(
-                                              padding: edgeH4V2,
-                                              decoration: BoxDecoration(
-                                                color: theme.secondary,
-                                                borderRadius: borderRadius4,
-                                              ),
-                                              child: Text(
-                                                record.size,
-                                                style: accentTagStyle,
-                                              ),
-                                            ),
-                                          if (!record.tags.isNullOrEmpty)
-                                            ...List.generate(
-                                              record.tags.length,
-                                              (index) {
-                                                return Container(
-                                                  padding: edgeH4V2,
-                                                  decoration: BoxDecoration(
-                                                    color: theme.primary,
-                                                    borderRadius: borderRadius4,
-                                                  ),
-                                                  child: Text(
-                                                    record.tags[index],
-                                                    style: primaryTagStyle,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                        ],
-                                      ),
-                                      sizedBoxH4,
-                                      Text(
-                                        record.publishAt,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: theme.textTheme.bodySmall,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                sizedBoxW8,
-                                TMSMenuButton(
-                                  torrent: record.torrent,
-                                  magnet: record.magnet,
-                                  share: record.share,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+            subList.addAll(
+              [
+                sizedBoxH24,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        e.value.name,
+                        style: theme.textTheme.titleLarge,
                       ),
                     ),
-                  );
-                }()
-            ]);
+                    sizedBoxW8,
+                    if (!e.value.rss.isNullOrBlank)
+                      ElevatedButton(
+                        onPressed: () {
+                          e.value.rss.copy();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(32.0, 32.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: borderRadius8,
+                          ),
+                        ),
+                        child: e.value.subscribed
+                            ? Row(
+                                children: [
+                                  const Icon(Icons.rss_feed_rounded),
+                                  sizedBoxW4,
+                                  Text(e.value.sublang!),
+                                ],
+                              )
+                            : const Icon(Icons.rss_feed_rounded),
+                      ),
+                    Transform.translate(
+                      offset: const Offset(12.0, 0.0),
+                      child: IconButton(
+                        onPressed: () {
+                          _showSubgroupPanel(context, model, e.value.dataId);
+                        },
+                        icon: const Icon(Icons.east_rounded),
+                      ),
+                    ),
+                  ],
+                ),
+                sizedBoxH12,
+                for (int index = 0; index < maxItemLen; index++)
+                  () {
+                    final record = e.value.records[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ScalableCard(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            Routes.record.name,
+                            arguments: Routes.record.d(url: record.url),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                record.title,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              sizedBoxH12,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Wrap(
+                                          runSpacing: 4.0,
+                                          spacing: 4.0,
+                                          children: [
+                                            if (record.size.isNotBlank)
+                                              Container(
+                                                padding: edgeH4V2,
+                                                decoration: BoxDecoration(
+                                                  color: theme.secondary,
+                                                  borderRadius: borderRadius4,
+                                                ),
+                                                child: Text(
+                                                  record.size,
+                                                  style: accentTagStyle,
+                                                ),
+                                              ),
+                                            if (!record.tags.isNullOrEmpty)
+                                              ...List.generate(
+                                                record.tags.length,
+                                                (index) {
+                                                  return Container(
+                                                    padding: edgeH4V2,
+                                                    decoration: BoxDecoration(
+                                                      color: theme.primary,
+                                                      borderRadius:
+                                                          borderRadius4,
+                                                    ),
+                                                    child: Text(
+                                                      record.tags[index],
+                                                      style: primaryTagStyle,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                          ],
+                                        ),
+                                        sizedBoxH4,
+                                        Text(
+                                          record.publishAt,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: theme.textTheme.bodySmall,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  sizedBoxW8,
+                                  TMSMenuButton(
+                                    torrent: record.torrent,
+                                    magnet: record.magnet,
+                                    share: record.share,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }(),
+              ],
+            );
             subTags.add(
               Tooltip(
                 message: e.value.name,
@@ -318,7 +346,7 @@ class BangumiPage extends StatelessWidget {
           }
         }
 
-        final scale = (50.0 + context.screenWidth) / context.screenWidth;
+        final scale = (64.0 + context.screenWidth) / context.screenWidth;
         final items = [
           Stack(
             children: [
@@ -399,7 +427,7 @@ class BangumiPage extends StatelessWidget {
                                       e.value,
                                       softWrap: true,
                                       style: theme.textTheme.labelLarge,
-                                    )
+                                    ),
                                 ],
                               );
                               return index == detail.more.length - 1
@@ -421,7 +449,7 @@ class BangumiPage extends StatelessWidget {
                             '$title\n',
                             style: theme.textTheme.titleLarge
                                 ?.copyWith(color: theme.secondary),
-                            maxLines: 2,
+                            maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -439,11 +467,36 @@ class BangumiPage extends StatelessWidget {
             ),
           ),
           if (subTags.isNotEmpty) ...[
-            Text(
-              '字幕组',
-              style: theme.textTheme.titleLarge,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '字幕组',
+                    style: theme.textTheme.titleLarge,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    MBottomSheet.show(
+                      context,
+                      (context) => MBottomSheet(
+                        heightFactor: 0.78,
+                        child: SubgroupSubscribe(model),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(32.0, 32.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: borderRadius8,
+                    ),
+                  ),
+                  child: const Icon(Icons.edit_note_rounded),
+                ),
+              ],
             ),
-            sizedBoxH12,
+            sizedBoxH4,
             Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
@@ -490,52 +543,42 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildCover(String cover) {
-    return ScalableCard(
-      onTap: () {},
-      child: Image(
-        image: CacheImage(cover),
-        width: 148.0,
-        loadingBuilder: (_, child, event) {
-          return event == null
-              ? child
-              : AspectRatio(
-                  aspectRatio: 3 / 4,
-                  child: Hero(
-                    tag: heroTag,
+    return Hero(
+      tag: heroTag,
+      child: ScalableCard(
+        onTap: () {},
+        child: Image(
+          image: CacheImage(cover),
+          width: 148.0,
+          loadingBuilder: (_, child, event) {
+            return event == null
+                ? child
+                : AspectRatio(
+                    aspectRatio: 3 / 4,
                     child: Container(
                       padding: edge28,
                       child: Center(
-                        child: Image.asset(
-                          'assets/mikan.png',
-                        ),
+                        child: Assets.mikan.image(),
                       ),
                     ),
-                  ),
-                );
-        },
-        errorBuilder: (_, __, ___) {
-          return AspectRatio(
-            aspectRatio: 3 / 4,
-            child: Hero(
-              tag: heroTag,
+                  );
+          },
+          errorBuilder: (_, __, ___) {
+            return AspectRatio(
+              aspectRatio: 3 / 4,
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/mikan.png'),
+                    image: Assets.mikan.provider(),
                     fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(Colors.grey, BlendMode.color),
+                    colorFilter:
+                        const ColorFilter.mode(Colors.grey, BlendMode.color),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-        frameBuilder: (_, child, ___, ____) {
-          return Hero(
-            tag: heroTag,
-            child: child,
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

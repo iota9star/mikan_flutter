@@ -62,7 +62,7 @@ class HttpCacheManager {
           _tasks.remove(url);
           throw value;
         }),
-      completer.future
+      completer.future,
     ]);
   }
 

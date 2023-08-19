@@ -43,8 +43,6 @@ class Announcement extends HiveObject {
   }
 }
 
-
-
 @HiveType(typeId: MyHive.mikanAnnouncementNode)
 class AnnouncementNode extends HiveObject {
   AnnouncementNode({

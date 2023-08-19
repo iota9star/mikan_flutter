@@ -101,7 +101,7 @@ class _PinedHeader extends StatelessWidget {
                       showSearchPanel(context);
                     },
                     icon: const Icon(Icons.search_rounded),
-                  )
+                  ),
                 ],
         );
       },

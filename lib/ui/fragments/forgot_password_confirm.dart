@@ -27,7 +27,7 @@ class ForgotPasswordConfirm extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );

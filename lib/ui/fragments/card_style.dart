@@ -35,9 +35,16 @@ class CardStyle extends StatelessWidget {
                         label: Text('样式$v'),
                       );
                     }),
-                    onSelectionChanged: (v){
+                    onSelectionChanged: (v) {
                       MyHive.setCardStyle(v.first);
                     },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.resolveWith((states) {
+                        return const RoundedRectangleBorder(
+                          borderRadius: borderRadius12,
+                        );
+                      }),
+                    ),
                     selected: {value},
                   );
                 },

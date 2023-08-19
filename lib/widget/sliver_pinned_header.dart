@@ -103,6 +103,15 @@ class SliverPinnedAppBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: theme.colorScheme.background,
                     borderRadius: borderRadius,
+                    border: offsetRatio > 0.1
+                        ? Border(
+                            bottom: Divider.createBorderSide(
+                              context,
+                              color: theme.colorScheme.outlineVariant,
+                              width: 0.0,
+                            ),
+                          )
+                        : const Border(),
                   ),
                   padding: EdgeInsetsDirectional.only(
                     start: lp,
