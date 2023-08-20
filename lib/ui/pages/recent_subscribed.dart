@@ -3,12 +3,15 @@ import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 @FFArgumentImport()
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
+import '../../internal/kit.dart';
 import '../../mikan_routes.dart';
 @FFArgumentImport()
 import '../../model/record_item.dart';
+import '../../providers/index_model.dart';
 import '../../providers/recent_subscribed_model.dart';
 import '../../topvars.dart';
 import '../../widget/sliver_pinned_header.dart';
@@ -40,7 +43,25 @@ class RecentSubscribedPage extends StatelessWidget {
                 onLoad: model.loadMore,
                 child: CustomScrollView(
                   slivers: [
-                    const SliverPinnedAppBar(title: '最近更新'),
+                    SliverPinnedAppBar(
+                      title: '最近更新',
+                      actions: [
+                        Selector<IndexModel, String?>(
+                          selector: (_, model) => model.user?.rss,
+                          builder: (context, rss, child) {
+                            if (rss.isNullOrBlank) {
+                              return const SizedBox.shrink();
+                            }
+                            return IconButton(
+                              onPressed: () {
+                                rss.copy();
+                              },
+                              icon: const Icon(Icons.rss_feed_rounded),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                     _buildList(theme),
                   ],
                 ),
@@ -58,17 +79,17 @@ class RecentSubscribedPage extends StatelessWidget {
       sliver: Selector<RecentSubscribedModel, List<RecordItem>>(
         selector: (_, model) => model.records,
         shouldRebuild: (pre, next) => pre.ne(next),
-        builder: (_, records, __) {
-          return SliverGrid(
-            gridDelegate: const SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 400.0,
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
-              mainAxisExtent: 164.0,
+        builder: (context, records, __) {
+          final margins = context.margins;
+          return SliverWaterfallFlow(
+            gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 300.0,
+              crossAxisSpacing: margins,
+              mainAxisSpacing: margins,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final RecordItem record = records[index];
+                final record = records[index];
                 return RssRecordItem(
                   index: index,
                   record: record,

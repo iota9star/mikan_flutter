@@ -1,10 +1,12 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 @FFArgumentImport()
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../internal/extension.dart';
 import '../../internal/kit.dart';
 import '../../internal/lifecycle.dart';
+import '../../providers/home_model.dart';
 import '../fragments/index.dart';
 import '../fragments/list.dart';
 import '../fragments/select_tablet_mode.dart';
@@ -21,6 +23,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<HomeModel>(context, listen: false).checkAppVersion();
+  }
 
   @override
   Widget build(BuildContext context) {

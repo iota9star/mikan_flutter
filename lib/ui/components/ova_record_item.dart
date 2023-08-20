@@ -22,11 +22,11 @@ class OVARecordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accentTagStyle = theme.textTheme.labelSmall?.copyWith(
-      color: theme.secondary.isDark ? Colors.white : Colors.black,
+    final tagStyle = theme.textTheme.labelSmall!.copyWith(
+      color: theme.colorScheme.onTertiaryContainer,
     );
-    final primaryTagStyle = accentTagStyle?.copyWith(
-      color: theme.primary.isDark ? Colors.white : Colors.black,
+    final sizeStyle = theme.textTheme.labelSmall!.copyWith(
+      color: theme.colorScheme.onSecondaryContainer,
     );
     return ScalableCard(
       onTap: onTap,
@@ -57,14 +57,14 @@ class OVARecordItem extends StatelessWidget {
                         children: [
                           if (record.size.isNotBlank)
                             Container(
-                              padding: edgeH4V2,
+                              padding: edgeH6V4,
                               decoration: BoxDecoration(
-                                color: theme.secondary,
-                                borderRadius: borderRadius4,
+                                color: theme.colorScheme.secondaryContainer,
+                                borderRadius: borderRadius8,
                               ),
                               child: Text(
                                 record.size,
-                                style: accentTagStyle,
+                                style: sizeStyle,
                               ),
                             ),
                           if (!record.tags.isNullOrEmpty)
@@ -72,14 +72,14 @@ class OVARecordItem extends StatelessWidget {
                               record.tags.length,
                               (index) {
                                 return Container(
-                                  padding: edgeH4V2,
+                                  padding: edgeH6V4,
                                   decoration: BoxDecoration(
-                                    color: theme.primary,
-                                    borderRadius: borderRadius4,
+                                    color: theme.colorScheme.tertiaryContainer,
+                                    borderRadius: borderRadius8,
                                   ),
                                   child: Text(
                                     record.tags[index],
-                                    style: primaryTagStyle,
+                                    style: tagStyle,
                                   ),
                                 );
                               },

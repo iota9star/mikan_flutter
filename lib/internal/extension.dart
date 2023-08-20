@@ -120,7 +120,7 @@ extension NullableStringExt on String? {
     }
     Future doOtherAction() async {
       if (await canLaunchUrlString(this!)) {
-        await launchUrlString(this!);
+        await launchUrlString(this!, mode: LaunchMode.externalApplication);
       } else {
         '未找到可打开应用'.toast();
       }

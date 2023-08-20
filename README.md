@@ -20,56 +20,33 @@
 
 **如果本项目对你有所帮助的话，可以 `star` 支持一下，谢谢**
 
-## Screenshot
+## Screenshot  
 
 <table>
   <tr>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-42-48-34_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-42-54-09_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-42-58-40_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-04-99_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/IMG_0348.PNG"></td>
+    <td><img alt="" src="static/screenshot/IMG_0349.PNG"></td>
+    <td><img alt="" src="static/screenshot/IMG_0350.PNG"></td>
   <tr>
   <tr>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-11-83_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-18-67_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-30-02_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-45-87_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/IMG_0352.PNG"></td>
+    <td><img alt="" src="static/screenshot/IMG_0353.PNG"></td>
+    <td><img alt="" src="static/screenshot/IMG_0354.PNG"></td>
   <tr>
   <tr>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-43-54-88_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-11-25_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-19-63_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-27-87_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/IMG_0355.PNG"></td>
+    <td><img alt="" src="static/screenshot/IMG_0356.PNG"></td>
+    <td><img alt="" src="static/screenshot/IMG_0358.PNG"></td>
   <tr>
   <tr>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-32-25_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-44-44-69_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-45-02-78_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-45-11-72_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/IMG_0359.PNG"></td>
+    <td><img alt="" src="static/screenshot/IMG_0360.PNG"></td>
+    <td><img alt="" src="static/screenshot/IMG_0361.PNG"></td>
   <tr>
   <tr>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-45-59-43_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-02-94_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-17-06_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-37-02_8b62dbcb4bfbe8a.jpg"></td>
-  <tr>
-  <tr>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-41-07_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-51-79_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-46-58-65_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-16-28_8b62dbcb4bfbe8a.jpg"></td>
-  <tr>
-  <tr>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-36-70_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-41-34_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-51-35_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-47-57-52_8b62dbcb4bfbe8a.jpg"></td>
-  <tr>
-  <tr>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-49-35-08_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-14-49-41-09_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-15-15-41-62_8b62dbcb4bfbe8a.jpg"></td>
-    <td><img alt="" src="static/screenshot/Screenshot_2022-09-14-15-15-45-41_8b62dbcb4bfbe8a.jpg"></td>
+    <td><img alt="" src="static/screenshot/img.png"></td>
+    <td><img alt="" src="static/screenshot/img_1.png"></td>
+    <td><img alt="" src="static/screenshot/img_2.png"></td>
   <tr>
 </table>
 

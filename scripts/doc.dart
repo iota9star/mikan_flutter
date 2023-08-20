@@ -43,7 +43,7 @@ String getScreenshots() {
   final screenshotDir = Directory('static${Platform.pathSeparator}screenshot');
   final screenshots = screenshotDir.listSync(recursive: true);
   screenshots.sort((a, b) => a.path.compareTo(b.path));
-  final parts = partition(screenshots, 4);
+  final parts = partition(screenshots, 3);
   final sb = StringBuffer('## Screenshot  \n\n');
   sb.writeln('<table>');
   for (final part in parts) {

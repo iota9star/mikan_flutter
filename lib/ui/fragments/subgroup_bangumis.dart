@@ -91,19 +91,8 @@ class SubgroupBangumis extends StatelessWidget {
           return SliverWaterfallFlow(
             delegate: SliverChildBuilderDelegate(
               (context, ind) {
-                final RecordItem record = records[ind];
-                return SimpleRecordItem(
-                  index: ind,
-                  theme: theme,
-                  record: record,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.record.name,
-                      arguments: Routes.record.d(url: record.url),
-                    );
-                  },
-                );
+                final record = records[ind];
+                return SimpleRecordItem(record: record);
               },
               childCount: records.length,
             ),

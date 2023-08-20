@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import '../../internal/extension.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
-import '../../mikan_routes.dart';
 import '../../providers/bangumi_model.dart';
 import '../../res/assets.gen.dart';
 import '../../topvars.dart';
@@ -18,6 +17,7 @@ import '../../widget/bottom_sheet.dart';
 import '../../widget/icon_button.dart';
 import '../../widget/ripple_tap.dart';
 import '../../widget/scalable_tap.dart';
+import '../components/simple_record_item.dart';
 import '../fragments/subgroup_bangumis.dart';
 import '../fragments/subgroup_subscribe.dart';
 
@@ -77,7 +77,18 @@ class BangumiPage extends StatelessWidget {
                       builder: (_, ratio, __) {
                         final bgc = headerBackgroundColor.transform(ratio);
                         return Container(
-                          decoration: BoxDecoration(color: bgc),
+                          decoration: BoxDecoration(
+                            color: bgc,
+                            border: ratio > 0.1
+                                ? Border(
+                                    bottom: Divider.createBorderSide(
+                                      context,
+                                      color: theme.colorScheme.outlineVariant,
+                                      width: 0.0,
+                                    ),
+                                  )
+                                : null,
+                          ),
                           padding: EdgeInsets.only(
                             top: 12.0 + context.statusBarHeight,
                             left: 12.0,
@@ -161,12 +172,6 @@ class BangumiPage extends StatelessWidget {
     ThemeData theme,
     BangumiModel model,
   ) {
-    final accentTagStyle = theme.textTheme.labelSmall?.copyWith(
-      color: theme.secondary.isDark ? Colors.white : Colors.black,
-    );
-    final primaryTagStyle = accentTagStyle?.copyWith(
-      color: theme.primary.isDark ? Colors.white : Colors.black,
-    );
     final safeArea = MediaQuery.of(context).padding;
     return Selector<BangumiModel, int>(
       selector: (_, model) => model.refreshFlag,
@@ -228,102 +233,19 @@ class BangumiPage extends StatelessWidget {
                 ),
                 sizedBoxH12,
                 for (int index = 0; index < maxItemLen; index++)
-                  () {
-                    final record = e.value.records[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: ScalableCard(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            Routes.record.name,
-                            arguments: Routes.record.d(url: record.url),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                record.title,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                              sizedBoxH12,
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Wrap(
-                                          runSpacing: 4.0,
-                                          spacing: 4.0,
-                                          children: [
-                                            if (record.size.isNotBlank)
-                                              Container(
-                                                padding: edgeH4V2,
-                                                decoration: BoxDecoration(
-                                                  color: theme.secondary,
-                                                  borderRadius: borderRadius4,
-                                                ),
-                                                child: Text(
-                                                  record.size,
-                                                  style: accentTagStyle,
-                                                ),
-                                              ),
-                                            if (!record.tags.isNullOrEmpty)
-                                              ...List.generate(
-                                                record.tags.length,
-                                                (index) {
-                                                  return Container(
-                                                    padding: edgeH4V2,
-                                                    decoration: BoxDecoration(
-                                                      color: theme.primary,
-                                                      borderRadius:
-                                                          borderRadius4,
-                                                    ),
-                                                    child: Text(
-                                                      record.tags[index],
-                                                      style: primaryTagStyle,
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                          ],
-                                        ),
-                                        sizedBoxH4,
-                                        Text(
-                                          record.publishAt,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: theme.textTheme.bodySmall,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  sizedBoxW8,
-                                  TMSMenuButton(
-                                    torrent: record.torrent,
-                                    magnet: record.magnet,
-                                    share: record.share,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }(),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: SimpleRecordItem(
+                      record: e.value.records[index],
+                    ),
+                  ),
               ],
             );
             subTags.add(
               Tooltip(
                 message: e.value.name,
                 child: RippleTap(
-                  color: theme.secondary.withOpacity(0.1),
+                  color: theme.colorScheme.surfaceVariant,
                   borderRadius: borderRadius8,
                   onTap: () {
                     _showSubgroupPanel(context, model, e.key);
@@ -337,7 +259,9 @@ class BangumiPage extends StatelessWidget {
                       e.value.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelLarge,
+                      style: theme.textTheme.labelLarge!.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 ),
@@ -475,7 +399,7 @@ class BangumiPage extends StatelessWidget {
                     style: theme.textTheme.titleLarge,
                   ),
                 ),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: () {
                     MBottomSheet.show(
                       context,
@@ -486,17 +410,18 @@ class BangumiPage extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(32.0, 32.0),
+                    minimumSize: const Size(0.0, 32.0),
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     shape: const RoundedRectangleBorder(
                       borderRadius: borderRadius8,
                     ),
                   ),
-                  child: const Icon(Icons.edit_note_rounded),
+                  icon: const Icon(Icons.edit_note_rounded),
+                  label: const Text('订阅管理'),
                 ),
               ],
             ),
-            sizedBoxH4,
+            sizedBoxH8,
             Wrap(
               spacing: 8.0,
               runSpacing: 8.0,

@@ -70,8 +70,8 @@ class SelectSeasonFragment extends StatelessWidget {
                 message: season.title,
                 child: RippleTap(
                   color: selected
-                      ? theme.primary.withOpacity(0.38)
-                      : theme.secondary.withOpacity(0.1),
+                      ? theme.colorScheme.primaryContainer
+                      : theme.colorScheme.surfaceVariant,
                   borderRadius: borderRadius8,
                   onTap: () {
                     Navigator.pop(context);
@@ -85,7 +85,11 @@ class SelectSeasonFragment extends StatelessWidget {
                     child: Text(
                       season.season,
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.labelLarge,
+                      style: theme.textTheme.labelLarge!.copyWith(
+                        color: selected
+                            ? theme.colorScheme.onPrimaryContainer
+                            : theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 ),
@@ -112,6 +116,12 @@ class SelectSeasonFragment extends StatelessWidget {
             return emptySliverToBoxAdapter;
           }
           return SliverGrid(
+            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 400.0,
+              crossAxisSpacing: context.margins,
+              mainAxisSpacing: context.margins,
+              mainAxisExtent: 40.0,
+            ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final YearSeason year = years[index];
@@ -146,12 +156,6 @@ class SelectSeasonFragment extends StatelessWidget {
                 );
               },
               childCount: years.length,
-            ),
-            gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 400.0,
-              crossAxisSpacing: context.margins,
-              mainAxisSpacing: context.margins,
-              mainAxisExtent: 40.0,
             ),
           );
         },

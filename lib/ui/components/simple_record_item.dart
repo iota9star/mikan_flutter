@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../internal/extension.dart';
+import '../../mikan_routes.dart';
 import '../../model/record_item.dart';
 import '../../topvars.dart';
 import '../../widget/icon_button.dart';
@@ -10,29 +11,35 @@ import '../../widget/scalable_tap.dart';
 class SimpleRecordItem extends StatelessWidget {
   const SimpleRecordItem({
     super.key,
-    required this.index,
     required this.record,
-    required this.onTap,
-    required this.theme,
   });
 
-  final int index;
   final RecordItem record;
-  final ThemeData theme;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final accentTagStyle = theme.textTheme.labelMedium!.copyWith(
-      color: theme.colorScheme.onSecondary,
+    final theme = Theme.of(context);
+    final tagStyle = theme.textTheme.labelSmall!.copyWith(
+      color: theme.colorScheme.onTertiaryContainer,
     );
-    final primaryTagStyle = accentTagStyle.copyWith(
-      color: theme.colorScheme.onPrimary,
+    final sizeStyle = theme.textTheme.labelSmall!.copyWith(
+      color: theme.colorScheme.onSecondaryContainer,
     );
     return ScalableCard(
-      onTap: onTap,
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          Routes.record.name,
+          arguments: Routes.record.d(url: record.url),
+        );
+      },
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          top: 16.0,
+          bottom: 4.0,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -41,53 +48,39 @@ class SimpleRecordItem extends StatelessWidget {
               style: theme.textTheme.bodyMedium,
             ),
             sizedBoxH8,
+            Wrap(
+              runSpacing: 6.0,
+              spacing: 6.0,
+              children: [
+                if (record.size.isNotBlank)
+                  Container(
+                    padding: edgeH6V4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer,
+                      borderRadius: borderRadius8,
+                    ),
+                    child: Text(record.size, style: sizeStyle),
+                  ),
+                if (!record.tags.isNullOrEmpty)
+                  for (final tag in record.tags)
+                    Container(
+                      padding: edgeH6V4,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.tertiaryContainer,
+                        borderRadius: borderRadius8,
+                      ),
+                      child: Text(tag, style: tagStyle),
+                    ),
+              ],
+            ),
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Wrap(
-                        runSpacing: 4.0,
-                        spacing: 4.0,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          if (record.size.isNotBlank)
-                            Container(
-                              padding: edgeH4V2,
-                              decoration: BoxDecoration(
-                                color: theme.secondary,
-                                borderRadius: borderRadius4,
-                              ),
-                              child: Text(
-                                record.size,
-                                style: accentTagStyle,
-                              ),
-                            ),
-                          if (!record.tags.isNullOrEmpty)
-                            ...List.generate(record.tags.length, (index) {
-                              return Container(
-                                padding: edgeH4V2,
-                                decoration: BoxDecoration(
-                                  color: theme.primary,
-                                  borderRadius: borderRadius4,
-                                ),
-                                child: Text(
-                                  record.tags[index],
-                                  style: primaryTagStyle,
-                                ),
-                              );
-                            }),
-                        ],
-                      ),
-                      sizedBoxH4,
-                      Text(
-                        record.publishAt,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ],
+                  child: Text(
+                    record.publishAt,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall,
                   ),
                 ),
                 sizedBoxW8,

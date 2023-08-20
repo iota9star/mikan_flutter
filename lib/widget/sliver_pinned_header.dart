@@ -111,7 +111,7 @@ class SliverPinnedAppBar extends StatelessWidget {
                               width: 0.0,
                             ),
                           )
-                        : const Border(),
+                        : null,
                   ),
                   padding: EdgeInsetsDirectional.only(
                     start: lp,

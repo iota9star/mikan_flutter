@@ -97,18 +97,7 @@ class Search extends StatelessWidget {
             delegate: SliverChildBuilderDelegate(
               (_, index) {
                 final record = records[index];
-                return SimpleRecordItem(
-                  index: index,
-                  record: record,
-                  theme: theme,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.record.name,
-                      arguments: Routes.record.d(url: record.url),
-                    );
-                  },
-                );
+                return SimpleRecordItem(record: record);
               },
               childCount: records!.length,
             ),
@@ -266,8 +255,8 @@ class Search extends StatelessWidget {
         final selected = subgroup.id == subgroupId;
         return RippleTap(
           color: selected
-              ? theme.primary.withOpacity(0.38)
-              : theme.secondary.withOpacity(0.1),
+              ? theme.colorScheme.primaryContainer
+              : theme.colorScheme.surfaceVariant,
           borderRadius: borderRadius8,
           onTap: () {
             searchModel.subgroupId = subgroup.id;
@@ -281,7 +270,11 @@ class Search extends StatelessWidget {
               subgroup.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.labelLarge,
+              style: theme.textTheme.labelLarge!.copyWith(
+                color: selected
+                    ? theme.colorScheme.onPrimaryContainer
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         );

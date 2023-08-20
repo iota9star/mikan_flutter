@@ -29,6 +29,7 @@ const edge10 = EdgeInsets.all(10.0);
 const edge12 = EdgeInsets.all(12.0);
 const edge6 = EdgeInsets.all(6.0);
 const edge4 = EdgeInsets.all(4.0);
+const edgeH6V4 = EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0);
 const edge2 = EdgeInsets.all(2.0);
 const edgeV4 = EdgeInsets.symmetric(vertical: 4.0);
 const edgeV8 = EdgeInsets.symmetric(vertical: 8.0);

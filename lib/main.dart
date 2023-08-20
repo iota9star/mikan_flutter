@@ -100,31 +100,27 @@ class MikanApp extends StatefulWidget {
 class _MikanAppState extends State<MikanApp> {
   StreamSubscription<ConnectivityResult>? _subscription;
 
-  void _subscribeConnectivityChange() {
-    _subscription = Connectivity().onConnectivityChanged.listen((result) {
-      switch (result) {
-        case ConnectivityResult.wifi:
-          '您正在使用 WiFi网络'.toast();
-        case ConnectivityResult.mobile:
-          '您正在使用 移动网络'.toast();
-        case ConnectivityResult.none:
-          '您已断开 网络'.toast();
-        case ConnectivityResult.ethernet:
-          '您正在使用 以太网'.toast();
-        case ConnectivityResult.bluetooth:
-          '您正在使用 蓝牙网络'.toast();
-        case ConnectivityResult.vpn:
-          '您正在使用 VPN'.toast();
-        case ConnectivityResult.other:
-          '您正在使用 未知网络'.toast();
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    _subscribeConnectivityChange();
+    _subscription = Connectivity().onConnectivityChanged.listen((result) {
+      switch (result) {
+        case ConnectivityResult.wifi:
+          '正在使用 WiFi网络'.toast();
+        case ConnectivityResult.mobile:
+          '正在使用 移动网络'.toast();
+        case ConnectivityResult.none:
+          '网络已断开'.toast();
+        case ConnectivityResult.ethernet:
+          '正在使用 以太网'.toast();
+        case ConnectivityResult.bluetooth:
+          '正在使用 蓝牙网络'.toast();
+        case ConnectivityResult.vpn:
+          '正在使用 VPN'.toast();
+        case ConnectivityResult.other:
+          '正在使用 未知网络'.toast();
+      }
+    });
   }
 
   @override

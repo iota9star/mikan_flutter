@@ -26,13 +26,6 @@ class ListRecordItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final subgroups = record.groups;
-    final accentTagStyle = theme.textTheme.labelSmall?.copyWith(
-      color: theme.secondary.isDark ? Colors.white : Colors.black,
-      height: 1.25,
-    );
-    final primaryTagStyle = accentTagStyle?.copyWith(
-      color: theme.primary.isDark ? Colors.white : Colors.black,
-    );
     final subgroupsName = subgroups.map((e) => e.name).join('/');
     return ScalableCard(
       onTap: onTap,
@@ -65,7 +58,7 @@ class ListRecordItem extends StatelessWidget {
                               width: 40.0,
                               height: 40.0,
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.tertiary,
+                                color: theme.colorScheme.primaryContainer,
                                 shape: BoxShape.circle,
                               ),
                               alignment: AlignmentDirectional.center,
@@ -78,9 +71,7 @@ class ListRecordItem extends StatelessWidget {
                                     .join(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  color: theme.colorScheme.tertiary.isDark
-                                      ? Colors.white
-                                      : Colors.black,
+                                  color: theme.colorScheme.onPrimaryContainer,
                                 ),
                                 minFontSize: 8.0,
                               ),
@@ -121,7 +112,7 @@ class ListRecordItem extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: edgeH16,
             child: Text(
               record.title,
               style: theme.textTheme.bodySmall,
@@ -135,33 +126,36 @@ class ListRecordItem extends StatelessWidget {
               bottom: 20.0,
             ),
             child: Wrap(
-              runSpacing: 4.0,
-              spacing: 4.0,
-              crossAxisAlignment: WrapCrossAlignment.center,
+              runSpacing: 6.0,
+              spacing: 6.0,
               children: [
                 if (record.size.isNotBlank)
                   Container(
-                    padding: edgeH4V2,
+                    padding: edgeH6V4,
                     decoration: BoxDecoration(
-                      color: theme.secondary,
-                      borderRadius: borderRadius4,
+                      color: theme.colorScheme.secondaryContainer,
+                      borderRadius: borderRadius8,
                     ),
                     child: Text(
                       record.size,
-                      style: accentTagStyle,
+                      style: theme.textTheme.labelSmall!.copyWith(
+                        color: theme.colorScheme.onSecondaryContainer,
+                      ),
                     ),
                   ),
                 if (!record.tags.isNullOrEmpty)
                   ...List.generate(record.tags.length, (index) {
                     return Container(
-                      padding: edgeH4V2,
+                      padding: edgeH6V4,
                       decoration: BoxDecoration(
-                        color: theme.primary,
-                        borderRadius: borderRadius4,
+                        color: theme.colorScheme.tertiaryContainer,
+                        borderRadius: borderRadius8,
                       ),
                       child: Text(
                         record.tags[index],
-                        style: primaryTagStyle,
+                        style: theme.textTheme.labelSmall!.copyWith(
+                          color: theme.colorScheme.onTertiaryContainer,
+                        ),
                       ),
                     );
                   }),

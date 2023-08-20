@@ -64,13 +64,15 @@ class Record extends StatelessWidget {
                           return Container(
                             decoration: BoxDecoration(
                               color: bgc,
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: ratio >= 0.99
-                                      ? theme.colorScheme.surfaceVariant
-                                      : Colors.transparent,
-                                ),
-                              ),
+                              border: ratio > 0.1
+                                  ? Border(
+                                      bottom: Divider.createBorderSide(
+                                        context,
+                                        color: theme.colorScheme.outlineVariant,
+                                        width: 0.0,
+                                      ),
+                                    )
+                                  : null,
                             ),
                             padding: EdgeInsets.only(
                               top: 12.0 + context.statusBarHeight,
@@ -140,7 +142,7 @@ class Record extends StatelessWidget {
     RecordDetailModel model,
   ) {
     final safeArea = MediaQuery.of(context).padding;
-    final scale = (50.0 + context.screenWidth) / context.screenWidth;
+    final scale = (64.0 + context.screenWidth) / context.screenWidth;
     return Positioned.fill(
       child: Selector<RecordDetailModel, RecordDetail?>(
         selector: (context, model) => model.recordDetail,
@@ -226,30 +228,27 @@ class Record extends StatelessWidget {
                   if (detail.title.isNotBlank)
                     Text(
                       detail.title,
-                      style: theme.textTheme.bodyLarge,
+                      style: theme.textTheme.bodyMedium,
                     ),
                   sizedBoxH8,
                   if (!detail.tags.isNullOrEmpty)
                     Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
+                      spacing: 6.0,
+                      runSpacing: 6.0,
                       children: [
                         ...List.generate(
                           detail.tags.length,
                           (index) {
                             return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                                vertical: 4.0,
-                              ),
+                              padding: edgeH6V4,
                               decoration: BoxDecoration(
-                                color: theme.secondary,
-                                borderRadius: borderRadius4,
+                                color: theme.colorScheme.surfaceVariant,
+                                borderRadius: borderRadius8,
                               ),
                               child: Text(
                                 detail.tags[index],
                                 style: theme.textTheme.labelMedium!.copyWith(
-                                  color: theme.colorScheme.onSecondary,
+                                  color: theme.colorScheme.onSurfaceVariant,
                                 ),
                               ),
                             );
@@ -412,14 +411,17 @@ class Record extends StatelessWidget {
         ),
       ),
     );
-    return Image(
-      image: CacheImage(url),
-      loadingBuilder: (_, child, event) {
-        return event == null ? child : placeholder;
-      },
-      errorBuilder: (_, __, ___) {
-        return placeholder;
-      },
+    return ClipRRect(
+      borderRadius: borderRadius12,
+      child: Image(
+        image: CacheImage(url),
+        loadingBuilder: (_, child, event) {
+          return event == null ? child : placeholder;
+        },
+        errorBuilder: (_, __, ___) {
+          return placeholder;
+        },
+      ),
     );
   }
 }

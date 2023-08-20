@@ -46,7 +46,7 @@ class SubgroupSubscribe extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Text(
-                  '注：\n仅会显示订阅/RSS时适用，番组详情列表仍为全部条目。\n选择语言时未选中对应的值，说明当前字幕组不支持订阅选择的语言',
+                  '注：\n仅会显示订阅/RSS时适用，番组详情列表仍为全部条目。\n如果选择语言时最终未选中选择的值，说明当前字幕组不支持订阅选择的语言。',
                   style: theme.textTheme.bodyMedium,
                 ),
               ),

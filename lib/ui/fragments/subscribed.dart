@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
+import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
@@ -369,7 +371,7 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
     final String bangumiCover = record.cover;
     final String bangumiId = entry.key;
     final String badge = recordsLength > 99 ? '99+' : '+$recordsLength';
-    final String currFlag = 'rss:$bangumiId:$bangumiCover';
+    final String currFlag = 'rss:$bangumiId:$bangumiCover:$index';
     return Padding(
       padding: const EdgeInsetsDirectional.only(
         start: 24.0,
@@ -439,32 +441,14 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
             record.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleSmall!.copyWith(
-              color: Colors.white,
-              shadows: [
-                const BoxShadow(
-                  color: Colors.black38,
-                  blurRadius: 2.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
+            style: theme.textTheme.titleSmall,
           ),
           if (record.publishAt.isNotBlank)
             Text(
               record.publishAt,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall!.copyWith(
-                color: Colors.white.withOpacity(0.87),
-                shadows: [
-                  const BoxShadow(
-                    color: Colors.black38,
-                    blurRadius: 2.0,
-                    spreadRadius: 2.0,
-                  ),
-                ],
-              ),
+              style: theme.textTheme.bodySmall,
             ),
         ],
       ),
@@ -519,13 +503,20 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
           if (records.isNullOrEmpty) {
             return emptySliverToBoxAdapter;
           }
-          return SliverGrid(
+          final margins = context.margins;
+          return SliverWaterfallFlow(
+            gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+              minCrossAxisExtent: 400.0,
+              crossAxisSpacing: margins,
+              mainAxisSpacing: margins,
+            ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final record = records[index];
                 return RssRecordItem(
                   index: index,
                   record: record,
+                  enableHero: false,
                   onTap: () {
                     Navigator.pushNamed(
                       context,
@@ -536,12 +527,6 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
                 );
               },
               childCount: records!.length,
-            ),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 400.0,
-              crossAxisSpacing: context.margins,
-              mainAxisSpacing: context.margins,
-              mainAxisExtent: 164.0,
             ),
           );
         },
@@ -561,11 +546,13 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
         return SliverToBoxAdapter(
           child: Padding(
             padding: edge24,
-            child: ElevatedButton(
-              onPressed: () {
-                _toRecentSubscribedPage(context);
-              },
-              child: const Text('查看更多'),
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  _toRecentSubscribedPage(context);
+                },
+                child: const Text('查看更多'),
+              ),
             ),
           ),
         );

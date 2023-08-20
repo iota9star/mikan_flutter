@@ -49,7 +49,13 @@ class ListFragment extends StatelessWidget {
           if (records.isEmpty) {
             return emptySliverToBoxAdapter;
           }
+          final margins = context.margins;
           return SliverWaterfallFlow(
+            gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+              crossAxisSpacing: margins,
+              mainAxisSpacing: margins,
+              minCrossAxisExtent: 300.0,
+            ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final record = records[index];
@@ -66,11 +72,6 @@ class ListFragment extends StatelessWidget {
                 );
               },
               childCount: records.length,
-            ),
-            gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-              crossAxisSpacing: context.margins,
-              mainAxisSpacing: context.margins,
-              minCrossAxisExtent: 360.0,
             ),
           );
         },

@@ -1,17 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../internal/extension.dart';
 import '../internal/hive.dart';
-import '../internal/http.dart';
 import '../internal/log.dart';
 import '../internal/repo.dart';
-import '../res/assets.gen.dart';
 import '../topvars.dart';
 import '../widget/bottom_sheet.dart';
+import '../widget/sliver_pinned_header.dart';
 import 'base_model.dart';
 
 class HomeModel extends BaseModel {
@@ -30,20 +29,32 @@ class HomeModel extends BaseModel {
     _checkingUpgrade = true;
     notifyListeners();
     try {
-      final String pubspec = await rootBundle.loadString('assets/pubspec.yaml');
-      final String version =
-          "v${pubspec.split("\n").firstWhere((line) => line.startsWith("version:")).split(" ").last.split("+").first}";
-      final Resp resp = await Repo.release();
+      final packageInfo = await PackageInfo.fromPlatform();
+      final version = packageInfo.version.split('.').map(int.parse).toList();
+      final resp = await Repo.release();
       if (!resp.success) {
         return;
       }
-      final String lastVersion = resp.data['tag_name'];
-      final String ignoreVersion = MyHive.db.get(HiveDBKey.ignoreUpdateVersion);
-      // ignore update version.
+      final lastVersion = (resp.data['tag_name'] as String)
+          .replaceAllMapped(RegExp(r'[^\d.]'), (match) => '')
+          .split('.')
+          .map(int.parse)
+          .toList();
+      final ignoreVersion = MyHive.db.get(HiveDBKey.ignoreUpdateVersion);
       if (autoCheck && ignoreVersion == lastVersion) {
         return;
       }
-      if (lastVersion.compareTo(version) > 0) {
+      bool hasNewVersion = false;
+      for (var i = 0; i < 3; ++i) {
+        final o = version[i];
+        final n = lastVersion[i];
+        if (n > o) {
+          hasNewVersion = true;
+          break;
+        }
+      }
+      if (hasNewVersion) {
+        await Jiffy.setLocale('zh_cn');
         unawaited(
           // ignore: use_build_context_synchronously
           MBottomSheet.show(
@@ -66,159 +77,133 @@ class HomeModel extends BaseModel {
     }
   }
 
-  Material _buildUpgradeWidget(
+  Widget _buildUpgradeWidget(
     BuildContext context,
     Map<String, dynamic> release,
   ) {
-    final ThemeData theme = Theme.of(context);
-    final Color backgroundColor = theme.colorScheme.background;
-    final Color scaffoldBackgroundColor = theme.scaffoldBackgroundColor;
-    final Color accentTextColor =
-        theme.secondary.isDark ? Colors.white : Colors.black;
+    final theme = Theme.of(context);
     final jiffy = Jiffy.parse(release['published_at'])..add(hours: 8);
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              scaffoldBackgroundColor.withOpacity(0.87),
-              scaffoldBackgroundColor,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        padding: edgeHT16B24WithNavbarHeight(context),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Assets.mikan.image(width: 42.0),
-                sizedBoxW12,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '发现新版本，嘿嘿嘿...',
-                    ),
-                    Row(
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                const SliverPinnedAppBar(title: '发现新版本，嘿嘿嘿...'),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           padding: edgeH4,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                theme.secondary,
-                                theme.secondary.withOpacity(0.56),
-                              ],
-                            ),
                             borderRadius: borderRadius2,
+                            color: theme.colorScheme.error,
                           ),
-                          child: const Text(
-                            'New',
+                          child: Text(
+                            'New ${release["tag_name"]}',
+                            style: theme.textTheme.labelSmall!.copyWith(
+                              color: theme.colorScheme.onError,
+                            ),
                           ),
                         ),
-                        sizedBoxW4,
+                        sizedBoxH4,
                         Text(
-                          "${release["tag_name"]} ${jiffy.yMMMMEEEEdjm}",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                          '发布于 ${jiffy.yMMMMEEEEdjm}',
+                          style: theme.textTheme.bodySmall,
                         ),
                       ],
                     ),
-                  ],
+                  ),
+                ),
+                const SliverToBoxAdapter(child: sizedBoxH16),
+                SliverList.separated(
+                  itemBuilder: (context, index) {
+                    final item = release['assets'][index];
+                    return Padding(
+                      padding: edgeH24V12,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(item['name']),
+                                sizedBoxH8,
+                                Container(
+                                  padding: edgeH6V4,
+                                  decoration: BoxDecoration(
+                                    borderRadius: borderRadius8,
+                                    color: theme.colorScheme.primaryContainer,
+                                  ),
+                                  child: Text(
+                                    <String?>{
+                                          'arm64-v8a',
+                                          'armeabi-v7a',
+                                          'x86_64',
+                                          'universal',
+                                          'win32',
+                                        }.firstWhere(
+                                          (arch) => item['name'].contains(arch),
+                                          orElse: () => null,
+                                        ) ??
+                                        'universal',
+                                    style: theme.textTheme.labelSmall!.copyWith(
+                                      color:
+                                          theme.colorScheme.onPrimaryContainer,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              item['browser_download_url']
+                                  .toString()
+                                  .launchAppAndCopy();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(120.0, 36.0),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: borderRadius8,
+                              ),
+                              textStyle: const TextStyle(fontSize: 12.0),
+                            ),
+                            icon: const Icon(
+                              Icons.download_rounded,
+                              size: 16.0,
+                            ),
+                            label: Text(
+                              '${(item['size'] / 1024 / 1024).toStringAsFixed(2)}MB',
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  itemCount: (release['assets'] as List).length,
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                      thickness: 0.0,
+                      height: 1.0,
+                      indent: 24.0,
+                      endIndent: 24.0,
+                    );
+                  },
                 ),
               ],
             ),
-            sizedBoxH8,
-            Text(
-              '下载速度可能很慢哦，dddd.',
-              style: TextStyle(fontSize: 12.0, color: theme.primary),
+          ),
+          const Divider(thickness: 0.0, height: 1.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
             ),
-            for (final item in release['assets'])
-              Container(
-                margin: edgeV4,
-                padding: edge12,
-                decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: borderRadius8,
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          item['name'],
-                        ),
-                        spacer,
-                        MaterialButton(
-                          onPressed: () {
-                            item['browser_download_url']
-                                .toString()
-                                .launchAppAndCopy();
-                          },
-                          color: theme.secondary,
-                          minWidth: 32.0,
-                          height: 20.0,
-                          padding: EdgeInsets.zero,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          child: Icon(
-                            Icons.download_rounded,
-                            size: 14.0,
-                            color: accentTextColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                    sizedBoxH8,
-                    Row(
-                      children: [
-                        Container(
-                          margin: edgeR4,
-                          padding: edgeH4V2,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                theme.primary,
-                                theme.primary.withOpacity(0.56),
-                              ],
-                            ),
-                            borderRadius: borderRadius2,
-                          ),
-                          child: Text(
-                            <String?>{
-                                  'arm64-v8a',
-                                  'armeabi-v7a',
-                                  'x86_64',
-                                  'universal',
-                                  'win32',
-                                }.firstWhere(
-                                  (arch) => item['name'].contains(arch),
-                                  orElse: () => null,
-                                ) ??
-                                'universal',
-                          ),
-                        ),
-                        spacer,
-                        Text(
-                          (item['size'] / 1024 / 1024).toStringAsFixed(2) +
-                              'MB',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            sizedBoxH16,
-            Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
@@ -230,45 +215,36 @@ class HomeModel extends BaseModel {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(96.0, 36.0),
+                    minimumSize: const Size(0.0, 36.0),
                     shape: const RoundedRectangleBorder(
                       borderRadius: borderRadius8,
                     ),
-                    backgroundColor: scaffoldBackgroundColor,
+                    backgroundColor: theme.colorScheme.errorContainer,
                   ),
                   child: Text(
                     '下次一定',
                     style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w700,
-                      color: scaffoldBackgroundColor.isDark
-                          ? Colors.white
-                          : Colors.black,
+                      color: theme.colorScheme.onErrorContainer,
                     ),
                   ),
                 ),
                 sizedBoxW12,
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    release['html_url'].toString().launchAppAndCopy();
+                  },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(96.0, 36.0),
+                    minimumSize: const Size(0.0, 36.0),
                     shape: const RoundedRectangleBorder(
                       borderRadius: borderRadius8,
                     ),
                   ),
-                  child: Text(
-                    '前往下载',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w700,
-                      color: accentTextColor,
-                    ),
-                  ),
+                  child: const Text('前往下载'),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -248,6 +248,7 @@ class _IndexFragmentState extends State<IndexFragment> {
         }
         final simple = '🚀 ${records.length}条';
         final full = '更新${records.length}条记录';
+        final margins = context.margins;
         return MultiSliver(
           pushPinnedChildren: true,
           children: [
@@ -281,6 +282,11 @@ class _IndexFragmentState extends State<IndexFragment> {
             SliverPadding(
               padding: edgeH24B16T4,
               sliver: SliverWaterfallFlow(
+                gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+                  crossAxisSpacing: margins,
+                  mainAxisSpacing: margins,
+                  minCrossAxisExtent: 400.0,
+                ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     final record = records[index];
@@ -297,11 +303,6 @@ class _IndexFragmentState extends State<IndexFragment> {
                     );
                   },
                   childCount: records.length,
-                ),
-                gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-                  crossAxisSpacing: context.margins,
-                  mainAxisSpacing: context.margins,
-                  minCrossAxisExtent: 360.0,
                 ),
               ),
             ),

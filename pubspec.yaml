@@ -1,7 +1,7 @@
 name: mikan
 description: mikanani.me
 
-version: 1.2.0+66
+version: 1.2.1+67
 
 publish_to: none
 
@@ -49,6 +49,7 @@ dependencies:
   decimal: ^2.3.2
   flutter_smart_dialog: ^4.9.4
   infinite_carousel: ^1.0.3
+  package_info_plus: ^4.1.0
 
 dev_dependencies:
   flutter_test:

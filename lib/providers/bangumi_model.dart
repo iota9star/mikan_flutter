@@ -80,6 +80,7 @@ class BangumiModel extends BaseModel {
       _bangumiDetail!.subscribed,
     );
     if (resp.success) {
+      notifyListeners();
       await load();
     } else {
       return resp.msg.toast();

@@ -3,7 +3,7 @@
 
 #define MyAppName "MikanProject"
 #define MyAppEngName "MikanProject"
-#define MyAppVersion "1.2.0"
+#define MyAppVersion "1.2.1"
 #define MyAppPublisher "mikanani.me"
 #define MyAppURL "https://mikanani.me/"
 #define MyAppExeName "mikan.exe"

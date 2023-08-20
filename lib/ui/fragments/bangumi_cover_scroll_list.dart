@@ -70,6 +70,7 @@ class _BangumiCoverScrollListFragmentState
         .map((e) => e.bangumis)
         .expand((e) => e)
         .toList(growable: false);
+    bangumis.sort((a, b) => a.id.compareTo(b.id));
     final length = bangumis.length;
     if (length == 0) {
       return sizedBox;
