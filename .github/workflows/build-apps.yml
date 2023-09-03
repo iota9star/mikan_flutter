@@ -30,7 +30,6 @@ jobs:
           channel: stable
       - name: Build apks
         run: |
-          \cp -f pubspec.yaml assets/
           flutter pub get
           flutter build apk --release --tree-shake-icons
           flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --tree-shake-icons
@@ -77,7 +76,6 @@ jobs:
           channel: stable
       - name: Build windows
         run: |
-          Copy-Item -Path pubspec.yaml -Destination assets -Force
           flutter pub get
           flutter config --enable-windows-desktop
           flutter build windows --release --tree-shake-icons
@@ -106,7 +104,6 @@ jobs:
         env:
           MACOS_APP_RELEASE_PATH: build/macos/Build/Products/Release
         run: |
-          cp -f pubspec.yaml assets/
           flutter config --enable-macos-desktop
           flutter pub get
           flutter build macos --release --tree-shake-icons
