@@ -101,7 +101,7 @@ jobs:
         with:
           channel: stable
       - name: Set up xcode
-        uses: devbotsxyz/xcode-select@v1
+        uses: BoundfoxStudios/action-xcode-select@v1
       - name: Build macos
         env:
           MACOS_APP_RELEASE_PATH: build/macos/Build/Products/Release
