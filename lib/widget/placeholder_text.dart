@@ -138,7 +138,7 @@ class PlaceholderText extends StatelessWidget {
       onMatched ??
           (int position, Match matched) => TextSpan(
                 text: matched.group(1),
-                style: TextStyle(color: Theme.of(context).primaryColor),
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
       onText ?? (String value) => TextSpan(text: value),
     );

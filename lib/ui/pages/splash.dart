@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,9 @@ import '../../internal/extension.dart';
 import '../../internal/kit.dart';
 import '../../mikan_routes.dart';
 import '../../res/assets.gen.dart';
-import '../../topvars.dart';
-import '../fragments/bangumi_cover_scroll_list.dart';
+import '../../widget/background.dart';
+import '../../widget/placeholder_text.dart';
+import '../../widget/ripple_tap.dart';
 
 @FFRoute(name: '/splash')
 class SplashPage extends StatefulWidget {
@@ -21,15 +23,22 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   Timer? _timer;
 
+  final _counter = ValueNotifier(5);
+
   @override
   void initState() {
     super.initState();
-    _timer = Timer(const Duration(seconds: 6), () {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        Routes.index.name,
-        (_) => true,
-      );
+    int second = 5;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (--second == 0) {
+        timer.cancel();
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.index.name,
+          (_) => true,
+        );
+      }
+      _counter.value = second;
     });
   }
 
@@ -41,59 +50,53 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion(
-      value: lightSystemUiOverlayStyle,
-      child: Scaffold(
-        body: _buildSplash(context),
-      ),
-    );
-  }
-
-  Widget _buildAppIcon(BuildContext context) {
     final theme = Theme.of(context);
-    return FloatingActionButton.extended(
-      onPressed: () {
-        _timer?.cancel();
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          Routes.index.name,
-          (_) => true,
-        );
-      },
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Assets.mikan.image(width: 42.0),
-          sizedBoxW12,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '马上进入',
-                style: theme.textTheme.titleMedium!.copyWith(height: 1.24),
+    return AnnotatedRegion(
+      value: context.fitSystemUiOverlayStyle,
+      child: Scaffold(
+        body: RippleTap(
+          onTap: () {
+            _timer?.cancel();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              Routes.index.name,
+              (_) => true,
+            );
+          },
+          child: SizedBox.expand(
+            child: BubbleBackground(
+              colors: [
+                theme.colorScheme.primary,
+                theme.colorScheme.inversePrimary,
+                theme.colorScheme.secondary,
+                theme.colorScheme.tertiary,
+                theme.colorScheme.error,
+              ],
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 24.0, sigmaY: 24.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Assets.mikan.image(width: 120.0),
+                    PositionedDirectional(
+                      bottom: context.navBarHeight + 36.0,
+                      child: ValueListenableBuilder(
+                        valueListenable: _counter,
+                        builder: (context, v, child) {
+                          return PlaceholderText(
+                            '点击屏幕马上进入 ({$v秒})',
+                            style: theme.textTheme.bodyMedium,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                'Mikan Project',
-                style: theme.textTheme.bodySmall!.copyWith(height: 1.25),
-              ),
-            ],
+            ),
           ),
-        ],
-      ),
-      extendedPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-    );
-  }
-
-  Widget _buildSplash(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        const Positioned.fill(child: BangumiCoverScrollListFragment()),
-        PositionedDirectional(
-          bottom: context.screenHeight * 0.06,
-          child: _buildAppIcon(context),
         ),
-      ],
+      ),
     );
   }
 }

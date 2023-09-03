@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
-import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/http_cache_manager.dart';
 import '../../internal/kit.dart';
@@ -23,11 +22,11 @@ class Fonts extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final fontsModel = Provider.of<FontsModel>(context, listen: false);
-    final accentTagStyle = theme.textTheme.labelMedium!.copyWith(
-      color: theme.colorScheme.onSecondary,
+    final style1 = theme.textTheme.labelSmall!.copyWith(
+      color: theme.colorScheme.onTertiaryContainer,
     );
-    final primaryTagStyle = accentTagStyle.copyWith(
-      color: theme.colorScheme.onPrimary,
+    final style2 = theme.textTheme.labelSmall!.copyWith(
+      color: theme.colorScheme.onSecondaryContainer,
     );
     return Scaffold(
       body: EasyRefresh(
@@ -48,12 +47,35 @@ class Fonts extends StatelessWidget {
                 ),
               ],
             ),
-            _buildList(
-              context,
-              theme,
-              primaryTagStyle,
-              accentTagStyle,
-              fontsModel,
+            SliverPadding(
+              padding: edgeH24,
+              sliver: Selector<FontsModel, List<Font>>(
+                shouldRebuild: (pre, next) => pre.ne(next),
+                selector: (_, model) => model.fonts,
+                builder: (_, fonts, __) {
+                  return SliverWaterfallFlow(
+                    gridDelegate:
+                        SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 400.0,
+                      mainAxisSpacing: context.margins,
+                      crossAxisSpacing: context.margins,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (_, index) {
+                        final font = fonts[index];
+                        return _buildFontItem(
+                          theme,
+                          style1,
+                          style2,
+                          fontsModel,
+                          font,
+                        );
+                      },
+                      childCount: fonts.length,
+                    ),
+                  );
+                },
+              ),
             ),
             sliverSizedBoxH24WithNavBarHeight(context),
           ],
@@ -62,48 +84,10 @@ class Fonts extends StatelessWidget {
     );
   }
 
-  Widget _buildList(
-    BuildContext context,
-    ThemeData theme,
-    TextStyle primaryTagStyle,
-    TextStyle accentTagStyle,
-    FontsModel model,
-  ) {
-    return SliverPadding(
-      padding: edgeH24,
-      sliver: Selector<FontsModel, List<Font>>(
-        shouldRebuild: (pre, next) => pre.ne(next),
-        selector: (_, model) => model.fonts,
-        builder: (_, fonts, __) {
-          return SliverWaterfallFlow(
-            gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
-              minCrossAxisExtent: 400.0,
-              mainAxisSpacing: context.margins,
-              crossAxisSpacing: context.margins,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (_, index) {
-                final font = fonts[index];
-                return _buildFontItem(
-                  theme,
-                  primaryTagStyle,
-                  accentTagStyle,
-                  model,
-                  font,
-                );
-              },
-              childCount: fonts.length,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildFontItem(
     ThemeData theme,
-    TextStyle primaryTagStyle,
-    TextStyle accentTagStyle,
+    TextStyle style1,
+    TextStyle style2,
     FontsModel model,
     Font font,
   ) {
@@ -135,16 +119,13 @@ class Fonts extends StatelessWidget {
               children: [
                 RippleTap(
                   onTap: () {},
-                  color: theme.primary,
-                  borderRadius: borderRadius4,
+                  color: theme.colorScheme.tertiaryContainer,
+                  borderRadius: borderRadius8,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6.0,
-                      vertical: 2.0,
-                    ),
+                    padding: edgeH6V4,
                     child: Text(
                       '${font.files.length}个字体',
-                      style: primaryTagStyle,
+                      style: style1,
                     ),
                   ),
                 ),
@@ -153,16 +134,13 @@ class Fonts extends StatelessWidget {
                   onTap: () {
                     font.official.launchAppAndCopy();
                   },
-                  color: theme.secondary,
-                  borderRadius: borderRadius4,
+                  color: theme.colorScheme.secondaryContainer,
+                  borderRadius: borderRadius8,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6.0,
-                      vertical: 2.0,
-                    ),
+                    padding: edgeH6V4,
                     child: Text(
                       '官网',
-                      style: primaryTagStyle,
+                      style: style2,
                     ),
                   ),
                 ),
@@ -171,16 +149,13 @@ class Fonts extends StatelessWidget {
                   onTap: () {
                     font.license.url.launchAppAndCopy();
                   },
-                  color: theme.secondary,
-                  borderRadius: borderRadius4,
+                  color: theme.colorScheme.secondaryContainer,
+                  borderRadius: borderRadius8,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6.0,
-                      vertical: 2.0,
-                    ),
+                    padding: edgeH6V4,
                     child: Text(
                       font.license.name,
-                      style: accentTagStyle,
+                      style: style2,
                     ),
                   ),
                 ),

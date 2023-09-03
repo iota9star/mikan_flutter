@@ -29,8 +29,7 @@ class MBottomSheet extends StatelessWidget {
       enableDrag: enableDrag,
       isDismissible: isDismissible,
       barrierColor: barrierColor,
-      backgroundColor:
-          Theme.of(context).colorScheme.primaryContainer.withOpacity(0.12),
+      backgroundColor: Colors.transparent,
       builder: builder,
       elevation: 0.0,
     );
@@ -42,24 +41,28 @@ class MBottomSheet extends StatelessWidget {
       borderRadius: borderRadius28,
       child: child,
     );
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        bottom: 16.0 + navKey.currentContext!.navBarHeight,
-        top: heightFactor == 1.0
-            ? navKey.currentContext!.statusBarHeight + 16.0
-            : 16.0,
+    return Material(
+      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.12),
+      borderRadius: borderRadiusT28,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          bottom: 16.0 + navKey.currentContext!.navBarHeight,
+          top: heightFactor == 1.0
+              ? navKey.currentContext!.statusBarHeight + 16.0
+              : 16.0,
+        ),
+        child: height != null
+            ? SizedBox(
+                height: height,
+                child: clipRRect,
+              )
+            : FractionallySizedBox(
+                heightFactor: heightFactor,
+                child: clipRRect,
+              ),
       ),
-      child: height != null
-          ? SizedBox(
-              height: height,
-              child: clipRRect,
-            )
-          : FractionallySizedBox(
-              heightFactor: heightFactor,
-              child: clipRRect,
-            ),
     );
   }
 }

@@ -474,10 +474,9 @@ class SliverBangumiList extends StatelessWidget {
   ) {
     final image = FadeInImage(
       placeholder: Assets.mikan.provider(),
-      image: ResizeImage.resizeIfNeeded(
-        cacheWidth,
-        null,
+      image: ResizeImage(
         CacheImage(bangumi.cover),
+        width: cacheWidth,
       ),
       fit: BoxFit.cover,
       imageErrorBuilder: (_, __, ___) {

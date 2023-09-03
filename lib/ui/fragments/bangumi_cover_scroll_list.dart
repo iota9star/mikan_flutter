@@ -1,11 +1,13 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../internal/image_provider.dart';
+import '../../internal/kit.dart';
 import '../../model/bangumi_row.dart';
 import '../../providers/index_model.dart';
 import '../../topvars.dart';
+import 'sliver_bangumi_list.dart';
 
 class BangumiCoverScrollListFragment extends StatefulWidget {
   const BangumiCoverScrollListFragment({super.key});
@@ -14,45 +16,8 @@ class BangumiCoverScrollListFragment extends StatefulWidget {
   State<StatefulWidget> createState() => _BangumiCoverScrollListFragmentState();
 }
 
-const _kRate = 60;
-const _kScrollOffset = 360;
-const _kScrollDuration =
-    Duration(milliseconds: 1000 ~/ _kRate * _kScrollOffset);
-
 class _BangumiCoverScrollListFragmentState
     extends State<BangumiCoverScrollListFragment> {
-  final ScrollController _scrollController = ScrollController();
-
-  bool _animating = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      if (_animating) {
-        return;
-      }
-      if (_scrollController.hasClients) {
-        _animating = true;
-        _scrollController
-            .animateTo(
-          _scrollController.offset + _kScrollOffset,
-          duration: _kScrollDuration,
-          curve: Curves.linear,
-        )
-            .whenComplete(() {
-          _animating = false;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -69,28 +34,38 @@ class _BangumiCoverScrollListFragmentState
     final bangumis = bangumiRows
         .map((e) => e.bangumis)
         .expand((e) => e)
-        .toList(growable: false);
-    bangumis.sort((a, b) => a.id.compareTo(b.id));
+        .sortedBy((e) => e.id);
     final length = bangumis.length;
     if (length == 0) {
       return sizedBox;
     }
-    return WaterfallFlow.builder(
-      controller: _scrollController,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 320.0,
-        crossAxisSpacing: 24.0,
-        mainAxisSpacing: 24.0,
+    const maxCrossAxisExtent = 120.0;
+    const spacing = 8.0;
+    final size = calcGridItemSizeWithMaxCrossAxisExtent(
+      crossAxisExtent: context.screenWidth - spacing * 2,
+      maxCrossAxisExtent: maxCrossAxisExtent,
+      crossAxisSpacing: spacing,
+      childAspectRatio: 1.0,
+    );
+    final imageWidth = (size.width * context.devicePixelRatio).ceil();
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: maxCrossAxisExtent,
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
       ),
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(spacing),
       itemBuilder: (_, index) {
         final bangumi = bangumis[index % length];
         return ClipRRect(
-          borderRadius: borderRadius12,
+          borderRadius: borderRadius4,
           child: Image(
-            image: CacheImage(bangumi.cover),
+            image: ResizeImage(
+              CacheImage(bangumi.cover),
+              width: imageWidth,
+            ),
             fit: BoxFit.cover,
+            isAntiAlias: true,
             loadingBuilder: (
               context,
               child,

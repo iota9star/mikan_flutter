@@ -404,10 +404,9 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
                       child: SizedBox.expand(
                         child: FadeInImage(
                           placeholder: Assets.mikan.provider(),
-                          image: ResizeImage.resizeIfNeeded(
-                            (280.0 * context.devicePixelRatio).ceil(),
-                            null,
+                          image: ResizeImage(
                             CacheImage(bangumiCover),
+                            width: (280.0 * context.devicePixelRatio).ceil(),
                           ),
                           fit: BoxFit.cover,
                         ),

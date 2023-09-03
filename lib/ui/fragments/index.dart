@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
-import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
@@ -25,7 +24,7 @@ import '../../widget/bottom_sheet.dart';
 import '../../widget/ripple_tap.dart';
 import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
-import '../components/ova_record_item.dart';
+import '../components/simple_record_item.dart';
 import 'select_season.dart';
 import 'select_tablet_mode.dart';
 import 'settings.dart';
@@ -282,25 +281,15 @@ class _IndexFragmentState extends State<IndexFragment> {
             SliverPadding(
               padding: edgeH24B16T4,
               sliver: SliverWaterfallFlow(
-                gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+                gridDelegate: SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
                   crossAxisSpacing: margins,
                   mainAxisSpacing: margins,
-                  minCrossAxisExtent: 400.0,
+                  maxCrossAxisExtent: 400.0,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     final record = records[index];
-                    return OVARecordItem(
-                      index: index,
-                      record: record,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          Routes.record.name,
-                          arguments: Routes.record.d(url: record.url),
-                        );
-                      },
-                    );
+                    return SimpleRecordItem(record: record);
                   },
                   childCount: records.length,
                 ),
