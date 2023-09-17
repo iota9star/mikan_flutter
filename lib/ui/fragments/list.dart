@@ -5,12 +5,12 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../internal/delegate.dart';
 import '../../internal/kit.dart';
-import '../../mikan_routes.dart';
 import '../../providers/list_model.dart';
 import '../../topvars.dart';
 import '../../widget/sliver_pinned_header.dart';
+import '../../widget/transition_container.dart';
 import '../components/list_record_item.dart';
-import 'index.dart';
+import '../pages/search.dart';
 import 'select_tablet_mode.dart';
 
 @immutable
@@ -62,13 +62,6 @@ class ListFragment extends StatelessWidget {
                 return ListRecordItem(
                   index: index,
                   record: record,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.record.name,
-                      arguments: Routes.record.d(url: record.url),
-                    );
-                  },
                 );
               },
               childCount: records.length,
@@ -97,11 +90,14 @@ class _PinedHeader extends StatelessWidget {
           actions: isTablet
               ? null
               : [
-                  IconButton(
-                    onPressed: () {
-                      showSearchPanel(context);
+                  TransitionContainer(
+                    next: const SearchPage(),
+                    builder: (context, open) {
+                      return IconButton(
+                        onPressed: open,
+                        icon: const Icon(Icons.search_rounded),
+                      );
                     },
-                    icon: const Icon(Icons.search_rounded),
                   ),
                 ],
         );

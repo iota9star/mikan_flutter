@@ -12,18 +12,18 @@ import '../../internal/extension.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
 import '../../model/record_details.dart';
+import '../../model/record_item.dart';
 import '../../providers/op_model.dart';
 import '../../providers/record_detail_model.dart';
 import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/icon_button.dart';
 
-@FFRoute(name: '/record')
 @immutable
-class Record extends StatelessWidget {
-  Record({super.key, required this.url});
+class RecordPage extends StatelessWidget {
+  RecordPage({super.key, required this.record});
 
-  final String url;
+  final RecordItem record;
   final ValueNotifier<double> _scrollRatio = ValueNotifier(0);
 
   @override
@@ -36,7 +36,7 @@ class Record extends StatelessWidget {
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: ChangeNotifierProvider(
-        create: (_) => RecordDetailModel(url),
+        create: (_) => RecordDetailModel(record),
         child: Builder(
           builder: (context) {
             final model =
@@ -88,7 +88,7 @@ class Record extends StatelessWidget {
                                   Expanded(
                                     child: Selector<RecordDetailModel, String?>(
                                       selector: (_, model) =>
-                                          model.recordDetail?.name,
+                                          model.recordDetail.name,
                                       shouldRebuild: (pre, next) => pre != next,
                                       builder: (_, value, __) {
                                         if (value == null) {
@@ -108,14 +108,14 @@ class Record extends StatelessWidget {
                                 sizedBoxW16,
                                 IconButton(
                                   onPressed: () {
-                                    model.recordDetail?.share.share();
+                                    model.recordDetail.share.share();
                                   },
                                   icon: const Icon(Icons.share_rounded),
                                 ),
                                 _buildSubscribeBtn(context, theme, model),
                                 IconButton(
                                   onPressed: () {
-                                    model.recordDetail?.magnet
+                                    model.recordDetail.magnet
                                         .launchAppAndCopy();
                                   },
                                   icon: const Icon(Icons.downloading_rounded),
@@ -144,73 +144,67 @@ class Record extends StatelessWidget {
     final safeArea = MediaQuery.of(context).padding;
     final scale = (64.0 + context.screenWidth) / context.screenWidth;
     return Positioned.fill(
-      child: Selector<RecordDetailModel, RecordDetail?>(
+      child: Selector<RecordDetailModel, RecordDetail>(
         selector: (context, model) => model.recordDetail,
         shouldRebuild: (pre, next) => pre != next,
         builder: (context, detail, __) {
-          final list = detail == null
-              ? []
-              : [
-                  Stack(
-                    children: [
-                      if (!detail.cover.endsWith('noimageavailble_icon.png'))
-                        Positioned.fill(
-                          child: Transform.scale(
-                            scale: scale,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.fitWidth,
-                                  image: CacheImage(detail.cover),
-                                  alignment: Alignment.topCenter,
-                                  isAntiAlias: true,
-                                ),
-                              ),
-                              foregroundDecoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    theme.colorScheme.background
-                                        .withOpacity(0.64),
-                                    theme.colorScheme.background,
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  stops: const [0.0, 0.56],
-                                ),
-                              ),
-                            ),
+          final list = [
+            Stack(
+              children: [
+                if (!detail.cover.endsWith('noimageavailble_icon.png'))
+                  Positioned.fill(
+                    child: Transform.scale(
+                      scale: scale,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fitWidth,
+                            image: CacheImage(detail.cover),
+                            alignment: Alignment.topCenter,
+                            isAntiAlias: true,
                           ),
                         ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 120.0 + context.statusBarHeight,
+                        foregroundDecoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              theme.colorScheme.background.withOpacity(0.64),
+                              theme.colorScheme.background,
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: const [0.0, 0.56],
+                          ),
                         ),
-                        child: Row(
+                      ),
+                    ),
+                  ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: 120.0 + context.statusBarHeight,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildBangumiCover(context, detail),
+                      sizedBoxW16,
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildBangumiCover(context, detail),
-                            sizedBoxW16,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  sizedBoxH12,
-                                  AutoSizeText(
-                                    detail.name,
-                                    maxLines: 3,
-                                    style: theme.textTheme.titleLarge!.copyWith(
-                                      color: theme.colorScheme.secondary,
-                                    ),
-                                  ),
-                                  sizedBoxH8,
-                                  ...detail.more.entries.map(
-                                    (e) => Text(
-                                      '${e.key}: ${e.value}',
-                                      softWrap: true,
-                                      style: theme.textTheme.bodyLarge,
-                                    ),
-                                  ),
-                                ],
+                            sizedBoxH12,
+                            AutoSizeText(
+                              detail.name,
+                              maxLines: 3,
+                              style: theme.textTheme.titleLarge!.copyWith(
+                                color: theme.colorScheme.secondary,
+                              ),
+                            ),
+                            sizedBoxH8,
+                            ...detail.more.entries.map(
+                              (e) => Text(
+                                '${e.key}: ${e.value}',
+                                softWrap: true,
+                                style: theme.textTheme.bodyMedium,
                               ),
                             ),
                           ],
@@ -218,63 +212,81 @@ class Record extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Transform.scale(
-                    scale: scale,
-                    child: Container(
-                      color: theme.colorScheme.background,
-                      height: 36.0,
-                    ),
-                  ),
-                  if (detail.title.isNotBlank)
-                    Text(
-                      detail.title,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  sizedBoxH8,
-                  if (!detail.tags.isNullOrEmpty)
-                    Wrap(
-                      spacing: 6.0,
-                      runSpacing: 6.0,
-                      children: [
-                        ...List.generate(
-                          detail.tags.length,
-                          (index) {
-                            return Container(
-                              padding: edgeH6V4,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.surfaceVariant,
-                                borderRadius: borderRadius8,
-                              ),
-                              child: Text(
-                                detail.tags[index],
-                                style: theme.textTheme.labelMedium!.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                            );
-                          },
+                ),
+              ],
+            ),
+            Transform.scale(
+              scale: scale,
+              child: Container(
+                color: theme.colorScheme.background,
+                height: 36.0,
+              ),
+            ),
+            if (detail.title.isNotBlank)
+              Text(
+                detail.title,
+                style: theme.textTheme.bodyMedium,
+              ),
+            sizedBoxH8,
+            if (!detail.tags.isNullOrEmpty)
+              Wrap(
+                spacing: 6.0,
+                runSpacing: 6.0,
+                children: [
+                  if (record.size.isNotBlank)
+                    Container(
+                      padding: edgeH6V4,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.secondaryContainer,
+                        borderRadius: borderRadius8,
+                      ),
+                      child: Text(
+                        record.size,
+                        style: theme.textTheme.labelSmall!.copyWith(
+                          color: theme.colorScheme.onSecondaryContainer,
                         ),
-                      ],
+                      ),
                     ),
-                  sizedBoxH24,
-                  Text(
-                    '概况简介',
-                    style: theme.textTheme.titleLarge,
-                  ),
-                  sizedBoxH12,
-                  HtmlWidget(
-                    detail.intro,
-                    customWidgetBuilder: (element) {
-                      if (element.localName == 'img') {
-                        final String? src = element.attributes['src'];
-                        if (src.isNotBlank) {
-                          return _buildImageWidget(src!);
-                        }
-                      }
-                      return null;
+                  ...List.generate(
+                    detail.tags.length,
+                    (index) {
+                      return Container(
+                        padding: edgeH6V4,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.tertiaryContainer,
+                          borderRadius: borderRadius8,
+                        ),
+                        child: Text(
+                          detail.tags[index],
+                          style: theme.textTheme.labelMedium!.copyWith(
+                            color: theme.colorScheme.onTertiaryContainer,
+                          ),
+                        ),
+                      );
                     },
                   ),
-                ];
+                ],
+              ),
+            sizedBoxH24,
+            if (detail.intro.isNotEmpty)
+              Text(
+                '概况简介',
+                style: theme.textTheme.titleLarge,
+              ),
+            sizedBoxH12,
+            HtmlWidget(
+              detail.intro,
+              customWidgetBuilder: (element) {
+                if (element.localName == 'img') {
+                  final String? src = element.attributes['src'];
+                  if (src.isNotBlank) {
+                    return _buildImageWidget(src!);
+                  }
+                }
+                return null;
+              },
+            ),
+          ];
           return EasyRefresh(
             onRefresh: model.refresh,
             refreshOnStart: true,
@@ -348,13 +360,10 @@ class Record extends StatelessWidget {
     RecordDetailModel model,
   ) {
     return Selector<RecordDetailModel, bool>(
-      selector: (_, model) => model.recordDetail?.subscribed ?? false,
+      selector: (_, model) => model.recordDetail.subscribed,
       shouldRebuild: (pre, next) => pre != next,
       builder: (_, subscribed, __) {
         final recordDetail = model.recordDetail;
-        if (recordDetail == null) {
-          return const SizedBox();
-        }
         return subscribed
             ? IconButton(
                 tooltip: '取消订阅',
@@ -364,7 +373,7 @@ class Record extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.read<OpModel>().subscribeBangumi(
-                    recordDetail.id,
+                    recordDetail.id!,
                     recordDetail.subscribed,
                     onSuccess: () {
                       recordDetail.subscribed = !recordDetail.subscribed;
@@ -381,7 +390,7 @@ class Record extends StatelessWidget {
                 icon: const Icon(Icons.favorite_border_rounded),
                 onPressed: () {
                   context.read<OpModel>().subscribeBangumi(
-                    recordDetail.id,
+                    recordDetail.id!,
                     recordDetail.subscribed,
                     onSuccess: () {
                       recordDetail.subscribed = !recordDetail.subscribed;

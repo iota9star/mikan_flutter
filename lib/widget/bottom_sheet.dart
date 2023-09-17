@@ -42,7 +42,7 @@ class MBottomSheet extends StatelessWidget {
       child: child,
     );
     return Material(
-      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.12),
+      color: Theme.of(context).colorScheme.primary.withOpacity(0.12),
       borderRadius: borderRadiusT28,
       child: Padding(
         padding: EdgeInsets.only(

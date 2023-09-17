@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,21 +20,18 @@ import '../components/simple_record_item.dart';
 import '../fragments/subgroup_bangumis.dart';
 import '../fragments/subgroup_subscribe.dart';
 
-@FFRoute(name: '/bangumi')
 @immutable
 class BangumiPage extends StatelessWidget {
   BangumiPage({
     super.key,
     required this.bangumiId,
     required this.cover,
-    required this.heroTag,
-    this.title,
+    this.name,
   });
 
-  final String heroTag;
   final String bangumiId;
   final String cover;
-  final String? title;
+  final String? name;
 
   final ValueNotifier<double> _scrollRatio = ValueNotifier(0);
 
@@ -101,7 +97,7 @@ class BangumiPage extends StatelessWidget {
                               sizedBoxW16,
                               if (ratio > 0.88)
                                 Expanded(
-                                  child: title == null
+                                  child: name == null
                                       ? Selector<BangumiModel, String?>(
                                           selector: (_, model) =>
                                               model.bangumiDetail?.name,
@@ -120,7 +116,7 @@ class BangumiPage extends StatelessWidget {
                                           },
                                         )
                                       : Text(
-                                          title!,
+                                          name!,
                                           style: theme.textTheme.titleLarge,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -365,12 +361,12 @@ class BangumiPage extends StatelessWidget {
                           ],
                         ),
                       )
-                    else if (title != null)
+                    else if (name != null)
                       Expanded(
                         child: Tooltip(
-                          message: title,
+                          message: name,
                           child: AutoSizeText(
-                            '$title\n',
+                            '$name\n',
                             style: theme.textTheme.titleLarge
                                 ?.copyWith(color: theme.secondary),
                             maxLines: 3,
@@ -468,42 +464,39 @@ class BangumiPage extends StatelessWidget {
   }
 
   Widget _buildCover(String cover) {
-    return Hero(
-      tag: heroTag,
-      child: ScalableCard(
-        onTap: () {},
-        child: Image(
-          image: CacheImage(cover),
-          width: 148.0,
-          loadingBuilder: (_, child, event) {
-            return event == null
-                ? child
-                : AspectRatio(
-                    aspectRatio: 3 / 4,
-                    child: Container(
-                      padding: edge28,
-                      child: Center(
-                        child: Assets.mikan.image(),
-                      ),
+    return ScalableCard(
+      onTap: () {},
+      child: Image(
+        image: CacheImage(cover),
+        width: 148.0,
+        loadingBuilder: (_, child, event) {
+          return event == null
+              ? child
+              : AspectRatio(
+                  aspectRatio: 3 / 4,
+                  child: Container(
+                    padding: edge28,
+                    child: Center(
+                      child: Assets.mikan.image(),
                     ),
-                  );
-          },
-          errorBuilder: (_, __, ___) {
-            return AspectRatio(
-              aspectRatio: 3 / 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: Assets.mikan.provider(),
-                    fit: BoxFit.cover,
-                    colorFilter:
-                        const ColorFilter.mode(Colors.grey, BlendMode.color),
                   ),
+                );
+        },
+        errorBuilder: (_, __, ___) {
+          return AspectRatio(
+            aspectRatio: 3 / 4,
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: Assets.mikan.provider(),
+                  fit: BoxFit.cover,
+                  colorFilter:
+                      const ColorFilter.mode(Colors.grey, BlendMode.color),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

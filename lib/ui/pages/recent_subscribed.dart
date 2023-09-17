@@ -8,7 +8,6 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/kit.dart';
-import '../../mikan_routes.dart';
 @FFArgumentImport()
 import '../../model/record_item.dart';
 import '../../providers/index_model.dart';
@@ -93,14 +92,6 @@ class RecentSubscribedPage extends StatelessWidget {
                 return RssRecordItem(
                   index: index,
                   record: record,
-                  enableHero: false,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.record.name,
-                      arguments: Routes.record.d(url: record.url),
-                    );
-                  },
                 );
               },
               childCount: records.length,

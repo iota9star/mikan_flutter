@@ -23,7 +23,9 @@ import '../../res/assets.gen.dart';
 import '../../topvars.dart';
 import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
+import '../../widget/transition_container.dart';
 import '../components/rss_record_item.dart';
+import '../pages/bangumi.dart';
 import 'index.dart';
 import 'select_tablet_mode.dart';
 import 'sliver_bangumi_list.dart';
@@ -36,7 +38,7 @@ class SubscribedFragment extends StatefulWidget {
   State<SubscribedFragment> createState() => _SubscribedFragmentState();
 }
 
-class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
+class _SubscribedFragmentState extends LifecycleState<SubscribedFragment> {
   final _infiniteScrollController = InfiniteScrollController();
 
   Timer? _timer;
@@ -44,7 +46,12 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(milliseconds: 3600), (timer) {
+    _newTimer();
+  }
+
+  void _newTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(milliseconds: 3600), (_) {
       if (_infiniteScrollController.hasClients) {
         _infiniteScrollController.animateToItem(
           (_infiniteScrollController.offset / 280.0).round() + 1,
@@ -63,10 +70,14 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
   }
 
   @override
+  void onPause() {
+    _timer?.cancel();
+  }
+
+  @override
   void onResume() {
-    if (mounted) {
-      Provider.of<SubscribedModel>(context, listen: false).refresh();
-    }
+    _newTimer();
+    Provider.of<SubscribedModel>(context, listen: false).refresh();
   }
 
   @override
@@ -371,7 +382,6 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
     final String bangumiCover = record.cover;
     final String bangumiId = entry.key;
     final String badge = recordsLength > 99 ? '99+' : '+$recordsLength';
-    final String currFlag = 'rss:$bangumiId:$bangumiCover:$index';
     return Padding(
       padding: const EdgeInsetsDirectional.only(
         start: 24.0,
@@ -382,57 +392,52 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Stack(
-              children: [
-                ScalableCard(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.bangumi.name,
-                      arguments: Routes.bangumi.d(
-                        heroTag: currFlag,
-                        bangumiId: bangumiId,
-                        cover: bangumiCover,
-                        title: record.name,
-                      ),
-                    );
-                  },
-                  child: Hero(
-                    tag: currFlag,
-                    child: Tooltip(
-                      message: records.first.name,
-                      child: SizedBox.expand(
-                        child: FadeInImage(
-                          placeholder: Assets.mikan.provider(),
-                          image: ResizeImage(
-                            CacheImage(bangumiCover),
-                            width: (280.0 * context.devicePixelRatio).ceil(),
+            child: TransitionContainer(
+              next: BangumiPage(
+                bangumiId: bangumiId,
+                cover: bangumiCover,
+                name: record.name,
+              ),
+              builder: (context, open) {
+                return Stack(
+                  children: [
+                    ScalableCard(
+                      onTap: open,
+                      child: Tooltip(
+                        message: records.first.name,
+                        child: SizedBox.expand(
+                          child: FadeInImage(
+                            placeholder: Assets.mikan.provider(),
+                            image: ResizeImage(
+                              CacheImage(bangumiCover),
+                              width: (280.0 * context.devicePixelRatio).ceil(),
+                            ),
+                            fit: BoxFit.cover,
                           ),
-                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                  ),
-                ),
-                PositionedDirectional(
-                  end: 12.0,
-                  top: 12.0,
-                  child: Container(
-                    clipBehavior: Clip.antiAlias,
-                    decoration: ShapeDecoration(
-                      color: theme.colorScheme.error,
-                      shape: const StadiumBorder(),
-                    ),
-                    padding: edgeH6V2,
-                    child: Text(
-                      badge,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.onError,
+                    PositionedDirectional(
+                      end: 12.0,
+                      top: 12.0,
+                      child: Container(
+                        clipBehavior: Clip.antiAlias,
+                        decoration: ShapeDecoration(
+                          color: theme.colorScheme.error,
+                          shape: const StadiumBorder(),
+                        ),
+                        padding: edgeH6V2,
+                        child: Text(
+                          badge,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: theme.colorScheme.onError,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             ),
           ),
           sizedBoxH10,
@@ -512,18 +517,7 @@ class _SubscribedFragmentState extends LifecycleAppState<SubscribedFragment> {
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final record = records[index];
-                return RssRecordItem(
-                  index: index,
-                  record: record,
-                  enableHero: false,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.record.name,
-                      arguments: Routes.record.d(url: record.url),
-                    );
-                  },
-                );
+                return RssRecordItem(index: index, record: record);
               },
               childCount: records!.length,
             ),

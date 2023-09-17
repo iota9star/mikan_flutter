@@ -178,13 +178,7 @@ class _MikanAppState extends State<MikanApp> {
           ),
         ];
         return MaterialApp(
-          scrollBehavior: const ScrollBehavior().copyWith(
-            dragDevices: PointerDeviceKind.values.toSet(),
-            overscroll: true,
-            platform: TargetPlatform.iOS,
-            physics: const BouncingScrollPhysics(),
-            scrollbars: false,
-          ),
+          scrollBehavior: const AlwaysStretchScrollBehavior(),
           themeMode: mode,
           theme: ThemeData(
             useMaterial3: true,
@@ -300,6 +294,39 @@ class _ThemeProviderState extends LifecycleAppState<ThemeProvider> {
           },
         );
       },
+    );
+  }
+}
+
+class AlwaysStretchScrollBehavior extends ScrollBehavior {
+  const AlwaysStretchScrollBehavior()
+      : super(androidOverscrollIndicator: AndroidOverscrollIndicator.stretch);
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => PointerDeviceKind.values.toSet();
+
+  @override
+  TargetPlatform getPlatform(BuildContext context) => TargetPlatform.android;
+
+  @override
+  Widget buildScrollbar(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    return child;
+  }
+
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    return StretchingOverscrollIndicator(
+      axisDirection: details.direction,
+      clipBehavior: details.decorationClipBehavior ?? Clip.hardEdge,
+      child: child,
     );
   }
 }

@@ -1,7 +1,7 @@
 name: mikan
 description: mikanani.me
 
-version: 1.2.2+68
+version: 1.2.3+69
 
 publish_to: none
 
@@ -15,7 +15,7 @@ dependencies:
   firebase_core: ^2.13.0
   firebase_analytics: ^10.4.1
   firebase_crashlytics: ^3.3.1
-  path_provider: ^2.0.15
+  path_provider: ^2.1.1
   dio: ^5.1.2
   dio_cookie_manager: ^3.0.0
   html: ^0.15.3
@@ -23,9 +23,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   clipboard: ^0.1.3
-  url_launcher: ^6.1.11
+  url_launcher: ^6.1.14
   share_plus: ^7.0.1
-  flutter_widget_from_html_core: ^0.10.0
+  flutter_widget_from_html_core: ^0.10.5
   extended_sliver: ^2.1.3
   waterfall_flow: ^3.0.2
   jiffy: ^6.1.0
@@ -44,12 +44,13 @@ dependencies:
   async: ^2.10.0
   auto_size_text: ^3.0.0
   easy_refresh: ^3.3.2+1
-  window_manager: ^0.3.2
-  dynamic_color: ^1.6.5
+  window_manager: ^0.3.6
+  dynamic_color: ^1.6.7
   decimal: ^2.3.2
   flutter_smart_dialog: ^4.9.4
   infinite_carousel: ^1.0.3
   package_info_plus: ^4.1.0
+  animations: ^2.0.8
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +65,7 @@ dev_dependencies:
   flutter_gen_runner: ^5.3.1
   json_serializable: ^6.6.2
   hive_generator: ^2.0.0
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.3
   icons_launcher: ^2.1.0
   quiver: ^3.2.1
 

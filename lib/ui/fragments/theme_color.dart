@@ -77,6 +77,13 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
                             return Switch(
                               onChanged: (v) {
                                 MyHive.enableDynamicColor(v);
+                                if (v) {
+                                  theme.brightness == Brightness.light
+                                      ? _controller
+                                          .play(_colorSchemePair!.light.primary)
+                                      : _controller
+                                          .play(_colorSchemePair!.dark.primary);
+                                }
                                 setState(() {});
                               },
                               value: v,
@@ -101,6 +108,10 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
                       return ColorPicker(
                         color: color,
                         padding: EdgeInsets.zero,
+                        pickerTypeLabels: const {
+                          ColorPickerType.both: '主色调',
+                          ColorPickerType.wheel: '自定义',
+                        },
                         pickersEnabled: const <ColorPickerType, bool>{
                           ColorPickerType.both: true,
                           ColorPickerType.primary: false,
@@ -115,8 +126,8 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
                           if (v == color) {
                             return;
                           }
-                          _controller.play(v);
                           MyHive.setColorSeed(v);
+                          _controller.play(v);
                         },
                       );
                     },

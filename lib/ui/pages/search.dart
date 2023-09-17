@@ -1,4 +1,3 @@
-import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +10,6 @@ import '../../internal/hive.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
 import '../../internal/method.dart';
-import '../../mikan_routes.dart';
 import '../../model/bangumi.dart';
 import '../../model/record_item.dart';
 import '../../model/subgroup.dart';
@@ -21,11 +19,12 @@ import '../../topvars.dart';
 import '../../widget/ripple_tap.dart';
 import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
+import '../../widget/transition_container.dart';
 import '../components/simple_record_item.dart';
+import 'bangumi.dart';
 
-@FFRoute(name: '/search')
-class Search extends StatelessWidget {
-  const Search({super.key});
+class SearchPage extends StatelessWidget {
+  const SearchPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -392,64 +391,62 @@ class Search extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: ScalableCard(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  Routes.bangumi.name,
-                  arguments: Routes.bangumi.d(
-                    heroTag: currFlag,
-                    bangumiId: bangumi.id,
-                    cover: bangumi.cover,
-                    title: bangumi.name,
+            child: TransitionContainer(
+              builder: (context, open) {
+                return ScalableCard(
+                  onTap: open,
+                  child: Image(
+                    image: provider,
+                    loadingBuilder: (_, child, event) {
+                      return event == null
+                          ? child
+                          : Hero(
+                              tag: currFlag,
+                              child: Container(
+                                padding: edge28,
+                                child: Center(
+                                  child: Assets.mikan.image(),
+                                ),
+                              ),
+                            );
+                    },
+                    errorBuilder: (_, __, ___) {
+                      return Hero(
+                        tag: currFlag,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: Assets.mikan.provider(),
+                              fit: BoxFit.cover,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.grey,
+                                BlendMode.color,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    frameBuilder: (_, __, ___, ____) {
+                      return Hero(
+                        tag: currFlag,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: provider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
-              child: Image(
-                image: provider,
-                loadingBuilder: (_, child, event) {
-                  return event == null
-                      ? child
-                      : Hero(
-                          tag: currFlag,
-                          child: Container(
-                            padding: edge28,
-                            child: Center(
-                              child: Assets.mikan.image(),
-                            ),
-                          ),
-                        );
-                },
-                errorBuilder: (_, __, ___) {
-                  return Hero(
-                    tag: currFlag,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: Assets.mikan.provider(),
-                          fit: BoxFit.cover,
-                          colorFilter: const ColorFilter.mode(
-                            Colors.grey,
-                            BlendMode.color,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                frameBuilder: (_, __, ___, ____) {
-                  return Hero(
-                    tag: currFlag,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: provider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  );
-                },
+              next: BangumiPage(
+                bangumiId: bangumi.id,
+                cover: bangumi.cover,
+                name: bangumi.name,
               ),
             ),
           ),

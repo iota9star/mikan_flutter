@@ -7,11 +7,13 @@ import '../../internal/extension.dart';
 import '../../internal/kit.dart';
 import '../../internal/lifecycle.dart';
 import '../../providers/home_model.dart';
+import '../../widget/transition_container.dart';
 import '../fragments/index.dart';
 import '../fragments/list.dart';
 import '../fragments/select_tablet_mode.dart';
 import '../fragments/settings.dart';
 import '../fragments/subscribed.dart';
+import 'search.dart';
 
 @FFRoute(name: '/index')
 class HomePage extends StatefulWidget {
@@ -121,11 +123,14 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               SizedBox(height: 16.0 + context.statusBarHeight),
                               buildAvatarWithAction(context),
-                              IconButton(
-                                onPressed: () {
-                                  showSearchPanel(context);
+                              TransitionContainer(
+                                next: const SearchPage(),
+                                builder: (context, open) {
+                                  return IconButton(
+                                    onPressed: open,
+                                    icon: const Icon(Icons.search_rounded),
+                                  );
                                 },
-                                icon: const Icon(Icons.search_rounded),
                               ),
                             ],
                           ),

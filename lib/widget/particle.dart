@@ -3,61 +3,22 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class ParticleController {
-  ParticleWrapperState? _state;
+final _random = math.Random();
 
-  final _random = math.Random();
-
-  void play([Color color = Colors.blue]) {
-    final state = _state;
-    if (state == null) {
-      return;
-    }
-    final widget = state.widget;
-    state.particles = List.generate(
-      (_random.nextDouble() *
-                  (widget.maxNumberOfParticle - widget.minNumberOfParticle))
-              .toInt() +
-          widget.minNumberOfParticle,
-      (index) => Particle(
-        size: _random.nextDouble() * (widget.maxSize - widget.minSize) +
-            widget.minSize,
-        color: color,
-        percentOfDistance: _random.nextDouble() *
-                (widget.maxPercentOfDistance - widget.minPercentOfDistance) +
-            widget.minPercentOfDistance,
-        shape: ParticleShape.from(_random.nextDouble()),
-        speedOfRotate: _random.nextDouble() *
-                (widget.maxSpeedOfRotate - widget.minSpeedOfRotate) +
-            widget.minSpeedOfRotate,
-      ),
-    );
-    state._controller.reset();
-    state._controller.forward();
-  }
-
-  void _dispose() {
-    _state = null;
-  }
-}
-
-class ParticleWrapper extends StatefulWidget {
-  const ParticleWrapper({
-    super.key,
-    required this.controller,
+class ParticleController extends ChangeNotifier
+    implements ValueListenable<List<Particle>> {
+  ParticleController({
     this.maxSize = 10.0,
     this.minSize = 6.0,
-    this.maxPercentOfDistance = 0.9,
-    this.minPercentOfDistance = 0.7,
+    this.maxPercentOfDistance = 0.96,
+    this.minPercentOfDistance = 0.64,
     this.maxNumberOfParticle = 64,
     this.minNumberOfParticle = 48,
     this.maxSpeedOfRotate = 16.0,
     this.minSpeedOfRotate = 1.0,
     this.duration = const Duration(milliseconds: 2400),
-    this.child,
   });
 
-  final ParticleController controller;
   final double maxSize;
 
   final double minSize;
@@ -73,7 +34,42 @@ class ParticleWrapper extends StatefulWidget {
   final double minSpeedOfRotate;
   final Duration duration;
 
-  final Widget? child;
+  List<Particle> _particles = [];
+
+  void play(Color color) {
+    _particles = List.generate(
+      (_random.nextDouble() * (maxNumberOfParticle - minNumberOfParticle))
+              .toInt() +
+          minNumberOfParticle,
+      (index) => Particle(
+        size: _random.nextDouble() * (maxSize - minSize) + minSize,
+        color: color,
+        percentOfDistance: _random.nextDouble() *
+                (maxPercentOfDistance - minPercentOfDistance) +
+            minPercentOfDistance,
+        shape: ParticleShape.from(_random.nextDouble()),
+        speedOfRotate:
+            _random.nextDouble() * (maxSpeedOfRotate - minSpeedOfRotate) +
+                minSpeedOfRotate,
+      ),
+    );
+    notifyListeners();
+  }
+
+  @override
+  List<Particle> get value => _particles;
+}
+
+class ParticleWrapper extends StatefulWidget {
+  const ParticleWrapper({
+    super.key,
+    required this.controller,
+    required this.child,
+  });
+
+  final ParticleController controller;
+
+  final Widget child;
 
   @override
   ParticleWrapperState createState() => ParticleWrapperState();
@@ -82,39 +78,41 @@ class ParticleWrapper extends StatefulWidget {
 class ParticleWrapperState extends State<ParticleWrapper>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  List<Particle> particles = [];
 
   @override
   void initState() {
     super.initState();
-    widget.controller._state = this;
     _controller = AnimationController(
       vsync: this,
-      duration: widget.duration,
+      duration: widget.controller.duration,
     );
-    // _controller.addStatusListener((status) {
-    //   if (status == AnimationStatus.completed) {
-    //     _controller.reset();
-    //   }
-    // });
+    widget.controller.addListener(() {
+      _controller.reset();
+      _controller.forward();
+    });
   }
 
   @override
   void dispose() {
+    widget.controller.dispose();
     _controller.dispose();
-    widget.controller._dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      foregroundPainter: ParticlePainter(
-        particles: particles,
-        animation: _controller.view,
-        curve: Curves.fastLinearToSlowEaseIn,
-      ),
-      child: widget.child,
+    return ValueListenableBuilder(
+      valueListenable: widget.controller,
+      builder: (context, v, child) {
+        return CustomPaint(
+          foregroundPainter: ParticlePainter(
+            particles: v,
+            animation: _controller.view,
+            curve: Curves.fastLinearToSlowEaseIn,
+          ),
+          child: widget.child,
+        );
+      },
     );
   }
 }
@@ -127,11 +125,11 @@ enum ParticleShape {
   ;
 
   factory ParticleShape.from(double v) {
-    if (v < 0.1) {
+    if (v < 0.05) {
       return ParticleShape.circle;
-    } else if (v < 0.2) {
+    } else if (v < 0.1) {
       return ParticleShape.rectangle;
-    } else if (v < 0.3) {
+    } else if (v < 0.15) {
       return ParticleShape.triangle;
     } else {
       return ParticleShape.square;

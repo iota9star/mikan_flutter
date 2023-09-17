@@ -245,12 +245,17 @@ class ScalableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final color = ElevationOverlay.applySurfaceTint(
+      theme.cardColor,
+      colorScheme.surfaceTint,
+      1.0,
+    );
     return ScalableTap(
       onTap: onTap,
-      elevation: 1.0,
       type: MaterialType.card,
-      color: colorScheme.surface,
+      color: color,
       shadowColor: colorScheme.shadow,
       surfaceTintColor: colorScheme.surfaceTint,
       shape: const RoundedRectangleBorder(

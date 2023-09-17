@@ -3,13 +3,13 @@ import '../internal/extension.dart';
 import 'subgroup.dart';
 
 class RecordDetail {
-  late String id;
-  late String cover;
+  String? id;
+  String cover = '';
   late String name;
-  late bool subscribed;
-  late Map<String, String> more;
-  late String intro;
-  late List<Subgroup> subgroups = [];
+  bool subscribed = false;
+  Map<String, String> more = {};
+  String intro = '';
+  List<Subgroup> subgroups = [];
 
   // 详情地址
   late String url = '';

@@ -11,7 +11,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 import '../../internal/extension.dart';
 import '../../internal/image_provider.dart';
 import '../../internal/kit.dart';
-import '../../mikan_routes.dart';
+import '../../internal/lifecycle.dart';
 import '../../model/bangumi_row.dart';
 import '../../model/carousel.dart';
 import '../../model/record_item.dart';
@@ -22,9 +22,11 @@ import '../../providers/op_model.dart';
 import '../../topvars.dart';
 import '../../widget/bottom_sheet.dart';
 import '../../widget/ripple_tap.dart';
-import '../../widget/scalable_tap.dart';
 import '../../widget/sliver_pinned_header.dart';
+import '../../widget/transition_container.dart';
 import '../components/simple_record_item.dart';
+import '../pages/bangumi.dart';
+import '../pages/search.dart';
 import 'select_season.dart';
 import 'select_tablet_mode.dart';
 import 'settings.dart';
@@ -37,7 +39,7 @@ class IndexFragment extends StatefulWidget {
   State<StatefulWidget> createState() => _IndexFragmentState();
 }
 
-class _IndexFragmentState extends State<IndexFragment> {
+class _IndexFragmentState extends LifecycleState<IndexFragment> {
   final _infiniteScrollController = InfiniteScrollController();
 
   Timer? _timer;
@@ -45,6 +47,21 @@ class _IndexFragmentState extends State<IndexFragment> {
   @override
   void initState() {
     super.initState();
+    _newTimer();
+  }
+
+  @override
+  void onPause() {
+    _timer?.cancel();
+  }
+
+  @override
+  void onResume() {
+    _newTimer();
+  }
+
+  void _newTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(milliseconds: 3600), (timer) {
       _infiniteScrollController.animateToItem(
         (_infiniteScrollController.offset / 300.0).round() + 1,
@@ -184,8 +201,6 @@ class _IndexFragmentState extends State<IndexFragment> {
               child: InfiniteCarousel.builder(
                 itemBuilder: (context, index, realIndex) {
                   final carousel = carousels[index];
-                  final String currFlag =
-                      'carousel:$realIndex:${carousel.id}:${carousel.cover}';
                   final currentOffset = 300.0 * realIndex;
                   return AnimatedBuilder(
                     animation: _infiniteScrollController,
@@ -193,30 +208,25 @@ class _IndexFragmentState extends State<IndexFragment> {
                       final diff =
                           _infiniteScrollController.offset - currentOffset;
                       final ver = (diff / 36.0).abs();
-                      return Hero(
-                        tag: currFlag,
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: 24.0,
-                            top: (ver > 12.0 ? 12.0 : ver) + 8,
-                            bottom: 8.0,
-                          ),
-                          child: ScalableCard(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                Routes.bangumi.name,
-                                arguments: Routes.bangumi.d(
-                                  heroTag: currFlag,
-                                  bangumiId: carousel.id,
-                                  cover: carousel.cover,
-                                ),
-                              );
-                            },
-                            child: Image(
-                              fit: BoxFit.cover,
-                              image: CacheImage(carousel.cover),
-                            ),
+                      return Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          start: 24.0,
+                          top: (ver > 12.0 ? 12.0 : ver) + 8,
+                          bottom: 8.0,
+                        ),
+                        child: TransitionContainer(
+                          builder: (context, open) {
+                            return RippleTap(
+                              onTap: open,
+                              child: Image(
+                                fit: BoxFit.cover,
+                                image: CacheImage(carousel.cover),
+                              ),
+                            );
+                          },
+                          next: BangumiPage(
+                            bangumiId: carousel.id,
+                            cover: carousel.cover,
                           ),
                         ),
                       );
@@ -226,7 +236,6 @@ class _IndexFragmentState extends State<IndexFragment> {
                 controller: _infiniteScrollController,
                 itemExtent: 300.0,
                 itemCount: carousels.length,
-                center: false,
                 velocityFactor: 0.8,
               ),
             ),
@@ -300,10 +309,6 @@ class _IndexFragmentState extends State<IndexFragment> {
       },
     );
   }
-}
-
-void showSearchPanel(BuildContext context) {
-  Navigator.pushNamed(context, Routes.search.name);
 }
 
 void showSettingsPanel(BuildContext context) {
@@ -381,15 +386,18 @@ class _PinedHeader extends StatelessWidget {
               ];
               if (!isTablet) {
                 children.add(
-                  RippleTap(
-                    onTap: () {
-                      showSearchPanel(context);
+                  TransitionContainer(
+                    next: const SearchPage(),
+                    builder: (context, open) {
+                      return RippleTap(
+                        onTap: open,
+                        shape: const CircleBorder(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(Icons.search_rounded),
+                        ),
+                      );
                     },
-                    shape: const CircleBorder(),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.search_rounded),
-                    ),
                   ),
                 );
                 children.add(buildAvatarWithAction(context));

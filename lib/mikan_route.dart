@@ -16,7 +16,6 @@ import '../../model/season_gallery.dart';
 import '../../model/subgroup.dart';
 import '../../model/year_season.dart';
 import 'ui/pages/announcement.dart';
-import 'ui/pages/bangumi.dart';
 import 'ui/pages/fonts.dart';
 import 'ui/pages/forgot_password.dart';
 import 'ui/pages/home.dart';
@@ -24,9 +23,7 @@ import 'ui/pages/license.dart';
 import 'ui/pages/license_detail.dart';
 import 'ui/pages/login.dart';
 import 'ui/pages/recent_subscribed.dart';
-import 'ui/pages/record.dart';
 import 'ui/pages/register.dart';
-import 'ui/pages/search.dart';
 import 'ui/pages/season_bangumi.dart';
 import 'ui/pages/single_season.dart';
 import 'ui/pages/splash.dart';
@@ -49,28 +46,6 @@ FFRouteSettings getRouteSettings({
         builder: () => Announcements(
           key: asT<Key?>(
             safeArguments['key'],
-          ),
-        ),
-      );
-    case '/bangumi':
-      return FFRouteSettings(
-        name: name,
-        arguments: arguments,
-        builder: () => BangumiPage(
-          key: asT<Key?>(
-            safeArguments['key'],
-          ),
-          bangumiId: asT<String>(
-            safeArguments['bangumiId'],
-          )!,
-          cover: asT<String>(
-            safeArguments['cover'],
-          )!,
-          heroTag: asT<String>(
-            safeArguments['heroTag'],
-          )!,
-          title: asT<String?>(
-            safeArguments['title'],
           ),
         ),
       );
@@ -153,34 +128,11 @@ FFRouteSettings getRouteSettings({
           ),
         ),
       );
-    case '/record':
-      return FFRouteSettings(
-        name: name,
-        arguments: arguments,
-        builder: () => Record(
-          key: asT<Key?>(
-            safeArguments['key'],
-          ),
-          url: asT<String>(
-            safeArguments['url'],
-          )!,
-        ),
-      );
     case '/register':
       return FFRouteSettings(
         name: name,
         arguments: arguments,
         builder: () => RegisterPage(
-          key: asT<Key?>(
-            safeArguments['key'],
-          ),
-        ),
-      );
-    case '/search':
-      return FFRouteSettings(
-        name: name,
-        arguments: arguments,
-        builder: () => Search(
           key: asT<Key?>(
             safeArguments['key'],
           ),
