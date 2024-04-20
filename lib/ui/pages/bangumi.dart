@@ -309,56 +309,58 @@ class BangumiPage extends StatelessWidget {
                     sizedBoxW16,
                     if (detail != null)
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Tooltip(
-                              message: detail.name,
-                              child: AutoSizeText(
-                                '${detail.name}\n',
-                                style: theme.textTheme.titleLarge
-                                    ?.copyWith(color: theme.secondary),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
+                        child: SelectionArea(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Tooltip(
+                                message: detail.name,
+                                child: AutoSizeText(
+                                  '${detail.name}\n',
+                                  style: theme.textTheme.titleLarge
+                                      ?.copyWith(color: theme.secondary),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                            sizedBoxH4,
-                            ...detail.more.entries.mapIndexed((index, e) {
-                              final child = Row(
-                                children: [
-                                  Text(
-                                    '${e.key}：',
-                                    softWrap: true,
-                                    style: theme.textTheme.labelLarge,
-                                  ),
-                                  if (e.value.startsWith('http'))
-                                    RippleTap(
-                                      onTap: () {
-                                        e.value.launchAppAndCopy();
-                                      },
-                                      child: Text(
-                                        '打开链接',
-                                        softWrap: true,
-                                        style: theme.textTheme.labelLarge,
-                                      ),
-                                    )
-                                  else
+                              sizedBoxH4,
+                              ...detail.more.entries.mapIndexed((index, e) {
+                                final child = Row(
+                                  children: [
                                     Text(
-                                      e.value,
+                                      '${e.key}：',
                                       softWrap: true,
                                       style: theme.textTheme.labelLarge,
                                     ),
-                                ],
-                              );
-                              return index == detail.more.length - 1
-                                  ? child
-                                  : Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 8.0),
-                                      child: child,
-                                    );
-                            }),
-                          ],
+                                    if (e.value.startsWith('http'))
+                                      RippleTap(
+                                        onTap: () {
+                                          e.value.launchAppAndCopy();
+                                        },
+                                        child: Text(
+                                          '打开链接',
+                                          softWrap: true,
+                                          style: theme.textTheme.labelLarge,
+                                        ),
+                                      )
+                                    else
+                                      Text(
+                                        e.value,
+                                        softWrap: true,
+                                        style: theme.textTheme.labelLarge,
+                                      ),
+                                  ],
+                                );
+                                return index == detail.more.length - 1
+                                    ? child
+                                    : Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: child,
+                                      );
+                              }),
+                            ],
+                          ),
                         ),
                       )
                     else if (name != null)
@@ -431,11 +433,13 @@ class BangumiPage extends StatelessWidget {
               style: theme.textTheme.titleLarge,
             ),
             sizedBoxH12,
-            Text(
-              detail.intro,
-              textAlign: TextAlign.justify,
-              softWrap: true,
-              style: theme.textTheme.bodyLarge,
+            SelectionArea(
+              child: Text(
+                detail.intro,
+                textAlign: TextAlign.justify,
+                softWrap: true,
+                style: theme.textTheme.bodyLarge,
+              ),
             ),
           ],
           ...subList,

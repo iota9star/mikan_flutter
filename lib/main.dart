@@ -11,8 +11,10 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mikan/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -68,7 +70,7 @@ Future<void> _initWindow() async {
 }
 
 Future _initFirebase() async {
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseCrashlytics.instance
       .setCrashlyticsCollectionEnabled(kDebugMode);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -212,6 +214,12 @@ class _MikanAppState extends State<MikanApp> {
           navigatorKey: navKey,
           navigatorObservers: navigatorObservers,
           debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('zh', 'CN')],
         );
       },
     );
@@ -299,8 +307,7 @@ class _ThemeProviderState extends LifecycleAppState<ThemeProvider> {
 }
 
 class AlwaysStretchScrollBehavior extends ScrollBehavior {
-  const AlwaysStretchScrollBehavior()
-      : super(androidOverscrollIndicator: AndroidOverscrollIndicator.stretch);
+  const AlwaysStretchScrollBehavior();
 
   @override
   Set<PointerDeviceKind> get dragDevices => PointerDeviceKind.values.toSet();
