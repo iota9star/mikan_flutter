@@ -79,13 +79,13 @@ jobs:
           flutter pub get
           flutter config --enable-windows-desktop
           flutter build windows --release --tree-shake-icons
-          Compress-Archive -Path build/windows/runner/Release/* windows-win32-release.zip -Force
+          Compress-Archive -Path build/windows/x64/runner/Release/* mikan-windows-x64.zip -Force
           & "${env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" windows_inno_setup.iss
       - name: Release build
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "windows-win32-release.zip,mikan_setup.exe"
+          artifacts: "mikan-windows-x64.zip,mikan-windows-x64-setup.exe"
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ github.event.inputs.TAG }}
 

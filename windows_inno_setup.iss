@@ -6,7 +6,7 @@
 #define MyAppVersion "1.2.4"
 #define MyAppPublisher "mikanani.me"
 #define MyAppURL "https://mikanani.me/"
-#define MyAppExeName "mikan.exe"
+#define MyAppExeName "mikan_flutter.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -23,7 +23,7 @@ DisableProgramGroupPage=yes
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 OutputDir=.
-OutputBaseFilename=mikan_setup
+OutputBaseFilename=mikan-windows-x64-setup
 SetupIconFile={#SourcePath}\windows\runner\resources\app_icon.ico
 Compression=lzma
 SolidCompression=yes
@@ -36,9 +36,8 @@ Name: "chinesesimplified"; MessagesFile: "{#SourcePath}\ChineseSimplified.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "{#SourcePath}\build\windows\runner\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\build\windows\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourcePath}\windows\libs\vclibs\*"; DestDir: "{app}";
+Source: "{#SourcePath}\build\windows\x64\runner\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourcePath}\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
