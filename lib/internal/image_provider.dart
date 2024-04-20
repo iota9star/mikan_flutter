@@ -38,7 +38,7 @@ class CacheImage extends painting.ImageProvider<painting.NetworkImage>
   @override
   ImageStreamCompleter load(
     painting.NetworkImage key,
-    painting.DecoderCallback decode,
+    painting.DecoderBufferCallback decode,
   ) {
     // Ownership of this controller is handed off to [_loadAsync]; it is that
     // method's responsibility to close the controller's stream when the image
@@ -132,7 +132,7 @@ class CacheImage extends painting.ImageProvider<painting.NetworkImage>
     StreamController<ImageChunkEvent> chunkEvents, {
     painting.ImageDecoderCallback? decode,
     painting.DecoderBufferCallback? decodeBufferDeprecated,
-    painting.DecoderCallback? decodeDeprecated,
+    painting.DecoderBufferCallback? decodeDeprecated,
   }) async {
     try {
       assert(key == this);
@@ -208,7 +208,7 @@ class CacheImage extends painting.ImageProvider<painting.NetworkImage>
     Uint8List bytes,
     ImageDecoderCallback? decode,
     DecoderBufferCallback? decodeBufferDeprecated,
-    DecoderCallback? decodeDeprecated,
+    DecoderBufferCallback? decodeDeprecated,
   ) async {
     if (decode != null) {
       final ui.ImmutableBuffer buffer =
@@ -219,8 +219,10 @@ class CacheImage extends painting.ImageProvider<painting.NetworkImage>
           await ui.ImmutableBuffer.fromUint8List(bytes);
       return decodeBufferDeprecated(buffer);
     } else {
+      final ui.ImmutableBuffer buffer =
+          await ui.ImmutableBuffer.fromUint8List(bytes);
       assert(decodeDeprecated != null);
-      return decodeDeprecated!(bytes);
+      return decodeDeprecated!(buffer);
     }
   }
 

@@ -109,7 +109,7 @@ extension NullableStringExt on String? {
     }
     SmartDialog.showToast(
       this!,
-      alignment: const AlignmentDirectional(0.0, 0.72),
+      alignment: const Alignment(0.0, 0.72),
     );
     HapticFeedback.mediumImpact();
   }

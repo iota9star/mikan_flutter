@@ -188,26 +188,28 @@ class RecordPage extends StatelessWidget {
                       _buildBangumiCover(context, detail),
                       sizedBoxW16,
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            sizedBoxH12,
-                            AutoSizeText(
-                              detail.name,
-                              maxLines: 3,
-                              style: theme.textTheme.titleLarge!.copyWith(
-                                color: theme.colorScheme.secondary,
+                        child: SelectionArea(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              sizedBoxH12,
+                              AutoSizeText(
+                                detail.name,
+                                maxLines: 3,
+                                style: theme.textTheme.titleLarge!.copyWith(
+                                  color: theme.colorScheme.secondary,
+                                ),
                               ),
-                            ),
-                            sizedBoxH8,
-                            ...detail.more.entries.map(
-                              (e) => Text(
-                                '${e.key}: ${e.value}',
-                                softWrap: true,
-                                style: theme.textTheme.bodyMedium,
+                              sizedBoxH8,
+                              ...detail.more.entries.map(
+                                (e) => Text(
+                                  '${e.key}: ${e.value}',
+                                  softWrap: true,
+                                  style: theme.textTheme.bodyMedium,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -223,49 +225,53 @@ class RecordPage extends StatelessWidget {
               ),
             ),
             if (detail.title.isNotBlank)
-              Text(
-                detail.title,
-                style: theme.textTheme.bodyMedium,
+              SelectionArea(
+                child: Text(
+                  detail.title,
+                  style: theme.textTheme.bodyMedium,
+                ),
               ),
             sizedBoxH8,
             if (!detail.tags.isNullOrEmpty)
-              Wrap(
-                spacing: 6.0,
-                runSpacing: 6.0,
-                children: [
-                  if (record.size.isNotBlank)
-                    Container(
-                      padding: edgeH6V4,
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.secondaryContainer,
-                        borderRadius: borderRadius8,
-                      ),
-                      child: Text(
-                        record.size,
-                        style: theme.textTheme.labelSmall!.copyWith(
-                          color: theme.colorScheme.onSecondaryContainer,
-                        ),
-                      ),
-                    ),
-                  ...List.generate(
-                    detail.tags.length,
-                    (index) {
-                      return Container(
+              SelectionArea(
+                child: Wrap(
+                  spacing: 6.0,
+                  runSpacing: 6.0,
+                  children: [
+                    if (record.size.isNotBlank)
+                      Container(
                         padding: edgeH6V4,
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.tertiaryContainer,
+                          color: theme.colorScheme.secondaryContainer,
                           borderRadius: borderRadius8,
                         ),
                         child: Text(
-                          detail.tags[index],
-                          style: theme.textTheme.labelMedium!.copyWith(
-                            color: theme.colorScheme.onTertiaryContainer,
+                          record.size,
+                          style: theme.textTheme.labelSmall!.copyWith(
+                            color: theme.colorScheme.onSecondaryContainer,
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ],
+                      ),
+                    ...List.generate(
+                      detail.tags.length,
+                      (index) {
+                        return Container(
+                          padding: edgeH6V4,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.tertiaryContainer,
+                            borderRadius: borderRadius8,
+                          ),
+                          child: Text(
+                            detail.tags[index],
+                            style: theme.textTheme.labelMedium!.copyWith(
+                              color: theme.colorScheme.onTertiaryContainer,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             sizedBoxH24,
             if (detail.intro.isNotEmpty)
@@ -274,17 +280,23 @@ class RecordPage extends StatelessWidget {
                 style: theme.textTheme.titleLarge,
               ),
             sizedBoxH12,
-            HtmlWidget(
-              detail.intro,
-              customWidgetBuilder: (element) {
-                if (element.localName == 'img') {
-                  final String? src = element.attributes['src'];
-                  if (src.isNotBlank) {
-                    return _buildImageWidget(src!);
+            SelectionArea(
+              child: HtmlWidget(
+                detail.intro,
+                onTapUrl: (url) {
+                  url.launchAppAndCopy();
+                  return true;
+                },
+                customWidgetBuilder: (element) {
+                  if (element.localName == 'img') {
+                    final String? src = element.attributes['src'];
+                    if (src.isNotBlank) {
+                      return _buildImageWidget(src!);
+                    }
                   }
-                }
-                return null;
-              },
+                  return null;
+                },
+              ),
             ),
           ];
           return EasyRefresh(
