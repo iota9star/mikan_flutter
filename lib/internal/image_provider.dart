@@ -35,7 +35,6 @@ class CacheImage extends painting.ImageProvider<painting.NetworkImage>
     return SynchronousFuture<CacheImage>(this);
   }
 
-  @override
   ImageStreamCompleter load(
     painting.NetworkImage key,
     painting.DecoderBufferCallback decode,

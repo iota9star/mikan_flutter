@@ -39,7 +39,7 @@ class CardStyle extends StatelessWidget {
                       MyHive.setCardStyle(v.first);
                     },
                     style: ButtonStyle(
-                      shape: MaterialStateProperty.resolveWith((states) {
+                      shape: WidgetStateProperty.resolveWith((states) {
                         return const RoundedRectangleBorder(
                           borderRadius: borderRadius12,
                         );

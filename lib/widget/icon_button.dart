@@ -145,7 +145,7 @@ class SmallCircleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return RippleTap(
       onTap: onTap,
-      color: color ?? Theme.of(context).colorScheme.background,
+      color: color ?? Theme.of(context).colorScheme.surface,
       shape: const CircleBorder(),
       child: Padding(
         padding: const EdgeInsets.all(8.0),

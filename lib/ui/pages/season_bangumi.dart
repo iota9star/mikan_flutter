@@ -113,7 +113,7 @@ class SeasonBangumi extends StatelessWidget {
       child: Transform.translate(
         offset: offsetY_1,
         child: Container(
-          color: theme.colorScheme.background,
+          color: theme.colorScheme.surface,
           padding: edgeH24T8,
           child: Text(
             seasonTitle,
@@ -146,7 +146,7 @@ class SeasonBangumi extends StatelessWidget {
       child: Transform.translate(
         offset: offsetY_2,
         child: Container(
-          color: theme.colorScheme.background,
+          color: theme.colorScheme.surface,
           padding: edgeH24V8,
           child: Row(
             children: <Widget>[

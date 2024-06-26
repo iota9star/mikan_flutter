@@ -33,7 +33,7 @@ class RssRecordItem extends StatelessWidget {
         ),
       ),
       foregroundDecoration: BoxDecoration(
-        color: theme.colorScheme.background.withOpacity(0.87),
+        color: theme.colorScheme.surface.withOpacity(0.87),
       ),
     );
     final tagStyle = theme.textTheme.labelSmall!.copyWith(

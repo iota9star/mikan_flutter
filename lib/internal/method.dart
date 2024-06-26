@@ -17,7 +17,7 @@ Future<T> wrapLoading<T>(
         clickMaskDismiss: false,
         maskColor: Theme.of(navKey.currentContext!)
             .colorScheme
-            .background
+            .surface
             .withOpacity(0.64),
         msg: msg,
       ),

@@ -101,7 +101,7 @@ class SliverPinnedAppBar extends StatelessWidget {
                 top: 0.0,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.background,
+                    color: theme.colorScheme.surface,
                     borderRadius: borderRadius,
                     border: offsetRatio > 0.1
                         ? Border(
@@ -167,11 +167,11 @@ class StackSliverPinnedHeader extends StatelessWidget {
           final offsetRatio = math.min(shrinkOffset / offsetHeight, 1.0);
           return DecoratedBox(
             decoration: BoxDecoration(
-              color: theme.colorScheme.background,
+              color: theme.colorScheme.surface,
               border: Border(
                 bottom: BorderSide(
                   color: offsetRatio >= 0.99
-                      ? theme.colorScheme.surfaceVariant
+                      ? theme.colorScheme.surfaceContainerHighest
                       : Colors.transparent,
                 ),
               ),

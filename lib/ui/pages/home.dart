@@ -42,8 +42,9 @@ class _HomePageState extends State<HomePage> {
         SubscribedFragment(),
       ],
     );
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) {
         const snackBar = SnackBar(
           behavior: SnackBarBehavior.floating,
           width: 400.0,
@@ -56,7 +57,6 @@ class _HomePageState extends State<HomePage> {
         );
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        return false;
       },
       child: AnnotatedRegion(
         value: context.fitSystemUiOverlayStyle,

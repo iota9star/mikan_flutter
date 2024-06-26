@@ -30,8 +30,8 @@ class RecordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final headerBackgroundColor = ColorTween(
-      begin: theme.colorScheme.background.withOpacity(0.0),
-      end: theme.colorScheme.background,
+      begin: theme.colorScheme.surface.withOpacity(0.0),
+      end: theme.colorScheme.surface,
     );
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
@@ -167,8 +167,8 @@ class RecordPage extends StatelessWidget {
                         foregroundDecoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              theme.colorScheme.background.withOpacity(0.64),
-                              theme.colorScheme.background,
+                              theme.colorScheme.surface.withOpacity(0.64),
+                              theme.colorScheme.surface,
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -220,7 +220,7 @@ class RecordPage extends StatelessWidget {
             Transform.scale(
               scale: scale,
               child: Container(
-                color: theme.colorScheme.background,
+                color: theme.colorScheme.surface,
                 height: 36.0,
               ),
             ),

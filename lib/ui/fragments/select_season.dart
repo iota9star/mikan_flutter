@@ -71,7 +71,7 @@ class SelectSeasonFragment extends StatelessWidget {
                 child: RippleTap(
                   color: selected
                       ? theme.colorScheme.primaryContainer
-                      : theme.colorScheme.surfaceVariant,
+                      : theme.colorScheme.surfaceContainerHighest,
                   borderRadius: borderRadius8,
                   onTap: () {
                     Navigator.pop(context);

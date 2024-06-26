@@ -255,7 +255,7 @@ class SearchPage extends StatelessWidget {
         return RippleTap(
           color: selected
               ? theme.colorScheme.primaryContainer
-              : theme.colorScheme.surfaceVariant,
+              : theme.colorScheme.surfaceContainerHighest,
           borderRadius: borderRadius8,
           onTap: () {
             searchModel.subgroupId = subgroup.id;

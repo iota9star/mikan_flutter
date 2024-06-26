@@ -99,7 +99,7 @@ class SubgroupPage extends StatelessWidget {
         child: Container(
           padding: edgeH24,
           height: 48.0,
-          color: theme.colorScheme.background,
+          color: theme.colorScheme.surface,
           alignment: AlignmentDirectional.centerStart,
           child: Text(
             section,

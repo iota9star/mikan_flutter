@@ -14,10 +14,10 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mikan/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'firebase_options.dart';
 import 'internal/dynamic_color.dart';
 import 'internal/extension.dart';
 import 'internal/hive.dart';
@@ -100,27 +100,40 @@ class MikanApp extends StatefulWidget {
 }
 
 class _MikanAppState extends State<MikanApp> {
-  StreamSubscription<ConnectivityResult>? _subscription;
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
 
   @override
   void initState() {
     super.initState();
     _subscription = Connectivity().onConnectivityChanged.listen((result) {
-      switch (result) {
-        case ConnectivityResult.wifi:
-          '正在使用 WiFi网络'.toast();
-        case ConnectivityResult.mobile:
-          '正在使用 移动网络'.toast();
-        case ConnectivityResult.none:
-          '网络已断开'.toast();
-        case ConnectivityResult.ethernet:
-          '正在使用 以太网'.toast();
-        case ConnectivityResult.bluetooth:
-          '正在使用 蓝牙网络'.toast();
-        case ConnectivityResult.vpn:
-          '正在使用 VPN'.toast();
-        case ConnectivityResult.other:
-          '正在使用 未知网络'.toast();
+      // This condition is for demo purposes only to explain every connection type.
+      // Use conditions which work for your requirements.
+      if (result.contains(ConnectivityResult.mobile)) {
+        // Mobile network available.
+        '正在使用 移动网络'.toast();
+      } else if (result.contains(ConnectivityResult.wifi)) {
+        // Wi-fi is available.
+        // Note for Android:
+        // When both mobile and Wi-Fi are turned on system will return Wi-Fi only as active network type
+        '正在使用 WiFi网络'.toast();
+      } else if (result.contains(ConnectivityResult.ethernet)) {
+        // Ethernet connection available.
+        '正在使用 以太网'.toast();
+      } else if (result.contains(ConnectivityResult.vpn)) {
+        // Vpn connection active.
+        // Note for iOS and macOS:
+        // There is no separate network interface type for [vpn].
+        // It returns [other] on any device (also simulator)
+        '正在使用 VPN'.toast();
+      } else if (result.contains(ConnectivityResult.bluetooth)) {
+        // Bluetooth connection available.
+        '正在使用 蓝牙网络'.toast();
+      } else if (result.contains(ConnectivityResult.other)) {
+        // Connected to a network which is not in the above mentioned networks.
+        '正在使用 未知网络'.toast();
+      } else if (result.contains(ConnectivityResult.none)) {
+        // No available network types
+        '网络已断开'.toast();
       }
     });
   }

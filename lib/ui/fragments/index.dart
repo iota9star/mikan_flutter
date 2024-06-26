@@ -162,7 +162,7 @@ class _IndexFragmentState extends LifecycleState<IndexFragment> {
         child: Container(
           padding: edgeH24,
           height: 48.0,
-          decoration: BoxDecoration(color: theme.colorScheme.background),
+          decoration: BoxDecoration(color: theme.colorScheme.surface),
           child: Row(
             children: <Widget>[
               Expanded(
@@ -468,7 +468,7 @@ class _PinedHeader extends StatelessWidget {
                     top: 0.0,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.background,
+                        color: theme.colorScheme.surface,
                         border: offsetRatio > 0.1
                             ? Border(
                                 bottom: Divider.createBorderSide(

@@ -337,7 +337,7 @@ class SettingsPanel extends StatelessWidget {
     final colors = theme.colorScheme;
     final selectedStyle = IconButton.styleFrom(
       foregroundColor: colors.primary,
-      backgroundColor: colors.surfaceVariant,
+      backgroundColor: colors.surfaceContainerHighest,
       disabledForegroundColor: colors.onSurface.withOpacity(0.38),
       disabledBackgroundColor: colors.onSurface.withOpacity(0.12),
       hoverColor: colors.primary.withOpacity(0.08),

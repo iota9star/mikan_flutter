@@ -113,7 +113,7 @@ class SubgroupSubscribe extends StatelessWidget {
                             selected: {sub.state},
                             style: ButtonStyle(
                               shape:
-                                  MaterialStateProperty.resolveWith((states) {
+                                  WidgetStateProperty.resolveWith((states) {
                                 return const RoundedRectangleBorder(
                                   borderRadius: borderRadius12,
                                 );

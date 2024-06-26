@@ -50,7 +50,7 @@ class SelectMirror extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: theme.colorScheme.surfaceVariant),
+                top: BorderSide(color: theme.colorScheme.surfaceContainerHighest),
               ),
             ),
             child: Row(

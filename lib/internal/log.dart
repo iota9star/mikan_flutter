@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 const _esc = '\x1B[';
@@ -128,7 +127,7 @@ extension Log on Object? {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    final es = [error, stackTrace].whereNotNull().join('\n\n');
+    final es = [error, stackTrace].nonNulls.join('\n\n');
     final hasError = es.isNotEmpty;
     final buffer = StringBuffer();
     buffer.write(_wrapReverse(_wrapBold(_wrapColor(levelColor, level))));

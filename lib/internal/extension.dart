@@ -242,7 +242,7 @@ const SystemUiOverlayStyle darkSystemUiOverlayStyle = SystemUiOverlayStyle(
 
 extension BuildContextExt on BuildContext {
   SystemUiOverlayStyle get fitSystemUiOverlayStyle {
-    return Theme.of(this).colorScheme.background.isDark
+    return Theme.of(this).colorScheme.surface.isDark
         ? lightSystemUiOverlayStyle
         : darkSystemUiOverlayStyle;
   }
