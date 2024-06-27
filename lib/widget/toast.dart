@@ -13,7 +13,7 @@ class ToastWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.tertiaryContainer,
-        borderRadius: borderRadius12,
+        borderRadius: borderRadius6,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: 12.0,

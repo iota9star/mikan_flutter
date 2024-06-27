@@ -391,7 +391,7 @@ class SliverBangumiList extends StatelessWidget {
             },
           ),
         ),
-        sizedBoxH8,
+        sizedBoxH4,
         Row(
           children: [
             Expanded(

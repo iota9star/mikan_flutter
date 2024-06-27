@@ -57,7 +57,7 @@ class ListRecordItem extends StatelessWidget {
                           closedColor: closedColor,
                           builder: (context, open) {
                             return RippleTap(
-                              borderRadius: borderRadius12,
+                              borderRadius: borderRadius6,
                               onTap: () {
                                 if (subgroups.length == 1) {
                                   final subgroup = subgroups[0];
@@ -170,7 +170,7 @@ class ListRecordItem extends StatelessWidget {
                         padding: edgeH6V4,
                         decoration: BoxDecoration(
                           color: theme.colorScheme.secondaryContainer,
-                          borderRadius: borderRadius8,
+                          borderRadius: borderRadius6,
                         ),
                         child: Text(
                           record.size,
@@ -185,7 +185,7 @@ class ListRecordItem extends StatelessWidget {
                           padding: edgeH6V4,
                           decoration: BoxDecoration(
                             color: theme.colorScheme.tertiaryContainer,
-                            borderRadius: borderRadius8,
+                            borderRadius: borderRadius6,
                           ),
                           child: Text(
                             record.tags[index],

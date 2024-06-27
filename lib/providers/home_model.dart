@@ -135,7 +135,7 @@ class HomeModel extends BaseModel {
                                 Container(
                                   padding: edgeH6V4,
                                   decoration: BoxDecoration(
-                                    borderRadius: borderRadius8,
+                                    borderRadius: borderRadius6,
                                     color: theme.colorScheme.primaryContainer,
                                   ),
                                   child: Text(
@@ -168,7 +168,7 @@ class HomeModel extends BaseModel {
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(120.0, 36.0),
                               shape: const RoundedRectangleBorder(
-                                borderRadius: borderRadius8,
+                                borderRadius: borderRadius6,
                               ),
                               textStyle: const TextStyle(fontSize: 12.0),
                             ),
@@ -217,7 +217,7 @@ class HomeModel extends BaseModel {
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(0.0, 36.0),
                     shape: const RoundedRectangleBorder(
-                      borderRadius: borderRadius8,
+                      borderRadius: borderRadius6,
                     ),
                     backgroundColor: theme.colorScheme.errorContainer,
                   ),
@@ -236,7 +236,7 @@ class HomeModel extends BaseModel {
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(0.0, 36.0),
                     shape: const RoundedRectangleBorder(
-                      borderRadius: borderRadius8,
+                      borderRadius: borderRadius6,
                     ),
                   ),
                   child: const Text('前往下载'),

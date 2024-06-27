@@ -243,7 +243,7 @@ class RecordPage extends StatelessWidget {
                         padding: edgeH6V4,
                         decoration: BoxDecoration(
                           color: theme.colorScheme.secondaryContainer,
-                          borderRadius: borderRadius8,
+                          borderRadius: borderRadius6,
                         ),
                         child: Text(
                           record.size,
@@ -259,7 +259,7 @@ class RecordPage extends StatelessWidget {
                           padding: edgeH6V4,
                           decoration: BoxDecoration(
                             color: theme.colorScheme.tertiaryContainer,
-                            borderRadius: borderRadius8,
+                            borderRadius: borderRadius6,
                           ),
                           child: Text(
                             detail.tags[index],

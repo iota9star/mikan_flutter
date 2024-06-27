@@ -203,7 +203,7 @@ class BangumiPage extends StatelessWidget {
                           minimumSize: const Size(32.0, 32.0),
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           shape: const RoundedRectangleBorder(
-                            borderRadius: borderRadius8,
+                            borderRadius: borderRadius6,
                           ),
                         ),
                         child: e.value.subscribed
@@ -242,7 +242,7 @@ class BangumiPage extends StatelessWidget {
                 message: e.value.name,
                 child: RippleTap(
                   color: theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: borderRadius8,
+                  borderRadius: borderRadius6,
                   onTap: () {
                     _showSubgroupPanel(context, model, e.key);
                   },
@@ -411,7 +411,7 @@ class BangumiPage extends StatelessWidget {
                     minimumSize: const Size(0.0, 32.0),
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     shape: const RoundedRectangleBorder(
-                      borderRadius: borderRadius8,
+                      borderRadius: borderRadius6,
                     ),
                   ),
                   icon: const Icon(Icons.edit_note_rounded),

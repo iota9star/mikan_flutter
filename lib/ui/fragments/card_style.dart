@@ -41,7 +41,7 @@ class CardStyle extends StatelessWidget {
                     style: ButtonStyle(
                       shape: WidgetStateProperty.resolveWith((states) {
                         return const RoundedRectangleBorder(
-                          borderRadius: borderRadius12,
+                          borderRadius: borderRadius6,
                         );
                       }),
                     ),

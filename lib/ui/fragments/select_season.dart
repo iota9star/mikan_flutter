@@ -72,7 +72,7 @@ class SelectSeasonFragment extends StatelessWidget {
                   color: selected
                       ? theme.colorScheme.primaryContainer
                       : theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: borderRadius8,
+                  borderRadius: borderRadius6,
                   onTap: () {
                     Navigator.pop(context);
                     indexModel.selectSeason(season);

@@ -86,7 +86,7 @@ class SubgroupSubscribe extends StatelessWidget {
                                       horizontal: 8.0,
                                     ),
                                     shape: const RoundedRectangleBorder(
-                                      borderRadius: borderRadius8,
+                                      borderRadius: borderRadius6,
                                     ),
                                   ),
                                   child: sub.subscribed

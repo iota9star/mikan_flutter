@@ -259,7 +259,7 @@ class ScalableCard extends StatelessWidget {
       shadowColor: colorScheme.shadow,
       surfaceTintColor: colorScheme.surfaceTint,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
       ),
       child: child,
     );

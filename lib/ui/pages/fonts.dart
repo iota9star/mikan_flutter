@@ -120,7 +120,7 @@ class Fonts extends StatelessWidget {
                 RippleTap(
                   onTap: () {},
                   color: theme.colorScheme.tertiaryContainer,
-                  borderRadius: borderRadius8,
+                  borderRadius: borderRadius6,
                   child: Padding(
                     padding: edgeH6V4,
                     child: Text(
@@ -135,7 +135,7 @@ class Fonts extends StatelessWidget {
                     font.official.launchAppAndCopy();
                   },
                   color: theme.colorScheme.secondaryContainer,
-                  borderRadius: borderRadius8,
+                  borderRadius: borderRadius6,
                   child: Padding(
                     padding: edgeH6V4,
                     child: Text(
@@ -150,7 +150,7 @@ class Fonts extends StatelessWidget {
                     font.license.url.launchAppAndCopy();
                   },
                   color: theme.colorScheme.secondaryContainer,
-                  borderRadius: borderRadius8,
+                  borderRadius: borderRadius6,
                   child: Padding(
                     padding: edgeH6V4,
                     child: Text(

@@ -7,7 +7,7 @@ class TransitionContainer extends StatelessWidget {
     required this.next,
     required this.builder,
     this.shape = const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      borderRadius: BorderRadius.all(Radius.circular(6.0)),
     ),
     this.transitionType = ContainerTransitionType.fade,
     this.transitionDuration = const Duration(milliseconds: 360),
