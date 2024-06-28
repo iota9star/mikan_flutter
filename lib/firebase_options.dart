@@ -30,10 +30,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -62,24 +59,32 @@ class DefaultFirebaseOptions {
     projectId: 'flutter-mikan',
     databaseURL: 'https://flutter-mikan.firebaseio.com',
     storageBucket: 'flutter-mikan.appspot.com',
-    androidClientId:
-        '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
-    iosClientId:
-        '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
+    androidClientId: '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
+    iosClientId: '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
     iosBundleId: 'io.nichijou.flutter.mikan',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDPj6xwYmdFGuCUHeSEt6mD4AjGw-_M1kM',
-    appId: '1:626809778849:ios:2d325e2308ca12feedb6e0',
+    appId: '1:626809778849:ios:d580f4b3810bebb7edb6e0',
     messagingSenderId: '626809778849',
     projectId: 'flutter-mikan',
     databaseURL: 'https://flutter-mikan.firebaseio.com',
     storageBucket: 'flutter-mikan.appspot.com',
-    androidClientId:
-        '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
-    iosClientId:
-        '626809778849-ob4j2tt7qv9kis69servg1m464um9b9c.apps.googleusercontent.com',
-    iosBundleId: 'io.nichijou.flutter.mikan.RunnerTests',
+    androidClientId: '626809778849-j0s442pnv7vs989f9jsnricrqpnu4llq.apps.googleusercontent.com',
+    iosClientId: '626809778849-guglnjbelfb3scmjirffr0k09uh3kgkd.apps.googleusercontent.com',
+    iosBundleId: 'io.nichijou.flutter.mikan',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDEugQDoRskx6U2coSgORsKbyJMUbSmDXE',
+    appId: '1:626809778849:web:34c84189c94d1c57edb6e0',
+    messagingSenderId: '626809778849',
+    projectId: 'flutter-mikan',
+    authDomain: 'flutter-mikan.firebaseapp.com',
+    databaseURL: 'https://flutter-mikan.firebaseio.com',
+    storageBucket: 'flutter-mikan.appspot.com',
+    measurementId: 'G-WJKPHGHK7F',
+  );
+
 }
