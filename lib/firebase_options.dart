@@ -86,5 +86,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'flutter-mikan.appspot.com',
     measurementId: 'G-WJKPHGHK7F',
   );
-
 }

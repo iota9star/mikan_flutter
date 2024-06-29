@@ -15,6 +15,7 @@ analyzer:
 
 linter:
   rules:
+    do_not_use_environment: false
     cast_nullable_to_non_nullable: false
     no_runtimeType_toString: false
     one_member_abstracts: false

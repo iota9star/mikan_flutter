@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../internal/consts.dart';
 import '../internal/extension.dart';
 import '../internal/hive.dart';
 import '../internal/log.dart';
@@ -23,6 +25,43 @@ class HomeModel extends BaseModel {
   bool get checkingUpgrade => _checkingUpgrade;
 
   Future<void> checkAppVersion([bool autoCheck = true]) async {
+    if (APP_CHANNEL == 'play') {
+      _checkingUpgrade = true;
+      notifyListeners();
+      try {
+        final v = await InAppUpdate.checkForUpdate().then(
+          (v) {
+            return (
+              availability:
+                  v.updateAvailability == UpdateAvailability.updateAvailable,
+              immediateUpdateAllowed: v.immediateUpdateAllowed,
+              flexibleUpdateAllowed: v.flexibleUpdateAllowed,
+            );
+          },
+          onError: (e, s) {
+            return (
+              availability: false,
+              immediateUpdateAllowed: false,
+              flexibleUpdateAllowed: false,
+            );
+          },
+        );
+        if (v.availability) {
+          if (v.immediateUpdateAllowed) {
+            await InAppUpdate.performImmediateUpdate();
+          } else if (v.flexibleUpdateAllowed) {
+            await InAppUpdate.startFlexibleUpdate();
+          }
+        }
+      } catch (e, s) {
+        e.$error(stackTrace: s);
+      } finally {
+        _checkingUpgrade = false;
+        notifyListeners();
+      }
+      return;
+    }
+
     if (_checkingUpgrade) {
       return;
     }
