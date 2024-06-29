@@ -60,7 +60,7 @@ dev_dependencies:
   yaml: ^3.1.2
   glob: ^2.1.1
   http: ^1.1.0
-  process_run: ^0.14.2
+  process_run: ^1.0.0+1
   build_runner: ^2.3.3
   flutter_gen: ^5.3.1
   flutter_gen_runner: ^5.3.1
