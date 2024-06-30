@@ -72,7 +72,7 @@ jobs:
     name: Release Windows
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
@@ -96,7 +96,7 @@ jobs:
     name: Release MacOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
