@@ -54,4 +54,5 @@ jobs:
           track: production
           inAppUpdatePriority: 5
           status: completed
+          changesNotSentForReview: true
           mappingFile: build/app/outputs/mapping/release/mapping.txt
