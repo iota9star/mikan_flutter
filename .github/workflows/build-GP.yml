@@ -31,7 +31,7 @@ jobs:
       - name: Build split apk
         run: |
           flutter pub get
-          flutter build -v apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --dart-define=APP_CHANNEL=play --tree-shake-icons
+          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --release --dart-define=APP_CHANNEL=play --tree-shake-icons
           ls build/app/outputs/flutter-apk
       - name: Sign build apk
         uses: iota9star/sign-android-release@v1.0.5
@@ -51,6 +51,6 @@ jobs:
           packageName: io.nichijou.flutter.mikan
           releaseFiles: 'build/app/outputs/flutter-apk/*-release-signed.apk'
           track: production
-          inAppUpdatePriority: 3
+          inAppUpdatePriority: 5
           status: completed
           mappingFile: build/app/outputs/mapping/release/mapping.txt
