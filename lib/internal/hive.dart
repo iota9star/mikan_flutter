@@ -189,7 +189,7 @@ class MyHive {
   static String getMirrorUrl() {
     return settings.get(
       SettingsHiveKey.mirrorUrl,
-      defaultValue: MikanUrls.baseUrls.first,
+      defaultValue: MikanUrls.baseUrls.last,
     );
   }
 
