@@ -211,7 +211,7 @@ class _IndexFragmentState extends LifecycleState<IndexFragment> {
                       return Padding(
                         padding: EdgeInsetsDirectional.only(
                           start: 24.0,
-                          top: (ver > 12.0 ? 12.0 : ver) + 8,
+                          top: (ver > 12.0 ? 12.0 : ver),
                           bottom: 8.0,
                         ),
                         child: TransitionContainer(
@@ -236,6 +236,7 @@ class _IndexFragmentState extends LifecycleState<IndexFragment> {
                 controller: _infiniteScrollController,
                 itemExtent: 300.0,
                 itemCount: carousels.length,
+                center: false,
                 velocityFactor: 0.8,
               ),
             ),

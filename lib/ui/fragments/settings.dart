@@ -167,7 +167,7 @@ class SettingsPanel extends StatelessWidget {
               ),
               builder: (context, _, child) {
                 return Text(
-                  MyHive.getMirrorUrl(),
+                  Uri.parse(MyHive.getMirrorUrl()).host,
                   style: theme.textTheme.bodyMedium,
                 );
               },

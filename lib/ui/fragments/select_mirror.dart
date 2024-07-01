@@ -30,7 +30,9 @@ class SelectMirror extends StatelessWidget {
                         (context, index) {
                           final url = MikanUrls.baseUrls[index];
                           return RadioListTile<String>(
-                            title: Text(url),
+                            title: Text(
+                              url + (url.endsWith('.me') ? '' : ' (中国大陆)'),
+                            ),
                             value: url,
                             groupValue: selected,
                             onChanged: (value) {
@@ -50,7 +52,8 @@ class SelectMirror extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: theme.colorScheme.surfaceContainerHighest),
+                top: BorderSide(
+                    color: theme.colorScheme.surfaceContainerHighest),
               ),
             ),
             child: Row(

@@ -50,9 +50,9 @@ extension UIKit on BuildContext {
       return 12.0;
     }
     if (isLargeTablet) {
-      return 32.0;
+      return 16.0;
     }
-    return 32.0;
+    return 24.0;
   }
 
   bool get useTabletLayout {
