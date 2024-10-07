@@ -1,7 +1,7 @@
 name: mikan
 description: mikanani.me
 
-version: 1.2.7+73
+version: 1.2.8+74
 
 publish_to: none
 
@@ -67,8 +67,8 @@ dev_dependencies:
   flutter_gen_runner: ^5.3.1
   json_serializable: ^6.6.2
   hive_generator: ^2.0.0
-  flutter_lints: ^4.0.0
-  icons_launcher: ^2.1.0
+  flutter_lints: ^5.0.0
+  icons_launcher: ^3.0.0
   quiver: ^3.2.1
 
 dependency_overrides:
