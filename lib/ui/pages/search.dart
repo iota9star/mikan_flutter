@@ -363,7 +363,6 @@ class SearchPage extends StatelessWidget {
             ),
             suffixIconConstraints: const BoxConstraints(),
           ),
-          autofocus: true,
           textInputAction: TextInputAction.search,
           controller: searchModel.keywordsController,
           keyboardType: TextInputType.text,
