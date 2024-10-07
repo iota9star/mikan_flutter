@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     );
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (_, __) {
         const snackBar = SnackBar(
           behavior: SnackBarBehavior.floating,
           width: 400.0,

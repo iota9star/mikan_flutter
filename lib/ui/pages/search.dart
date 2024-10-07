@@ -341,7 +341,7 @@ class SearchPage extends StatelessWidget {
                             size: 24.0,
                           ),
                           onPressed: () {
-                            '${MikanUrls.baseUrl}/RSS/Search?searcher=${Uri.encodeComponent(searchModel.keywordsController.text)}'
+                            '${MikanUrls.baseUrl}/RSS/Search?searchstr=${Uri.encodeComponent(searchModel.keywordsController.text)}'
                                 .copy();
                           },
                         ),
@@ -354,7 +354,7 @@ class SearchPage extends StatelessWidget {
                       size: 24.0,
                     ),
                     onPressed: () {
-                      '${MikanUrls.baseUrl}/RSS/Search?searcher=${Uri.encodeComponent(searchModel.keywordsController.text)}'
+                      '${MikanUrls.baseUrl}/RSS/Search?searchstr=${Uri.encodeComponent(searchModel.keywordsController.text)}'
                           .copy();
                     },
                   );
