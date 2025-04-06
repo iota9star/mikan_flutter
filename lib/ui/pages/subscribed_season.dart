@@ -1,17 +1,17 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../internal/extension.dart';
 import '../../mikan_routes.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import '../../model/season.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import '../../model/season_gallery.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import '../../model/year_season.dart';
 import '../../providers/op_model.dart';
 import '../../providers/subscribed_season_model.dart';

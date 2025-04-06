@@ -1,13 +1,13 @@
 name: mikan
 description: mikanani.me
 
-version: 1.2.9+75
+version: 1.2.10+76
 
 publish_to: none
 
 environment:
   sdk: ">=3.0.0"
-  flutter: ">=3.24.0"
+  flutter: ">=3.29.0"
 
 dependencies:
   flutter:

@@ -126,7 +126,7 @@ BorderRadius scrollHeaderBorderRadius(bool hasScrolled) => hasScrolled
 List<BoxShadow> scrollHeaderBoxShadow(bool hasScrolled) => hasScrolled
     ? [
         BoxShadow(
-          color: Colors.black.withOpacity(0.024),
+          color: Colors.black.withValues(alpha: 0.024),
           offset: const Offset(0, 1),
           blurRadius: 3.0,
           spreadRadius: 3.0,

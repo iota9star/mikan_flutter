@@ -53,7 +53,7 @@ class SelectMirror extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                    color: theme.colorScheme.surfaceContainerHighest),
+                    color: theme.colorScheme.surfaceContainerHighest,),
               ),
             ),
             child: Row(

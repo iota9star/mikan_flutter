@@ -1,5 +1,5 @@
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

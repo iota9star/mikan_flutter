@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +30,7 @@ class RecordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final headerBackgroundColor = ColorTween(
-      begin: theme.colorScheme.surface.withOpacity(0.0),
+      begin: theme.colorScheme.surface.withValues(alpha: 0.0),
       end: theme.colorScheme.surface,
     );
     return AnnotatedRegion(
@@ -167,7 +167,7 @@ class RecordPage extends StatelessWidget {
                         foregroundDecoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              theme.colorScheme.surface.withOpacity(0.64),
+                              theme.colorScheme.surface.withValues(alpha: 0.64),
                               theme.colorScheme.surface,
                             ],
                             begin: Alignment.topCenter,
@@ -423,7 +423,7 @@ class RecordPage extends StatelessWidget {
       aspectRatio: 16 / 9,
       child: Container(
         width: double.infinity,
-        color: Colors.grey.withOpacity(0.24),
+        color: Colors.grey.withValues(alpha: 0.24),
         child: Center(
           child: Image.asset(
             Assets.mikan.path,

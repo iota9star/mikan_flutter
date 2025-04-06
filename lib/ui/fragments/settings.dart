@@ -338,11 +338,11 @@ class SettingsPanel extends StatelessWidget {
     final selectedStyle = IconButton.styleFrom(
       foregroundColor: colors.primary,
       backgroundColor: colors.surfaceContainerHighest,
-      disabledForegroundColor: colors.onSurface.withOpacity(0.38),
-      disabledBackgroundColor: colors.onSurface.withOpacity(0.12),
-      hoverColor: colors.primary.withOpacity(0.08),
-      focusColor: colors.primary.withOpacity(0.12),
-      highlightColor: colors.primary.withOpacity(0.12),
+      disabledForegroundColor: colors.onSurface.withValues(alpha: 0.38),
+      disabledBackgroundColor: colors.onSurface.withValues(alpha: 0.12),
+      hoverColor: colors.primary.withValues(alpha: 0.08),
+      focusColor: colors.primary.withValues(alpha: 0.12),
+      highlightColor: colors.primary.withValues(alpha: 0.12),
     );
     return Container(
       height: 50.0,

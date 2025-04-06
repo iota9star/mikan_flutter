@@ -1,6 +1,6 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -8,7 +8,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/kit.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import '../../model/record_item.dart';
 import '../../providers/index_model.dart';
 import '../../providers/recent_subscribed_model.dart';

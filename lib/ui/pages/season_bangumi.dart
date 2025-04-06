@@ -1,6 +1,6 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -8,7 +8,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../internal/extension.dart';
 import '../../model/bangumi_row.dart';
 import '../../model/season_bangumi_rows.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import '../../model/year_season.dart';
 import '../../providers/op_model.dart';
 import '../../providers/season_list_model.dart';

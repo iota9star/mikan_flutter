@@ -1,13 +1,13 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../internal/extension.dart';
 import '../../model/bangumi_row.dart';
-@FFArgumentImport()
+@FFAutoImport()
 import '../../model/season.dart';
 import '../../providers/op_model.dart';
 import '../../providers/season_model.dart';

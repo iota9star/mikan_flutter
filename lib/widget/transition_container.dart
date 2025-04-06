@@ -26,7 +26,7 @@ class TransitionContainer extends StatelessWidget {
     final theme = Theme.of(context);
     return OpenContainer(
       closedColor:
-          closedColor ?? theme.scaffoldBackgroundColor.withOpacity(0.0),
+          closedColor ?? theme.scaffoldBackgroundColor.withValues(alpha: 0.0),
       openColor: theme.scaffoldBackgroundColor,
       openElevation: 0.0,
       closedElevation: 0.0,

@@ -194,7 +194,7 @@ class ParticlePainter extends CustomPainter {
       final ty = size.height + progress * height * math.sin(radians);
       final paint = ParticleShape.rectangle == particle.shape
           ? (Paint()
-            ..color = particle.color.withOpacity(
+            ..color = particle.color.withValues(alpha: 
               progress > 0.75
                   ? (progress < 0.999 ? 1.0 : (1 - progress) / 0.001)
                   : progress / 0.75,
@@ -202,7 +202,7 @@ class ParticlePainter extends CustomPainter {
             ..style = PaintingStyle.fill)
           : (Paint()
             ..color = particle.color
-                .withOpacity(progress < 0.999 ? 1.0 : (1 - progress) / 0.001)
+                .withValues(alpha: progress < 0.999 ? 1.0 : (1 - progress) / 0.001)
             ..style = PaintingStyle.fill);
       canvas.save();
       canvas.translate(tx, ty + particle.size / 2);

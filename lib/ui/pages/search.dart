@@ -481,7 +481,7 @@ class SearchPage extends StatelessWidget {
                     children: [
                       ...keywords.map((it) {
                         return RippleTap(
-                          color: theme.primary.withOpacity(0.1),
+                          color: theme.primary.withValues(alpha: 0.1),
                           borderRadius: borderRadius6,
                           onTap: () {
                             hideKeyboard();

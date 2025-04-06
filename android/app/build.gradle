@@ -29,13 +29,15 @@ ext.kotlin_version = '1.8.22'
 
 
 android {
-    compileSdkVersion 34
+    namespace "io.nichijou.flutter.mikan"
+    compileSdk = flutter.compileSdkVersion
+
     defaultConfig {
         applicationId "io.nichijou.flutter.mikan"
-        minSdkVersion 21
-        targetSdkVersion 34
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
     lintOptions {

@@ -261,4 +261,7 @@ class CacheImage extends painting.ImageProvider<painting.NetworkImage>
   @override
   String toString() =>
       '${objectRuntimeType(this, 'NetworkImage')}("$url", scale: $scale)';
+
+  @override
+  WebHtmlElementStrategy get webHtmlElementStrategy => WebHtmlElementStrategy.never;
 }

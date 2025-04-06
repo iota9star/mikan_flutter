@@ -146,12 +146,12 @@ class MyHive {
   static int getColorSeed() {
     return settings.get(
       SettingsHiveKey.colorSeed,
-      defaultValue: Colors.green.value,
+      defaultValue: Colors.green.toARGB32(),
     );
   }
 
   static Future<void> setColorSeed(Color color) {
-    return settings.put(SettingsHiveKey.colorSeed, color.value);
+    return settings.put(SettingsHiveKey.colorSeed, color.toARGB32());
   }
 
   static int getCardStyle() {

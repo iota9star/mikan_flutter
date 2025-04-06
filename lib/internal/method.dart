@@ -13,12 +13,12 @@ Future<T> wrapLoading<T>(
   try {
     unawaited(
       SmartDialog.showLoading(
-        backDismiss: false,
+        backType: SmartBackType.block,
         clickMaskDismiss: false,
         maskColor: Theme.of(navKey.currentContext!)
             .colorScheme
             .surface
-            .withOpacity(0.64),
+            .withValues(alpha: 0.64),
         msg: msg,
       ),
     );

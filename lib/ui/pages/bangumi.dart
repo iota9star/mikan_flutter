@@ -39,7 +39,7 @@ class BangumiPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final headerBackgroundColor = ColorTween(
-      begin: theme.colorScheme.surface.withOpacity(0.0),
+      begin: theme.colorScheme.surface.withValues(alpha: 0.0),
       end: theme.colorScheme.surface,
     );
     return AnnotatedRegion(
@@ -285,7 +285,7 @@ class BangumiPage extends StatelessWidget {
                     foregroundDecoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          theme.colorScheme.surface.withOpacity(0.64),
+                          theme.colorScheme.surface.withValues(alpha: 0.64),
                           theme.colorScheme.surface,
                         ],
                         begin: Alignment.topCenter,
