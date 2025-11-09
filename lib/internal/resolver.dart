@@ -581,7 +581,7 @@ class Resolver {
     });
     detail.more = Map.fromEntries(more);
     final List<Element> tables = document
-        .querySelectorAll('#sk-container > div.central-container > table');
+        .querySelectorAll('#sk-container > div.central-container > div.episode-table > table');
     final List<Element> subs = document.querySelectorAll('.subgroup-text');
     detail.subgroupBangumis = {};
     SubgroupBangumi subgroupBangumi;
@@ -655,7 +655,7 @@ class Resolver {
         elements = element.querySelectorAll('tbody > tr');
         for (final Element ele in elements) {
           record = RecordItem();
-          element = ele.children[0];
+          element = ele.children[1];
           record.magnet =
               element.children[1].attributes['data-clipboard-text']?.trim() ??
                   '';
@@ -674,9 +674,9 @@ class Resolver {
             record.tags = tags.toList()..sort((a, b) => b.compareTo(a));
           }
           record.url = MikanUrls.baseUrl + (element.attributes['href'] ?? '');
-          final String size = ele.children[1].text.trim();
+          final String size = ele.children[2].text.trim();
           record.size = RegExp(r'\d+.*').hasMatch(size) ? size : '';
-          temp = ele.children[2].text.trim();
+          temp = ele.children[3].text.trim();
           if (temp.isNotBlank &&
               RegExp(r'^\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}$').hasMatch(temp)) {
             record.publishAt =
@@ -685,7 +685,7 @@ class Resolver {
             record.publishAt = temp;
           }
           record.torrent = MikanUrls.baseUrl +
-              (ele.children[3].children[0].attributes['href']?.trim() ?? '');
+              (ele.children[4].children[0].attributes['href']?.trim() ?? '');
           records.add(record);
         }
         subgroupBangumi.records = records;
