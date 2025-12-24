@@ -28,12 +28,14 @@ class ListFragment extends StatelessWidget {
         footer: defaultFooter(context),
         onRefresh: model.refresh,
         onLoad: model.loadMore,
-        child: CustomScrollView(slivers: [_buildHeader(), _buildList(theme, model)]),
+        child: CustomScrollView(
+          slivers: [_buildHeader(), _buildList(context, theme, model), sliverGapH130WithNavBarHeight(context)],
+        ),
       ),
     );
   }
 
-  Widget _buildList(ThemeData theme, ListModel listModel) {
+  Widget _buildList(BuildContext context, ThemeData theme, ListModel listModel) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       sliver: Selector<ListModel, int>(

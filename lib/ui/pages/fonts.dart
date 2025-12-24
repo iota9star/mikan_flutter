@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+import '../../internal/delegate.dart';
 import '../../internal/extension.dart';
 import '../../internal/http_cache_manager.dart';
 import '../../internal/kit.dart';
@@ -52,8 +53,8 @@ class Fonts extends StatelessWidget {
                 selector: (_, model) => model.fonts,
                 builder: (_, fonts, __) {
                   return SliverWaterfallFlow(
-                    gridDelegate: SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 400.0,
+                    gridDelegate: SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
+                      minCrossAxisExtent: 250.0,
                       mainAxisSpacing: context.margins,
                       crossAxisSpacing: context.margins,
                     ),

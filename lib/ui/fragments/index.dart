@@ -123,7 +123,7 @@ class _IndexFragmentState extends LifecycleState<IndexFragment> {
                     );
                   }),
                   _buildOVA(theme),
-                  sliverGapH80WithNavBarHeight(context),
+                  sliverGapH130WithNavBarHeight(context),
                 ],
               );
             },

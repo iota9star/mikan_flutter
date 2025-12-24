@@ -114,7 +114,7 @@ class _SubscribedFragmentState extends LifecycleState<SubscribedFragment> {
               children: [_buildRssRecordsSection(context, theme), _buildRssRecordsList(context, theme)],
             ),
             _buildSeeMore(theme, subscribedModel),
-            sliverGapH80WithNavBarHeight(context),
+            sliverGapH130WithNavBarHeight(context),
           ],
         );
       },

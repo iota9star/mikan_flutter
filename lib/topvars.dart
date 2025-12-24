@@ -39,8 +39,8 @@ List<BoxShadow> scrollHeaderBoxShadow(bool hasScrolled) => hasScrolled
       ]
     : const [];
 
-Widget sliverGapH80WithNavBarHeight(BuildContext context) =>
-    SliverToBoxAdapter(child: Gap(80.0 + context.navBarHeight));
+Widget sliverGapH130WithNavBarHeight(BuildContext context) =>
+    SliverToBoxAdapter(child: Gap(130.0 + context.navBarHeight));
 
 Widget gapH24WithNavBarHeight(BuildContext context) => Gap(24.0 + context.navBarHeight);
 

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 @FFAutoImport()
 import 'package:flutter/material.dart';
@@ -43,10 +45,10 @@ class _HomePageState extends State<HomePage> {
       onPopInvokedWithResult: (_, __) {
         const snackBar = SnackBar(
           behavior: SnackBarBehavior.floating,
-          width: 400.0,
-          content: Text('想要退出？不可能的'),
+          width: 320.0,
+          content: Text('确定要退出应用吗？'),
           duration: Duration(seconds: 3),
-          action: SnackBarAction(label: '哦', onPressed: exitApp),
+          action: SnackBarAction(label: '退出', onPressed: exitApp),
         );
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -56,33 +58,6 @@ class _HomePageState extends State<HomePage> {
         child: TabletModeBuilder(
           builder: (context, isTablet, child) {
             return Scaffold(
-              bottomNavigationBar: !isTablet
-                  ? NavigationBar(
-                      selectedIndex: _selectedIndex,
-                      onDestinationSelected: (index) {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      },
-                      destinations: const [
-                        NavigationDestination(
-                          icon: Icon(Icons.segment_rounded),
-                          selectedIcon: Icon(Icons.receipt_long_rounded),
-                          label: '最新',
-                        ),
-                        NavigationDestination(
-                          icon: Icon(Icons.local_fire_department_rounded),
-                          selectedIcon: Icon(Icons.light_rounded),
-                          label: '番组',
-                        ),
-                        NavigationDestination(
-                          icon: Icon(Icons.person_rounded),
-                          selectedIcon: Icon(Icons.perm_identity_rounded),
-                          label: '我的',
-                        ),
-                      ],
-                    )
-                  : null,
               body: isTablet
                   ? Row(
                       children: [
@@ -129,7 +104,46 @@ class _HomePageState extends State<HomePage> {
                         Expanded(child: body),
                       ],
                     )
-                  : body,
+                  : Stack(
+                      children: [
+                        Positioned.fill(child: body),
+                        Positioned(
+                          left: 40.0,
+                          right: 40.0,
+                          bottom: math.max(32.0, context.navBarHeight + 8.0),
+                          child: ClipRSuperellipse(
+                            borderRadius: BorderRadius.circular(24.0),
+                            child: NavigationBar(
+                              elevation: 0,
+                              backgroundColor: Theme.of(context).colorScheme.surface,
+                              selectedIndex: _selectedIndex,
+                              onDestinationSelected: (index) {
+                                setState(() {
+                                  _selectedIndex = index;
+                                });
+                              },
+                              destinations: const [
+                                NavigationDestination(
+                                  icon: Icon(Icons.segment_rounded),
+                                  selectedIcon: Icon(Icons.receipt_long_rounded),
+                                  label: '最新',
+                                ),
+                                NavigationDestination(
+                                  icon: Icon(Icons.local_fire_department_rounded),
+                                  selectedIcon: Icon(Icons.light_rounded),
+                                  label: '番组',
+                                ),
+                                NavigationDestination(
+                                  icon: Icon(Icons.person_rounded),
+                                  selectedIcon: Icon(Icons.perm_identity_rounded),
+                                  label: '我的',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
             );
           },
         ),
