@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
@@ -12,6 +11,8 @@ import '../../widget/background.dart';
 import '../../widget/placeholder_text.dart';
 import '../../widget/ripple_tap.dart';
 
+const _splashDuration = Duration(seconds: 5);
+
 @FFRoute(name: '/splash')
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -20,28 +21,43 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
-  Timer? _timer;
+class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _countdownAnimation;
 
-  final _counter = ValueNotifier(5);
+  bool _hasNavigated = false;
 
   @override
   void initState() {
     super.initState();
-    int second = 5;
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (--second == 0) {
-        timer.cancel();
-        Navigator.pushNamedAndRemoveUntil(context, Routes.index.name, (_) => true);
-      }
-      _counter.value = second;
-    });
+    _controller = AnimationController(
+      duration: _splashDuration,
+      vsync: this,
+    );
+    _countdownAnimation = Tween<double>(begin: 5, end: 0).animate(_controller);
+    _controller.forward().then((_) => _navigateToHome());
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _controller.dispose();
     super.dispose();
+  }
+
+  void _navigateToHome() {
+    if (_hasNavigated || !mounted) {
+      return;
+    }
+    _hasNavigated = true;
+    Navigator.pushNamedAndRemoveUntil(context, Routes.index.name, (_) => true);
+  }
+
+  void _skipCountdown() {
+    if (_hasNavigated || !mounted) {
+      return;
+    }
+    _controller.stop();
+    _navigateToHome();
   }
 
   @override
@@ -51,10 +67,7 @@ class _SplashPageState extends State<SplashPage> {
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
         body: RippleTap(
-          onTap: () {
-            _timer?.cancel();
-            Navigator.pushNamedAndRemoveUntil(context, Routes.index.name, (_) => true);
-          },
+          onTap: _skipCountdown,
           child: SizedBox.expand(
             child: BubbleBackground(
               colors: [
@@ -72,10 +85,14 @@ class _SplashPageState extends State<SplashPage> {
                     Assets.mikan.image(width: 120.0),
                     PositionedDirectional(
                       bottom: context.navBarHeight + 36.0,
-                      child: ValueListenableBuilder(
-                        valueListenable: _counter,
-                        builder: (context, v, child) {
-                          return PlaceholderText('点击屏幕马上进入 ({$v秒})', style: theme.textTheme.bodyMedium);
+                      child: AnimatedBuilder(
+                        animation: _countdownAnimation,
+                        builder: (context, child) {
+                          final seconds = _countdownAnimation.value.ceil().clamp(1, 5);
+                          return PlaceholderText(
+                            '点击屏幕马上进入 ($seconds秒)',
+                            style: theme.textTheme.bodyMedium,
+                          );
                         },
                       ),
                     ),
