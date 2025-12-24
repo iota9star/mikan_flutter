@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +11,7 @@ import '../../widget/placeholder_text.dart';
 import '../../widget/ripple_tap.dart';
 
 const _splashDuration = Duration(seconds: 5);
+const _fadeDuration = Duration(milliseconds: 600);
 
 @FFRoute(name: '/splash')
 class SplashPage extends StatefulWidget {
@@ -21,26 +21,46 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
+class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _countdownAnimation;
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   bool _hasNavigated = false;
 
   @override
   void initState() {
     super.initState();
+    _setupAnimations();
+  }
+
+  void _setupAnimations() {
     _controller = AnimationController(
       duration: _splashDuration,
       vsync: this,
     );
-    _countdownAnimation = Tween<double>(begin: 5, end: 0).animate(_controller);
+
+    _fadeController = AnimationController(
+      duration: _fadeDuration,
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeOut),
+    );
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.elasticOut),
+    );
+
     _controller.forward().then((_) => _navigateToHome());
+    _fadeController.forward();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _fadeController.dispose();
     super.dispose();
   }
 
@@ -60,6 +80,58 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     _navigateToHome();
   }
 
+  Widget _buildLogo() {
+    return AnimatedBuilder(
+      animation: Listenable.merge([_fadeAnimation, _scaleAnimation]),
+      builder: (context, child) {
+        return Opacity(
+          opacity: _fadeAnimation.value,
+          child: Transform.scale(
+            scale: _scaleAnimation.value,
+            child: child,
+          ),
+        );
+      },
+      child: Assets.mikan.image(width: 120.0),
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    return const PositionedDirectional(
+      bottom: 100.0,
+      child: ExpressiveLoadingIndicator(),
+    );
+  }
+
+  Widget _buildSkipText() {
+    final theme = Theme.of(context);
+    return AnimatedBuilder(
+      animation: _fadeAnimation,
+      builder: (context, child) {
+        return PositionedDirectional(
+          bottom: context.navBarHeight + 36.0,
+          child: Opacity(
+            opacity: _fadeAnimation.value,
+            child: PlaceholderText(
+              '点击屏幕马上进入',
+              style: theme.textTheme.bodyMedium,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  List<Color> _getBackgroundColorScheme(ThemeData theme) {
+    return [
+      theme.colorScheme.primary,
+      theme.colorScheme.inversePrimary,
+      theme.colorScheme.secondary,
+      theme.colorScheme.tertiary,
+      theme.colorScheme.error,
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -70,34 +142,14 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
           onTap: _skipCountdown,
           child: SizedBox.expand(
             child: BubbleBackground(
-              colors: [
-                theme.colorScheme.primary,
-                theme.colorScheme.inversePrimary,
-                theme.colorScheme.secondary,
-                theme.colorScheme.tertiary,
-                theme.colorScheme.error,
-              ],
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 24.0, sigmaY: 24.0),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Assets.mikan.image(width: 120.0),
-                    PositionedDirectional(
-                      bottom: context.navBarHeight + 36.0,
-                      child: AnimatedBuilder(
-                        animation: _countdownAnimation,
-                        builder: (context, child) {
-                          final seconds = _countdownAnimation.value.ceil().clamp(1, 5);
-                          return PlaceholderText(
-                            '点击屏幕马上进入 ($seconds秒)',
-                            style: theme.textTheme.bodyMedium,
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+              colors: _getBackgroundColorScheme(theme),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  _buildLogo(),
+                  _buildProgressIndicator(),
+                  _buildSkipText(),
+                ],
               ),
             ),
           ),

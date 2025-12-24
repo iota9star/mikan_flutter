@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -10,14 +11,20 @@ class Particle {
     required this.speedX,
     required this.speedY,
     required this.color,
-  });
+    this.phase = 0.0,
+    double? pulseSpeed,
+  })  : pulseSpeed = pulseSpeed ?? 0.02 + Random().nextDouble() * 0.02,
+        baseRadius = radius;
 
   double x;
   double y;
-  final double radius;
+  double radius;
   double speedX;
   double speedY;
   final Color color;
+  final double phase;
+  final double pulseSpeed;
+  final double baseRadius;
 }
 
 class BubbleBackground extends StatefulWidget {
@@ -30,74 +37,120 @@ class BubbleBackground extends StatefulWidget {
   BubbleBackgroundState createState() => BubbleBackgroundState();
 }
 
-class BubbleBackgroundState extends State<BubbleBackground> with TickerProviderStateMixin {
+class BubbleBackgroundState extends State<BubbleBackground> with SingleTickerProviderStateMixin {
   final List<Particle> particles = [];
-
-  final _notifier = ValueNotifier(0);
+  late AnimationController _controller;
+  Size? _lastSize;
 
   @override
   void initState() {
     super.initState();
-    tick();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 30),
+      vsync: this,
+    )..repeat();
   }
 
-  Future<void> tick() async {
-    while (mounted) {
-      await Future.delayed(const Duration(milliseconds: 16));
-      if (!mounted) {
-        return;
-      }
-      if (particles.isEmpty) {
-        createParticles(context.size!);
-      }
-      for (final particle in particles) {
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
-
-        if (particle.x < 0 || particle.x > MediaQuery.of(context).size.width) {
-          particle.speedX *= -1;
-        }
-        if (particle.y < 0 || particle.y > MediaQuery.of(context).size.height) {
-          particle.speedY *= -1;
-        }
-      }
-      _notifier.value = _notifier.value + 1;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final size = MediaQuery.of(context).size;
+    if (_lastSize == null || size != _lastSize) {
+      _lastSize = size;
+      createParticles(size);
     }
   }
 
   void createParticles(Size size) {
     final random = Random();
+    particles.clear();
     for (final color in widget.colors) {
       final x = random.nextDouble() * size.width;
       final y = random.nextDouble() * size.height;
-      final radius = random.nextDouble() * 100 + 50;
-      final speedX = random.nextDouble() * 2 - 1;
-      final speedY = random.nextDouble() * 2 - 1;
-      final particle = Particle(x: x, y: y, radius: radius, speedX: speedX, speedY: speedY, color: color);
-      particles.add(particle);
+      final radius = random.nextDouble() * 80 + 40;
+      final speedX = (random.nextDouble() * 0.4 + 0.2) * (random.nextBool() ? 1 : -1);
+      final speedY = (random.nextDouble() * 0.4 + 0.2) * (random.nextBool() ? 1 : -1);
+      final phase = random.nextDouble();
+      particles.add(Particle(
+        x: x,
+        y: y,
+        radius: radius,
+        speedX: speedX,
+        speedY: speedY,
+        color: color,
+        phase: phase,
+      ));
     }
+  }
+
+  void _updateParticles() {
+    final size = MediaQuery.of(context).size;
+    for (final particle in particles) {
+      particle.x += particle.speedX;
+      particle.y += particle.speedY;
+
+      if (particle.x - particle.radius < 0 || particle.x + particle.radius > size.width) {
+        particle.speedX *= -1;
+        particle.x = particle.x.clamp(particle.radius, size.width - particle.radius);
+      }
+      if (particle.y - particle.radius < 0 || particle.y + particle.radius > size.height) {
+        particle.speedY *= -1;
+        particle.y = particle.y.clamp(particle.radius, size.height - particle.radius);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: ParticlePainter(particles, _notifier), child: widget.child);
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        _updateParticles();
+        return CustomPaint(
+          painter: ParticlePainter(particles, _controller.value),
+          child: child,
+        );
+      },
+      child: widget.child,
+    );
   }
 }
 
 class ParticlePainter extends CustomPainter {
-  ParticlePainter(this.particles, Listenable listenable) : super(repaint: listenable);
+  ParticlePainter(this.particles, this.animationValue);
 
   final List<Particle> particles;
+  final double animationValue;
 
   @override
   void paint(Canvas canvas, Size size) {
     for (final particle in particles) {
-      canvas.drawCircle(Offset(particle.x, particle.y), particle.radius, Paint()..color = particle.color);
+      final pulse = (sin((animationValue + particle.phase) * 2 * pi * 0.5) + 1) / 2;
+      final currentRadius = particle.baseRadius * (0.95 + pulse * 0.1);
+
+      final paint = Paint()
+        ..color = particle.color.withValues(alpha: 0.6);
+
+      final bounds = Rect.fromCircle(
+        center: Offset(particle.x, particle.y),
+        radius: currentRadius + 25,
+      );
+
+      canvas.saveLayer(bounds, Paint()..imageFilter = ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20));
+      canvas.clipRect(bounds);
+      canvas.drawCircle(Offset(particle.x, particle.y), currentRadius, paint);
+      canvas.restore();
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(covariant ParticlePainter oldDelegate) {
     return true;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -49,7 +50,9 @@ class SearchPage extends StatelessWidget {
                         builder: (_, loading, __) {
                           if (loading) {
                             return IconButton(
-                              icon: const SizedBox(width: 24.0, height: 24.0, child: CircularProgressIndicator()),
+                              icon: const ExpressiveLoadingIndicator(
+                                constraints: BoxConstraints.tightFor(width: 24, height: 24),
+                              ),
                               onPressed: () {},
                             );
                           }

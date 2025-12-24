@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
@@ -408,7 +408,9 @@ class SettingsPanel extends StatelessWidget {
               shouldRebuild: (pre, next) => pre != next,
               builder: (_, checking, __) {
                 if (checking) {
-                  return const CupertinoActivityIndicator();
+                  return const ExpressiveLoadingIndicator(
+                    constraints: BoxConstraints.tightFor(width: 24, height: 24),
+                  );
                 }
                 return const SizedBox();
               },

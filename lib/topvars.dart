@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide EdgeInsets;
 import 'package:gap/gap.dart';
@@ -53,7 +54,11 @@ const dur3000 = Duration(milliseconds: 3000);
 
 const emptySliverToBoxAdapter = SliverToBoxAdapter();
 
-const centerLoading = Center(child: CupertinoActivityIndicator());
+const centerLoading = Center(
+  child: ExpressiveLoadingIndicator(
+    constraints: BoxConstraints.tightFor(width: 24, height: 24),
+  ),
+);
 
 double kMaterialHeaderFactorFactor(double overscrollFraction) => 2.0 * math.pow(1 - overscrollFraction, 2);
 

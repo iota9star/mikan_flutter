@@ -1,3 +1,4 @@
+import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 @FFAutoImport()
 import 'package:flutter/foundation.dart';
@@ -26,7 +27,6 @@ class _LicenseDetailState extends State<LicenseDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return AnnotatedRegion(
       value: context.fitSystemUiOverlayStyle,
       child: Scaffold(
@@ -58,12 +58,10 @@ class _LicenseDetailState extends State<LicenseDetail> {
                     case ConnectionState.none:
                     case ConnectionState.waiting:
                     case ConnectionState.active:
-                      return SliverFillRemaining(
+                      return const SliverFillRemaining(
                         child: Center(
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(color: theme.secondary),
+                          child: ExpressiveLoadingIndicator(
+                            constraints: BoxConstraints.tightFor(width: 24, height: 24),
                           ),
                         ),
                       );

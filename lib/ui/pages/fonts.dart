@@ -1,4 +1,5 @@
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -156,10 +157,8 @@ class Fonts extends StatelessWidget {
             return const SizedBox();
           }
         }
-        return SizedBox(
-          width: 16.0,
-          height: 16.0,
-          child: CircularProgressIndicator(value: event.percent, strokeWidth: 2.0),
+        return const ExpressiveLoadingIndicator(
+          constraints: BoxConstraints.tightFor(width: 16, height: 16),
         );
       },
     );
