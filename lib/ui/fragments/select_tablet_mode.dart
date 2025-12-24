@@ -4,7 +4,6 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import '../../internal/hive.dart';
 import '../../internal/kit.dart';
-import '../../topvars.dart';
 import '../../widget/sliver_pinned_header.dart';
 
 class SelectTabletMode extends StatelessWidget {
@@ -51,19 +50,28 @@ class TabletModeBuilder extends StatefulWidget {
 
 class _TabletModeBuilderState extends State<TabletModeBuilder> {
   ValueListenable<Box>? _listenable;
-
-  final _isTablet = ValueNotifier(navKey.currentContext!.useTabletLayout);
+  bool? _lastIsTablet;
 
   @override
   void initState() {
     super.initState();
-    _listenable = MyHive.settings.listenable(keys: [SettingsHiveKey.tabletMode])..addListener(_onChange);
+    _listenable = MyHive.settings.listenable(keys: [SettingsHiveKey.tabletMode]);
   }
 
-  void _onChange() {
+  void _updateIsTablet() {
     if (mounted) {
-      _isTablet.value = navKey.currentContext!.useTabletLayout;
+      final currentIsTablet = context.useTabletLayout;
+      if (_lastIsTablet != currentIsTablet) {
+        _lastIsTablet = currentIsTablet;
+        setState(() {});
+      }
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateIsTablet();
   }
 
   @override
@@ -72,14 +80,13 @@ class _TabletModeBuilderState extends State<TabletModeBuilder> {
     super.dispose();
   }
 
+  void _onChange() {
+    _updateIsTablet();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _isTablet,
-      builder: (context, isTablet, child) {
-        return widget.builder(context, isTablet, child);
-      },
-      child: widget.child,
-    );
+    final isTablet = context.useTabletLayout;
+    return widget.builder(context, isTablet, widget.child);
   }
 }
