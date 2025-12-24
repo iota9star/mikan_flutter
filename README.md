@@ -1,8 +1,9 @@
-# Mikan Project
 
-![最新release](https://img.shields.io/github/v/release/iota9star/mikan_flutter) ![Platform](https://img.shields.io/badge/support%20platform-android%20%7C%20ios%20%7C%20windows%20%7C%20macos%20%7C%20linux-green) ![Apache License 2.0](https://img.shields.io/github/license/iota9star/mikan_flutter) ![下载量](https://img.shields.io/github/downloads/iota9star/mikan_flutter/total) ![open issues](https://img.shields.io/github/issues/iota9star/mikan_flutter) ![fork](https://img.shields.io/github/forks/iota9star/mikan_flutter?style=social) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f969750dc4aa424ead664219ddcf321d)](https://app.codacy.com/gh/iota9star/mikan_flutter?utm_source=github.com&utm_medium=referral&utm_content=iota9star/mikan_flutter&utm_campaign=Badge_Grade)
+<img src="static/app.png" width="150" alt="Mikan Project"/>
 
-![[MikanProject](https://mikanani.me)](static/art/banner.png)
+## Mikan Project
+
+![最新release](https://img.shields.io/github/v/release/iota9star/mikan_flutter) ![Apache License 2.0](https://img.shields.io/github/license/iota9star/mikan_flutter) ![下载量](https://img.shields.io/github/downloads/iota9star/mikan_flutter/total) ![open issues](https://img.shields.io/github/issues/iota9star/mikan_flutter) ![fork](https://img.shields.io/github/forks/iota9star/mikan_flutter?style=social) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f969750dc4aa424ead664219ddcf321d)](https://app.codacy.com/gh/iota9star/mikan_flutter?utm_source=github.com&utm_medium=referral&utm_content=iota9star/mikan_flutter&utm_campaign=Badge_Grade)
 
 [mikanani.me](https://mikanani.me)
 
