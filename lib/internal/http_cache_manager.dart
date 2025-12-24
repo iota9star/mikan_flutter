@@ -5,350 +5,499 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
+/// HTTP cache manager implementing RFC 7234 caching semantics.
+///
+/// Supports:
+/// - Cache-Control (no-store, max-age, s-maxage)
+/// - ETag validation (If-None-Match)
+/// - Last-Modified validation (If-Modified-Since)
+/// - 304 Not Modified handling
+/// - Range requests for resume (breakpoint transmission)
+/// - Progress callbacks
+/// - Request cancellation
+/// - Concurrent request deduplication
 class HttpCacheManager {
   HttpCacheManager._(this._cacheDir);
 
   final String _cacheDir;
 
-  static late final HttpCacheManager _httpCacheManager;
+  static HttpCacheManager? _httpCacheManager;
 
   static Future<void> init({String? cacheDir}) async {
+    if (_httpCacheManager != null) {
+      return;
+    }
     if (cacheDir == null || cacheDir.isEmpty) {
-      cacheDir = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}http_cache_manager';
+      cacheDir = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}http_cache';
     }
     _httpCacheManager = HttpCacheManager._(cacheDir);
   }
 
-  static final HttpClient _client = HttpClient()..autoUncompress = false;
+  static final HttpClient _client = HttpClient()
+    ..autoUncompress = false
+    ..connectionTimeout = const Duration(seconds: 30)
+    ..idleTimeout = const Duration(minutes: 2);
 
-  static final Map<String, String> _lockCache = <String, String>{};
-
-  static final Map<String, Completer<File?>> _tasks = <String, Completer<File?>>{};
+  static final Map<String, _TaskInfo> _tasks = <String, _TaskInfo>{};
 
   static Future<File?> get(
     String url, {
-    String? cacheDir,
     String? cacheKey,
     Map<String, dynamic>? headers,
     Cancelable? cancelable,
-
-    /// chunkEvents need close by self.
     StreamController<ProgressChunkEvent>? chunkEvents,
   }) async {
-    if (_tasks.containsKey(url)) {
-      return _tasks[url]!.future;
+    final _TaskInfo? existingTask = _tasks[url];
+    if (existingTask != null) {
+      if (cancelable != null) {
+        existingTask.cancelable = cancelable;
+      }
+      return existingTask.completer.future;
     }
-    final Completer<File?> completer = Completer();
-    unawaited(
-      _httpCacheManager
-          ._(
-            url,
-            cacheKey: cacheKey,
-            cacheDir: cacheDir,
-            headers: headers,
-            chunkEvents: chunkEvents,
-            cancelable: cancelable,
-          )
-          .then(completer.complete)
-          .catchError(completer.completeError)
-          .whenComplete(() => _tasks.remove(url)),
-    );
-    _tasks[url] = completer;
-    return Future.any([
-      if (cancelable != null)
-        cancelable._token.then((value) {
-          _tasks.remove(url);
-          throw value;
-        }),
-      completer.future,
-    ]);
-  }
 
-  Future<Directory> _getCacheDir([String? cacheDir]) async {
-    if (cacheDir == null) {
-      if (Platform.isWindows) {
-        cacheDir =
-            (await getTemporaryDirectory()).path +
-            Platform.pathSeparator +
-            (await getApplicationSupportDirectory()).parent.path.split(Platform.pathSeparator).last +
-            Platform.pathSeparator +
-            _cacheDir;
-      } else {
-        cacheDir = (await getTemporaryDirectory()).path + Platform.pathSeparator + _cacheDir;
+    final Completer<File?> completer = Completer<File?>();
+    final taskInfo = _TaskInfo(completer: completer, cancelable: cancelable);
+    _tasks[url] = taskInfo;
+
+    void cleanup() {
+      _tasks.remove(url);
+    }
+
+    // Register cancel handler
+    void onCancel() {
+      if (!completer.isCompleted) {
+        cleanup();
+        completer.completeError(StateError('Request canceled'));
       }
     }
-    final Directory dir = Directory(cacheDir);
+
+    if (cancelable != null) {
+      cancelable.onBeforeCancel(onCancel);
+    }
+
+    final instance = _httpCacheManager;
+    if (instance == null) {
+      throw StateError('HttpCacheManager not initialized. Call init() first.');
+    }
+    unawaited(instance
+        ._get(url, cacheKey: cacheKey, headers: headers, chunkEvents: chunkEvents, cancelable: cancelable)
+        .then((result) {
+          if (!completer.isCompleted) {
+            completer.complete(result);
+          }
+        })
+        .catchError((Object error, StackTrace stackTrace) {
+          if (!completer.isCompleted) {
+            completer.completeError(error, stackTrace);
+          }
+        })
+        .whenComplete(cleanup));
+
+    return completer.future;
+  }
+
+  Future<Directory> _getCacheDir() async {
+    final Directory dir = Directory(_cacheDir);
     if (!dir.existsSync()) {
       await dir.create(recursive: true);
     }
     return dir;
   }
 
-  File _childFile(Directory parentDir, String fileName) {
-    return File(parentDir.path + Platform.pathSeparator + fileName);
+  File _cacheFile(Directory cacheDir, String key) {
+    return File('${cacheDir.path}${Platform.pathSeparator}$key');
   }
 
-  Future<File?> _(
+  File _tempFile(Directory cacheDir, String key) {
+    return File('${cacheDir.path}${Platform.pathSeparator}$key.tmp');
+  }
+
+  File _metadataFile(Directory cacheDir, String key) {
+    return File('${cacheDir.path}${Platform.pathSeparator}$key.meta');
+  }
+
+  /// Parse max-age from Cache-Control header
+  static int? _parseMaxAge(String cacheControl) {
+    // Check for no-store first
+    if (cacheControl.contains('no-store')) {
+      return 0;
+    }
+
+    // Try s-maxage first (CDN cache), then max-age
+    for (final String key in ['s-maxage', 'max-age']) {
+      if (cacheControl.contains(key)) {
+        final int idx = cacheControl.indexOf(key);
+        final int equalIdx = cacheControl.indexOf('=', idx);
+        if (equalIdx > idx) {
+          final String value = cacheControl.substring(equalIdx + 1).split(RegExp(r'[,\s]')).first;
+          return int.tryParse(value);
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Load cached metadata
+  Future<_CacheMetadata?> _loadMetadata(Directory cacheDir, String key) async {
+    try {
+      final metaFile = _metadataFile(cacheDir, key);
+      if (!metaFile.existsSync()) {
+        return null;
+      }
+      final String content = await metaFile.readAsString();
+      final Map<String, dynamic> json = jsonDecode(content);
+      return _CacheMetadata(
+        etag: json['etag'] as String?,
+        lastModified: json['last_modified'] as String?,
+        expiresAt: json['expires_at'] as int?,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Save cached metadata
+  Future<void> _saveMetadata(Directory cacheDir, String key, _CacheMetadata metadata) async {
+    try {
+      final metaFile = _metadataFile(cacheDir, key);
+      await metaFile.writeAsString(jsonEncode({
+        'etag': metadata.etag,
+        'last_modified': metadata.lastModified,
+        'expires_at': metadata.expiresAt,
+      }));
+    } catch (e) {
+      debugPrint('Failed to save metadata for $key: $e');
+    }
+  }
+
+  /// Check if cache is expired
+  bool _isExpired(_CacheMetadata metadata) {
+    return metadata.expiresAt != null && metadata.expiresAt! < DateTime.now().millisecondsSinceEpoch;
+  }
+
+  /// Check if temp file is valid for resume
+  Future<bool> _isValidTempFile(File tempFile, int expectedSize) async {
+    try {
+      final currentSize = await tempFile.length();
+      return currentSize > 0 && currentSize < expectedSize;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Perform HEAD request to check cache status
+  Future<HttpClientResponse?> _headRequest(Uri uri, {Map<String, dynamic>? headers}) async {
+    try {
+      final request = await _client.headUrl(uri);
+      headers?.forEach((String key, dynamic value) {
+        request.headers.add(key, value);
+      });
+      final response = await request.close();
+      if (response.statusCode >= 500) {
+        await response.drain<void>();
+        return null;
+      }
+      return response;
+    } catch (e) {
+      debugPrint('HEAD request failed for $uri: $e');
+      return null;
+    }
+  }
+
+  /// Perform conditional request using cached metadata
+  Future<HttpClientResponse?> _conditionalRequest(
+    Uri uri,
+    _CacheMetadata metadata, {
+    Map<String, dynamic>? headers,
+  }) async {
+    try {
+      final HttpClientRequest request = await _client.getUrl(uri);
+
+      // Add custom headers
+      headers?.forEach((String key, dynamic value) {
+        request.headers.add(key, value);
+      });
+
+      // Add conditional headers
+      if (metadata.etag != null) {
+        request.headers.add(HttpHeaders.ifNoneMatchHeader, metadata.etag!);
+      }
+      if (metadata.lastModified != null) {
+        request.headers.add(HttpHeaders.ifModifiedSinceHeader, metadata.lastModified!);
+      }
+
+      final response = await request.close();
+      if (response.statusCode >= 500) {
+        await response.drain<void>();
+        return null;
+      }
+      return response;
+    } catch (e) {
+      debugPrint('Conditional request failed for $uri: $e');
+      return null;
+    }
+  }
+
+  /// Emit progress event
+  void _emitProgress(Uri uri, StreamController<ProgressChunkEvent>? chunkEvents, int progress, int? total) {
+    if (chunkEvents != null && !chunkEvents.isClosed) {
+      chunkEvents.add(ProgressChunkEvent(key: uri, progress: progress, total: total));
+    }
+  }
+
+  Future<File?> _get(
     String url, {
     String? cacheKey,
-    String? cacheDir,
     Map<String, dynamic>? headers,
     StreamController<ProgressChunkEvent>? chunkEvents,
     Cancelable? cancelable,
   }) async {
     final Uri uri = Uri.parse(url);
-    final checkResp = await _createNewRequest(uri, withBody: false, headers: headers);
+    final key = cacheKey ?? base64Url.encode(utf8.encode(url));
+    final cacheDir = await _getCacheDir();
+    final cacheFile = _cacheFile(cacheDir, key);
+    final tempFile = _tempFile(cacheDir, key);
 
-    final rawFileKey = cacheKey ?? base64Url.encode(utf8.encode(url));
-    final parentDir = await _getCacheDir(cacheDir);
-    final rawFile = _childFile(parentDir, rawFileKey);
+    // Check if cached file exists
+    if (cacheFile.existsSync()) {
+      final metadata = await _loadMetadata(cacheDir, key);
 
-    if (rawFile.existsSync()) {
-      await _justFinished(uri, rawFile, chunkEvents);
-      return rawFile;
-    }
+      if (metadata != null && !_isExpired(metadata)) {
+        // Cache is valid
+        final length = await cacheFile.length();
+        _emitProgress(uri, chunkEvents, length, length);
+        return cacheFile;
+      }
 
-    // if request error, use cache.
-    if (checkResp.statusCode != HttpStatus.ok) {
-      checkResp.listen(null);
-      // if (rawFile.existsSync()) {
-      //   await _justFinished(uri, rawFile, chunkEvents);
-      //   return rawFile;
-      // }
-      return null;
-    }
-
-    // consuming response.
-    checkResp.listen(null);
-
-    bool isExpired = false;
-    final String? cacheControl = checkResp.headers.value(HttpHeaders.cacheControlHeader);
-    final File tempFile = _childFile(parentDir, '$rawFileKey.temp');
-    if (cacheControl != null) {
-      if (cacheControl.contains('no-store')) {
-        // no cache, download now.
-        return _nrw(uri, rawFile, tempFile, chunkEvents: chunkEvents);
-      } else {
-        String maxAgeKey = 'max-age';
-        if (cacheControl.contains(maxAgeKey)) {
-          // if exist s-maxage, override max-age, use cdn max-age
-          if (cacheControl.contains('s-maxage')) {
-            maxAgeKey = 's-maxage';
-          }
-          final String maxAgeStr = cacheControl
-              .split(' ')
-              .firstWhere((String str) => str.contains(maxAgeKey))
-              .split('=')[1]
-              .trim();
-          final String seconds = RegExp(r'\d+').stringMatch(maxAgeStr)!;
-          final int maxAge = int.parse(seconds) * 1000;
-          final String newFlag =
-              '${checkResp.headers.value(HttpHeaders.etagHeader)}_${checkResp.headers.value(HttpHeaders.lastModifiedHeader)}';
-          final File lockFile = _childFile(parentDir, '$rawFileKey.lock');
-          String? lockStr = _lockCache[url];
-          if (lockStr == null) {
-            // never empty or blank.
-            if (lockFile.existsSync()) {
-              lockStr = await lockFile.readAsString();
-            } else {
-              await lockFile.create();
+      // Check with server if cache is still valid
+      if (metadata != null) {
+        final response = await _conditionalRequest(uri, metadata, headers: headers);
+        if (response != null) {
+          try {
+            if (response.statusCode == HttpStatus.notModified) {
+              // 304 Not Modified - cache is still valid
+              // Update expiration if server provided new Cache-Control
+              final cacheControl = response.headers.value(HttpHeaders.cacheControlHeader) ?? '';
+              final maxAge = _parseMaxAge(cacheControl);
+              if (maxAge != null) {
+                final expiresAt = maxAge > 0
+                    ? DateTime.now().millisecondsSinceEpoch + maxAge * 1000
+                    : null;
+                await _saveMetadata(cacheDir, key, metadata.copyWith(expiresAt: expiresAt));
+              }
+              final length = await cacheFile.length();
+              _emitProgress(uri, chunkEvents, length, length);
+              return cacheFile;
             }
+          } finally {
+            try {
+              await response.drain<void>();
+            } catch (_) {}
           }
-          final int millis = DateTime.now().millisecondsSinceEpoch;
-          if (lockStr != null) {
-            //never empty or blank
-            final List<String> split = lockStr.split('@');
-            final String flag = split[1];
-            final int lastReqAt = int.parse(split[0]);
-            if (flag != newFlag || lastReqAt + maxAge < millis) {
-              isExpired = true;
-            }
-          }
-          final String newLockStr = <dynamic>[millis, newFlag].join('@');
-          _lockCache[url] = newLockStr;
-          // we don't care lock str already written in file.
-          unawaited(lockFile.writeAsString(newLockStr));
         }
       }
     }
-    if (!isExpired) {
-      // if not expired and exist file, just return.
-      if (rawFile.existsSync()) {
-        await _justFinished(uri, rawFile, chunkEvents);
-        return rawFile;
-      }
-    }
 
-    final bool breakpointTransmission =
-        checkResp.headers.value(HttpHeaders.acceptRangesHeader) == 'bytes' && checkResp.contentLength > 0;
-    // if not expired && is support breakpoint transmission && temp file exists
-    if (!isExpired && breakpointTransmission && tempFile.existsSync()) {
-      final int received = await tempFile.length();
-      final HttpClientResponse resp = await _createNewRequest(
-        uri,
-        beforeRequest: (HttpClientRequest req) {
-          req.headers.add(HttpHeaders.rangeHeader, 'bytes=$received-');
-          final String? flag =
-              checkResp.headers.value(HttpHeaders.etagHeader) ??
-              checkResp.headers.value(HttpHeaders.lastModifiedHeader);
-          if (flag != null) {
-            req.headers.add(HttpHeaders.ifRangeHeader, flag);
-          }
-        },
-        headers: headers,
-      );
-      if (resp.statusCode == HttpStatus.partialContent) {
-        // is ok, continue download.
-        return _rw(
-          uri,
-          resp,
-          rawFile,
-          tempFile,
-          chunkEvents: chunkEvents,
-          received: received,
-          fileMode: FileMode.append,
-          cancelable: cancelable,
-        );
-      } else if (resp.statusCode == HttpStatus.requestedRangeNotSatisfiable) {
-        // 416 Requested Range Not Satisfiable
-        return _nrw(uri, rawFile, tempFile, chunkEvents: chunkEvents, cancelable: cancelable);
-      } else if (resp.statusCode == HttpStatus.ok) {
-        return _rw(uri, resp, rawFile, tempFile, chunkEvents: chunkEvents, cancelable: cancelable);
-      } else {
-        // request error.
-        resp.listen(null);
-        return null;
-      }
-    } else {
-      return _nrw(uri, rawFile, tempFile, chunkEvents: chunkEvents, cancelable: cancelable);
-    }
+    // No cache or cache invalid, download
+    return _download(uri, cacheFile, tempFile, key, cacheDir, headers: headers, chunkEvents: chunkEvents, cancelable: cancelable);
   }
 
-  Future<void> _justFinished(Uri uri, File rawFile, StreamController<ProgressChunkEvent>? chunkEvents) async {
-    if (chunkEvents != null) {
-      final int length = await rawFile.length();
-      chunkEvents.add(ProgressChunkEvent(key: uri, progress: length, total: length));
-    }
-  }
-
-  Future<File?> _nrw(
+  Future<File?> _download(
     Uri uri,
-    File rawFile,
-    File tempFile, {
+    File cacheFile,
+    File tempFile,
+    String key,
+    Directory cacheDir, {
     Map<String, dynamic>? headers,
     StreamController<ProgressChunkEvent>? chunkEvents,
     Cancelable? cancelable,
   }) async {
-    final HttpClientResponse resp = await _createNewRequest(uri, headers: headers);
-    if (resp.statusCode != HttpStatus.ok) {
-      resp.listen(null);
+    // Try HEAD first to get content info
+    final headResponse = await _headRequest(uri, headers: headers);
+    final int? expectedSize = headResponse?.contentLength;
+    final bool supportsRange = headResponse?.headers.value(HttpHeaders.acceptRangesHeader) == 'bytes' &&
+        (expectedSize ?? 0) > 0;
+
+    HttpClientResponse response;
+    int received = 0;
+    FileMode fileMode = FileMode.write;
+
+    // Check if we can resume from temp file
+    if (supportsRange && expectedSize != null && tempFile.existsSync()) {
+      final isValidResume = await _isValidTempFile(tempFile, expectedSize);
+      if (isValidResume) {
+        received = await tempFile.length();
+        final request = await _client.getUrl(uri);
+        headers?.forEach((String k, dynamic v) => request.headers.add(k, v));
+        request.headers.add(HttpHeaders.rangeHeader, 'bytes=$received-');
+        response = await request.close();
+
+        if (response.statusCode == HttpStatus.partialContent) {
+          // Resume successful
+          fileMode = FileMode.append;
+        } else {
+          // Server doesn't support resume for this request, start fresh
+          try {
+            await response.drain<void>();
+          } catch (_) {}
+          try {
+            await tempFile.delete();
+          } catch (_) {}
+          received = 0;
+          response = await _createRequest(uri, headers);
+        }
+      } else {
+        // Temp file invalid, start fresh
+        try {
+          await tempFile.delete();
+        } catch (_) {}
+        response = await _createRequest(uri, headers);
+      }
+    } else {
+      try {
+        await headResponse?.drain<void>();
+      } catch (_) {}
+      response = await _createRequest(uri, headers);
+    }
+
+    if (response.statusCode != HttpStatus.ok && response.statusCode != HttpStatus.partialContent) {
+      try {
+        await response.drain<void>();
+      } catch (_) {}
       return null;
     }
-    return _rw(uri, resp, rawFile, tempFile, chunkEvents: chunkEvents, cancelable: cancelable);
-  }
 
-  Future<File> _rw(
-    Uri uri,
-    HttpClientResponse response,
-    File rawFile,
-    File tempFile, {
-    StreamController<ProgressChunkEvent>? chunkEvents,
-    int received = 0,
-    FileMode fileMode = FileMode.write,
-    Cancelable? cancelable,
-  }) async {
-    final Completer<File> completer = Completer<File>();
+    // Download and handle gzip
     final bool compressed = response.compressionState == HttpClientResponseCompressionState.compressed;
     final int? total = compressed || response.contentLength < 0 ? null : response.contentLength;
-    final IOSink ioSink = tempFile.openWrite(mode: fileMode);
+
+    final completer = Completer<File>();
+    final sink = tempFile.openWrite(mode: fileMode);
     late StreamSubscription<List<int>> subscription;
+
     subscription = response.listen(
-      (List<int> bytes) {
+      (bytes) {
         if (cancelable?.isCancelled ?? false) {
           subscription.cancel();
-          ioSink.close();
+          sink.close();
           return;
         }
-        ioSink.add(bytes);
+        sink.add(bytes);
         received += bytes.length;
-        chunkEvents?.add(ProgressChunkEvent(key: uri, progress: received, total: total));
+        _emitProgress(uri, chunkEvents, received, total);
       },
       onDone: () async {
         try {
-          await ioSink.close();
-          Uint8List buffer = await tempFile.readAsBytes();
+          await sink.close();
+          File finalFile = tempFile;
+
           if (compressed) {
-            final List<int> convert = gzip.decoder.convert(buffer);
-            buffer = Uint8List.fromList(convert);
-            await tempFile.writeAsBytes(convert);
-            chunkEvents?.add(ProgressChunkEvent(key: uri, progress: buffer.length, total: buffer.length));
+            // Decompress to new file
+            final buffer = await tempFile.readAsBytes();
+            final decompressed = gzip.decoder.convert(buffer);
+            final decompressedBuffer = Uint8List.fromList(decompressed);
+            final decompressedFile = File('${tempFile.path}.dec');
+            await decompressedFile.writeAsBytes(decompressedBuffer);
+            try {
+              await tempFile.delete();
+            } catch (_) {}
+            finalFile = decompressedFile;
+            _emitProgress(uri, chunkEvents, decompressedBuffer.length, decompressedBuffer.length);
           }
-          await tempFile.rename(rawFile.path);
-          completer.complete(rawFile);
+
+          // Save metadata
+          final etag = response.headers.value(HttpHeaders.etagHeader);
+          final lastModified = response.headers.value(HttpHeaders.lastModifiedHeader);
+          final cacheControl = response.headers.value(HttpHeaders.cacheControlHeader) ?? '';
+          final maxAge = _parseMaxAge(cacheControl);
+          final expiresAt = maxAge != null && maxAge > 0
+              ? DateTime.now().millisecondsSinceEpoch + maxAge * 1000
+              : null;
+
+          if (maxAge != 0) {
+            // Cache the file
+            await _saveMetadata(cacheDir, key, _CacheMetadata(
+              etag: etag,
+              lastModified: lastModified,
+              expiresAt: expiresAt,
+            ));
+
+            if (cacheFile.existsSync()) {
+              await cacheFile.delete();
+            }
+            await finalFile.rename(cacheFile.path);
+            completer.complete(cacheFile);
+          } else {
+            // no-store, return temp file without caching
+            completer.complete(finalFile);
+          }
         } catch (e) {
-          completer.completeError(e);
+          if (!completer.isCompleted) {
+            completer.completeError(e);
+          }
         }
       },
-      onError: (dynamic err, StackTrace stackTrace) async {
+      onError: (err, stackTrace) async {
         try {
-          await ioSink.close();
-        } finally {
+          await sink.close();
+        } catch (_) {}
+        if (!completer.isCompleted) {
           completer.completeError(err, stackTrace);
         }
       },
       cancelOnError: true,
     );
+
     cancelable?.onBeforeCancel(() async {
       await subscription.cancel();
-      await ioSink.close();
+      await sink.close();
     });
+
     return completer.future;
   }
 
-  Future<HttpClientResponse> _createNewRequest(
-    Uri uri, {
-    Map<String, dynamic>? headers,
-    bool withBody = true,
-    void Function(HttpClientRequest)? beforeRequest,
-  }) async {
-    final HttpClientRequest request = await (withBody ? _client.getUrl(uri) : _client.headUrl(uri));
+  Future<HttpClientResponse> _createRequest(Uri uri, Map<String, dynamic>? headers) async {
+    final request = await _client.getUrl(uri);
     headers?.forEach((String key, dynamic value) {
       request.headers.add(key, value);
     });
-    beforeRequest?.call(request);
     return request.close();
   }
 }
 
+class _TaskInfo {
+  _TaskInfo({required this.completer, this.cancelable});
+
+  final Completer<File?> completer;
+  Cancelable? cancelable;
+}
+
+/// Cancelable request token
 class Cancelable {
   Cancelable();
 
-  final Completer<dynamic> _completer = Completer();
+  final Set<FutureOrVoidCallback> _onBeforeCancels = {};
 
-  Future<dynamic> get _token => _completer.future;
-
-  final Set<FutureOrVoidCallback> _onBeforeCancels = <FutureOrVoidCallback>{};
-
-  void onBeforeCancel(FutureOrVoidCallback onBeforeCancel) {
-    _onBeforeCancels.add(onBeforeCancel);
+  void onBeforeCancel(FutureOrVoidCallback callback) {
+    _onBeforeCancels.add(callback);
   }
 
   bool _isCancelled = false;
 
   bool get isCancelled => _isCancelled;
 
-  Future<void> cancel([dynamic reason]) async {
+  Future<void> cancel([Object? reason]) async {
     if (_isCancelled) {
       return;
     }
-    for (final FutureOrVoidCallback f in _onBeforeCancels) {
-      await f.call();
+    for (final f in _onBeforeCancels) {
+      await f();
     }
-    _completer.complete(reason ?? 'Cancel...');
     _isCancelled = true;
   }
 }
 
+/// Progress event for download monitoring
 @immutable
 class ProgressChunkEvent {
   const ProgressChunkEvent({required this.key, required this.progress, required this.total});
@@ -373,3 +522,24 @@ class ProgressChunkEvent {
 }
 
 typedef FutureOrVoidCallback = FutureOr<void> Function();
+
+@immutable
+class _CacheMetadata {
+  const _CacheMetadata({
+    this.etag,
+    this.lastModified,
+    this.expiresAt,
+  });
+
+  final String? etag;
+  final String? lastModified;
+  final int? expiresAt;
+
+  _CacheMetadata copyWith({String? etag, String? lastModified, int? expiresAt}) {
+    return _CacheMetadata(
+      etag: etag ?? this.etag,
+      lastModified: lastModified ?? this.lastModified,
+      expiresAt: expiresAt ?? this.expiresAt,
+    );
+  }
+}

@@ -97,38 +97,30 @@ class MikanApp extends StatefulWidget {
 
 class _MikanAppState extends State<MikanApp> {
   StreamSubscription<List<ConnectivityResult>>? _subscription;
+  bool _firstEvent = true;
 
   @override
   void initState() {
     super.initState();
     _subscription = Connectivity().onConnectivityChanged.listen((result) {
-      // This condition is for demo purposes only to explain every connection type.
-      // Use conditions which work for your requirements.
+      if (_firstEvent) {
+        _firstEvent = false;
+        return;
+      }
+
       if (result.contains(ConnectivityResult.mobile)) {
-        // Mobile network available.
         '正在使用 移动网络'.toast();
       } else if (result.contains(ConnectivityResult.wifi)) {
-        // Wi-fi is available.
-        // Note for Android:
-        // When both mobile and Wi-Fi are turned on system will return Wi-Fi only as active network type
         '正在使用 WiFi网络'.toast();
       } else if (result.contains(ConnectivityResult.ethernet)) {
-        // Ethernet connection available.
         '正在使用 以太网'.toast();
       } else if (result.contains(ConnectivityResult.vpn)) {
-        // Vpn connection active.
-        // Note for iOS and macOS:
-        // There is no separate network interface type for [vpn].
-        // It returns [other] on any device (also simulator)
         '正在使用 VPN'.toast();
       } else if (result.contains(ConnectivityResult.bluetooth)) {
-        // Bluetooth connection available.
         '正在使用 蓝牙网络'.toast();
       } else if (result.contains(ConnectivityResult.other)) {
-        // Connected to a network which is not in the above mentioned networks.
         '正在使用 未知网络'.toast();
       } else if (result.contains(ConnectivityResult.none)) {
-        // No available network types
         '网络已断开'.toast();
       }
     });
