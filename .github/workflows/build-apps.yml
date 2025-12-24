@@ -86,10 +86,7 @@ jobs:
         with:
           channel: stable
       - name: Update ISS version
-        run: |
-          $tag = "${{ github.event.inputs.TAG }}"
-          $version = $tag -replace "^v", ""
-          dart run scripts/update_iss_version.dart --version $version
+        run: dart run scripts/update_iss_version.dart
       - name: Build windows
         run: |
           flutter pub get

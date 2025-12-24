@@ -2,19 +2,27 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:yaml/yaml.dart';
 
 Future<void> main(List<String> arguments) async {
   final parser = ArgParser()
-    ..addOption('version', abbr: 'v', help: 'Version to set (e.g., 1.3.1)')
     ..addOption('file', abbr: 'f', defaultsTo: 'windows_inno_setup.iss', help: 'ISS file path');
 
   final parse = parser.parse(arguments);
-  final version = parse['version'];
   final file = parse['file'];
 
-  if (version == null || version.isEmpty) {
-    print('Error: Version is required');
-    print(parser.usage);
+  final pubspecFile = File('pubspec.yaml');
+  if (!pubspecFile.existsSync()) {
+    print('Error: pubspec.yaml not found');
+    exit(1);
+  }
+
+  final pubspecYaml = loadYaml(pubspecFile.readAsStringSync());
+  final versionStr = pubspecYaml['version'] as String;
+  final version = versionStr.split('+').first;
+
+  if (version.isEmpty) {
+    print('Error: Version not found in pubspec.yaml');
     exit(1);
   }
 

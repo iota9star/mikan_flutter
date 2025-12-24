@@ -3,7 +3,7 @@
 
 #define MyAppName "MikanProject"
 #define MyAppEngName "MikanProject"
-#define MyAppVersion "1.2.5"
+#define MyAppVersion "1.3.2"
 #define MyAppPublisher "mikanani.me"
 #define MyAppURL "https://mikanani.me/"
 #define MyAppExeName "mikan_flutter.exe"
