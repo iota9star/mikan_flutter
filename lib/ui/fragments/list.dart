@@ -29,7 +29,7 @@ class ListFragment extends StatelessWidget {
         onRefresh: model.refresh,
         onLoad: model.loadMore,
         child: CustomScrollView(
-          slivers: [_buildHeader(), _buildList(context, theme, model), sliverGapH130WithNavBarHeight(context)],
+          slivers: [_buildHeader(), _buildList(context, theme, model), sliverGapH120WithNavBarHeight(context)],
         ),
       ),
     );

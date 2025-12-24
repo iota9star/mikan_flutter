@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "mcp__dart__analyze_files",
+      "mcp__jetbrains__get_file_problems"
+    ]
+  }
+}

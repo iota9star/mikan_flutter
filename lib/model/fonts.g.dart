@@ -27,4 +27,7 @@ Map<String, dynamic> _$FontToJson(Font instance) => <String, dynamic>{
 License _$LicenseFromJson(Map<String, dynamic> json) =>
     License(name: json['name'] as String, url: json['url'] as String);
 
-Map<String, dynamic> _$LicenseToJson(License instance) => <String, dynamic>{'url': instance.url, 'name': instance.name};
+Map<String, dynamic> _$LicenseToJson(License instance) => <String, dynamic>{
+  'url': instance.url,
+  'name': instance.name,
+};

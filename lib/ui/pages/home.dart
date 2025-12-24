@@ -9,6 +9,7 @@ import '../../internal/extension.dart';
 import '../../internal/kit.dart';
 import '../../internal/lifecycle.dart';
 import '../../providers/home_model.dart';
+import '../../widget/md3_navigation_bar.dart';
 import '../../widget/transition_container.dart';
 import '../fragments/index.dart';
 import '../fragments/list.dart';
@@ -105,37 +106,34 @@ class _HomePageState extends State<HomePage> {
                       ],
                     )
                   : Stack(
+                      alignment: Alignment.center,
                       children: [
                         Positioned.fill(child: body),
                         Positioned(
-                          left: 40.0,
-                          right: 40.0,
-                          bottom: math.max(32.0, context.navBarHeight + 8.0),
-                          child: ClipRSuperellipse(
-                            borderRadius: BorderRadius.circular(24.0),
-                            child: NavigationBar(
-                              elevation: 0,
-                              backgroundColor: Theme.of(context).colorScheme.surface,
+                          bottom: math.max(28.0, context.navBarHeight + 8.0),
+                          child: SizedBox(
+                            width: 230.0,
+                            child: M3NavigationBar(
                               selectedIndex: _selectedIndex,
                               onDestinationSelected: (index) {
                                 setState(() {
                                   _selectedIndex = index;
                                 });
                               },
-                              destinations: const [
-                                NavigationDestination(
-                                  icon: Icon(Icons.segment_rounded),
-                                  selectedIcon: Icon(Icons.receipt_long_rounded),
+                              items: const [
+                                M3NavigationItem(
+                                  icon: Icons.segment_rounded,
+                                  selectedIcon: Icons.receipt_long_rounded,
                                   label: '最新',
                                 ),
-                                NavigationDestination(
-                                  icon: Icon(Icons.local_fire_department_rounded),
-                                  selectedIcon: Icon(Icons.light_rounded),
+                                M3NavigationItem(
+                                  icon: Icons.local_fire_department_rounded,
+                                  selectedIcon: Icons.light_rounded,
                                   label: '番组',
                                 ),
-                                NavigationDestination(
-                                  icon: Icon(Icons.person_rounded),
-                                  selectedIcon: Icon(Icons.perm_identity_rounded),
+                                M3NavigationItem(
+                                  icon: Icons.person_rounded,
+                                  selectedIcon: Icons.perm_identity_rounded,
                                   label: '我的',
                                 ),
                               ],

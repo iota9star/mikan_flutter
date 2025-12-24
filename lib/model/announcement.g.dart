@@ -13,8 +13,13 @@ class AnnouncementAdapter extends TypeAdapter<Announcement> {
   @override
   Announcement read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
-    return Announcement(date: fields[0] as String, nodes: (fields[1] as List).cast<AnnouncementNode>());
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Announcement(
+      date: fields[0] as String,
+      nodes: (fields[1] as List).cast<AnnouncementNode>(),
+    );
   }
 
   @override
@@ -33,7 +38,9 @@ class AnnouncementAdapter extends TypeAdapter<Announcement> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AnnouncementAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
+      other is AnnouncementAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class AnnouncementNodeAdapter extends TypeAdapter<AnnouncementNode> {
@@ -43,8 +50,14 @@ class AnnouncementNodeAdapter extends TypeAdapter<AnnouncementNode> {
   @override
   AnnouncementNode read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
-    return AnnouncementNode(text: fields[0] as String, type: fields[1] as String?, place: fields[2] as String?);
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return AnnouncementNode(
+      text: fields[0] as String,
+      type: fields[1] as String?,
+      place: fields[2] as String?,
+    );
   }
 
   @override
@@ -65,5 +78,7 @@ class AnnouncementNodeAdapter extends TypeAdapter<AnnouncementNode> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AnnouncementNodeAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
+      other is AnnouncementNodeAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
