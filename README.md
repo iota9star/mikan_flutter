@@ -24,29 +24,29 @@
 
 <table>
   <tr>
-    <td><img alt="" src="static/screenshot/IMG_0348.PNG"></td>
-    <td><img alt="" src="static/screenshot/IMG_0349.PNG"></td>
-    <td><img alt="" src="static/screenshot/IMG_0350.PNG"></td>
+    <td><img alt="" src="static/screenshot/S01.png"></td>
+    <td><img alt="" src="static/screenshot/S02.png"></td>
+    <td><img alt="" src="static/screenshot/S03.png"></td>
   <tr>
   <tr>
-    <td><img alt="" src="static/screenshot/IMG_0352.PNG"></td>
-    <td><img alt="" src="static/screenshot/IMG_0353.PNG"></td>
-    <td><img alt="" src="static/screenshot/IMG_0354.PNG"></td>
+    <td><img alt="" src="static/screenshot/S04.png"></td>
+    <td><img alt="" src="static/screenshot/S05.png"></td>
+    <td><img alt="" src="static/screenshot/S06.png"></td>
   <tr>
   <tr>
-    <td><img alt="" src="static/screenshot/IMG_0355.PNG"></td>
-    <td><img alt="" src="static/screenshot/IMG_0356.PNG"></td>
-    <td><img alt="" src="static/screenshot/IMG_0358.PNG"></td>
+    <td><img alt="" src="static/screenshot/S07.png"></td>
+    <td><img alt="" src="static/screenshot/S08.png"></td>
+    <td><img alt="" src="static/screenshot/S09.png"></td>
   <tr>
   <tr>
-    <td><img alt="" src="static/screenshot/IMG_0359.PNG"></td>
-    <td><img alt="" src="static/screenshot/IMG_0360.PNG"></td>
-    <td><img alt="" src="static/screenshot/IMG_0361.PNG"></td>
+    <td><img alt="" src="static/screenshot/S10.png"></td>
+    <td><img alt="" src="static/screenshot/S11.png"></td>
+    <td><img alt="" src="static/screenshot/S12.png"></td>
   <tr>
   <tr>
-    <td><img alt="" src="static/screenshot/img.png"></td>
-    <td><img alt="" src="static/screenshot/img_1.png"></td>
-    <td><img alt="" src="static/screenshot/img_2.png"></td>
+    <td><img alt="" src="static/screenshot/S13.png"></td>
+    <td><img alt="" src="static/screenshot/S14.png"></td>
+    <td><img alt="" src="static/screenshot/S15.png"></td>
   <tr>
 </table>
 
@@ -55,7 +55,7 @@
 该项目使用 `Apache License 2.0` 协议，仅供学习交流，请于下载后24小时内删除，使用应遵循当地法律法规，请勿用于违法用途。
 
 ``` text
-Copyright 2020. iota9star@nichijou.io
+Copyright 2020. iota9star
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

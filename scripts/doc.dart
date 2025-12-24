@@ -29,7 +29,7 @@ void writeDoc2README(
     }
     return flag;
   });
-  final index = lines.indexWhere((ele) => ele.startsWith('## Thanks'));
+  final index = lines.indexWhere((ele) => ele.startsWith('## Licenses'));
   lines.insert(index, screenshots);
   // lines.insert(index + 1, libs);
   file.writeAsStringSync(lines.join('\n'));
