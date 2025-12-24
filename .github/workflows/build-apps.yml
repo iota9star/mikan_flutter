@@ -85,10 +85,7 @@ jobs:
         run: |
           $tag = "${{ github.event.inputs.TAG }}"
           $version = $tag -replace "^v", ""
-          $content = Get-Content windows_inno_setup.iss -Raw
-          $pattern = [regex]::new('#define MyAppVersion ".*"')
-          $newContent = $pattern.Replace($content, "#define MyAppVersion `"$version`"")
-          $newContent | Set-Content windows_inno_setup.iss -NoNewline
+          dart run scripts/update_iss_version.dart --version $version
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
