@@ -94,17 +94,18 @@ class IndexModel extends BaseModel {
     }
     _years = index.years;
     _bangumiRows = index.bangumiRows;
-    _selectedBangumiRow = _bangumiRows[0];
+    _selectedBangumiRow = _bangumiRows.firstOrNull;
     _carousels = index.carousels;
     _user = index.user;
     _announcements = index.announcements;
-    if (years.isSafeNotEmpty) {
+    if (!years.isNullOrEmpty) {
       for (final YearSeason year in years) {
         _selectedSeason = year.seasons.firstWhereOrNull((element) => element.active);
         if (_selectedSeason != null) {
           break;
         }
       }
+      _selectedSeason ??= years.firstOrNull?.seasons.firstOrNull;
     }
     _subscribedModel.bindYearsAndSeason(_years, _selectedSeason);
   }
