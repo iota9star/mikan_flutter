@@ -105,7 +105,12 @@ class IndexModel extends BaseModel {
           break;
         }
       }
-      _selectedSeason ??= years.firstOrNull?.seasons.firstOrNull;
+    }
+    if (_selectedSeason == null) {
+      _selectedSeason = years.firstOrNull?.seasons.firstOrNull;
+      if (_selectedSeason != null) {
+        selectSeason(_selectedSeason!);
+      }
     }
     _subscribedModel.bindYearsAndSeason(_years, _selectedSeason);
   }
