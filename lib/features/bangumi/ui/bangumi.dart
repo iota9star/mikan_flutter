@@ -87,7 +87,10 @@ class Bangumi extends _$Bangumi {
         ..more = currentDetail.more
         ..subgroupBangumis = updatedSubgroupBangumis;
 
-      updateIfMounted(ref, (current) => current.copyWith(bangumiDetail: updatedDetail, refreshFlag: current.refreshFlag + 1));
+      updateIfMounted(
+        ref,
+        (current) => current.copyWith(bangumiDetail: updatedDetail, refreshFlag: current.refreshFlag + 1),
+      );
       return IndicatorResult.success;
     }
   }
@@ -97,7 +100,10 @@ class Bangumi extends _$Bangumi {
     if (!ref.mounted) {
       return IndicatorResult.fail;
     }
-    updateIfMounted(ref, (current) => current.copyWith(bangumiDetail: bangumiDetail, refreshFlag: current.refreshFlag + 1));
+    updateIfMounted(
+      ref,
+      (current) => current.copyWith(bangumiDetail: bangumiDetail, refreshFlag: current.refreshFlag + 1),
+    );
     '加载完成'.toast();
     return IndicatorResult.success;
   }

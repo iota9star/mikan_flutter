@@ -18,25 +18,18 @@ final recordDetailProvider = RecordDetailFamily._();
 /// 根据 record 加载完整的详情数据
 
 final class RecordDetailProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<RecordDetail>,
-          RecordDetail,
-          FutureOr<RecordDetail>
-        >
+    extends $FunctionalProvider<AsyncValue<RecordDetail>, RecordDetail, FutureOr<RecordDetail>>
     with $FutureModifier<RecordDetail>, $FutureProvider<RecordDetail> {
   /// 番剧剧集详情
   /// 根据 record 加载完整的详情数据
-  RecordDetailProvider._({
-    required RecordDetailFamily super.from,
-    required RecordItem super.argument,
-  }) : super(
-         retry: null,
-         name: r'recordDetailProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  RecordDetailProvider._({required RecordDetailFamily super.from, required RecordItem super.argument})
+    : super(
+        retry: null,
+        name: r'recordDetailProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$recordDetailHash();
@@ -50,9 +43,7 @@ final class RecordDetailProvider
 
   @$internal
   @override
-  $FutureProviderElement<RecordDetail> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $FutureProviderElement<RecordDetail> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<RecordDetail> create(Ref ref) {
@@ -76,8 +67,7 @@ String _$recordDetailHash() => r'cddf484c0f53bce67471f1f78f327cd5abd324d3';
 /// 番剧剧集详情
 /// 根据 record 加载完整的详情数据
 
-final class RecordDetailFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<RecordDetail>, RecordItem> {
+final class RecordDetailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<RecordDetail>, RecordItem> {
   RecordDetailFamily._()
     : super(
         retry: null,
@@ -90,8 +80,7 @@ final class RecordDetailFamily extends $Family
   /// 番剧剧集详情
   /// 根据 record 加载完整的详情数据
 
-  RecordDetailProvider call(RecordItem record) =>
-      RecordDetailProvider._(argument: record, from: this);
+  RecordDetailProvider call(RecordItem record) => RecordDetailProvider._(argument: record, from: this);
 
   @override
   String toString() => r'recordDetailProvider';

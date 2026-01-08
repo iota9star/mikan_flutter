@@ -11,7 +11,7 @@ import '../../../../../shared/internal/extension.dart';
 import '../../../../../shared/ui/fragments/forgot_password_confirm.dart';
 import '../../../../../shared/widgets/bottom_sheet.dart';
 import '../../../../../topvars.dart';
-import '../providers/auth_providers.dart';
+import '../providers/auth_provider.dart';
 
 @FFRoute(name: '/forget-password')
 class ForgotPasswordPage extends HookConsumerWidget {

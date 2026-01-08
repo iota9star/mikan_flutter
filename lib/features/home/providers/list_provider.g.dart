@@ -12,8 +12,7 @@ part of 'list_provider.dart';
 @ProviderFor(ListNotifier)
 final listProvider = ListNotifierProvider._();
 
-final class ListNotifierProvider
-    extends $NotifierProvider<ListNotifier, AsyncValue<ListData>> {
+final class ListNotifierProvider extends $NotifierProvider<ListNotifier, AsyncValue<ListData>> {
   ListNotifierProvider._()
     : super(
         from: null,
@@ -34,10 +33,7 @@ final class ListNotifierProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<ListData> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<ListData>>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<AsyncValue<ListData>>(value));
   }
 }
 

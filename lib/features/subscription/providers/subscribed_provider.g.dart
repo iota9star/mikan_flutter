@@ -18,25 +18,18 @@ final subscribedBangumisProvider = SubscribedBangumisFamily._();
 /// 当 selectedSeason 变化时自动重新加载
 
 final class SubscribedBangumisProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<List<Bangumi>>,
-          List<Bangumi>,
-          FutureOr<List<Bangumi>>
-        >
+    extends $FunctionalProvider<AsyncValue<List<Bangumi>>, List<Bangumi>, FutureOr<List<Bangumi>>>
     with $FutureModifier<List<Bangumi>>, $FutureProvider<List<Bangumi>> {
   /// 订阅的番剧列表（按季度）
   /// 当 selectedSeason 变化时自动重新加载
-  SubscribedBangumisProvider._({
-    required SubscribedBangumisFamily super.from,
-    required Season? super.argument,
-  }) : super(
-         retry: null,
-         name: r'subscribedBangumisProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  SubscribedBangumisProvider._({required SubscribedBangumisFamily super.from, required Season? super.argument})
+    : super(
+        retry: null,
+        name: r'subscribedBangumisProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$subscribedBangumisHash();
@@ -50,9 +43,7 @@ final class SubscribedBangumisProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<Bangumi>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $FutureProviderElement<List<Bangumi>> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<Bangumi>> create(Ref ref) {
@@ -71,14 +62,12 @@ final class SubscribedBangumisProvider
   }
 }
 
-String _$subscribedBangumisHash() =>
-    r'834477419ee0b723b0e471c222add25f26efc7d8';
+String _$subscribedBangumisHash() => r'834477419ee0b723b0e471c222add25f26efc7d8';
 
 /// 订阅的番剧列表（按季度）
 /// 当 selectedSeason 变化时自动重新加载
 
-final class SubscribedBangumisFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<List<Bangumi>>, Season?> {
+final class SubscribedBangumisFamily extends $Family with $FunctionalFamilyOverride<FutureOr<List<Bangumi>>, Season?> {
   SubscribedBangumisFamily._()
     : super(
         retry: null,
@@ -91,8 +80,7 @@ final class SubscribedBangumisFamily extends $Family
   /// 订阅的番剧列表（按季度）
   /// 当 selectedSeason 变化时自动重新加载
 
-  SubscribedBangumisProvider call(Season? season) =>
-      SubscribedBangumisProvider._(argument: season, from: this);
+  SubscribedBangumisProvider call(Season? season) => SubscribedBangumisProvider._(argument: season, from: this);
 
   @override
   String toString() => r'subscribedBangumisProvider';
@@ -106,12 +94,7 @@ final recentRecordsProvider = RecentRecordsProvider._();
 /// 最近的订阅记录（最近2天）
 
 final class RecentRecordsProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<List<RecordItem>>,
-          List<RecordItem>,
-          FutureOr<List<RecordItem>>
-        >
+    extends $FunctionalProvider<AsyncValue<List<RecordItem>>, List<RecordItem>, FutureOr<List<RecordItem>>>
     with $FutureModifier<List<RecordItem>>, $FutureProvider<List<RecordItem>> {
   /// 最近的订阅记录（最近2天）
   RecentRecordsProvider._()
@@ -130,9 +113,7 @@ final class RecentRecordsProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<RecordItem>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $FutureProviderElement<List<RecordItem>> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<RecordItem>> create(Ref ref) {
@@ -151,11 +132,7 @@ final rssRecordsProvider = RssRecordsProvider._();
 
 final class RssRecordsProvider
     extends
-        $FunctionalProvider<
-          Map<String, List<RecordItem>>,
-          Map<String, List<RecordItem>>,
-          Map<String, List<RecordItem>>
-        >
+        $FunctionalProvider<Map<String, List<RecordItem>>, Map<String, List<RecordItem>>, Map<String, List<RecordItem>>>
     with $Provider<Map<String, List<RecordItem>>> {
   /// RSS 分组的记录（derived from recentRecords）
   RssRecordsProvider._()
@@ -174,9 +151,7 @@ final class RssRecordsProvider
 
   @$internal
   @override
-  $ProviderElement<Map<String, List<RecordItem>>> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  $ProviderElement<Map<String, List<RecordItem>>> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   Map<String, List<RecordItem>> create(Ref ref) {
@@ -185,12 +160,7 @@ final class RssRecordsProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Map<String, List<RecordItem>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Map<String, List<RecordItem>>>(
-        value,
-      ),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Map<String, List<RecordItem>>>(value));
   }
 }
 

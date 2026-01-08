@@ -8,13 +8,13 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../../../../res/assets.gen.dart';
 import '../../../../../topvars.dart';
+import '../../../../shared/internal/app_utils.dart';
 import '../../../../shared/internal/async_value_extensions.dart';
 import '../../../../shared/internal/consts.dart';
 import '../../../../shared/internal/delegate.dart';
 import '../../../../shared/internal/extension.dart';
 import '../../../../shared/internal/hive.dart';
 import '../../../../shared/internal/image_provider.dart';
-import '../../../../shared/internal/method.dart';
 import '../../../../shared/models/bangumi.dart' as model;
 import '../../../../shared/ui/components/simple_record_item.dart';
 import '../../../../shared/widgets/ripple_tap.dart';
@@ -26,15 +26,6 @@ import '../providers/search_provider.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ProviderScope(child: Builder(builder: (context) => const _SearchPageContent()));
-  }
-}
-
-class _SearchPageContent extends StatelessWidget {
-  const _SearchPageContent();
 
   @override
   Widget build(BuildContext context) {

@@ -61,9 +61,7 @@ final selectedSeasonProvider = SelectedSeasonProvider._();
 /// Derived provider: 当前选中的季度
 /// 从 indexProvider 中提取 selectedSeason
 
-final class SelectedSeasonProvider
-    extends $FunctionalProvider<Season?, Season?, Season?>
-    with $Provider<Season?> {
+final class SelectedSeasonProvider extends $FunctionalProvider<Season?, Season?, Season?> with $Provider<Season?> {
   /// Derived provider: 当前选中的季度
   /// 从 indexProvider 中提取 selectedSeason
   SelectedSeasonProvider._()
@@ -82,8 +80,7 @@ final class SelectedSeasonProvider
 
   @$internal
   @override
-  $ProviderElement<Season?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<Season?> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   Season? create(Ref ref) {
@@ -92,10 +89,7 @@ final class SelectedSeasonProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Season? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Season?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Season?>(value));
   }
 }
 
@@ -110,13 +104,7 @@ final yearsProvider = YearsProvider._();
 /// Derived provider: 年份季度列表
 /// 从 indexProvider 中提取 years
 
-final class YearsProvider
-    extends
-        $FunctionalProvider<
-          List<YearSeason>,
-          List<YearSeason>,
-          List<YearSeason>
-        >
+final class YearsProvider extends $FunctionalProvider<List<YearSeason>, List<YearSeason>, List<YearSeason>>
     with $Provider<List<YearSeason>> {
   /// Derived provider: 年份季度列表
   /// 从 indexProvider 中提取 years
@@ -136,8 +124,7 @@ final class YearsProvider
 
   @$internal
   @override
-  $ProviderElement<List<YearSeason>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<List<YearSeason>> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   List<YearSeason> create(Ref ref) {
@@ -146,10 +133,7 @@ final class YearsProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<YearSeason> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<List<YearSeason>>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<List<YearSeason>>(value));
   }
 }
 

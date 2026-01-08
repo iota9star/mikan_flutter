@@ -58,6 +58,8 @@ dependencies:
   riverpod: ^3.1.0
   f_limit: ^1.1.0
 
+  flutter_riverpod: any
+  hive_flutter: any
 dev_dependencies:
   args: ^2.4.1
   yaml: ^3.1.2

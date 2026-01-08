@@ -59,9 +59,16 @@ class SubscribedSeason extends _$SubscribedSeason {
         bangumis: bangumis,
       );
       if (state.loadIndex == 0) {
-        updateIfMounted(ref, (current) => current.copyWith(galleries: [seasonGallery], loadIndex: current.loadIndex + 1));
+        updateIfMounted(
+          ref,
+          (current) => current.copyWith(galleries: [seasonGallery], loadIndex: current.loadIndex + 1),
+        );
       } else {
-        updateIfMounted(ref, (current) => current.copyWith(galleries: [...current.galleries, seasonGallery], loadIndex: current.loadIndex + 1));
+        updateIfMounted(
+          ref,
+          (current) =>
+              current.copyWith(galleries: [...current.galleries, seasonGallery], loadIndex: current.loadIndex + 1),
+        );
       }
       return IndicatorResult.success;
     } catch (e) {

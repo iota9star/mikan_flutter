@@ -13,9 +13,7 @@ class RecordItemAdapter extends TypeAdapter<RecordItem> {
   @override
   RecordItem read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return RecordItem()
       ..id = fields[0] as String?
       ..name = fields[1] as String
@@ -64,7 +62,5 @@ class RecordItemAdapter extends TypeAdapter<RecordItem> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RecordItemAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is RecordItemAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

@@ -4,8 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/experimental/mutation.dart';
 
 import '../../../features/bangumi/ui/bangumi.dart';
+import '../../../shared/internal/app_utils.dart';
 import '../../../shared/internal/extension.dart';
-import '../../../shared/internal/method.dart';
 import '../../../shared/services/subscription_service.dart' show subscribeBangumi, subscribeMutation;
 import '../../../topvars.dart';
 import '../../widgets/sliver_pinned_header.dart';
@@ -28,9 +28,7 @@ class SubgroupSubscribe extends ConsumerWidget {
         slivers: [
           SliverPinnedAppBar(
             title: '字幕组订阅',
-            actions: [
-              _SubscribeButton(bangumiId: bangumiId, bangumiCover: bangumiCover, subscribed: subscribed),
-            ],
+            actions: [_SubscribeButton(bangumiId: bangumiId, bangumiCover: bangumiCover, subscribed: subscribed)],
           ),
           SliverToBoxAdapter(
             child: Padding(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -11,12 +12,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'mikan_route.dart';
 import 'mikan_routes.dart';
+import 'shared/internal/app_utils.dart';
 import 'shared/internal/extension.dart';
 import 'shared/internal/lifecycle.dart';
 import 'shared/internal/log.dart';
-import 'shared/internal/method.dart';
-import 'shared/internal/platform.dart';
-import 'shared/internal/riverpod_logger.dart';
 import 'shared/internal/scroll_behavior.dart';
 import 'shared/widgets/loading.dart';
 import 'shared/widgets/theme_provider.dart';
@@ -73,14 +72,13 @@ class _MikanAppState extends State<MikanApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
-      observers: [RiverpodLogger()],
-      child: _MaterialAppWrapper(),
-    );
+    return const ProviderScope(observers: kDebugMode ? [RiverpodLogger()] : [], child: _MaterialAppWrapper());
   }
 }
 
 class _MaterialAppWrapper extends StatelessWidget {
+  const _MaterialAppWrapper();
+
   @override
   Widget build(BuildContext context) {
     return ThemeProvider(

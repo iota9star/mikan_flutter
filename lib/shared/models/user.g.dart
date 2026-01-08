@@ -13,9 +13,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   User read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return User(
       name: fields[0] as String?,
       avatar: fields[1] as String?,
@@ -43,8 +41,5 @@ class UserAdapter extends TypeAdapter<User> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is UserAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is UserAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

@@ -14,20 +14,16 @@ part of 'recent_subscribed_provider.dart';
 final recentSubscribedProvider = RecentSubscribedFamily._();
 
 /// Recent subscribed provider - manages subscription data with AsyncValue
-final class RecentSubscribedProvider
-    extends
-        $NotifierProvider<RecentSubscribed, AsyncValue<RecentSubscribedState>> {
+final class RecentSubscribedProvider extends $NotifierProvider<RecentSubscribed, AsyncValue<RecentSubscribedState>> {
   /// Recent subscribed provider - manages subscription data with AsyncValue
-  RecentSubscribedProvider._({
-    required RecentSubscribedFamily super.from,
-    required List<RecordItem> super.argument,
-  }) : super(
-         retry: null,
-         name: r'recentSubscribedProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  RecentSubscribedProvider._({required RecentSubscribedFamily super.from, required List<RecordItem> super.argument})
+    : super(
+        retry: null,
+        name: r'recentSubscribedProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$recentSubscribedHash();
@@ -47,9 +43,7 @@ final class RecentSubscribedProvider
   Override overrideWithValue(AsyncValue<RecentSubscribedState> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<RecentSubscribedState>>(
-        value,
-      ),
+      providerOverride: $SyncValueProvider<AsyncValue<RecentSubscribedState>>(value),
     );
   }
 
@@ -88,8 +82,7 @@ final class RecentSubscribedFamily extends $Family
 
   /// Recent subscribed provider - manages subscription data with AsyncValue
 
-  RecentSubscribedProvider call(List<RecordItem> records) =>
-      RecentSubscribedProvider._(argument: records, from: this);
+  RecentSubscribedProvider call(List<RecordItem> records) => RecentSubscribedProvider._(argument: records, from: this);
 
   @override
   String toString() => r'recentSubscribedProvider';
@@ -97,8 +90,7 @@ final class RecentSubscribedFamily extends $Family
 
 /// Recent subscribed provider - manages subscription data with AsyncValue
 
-abstract class _$RecentSubscribed
-    extends $Notifier<AsyncValue<RecentSubscribedState>> {
+abstract class _$RecentSubscribed extends $Notifier<AsyncValue<RecentSubscribedState>> {
   late final _$args = ref.$arg as List<RecordItem>;
   List<RecordItem> get records => _$args;
 
@@ -106,19 +98,11 @@ abstract class _$RecentSubscribed
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref =
-        this.ref
-            as $Ref<
-              AsyncValue<RecentSubscribedState>,
-              AsyncValue<RecentSubscribedState>
-            >;
+    final ref = this.ref as $Ref<AsyncValue<RecentSubscribedState>, AsyncValue<RecentSubscribedState>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<RecentSubscribedState>,
-                AsyncValue<RecentSubscribedState>
-              >,
+              AnyNotifier<AsyncValue<RecentSubscribedState>, AsyncValue<RecentSubscribedState>>,
               AsyncValue<RecentSubscribedState>,
               Object?,
               Object?

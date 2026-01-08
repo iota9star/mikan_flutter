@@ -11,6 +11,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 import '../../../../res/assets.gen.dart';
 import '../../../features/bangumi/ui/bangumi.dart';
 import '../../../features/home/providers/index_provider.dart';
+import '../../../features/home/ui/fragments/index.dart' show showSettingsPanel;
 import '../../../features/subscription/providers/subscribed_provider.dart';
 import '../../../mikan_routes.dart';
 import '../../../shared/internal/async_value_extensions.dart';
@@ -29,7 +30,6 @@ import '../../widgets/sliver_pinned_header.dart';
 import '../../widgets/transition_container.dart';
 import '../components/rss_record_item.dart';
 import '../components/simple_record_item.dart';
-import '../../../features/home/ui/fragments/index.dart' show showSettingsPanel;
 import 'select_tablet_mode.dart';
 import 'sliver_bangumi_list.dart';
 
@@ -138,15 +138,6 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
 
   @override
   Widget build(BuildContext context) {
-    return const _SubscribedContent();
-  }
-}
-
-class _SubscribedContent extends ConsumerWidget {
-  const _SubscribedContent();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: EasyRefresh.builder(
         onRefresh: () => ref.invalidate(recentRecordsProvider),

@@ -10,10 +10,10 @@ import 'package:window_manager/window_manager.dart';
 import 'app.dart';
 import 'firebase_options.dart';
 import 'mikan_api.dart';
+import 'shared/internal/app_utils.dart';
 import 'shared/internal/hive.dart';
 import 'shared/internal/http_cache_manager.dart';
 import 'shared/internal/network_font_loader.dart';
-import 'shared/internal/platform.dart';
 import 'shared/widgets/restart.dart';
 
 Future<void> initWindow() async {

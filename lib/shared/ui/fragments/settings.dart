@@ -5,11 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../features/home/providers/index_provider.dart';
+import '../../../features/home/ui/fragments/index.dart' show showSettingsPanel;
 import '../../../mikan_routes.dart';
 import '../../../res/assets.gen.dart';
 import '../../../topvars.dart';
 import '../../internal/async_value_extensions.dart';
-import '../../internal/cache_utils.dart';
 import '../../internal/extension.dart';
 import '../../internal/hive.dart';
 import '../../internal/image_provider.dart';
@@ -17,14 +17,11 @@ import '../../services/update_service.dart';
 import '../../widgets/bottom_sheet.dart';
 import '../../widgets/ripple_tap.dart';
 import '../../widgets/sliver_pinned_header.dart';
-import 'card_ratio.dart';
-import 'card_style.dart';
-import 'card_width.dart';
+import 'card_setting.dart';
 import 'donate.dart';
 import 'select_mirror.dart';
 import 'select_tablet_mode.dart';
 import 'theme_color.dart';
-import '../../../features/home/ui/fragments/index.dart' show showSettingsPanel;
 
 @immutable
 class SettingsPanel extends StatefulWidget {
@@ -45,7 +42,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
   }
 
   Future<void> _loadCacheSize() async {
-    final size = await CacheUtils.getFormattedCacheSize();
+    final size = await MyHive.getFormatCacheSize();
     if (mounted) {
       setState(() {
         _cacheSize = size;

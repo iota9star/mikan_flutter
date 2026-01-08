@@ -15,8 +15,6 @@ import '../../../../shared/internal/image_provider.dart';
 import '../../../../shared/internal/kit.dart';
 import '../../../../shared/models/bangumi_row.dart';
 import '../../../../shared/models/carousel.dart';
-import '../../../../shared/models/season.dart';
-import '../../../../shared/models/user.dart';
 import '../../../../shared/ui/components/simple_record_item.dart' show SimpleRecordItem, currentRecordProvider;
 import '../../../../shared/ui/fragments/select_season.dart';
 import '../../../../shared/ui/fragments/select_tablet_mode.dart';
@@ -365,7 +363,7 @@ void showYearSeasonBottomSheet(BuildContext context) {
   MBottomSheet.show(context, (context) => const MBottomSheet(child: SelectSeasonFragment()));
 }
 
-/// Index Header - 独立组件，只监听selectedSeason和user
+/// Index Header - 监听selectedSeason和user
 class _PinedHeader extends ConsumerWidget {
   const _PinedHeader();
 
@@ -374,20 +372,6 @@ class _PinedHeader extends ConsumerWidget {
     // 使用select只监听需要的字段，避免因其他字段变化而重建
     final selectedSeason = ref.watch(indexProvider.select((s) => s.valueOrNull?.selectedSeason));
     final user = ref.watch(indexProvider.select((s) => s.valueOrNull?.user));
-
-    return _PinedHeaderContent(selectedSeason: selectedSeason, user: user);
-  }
-}
-
-/// Header的实际内容组件 - 不需要监听provider
-class _PinedHeaderContent extends StatelessWidget {
-  const _PinedHeaderContent({required this.selectedSeason, required this.user});
-
-  final Season? selectedSeason;
-  final User? user;
-
-  @override
-  Widget build(BuildContext context) {
     const appbarHeight = 64.0;
     final statusBarHeight = context.statusBarHeight;
     final maxHeight = statusBarHeight + 180.0;
@@ -417,7 +401,7 @@ class _PinedHeaderContent extends StatelessWidget {
                       child: Row(
                         children: [
                           if (selectedSeason != null)
-                            Text(selectedSeason!.title, style: theme.textTheme.titleLarge)
+                            Text(selectedSeason.title, style: theme.textTheme.titleLarge)
                           else
                             const SizedBox(),
                           const Gap(8),
@@ -472,7 +456,7 @@ class _PinedHeaderContent extends StatelessWidget {
                             child: Row(
                               children: [
                                 if (selectedSeason != null)
-                                  Text(selectedSeason!.title, style: theme.textTheme.headlineMedium)
+                                  Text(selectedSeason.title, style: theme.textTheme.headlineMedium)
                                 else
                                   const SizedBox(),
                                 const Gap(8),

@@ -14,8 +14,7 @@ part of 'search_provider.dart';
 final searchKeywordsProvider = SearchKeywordsProvider._();
 
 /// 搜索关键字（用户输入状态）
-final class SearchKeywordsProvider
-    extends $NotifierProvider<SearchKeywords, String?> {
+final class SearchKeywordsProvider extends $NotifierProvider<SearchKeywords, String?> {
   /// 搜索关键字（用户输入状态）
   SearchKeywordsProvider._()
     : super(
@@ -37,10 +36,7 @@ final class SearchKeywordsProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
   }
 }
 
@@ -54,14 +50,7 @@ abstract class _$SearchKeywords extends $Notifier<String?> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<String?, String?>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<String?, String?>,
-              String?,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<String?, String?>, String?, Object?, Object?>;
     element.handleCreate(ref, build);
   }
 }
@@ -72,8 +61,7 @@ abstract class _$SearchKeywords extends $Notifier<String?> {
 final searchSubgroupIdProvider = SearchSubgroupIdProvider._();
 
 /// 选中的字幕组ID（筛选状态）
-final class SearchSubgroupIdProvider
-    extends $NotifierProvider<SearchSubgroupId, String?> {
+final class SearchSubgroupIdProvider extends $NotifierProvider<SearchSubgroupId, String?> {
   /// 选中的字幕组ID（筛选状态）
   SearchSubgroupIdProvider._()
     : super(
@@ -95,10 +83,7 @@ final class SearchSubgroupIdProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
   }
 }
 
@@ -112,14 +97,7 @@ abstract class _$SearchSubgroupId extends $Notifier<String?> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<String?, String?>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<String?, String?>,
-              String?,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<String?, String?>, String?, Object?, Object?>;
     element.handleCreate(ref, build);
   }
 }
@@ -131,13 +109,7 @@ final searchProvider = SearchProvider._();
 
 /// 搜索结果（AsyncValue 自动处理 loading/data/error 状态）
 
-final class SearchProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<SearchResult>,
-          SearchResult,
-          FutureOr<SearchResult>
-        >
+final class SearchProvider extends $FunctionalProvider<AsyncValue<SearchResult>, SearchResult, FutureOr<SearchResult>>
     with $FutureModifier<SearchResult>, $FutureProvider<SearchResult> {
   /// 搜索结果（AsyncValue 自动处理 loading/data/error 状态）
   SearchProvider._()
@@ -156,9 +128,7 @@ final class SearchProvider
 
   @$internal
   @override
-  $FutureProviderElement<SearchResult> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $FutureProviderElement<SearchResult> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SearchResult> create(Ref ref) {

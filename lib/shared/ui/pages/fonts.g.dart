@@ -33,10 +33,7 @@ final class FontsProvider extends $NotifierProvider<Fonts, FontsState> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(FontsState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<FontsState>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<FontsState>(value));
   }
 }
 
@@ -49,13 +46,7 @@ abstract class _$Fonts extends $Notifier<FontsState> {
   void runBuild() {
     final ref = this.ref as $Ref<FontsState, FontsState>;
     final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<FontsState, FontsState>,
-              FontsState,
-              Object?,
-              Object?
-            >;
+        ref.element as $ClassProviderElement<AnyNotifier<FontsState, FontsState>, FontsState, Object?, Object?>;
     element.handleCreate(ref, build);
   }
 }
@@ -68,24 +59,17 @@ final fontProgressProvider = FontProgressFamily._();
 /// Derived provider for single font progress - 只监听特定字体的进度
 
 final class FontProgressProvider
-    extends
-        $FunctionalProvider<
-          ProgressChunkEvent?,
-          ProgressChunkEvent?,
-          ProgressChunkEvent?
-        >
+    extends $FunctionalProvider<ProgressChunkEvent?, ProgressChunkEvent?, ProgressChunkEvent?>
     with $Provider<ProgressChunkEvent?> {
   /// Derived provider for single font progress - 只监听特定字体的进度
-  FontProgressProvider._({
-    required FontProgressFamily super.from,
-    required String super.argument,
-  }) : super(
-         retry: null,
-         name: r'fontProgressProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  FontProgressProvider._({required FontProgressFamily super.from, required String super.argument})
+    : super(
+        retry: null,
+        name: r'fontProgressProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$fontProgressHash();
@@ -99,9 +83,7 @@ final class FontProgressProvider
 
   @$internal
   @override
-  $ProviderElement<ProgressChunkEvent?> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  $ProviderElement<ProgressChunkEvent?> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   ProgressChunkEvent? create(Ref ref) {
@@ -111,10 +93,7 @@ final class FontProgressProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ProgressChunkEvent? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<ProgressChunkEvent?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<ProgressChunkEvent?>(value));
   }
 
   @override
@@ -132,8 +111,7 @@ String _$fontProgressHash() => r'02ef3df2aade14778cc9948e609783b3ca41fecb';
 
 /// Derived provider for single font progress - 只监听特定字体的进度
 
-final class FontProgressFamily extends $Family
-    with $FunctionalFamilyOverride<ProgressChunkEvent?, String> {
+final class FontProgressFamily extends $Family with $FunctionalFamilyOverride<ProgressChunkEvent?, String> {
   FontProgressFamily._()
     : super(
         retry: null,
@@ -145,8 +123,7 @@ final class FontProgressFamily extends $Family
 
   /// Derived provider for single font progress - 只监听特定字体的进度
 
-  FontProgressProvider call(String fontId) =>
-      FontProgressProvider._(argument: fontId, from: this);
+  FontProgressProvider call(String fontId) => FontProgressProvider._(argument: fontId, from: this);
 
   @override
   String toString() => r'fontProgressProvider';
@@ -159,9 +136,7 @@ final usedFontFamilyIdProvider = UsedFontFamilyIdProvider._();
 
 /// Derived provider for used font family id - 只监听当前使用的字体
 
-final class UsedFontFamilyIdProvider
-    extends $FunctionalProvider<String?, String?, String?>
-    with $Provider<String?> {
+final class UsedFontFamilyIdProvider extends $FunctionalProvider<String?, String?, String?> with $Provider<String?> {
   /// Derived provider for used font family id - 只监听当前使用的字体
   UsedFontFamilyIdProvider._()
     : super(
@@ -179,8 +154,7 @@ final class UsedFontFamilyIdProvider
 
   @$internal
   @override
-  $ProviderElement<String?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<String?> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   String? create(Ref ref) {
@@ -189,10 +163,7 @@ final class UsedFontFamilyIdProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
   }
 }
 

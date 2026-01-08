@@ -12,7 +12,7 @@ import '../../../../../shared/internal/extension.dart';
 import '../../../../../topvars.dart';
 import '../../home/providers/index_provider.dart';
 import '../../subscription/providers/subscribed_provider.dart';
-import '../providers/auth_providers.dart';
+import '../providers/auth_provider.dart';
 
 @FFRoute(name: '/login')
 class LoginPage extends HookConsumerWidget {

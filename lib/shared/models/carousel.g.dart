@@ -13,9 +13,7 @@ class CarouselAdapter extends TypeAdapter<Carousel> {
   @override
   Carousel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return Carousel()
       ..id = fields[0] as String
       ..cover = fields[1] as String;
@@ -36,8 +34,5 @@ class CarouselAdapter extends TypeAdapter<Carousel> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CarouselAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is CarouselAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

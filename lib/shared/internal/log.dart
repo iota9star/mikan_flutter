@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 const _esc = '\x1B[';
 const _reset = '${_esc}0m';
@@ -133,5 +134,36 @@ extension Log on Object? {
         ':${now.minute.toString().padLeft(2, '0')}'
         ':${now.second.toString().padLeft(2, '0')}'
         '.${now.millisecond.toString().padLeft(3, '0')}';
+  }
+}
+
+/// Riverpod Provider Observer for logging provider state changes
+/// Note: Only add this observer in debug mode
+base class RiverpodLogger extends ProviderObserver {
+
+  const RiverpodLogger();
+
+  @override
+  void didUpdateProvider(ProviderObserverContext context, Object? previousValue, Object? newValue) {
+    final providerName = context.provider.name ?? context.provider.runtimeType.toString();
+    'Riverpod: [$providerName] updated'.$debug();
+  }
+
+  @override
+  void providerDidFail(ProviderObserverContext context, Object error, StackTrace stackTrace) {
+    final providerName = context.provider.name ?? context.provider.runtimeType.toString();
+    'Riverpod: [$providerName] failed with error: $error'.$error(stackTrace: stackTrace);
+  }
+
+  @override
+  void didAddProvider(ProviderObserverContext context, Object? value) {
+    final providerName = context.provider.name ?? context.provider.runtimeType.toString();
+    'Riverpod: [$providerName] initialized'.$debug();
+  }
+
+  @override
+  void didDisposeProvider(ProviderObserverContext context) {
+    final providerName = context.provider.name ?? context.provider.runtimeType.toString();
+    'Riverpod: [$providerName] disposed'.$debug();
   }
 }

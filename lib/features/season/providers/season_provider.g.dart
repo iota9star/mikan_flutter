@@ -17,26 +17,18 @@ final seasonProvider = SeasonFamily._();
 /// 季度番剧数据
 /// 返回指定季度的番剧列表
 
-final class SeasonProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<SeasonData>,
-          SeasonData,
-          FutureOr<SeasonData>
-        >
+final class SeasonProvider extends $FunctionalProvider<AsyncValue<SeasonData>, SeasonData, FutureOr<SeasonData>>
     with $FutureModifier<SeasonData>, $FutureProvider<SeasonData> {
   /// 季度番剧数据
   /// 返回指定季度的番剧列表
-  SeasonProvider._({
-    required SeasonFamily super.from,
-    required model.Season super.argument,
-  }) : super(
-         retry: null,
-         name: r'seasonProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  SeasonProvider._({required SeasonFamily super.from, required model.Season super.argument})
+    : super(
+        retry: null,
+        name: r'seasonProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$seasonHash();
@@ -50,8 +42,7 @@ final class SeasonProvider
 
   @$internal
   @override
-  $FutureProviderElement<SeasonData> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $FutureProviderElement<SeasonData> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SeasonData> create(Ref ref) {
@@ -75,8 +66,7 @@ String _$seasonHash() => r'e33694fa6629a712e6e851770c84d9ff80e8d399';
 /// 季度番剧数据
 /// 返回指定季度的番剧列表
 
-final class SeasonFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<SeasonData>, model.Season> {
+final class SeasonFamily extends $Family with $FunctionalFamilyOverride<FutureOr<SeasonData>, model.Season> {
   SeasonFamily._()
     : super(
         retry: null,
@@ -89,8 +79,7 @@ final class SeasonFamily extends $Family
   /// 季度番剧数据
   /// 返回指定季度的番剧列表
 
-  SeasonProvider call(model.Season seasonParam) =>
-      SeasonProvider._(argument: seasonParam, from: this);
+  SeasonProvider call(model.Season seasonParam) => SeasonProvider._(argument: seasonParam, from: this);
 
   @override
   String toString() => r'seasonProvider';
