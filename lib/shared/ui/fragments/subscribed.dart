@@ -14,7 +14,6 @@ import '../../../features/home/providers/index_provider.dart';
 import '../../../features/home/ui/fragments/index.dart' show showSettingsPanel;
 import '../../../features/subscription/providers/subscribed_provider.dart';
 import '../../../mikan_routes.dart';
-import '../../../shared/internal/async_value_extensions.dart';
 import '../../../shared/internal/delegate.dart';
 import '../../../shared/internal/extension.dart';
 import '../../../shared/internal/image_provider.dart';
@@ -166,7 +165,7 @@ class _PinedHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final rss = ref.watch(indexProvider.select((s) => s.valueOrNull?.user?.rss));
+    final rss = ref.watch(indexProvider.select((s) => s.value?.user?.rss));
     return TabletModeBuilder(
       builder: (context, isTablet, child) {
         return SliverPinnedAppBar(
@@ -287,7 +286,7 @@ class _RssSection extends ConsumerWidget {
               if (!isEmpty)
                 IconButton(
                   onPressed: () {
-                    final records = ref.read(recentRecordsProvider).valueOrNull ?? [];
+                    final records = ref.read(recentRecordsProvider).value ?? [];
                     Navigator.pushNamed(
                       context,
                       Routes.subscribedRecent.name,
@@ -525,7 +524,7 @@ class _RssRecordsSection extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.east_rounded),
                 onPressed: () {
-                  final records = ref.read(recentRecordsProvider).valueOrNull ?? [];
+                  final records = ref.read(recentRecordsProvider).value ?? [];
                   Navigator.pushNamed(
                     context,
                     Routes.subscribedRecent.name,
@@ -592,7 +591,7 @@ class _SeeMoreButton extends ConsumerWidget {
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-                  final records = ref.read(recentRecordsProvider).valueOrNull ?? [];
+                  final records = ref.read(recentRecordsProvider).value ?? [];
                   Navigator.pushNamed(
                     context,
                     Routes.subscribedRecent.name,

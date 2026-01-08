@@ -9,7 +9,6 @@ import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
-import '../../../../shared/internal/async_value_extensions.dart';
 import '../../../../shared/internal/extension.dart';
 import '../../../../shared/internal/image_provider.dart';
 import '../../../../shared/internal/kit.dart';
@@ -370,8 +369,8 @@ class _PinedHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 使用select只监听需要的字段，避免因其他字段变化而重建
-    final selectedSeason = ref.watch(indexProvider.select((s) => s.valueOrNull?.selectedSeason));
-    final user = ref.watch(indexProvider.select((s) => s.valueOrNull?.user));
+    final selectedSeason = ref.watch(indexProvider.select((s) => s.value?.selectedSeason));
+    final user = ref.watch(indexProvider.select((s) => s.value?.user));
     const appbarHeight = 64.0;
     final statusBarHeight = context.statusBarHeight;
     final maxHeight = statusBarHeight + 180.0;

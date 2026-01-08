@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../mikan_api.dart';
-import '../../../../../shared/internal/async_value_extensions.dart';
 import '../../../../../shared/internal/extension.dart';
 import '../../../../../shared/models/record_item.dart';
 
@@ -41,8 +40,8 @@ class ListNotifier extends _$ListNotifier {
 
   /// Load more records (pagination)
   Future<void> loadMore() async {
-    final currentPage = state.valueOrNull?.page ?? 0;
-    final hasReachedEnd = state.valueOrNull?.hasReachedEnd ?? false;
+    final currentPage = state.value?.page ?? 0;
+    final hasReachedEnd = state.value?.hasReachedEnd ?? false;
 
     if (hasReachedEnd) {
       return;
@@ -50,7 +49,7 @@ class ListNotifier extends _$ListNotifier {
 
     final newState = await AsyncValue.guard(() async {
       final newRecords = await MikanApi.list(currentPage + 1);
-      final currentRecords = state.valueOrNull?.records ?? [];
+      final currentRecords = state.value?.records ?? [];
       final updatedRecords = [...currentRecords, ...newRecords];
 
       return ListData(page: currentPage + 1, records: updatedRecords, hasReachedEnd: newRecords.isEmpty);
@@ -61,7 +60,7 @@ class ListNotifier extends _$ListNotifier {
   /// Refresh and reset to first page
   Future<RefreshResult> refresh() async {
     // Keep previous data visible while loading
-    final previousData = state.valueOrNull ?? const ListData();
+    final previousData = state.value ?? const ListData();
 
     final result = await AsyncValue.guard(() async {
       final newRecords = await MikanApi.list();

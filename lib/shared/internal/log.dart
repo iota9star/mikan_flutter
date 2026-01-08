@@ -140,7 +140,6 @@ extension Log on Object? {
 /// Riverpod Provider Observer for logging provider state changes
 /// Note: Only add this observer in debug mode
 base class RiverpodLogger extends ProviderObserver {
-
   const RiverpodLogger();
 
   @override

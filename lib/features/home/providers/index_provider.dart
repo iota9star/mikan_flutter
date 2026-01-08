@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../mikan_api.dart';
-import '../../../../../shared/internal/async_value_extensions.dart';
 import '../../../../../shared/internal/extension.dart';
 import '../../../../../shared/models/announcement.dart';
 import '../../../../../shared/models/bangumi_row.dart';
@@ -71,7 +70,7 @@ class Index extends _$Index {
 
   /// Select a bangumi row
   void selectBangumiRow(BangumiRow? value) {
-    final currentData = state.valueOrNull;
+    final currentData = state.value;
     if (currentData != null) {
       state = AsyncValue.data(currentData.copyWith(selectedBangumiRow: value));
     }
@@ -88,7 +87,7 @@ class Index extends _$Index {
 
   /// Select a season and load its bangumi rows
   Future<void> selectSeason(Season season) async {
-    final previousState = state.valueOrNull;
+    final previousState = state.value;
     if (previousState == null) {
       return;
     }
@@ -104,13 +103,13 @@ class Index extends _$Index {
 
   Future<IndexData> _loadIndex() async {
     final index = await MikanApi.index();
-    final currentData = state.valueOrNull ?? const IndexData();
+    final currentData = state.value ?? const IndexData();
     return _buildIndexData(index, currentData.ovas);
   }
 
   Future<IndexData> _loadOVA() async {
     final data = await MikanApi.day(-1, -1);
-    final currentData = state.valueOrNull ?? const IndexData();
+    final currentData = state.value ?? const IndexData();
     return currentData.copyWith(ovas: data);
   }
 
@@ -148,12 +147,12 @@ class Index extends _$Index {
 /// 从 indexProvider 中提取 selectedSeason
 @riverpod
 Season? selectedSeason(Ref ref) {
-  return ref.watch(indexProvider).valueOrNull?.selectedSeason;
+  return ref.watch(indexProvider).value?.selectedSeason;
 }
 
 /// Derived provider: 年份季度列表
 /// 从 indexProvider 中提取 years
 @riverpod
 List<YearSeason> years(Ref ref) {
-  return ref.watch(indexProvider).valueOrNull?.years ?? [];
+  return ref.watch(indexProvider).value?.years ?? [];
 }

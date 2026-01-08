@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../../../../topvars.dart';
-import '../../../../shared/internal/async_value_extensions.dart';
 import '../../../../shared/internal/delegate.dart';
 import '../../../../shared/internal/extension.dart';
 import '../../../../shared/internal/kit.dart';
@@ -29,7 +28,7 @@ class RecentSubscribedPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeData theme = Theme.of(context);
-    final rss = ref.watch(indexProvider).valueOrNull?.user?.rss;
+    final rss = ref.watch(indexProvider).value?.user?.rss;
 
     // Watch the AsyncValue state
     final stateAsync = ref.watch(recentSubscribedProvider(loaded));

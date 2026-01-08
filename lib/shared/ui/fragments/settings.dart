@@ -9,7 +9,6 @@ import '../../../features/home/ui/fragments/index.dart' show showSettingsPanel;
 import '../../../mikan_routes.dart';
 import '../../../res/assets.gen.dart';
 import '../../../topvars.dart';
-import '../../internal/async_value_extensions.dart';
 import '../../internal/extension.dart';
 import '../../internal/hive.dart';
 import '../../internal/image_provider.dart';
@@ -484,7 +483,7 @@ class SettingsHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 使用select只监听user字段
-    final user = ref.watch(indexProvider.select((s) => s.valueOrNull?.user));
+    final user = ref.watch(indexProvider.select((s) => s.value?.user));
     final hasLogin = user?.hasLogin ?? false;
     final userName = hasLogin ? user!.name : '请登录 👉';
     final avatar = user?.avatar;
@@ -552,7 +551,7 @@ Widget buildAvatarWithAction(BuildContext context) {
       child: Consumer(
         builder: (context, ref, _) {
           // 只监听avatar字段
-          final avatar = ref.watch(indexProvider.select((s) => s.valueOrNull?.user?.avatar));
+          final avatar = ref.watch(indexProvider.select((s) => s.value?.user?.avatar));
           return UserAvatar(avatar: avatar);
         },
       ),

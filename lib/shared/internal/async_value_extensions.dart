@@ -1,16 +1,5 @@
 import 'package:riverpod/riverpod.dart';
 
-/// Extension to add valueOrNull getter to AsyncValue
-extension AsyncValueExtensions<T> on AsyncValue<T> {
-  /// Returns the value if available, null otherwise
-  T? get valueOrNull {
-    return switch (this) {
-      AsyncValue(hasValue: true) => value,
-      _ => null,
-    };
-  }
-}
-
 /// Extension to combine two AsyncValues
 extension AsyncValueCombine<T1, T2> on (AsyncValue<T1>, AsyncValue<T2>) {
   R whenAll<R>({

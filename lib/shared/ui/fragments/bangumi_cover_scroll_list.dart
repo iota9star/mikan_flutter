@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../features/home/providers/index_provider.dart';
-import '../../../shared/internal/async_value_extensions.dart';
 import '../../../shared/internal/image_provider.dart';
 import '../../../shared/internal/kit.dart';
 import '../../models/bangumi_row.dart';
@@ -20,7 +19,7 @@ class BangumiCoverScrollListFragment extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final bangumiRows = ref.watch(indexProvider).valueOrNull?.bangumiRows ?? [];
+    final bangumiRows = ref.watch(indexProvider).value?.bangumiRows ?? [];
     return _buildList(context, ref, theme, bangumiRows);
   }
 

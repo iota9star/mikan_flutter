@@ -9,7 +9,6 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 import '../../../../../res/assets.gen.dart';
 import '../../../../../topvars.dart';
 import '../../../../shared/internal/app_utils.dart';
-import '../../../../shared/internal/async_value_extensions.dart';
 import '../../../../shared/internal/consts.dart';
 import '../../../../shared/internal/delegate.dart';
 import '../../../../shared/internal/extension.dart';
@@ -197,7 +196,7 @@ class _SubgroupSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final subgroups = ref.watch(searchProvider.select((async) => async.valueOrNull?.subgroups));
+    final subgroups = ref.watch(searchProvider.select((async) => async.value?.subgroups));
     if (subgroups.isNullOrEmpty) {
       return emptySliverToBoxAdapter;
     }
@@ -217,7 +216,7 @@ class _SubgroupList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final subgroups = ref.watch(searchProvider.select((async) => async.valueOrNull?.subgroups));
+    final subgroups = ref.watch(searchProvider.select((async) => async.value?.subgroups));
     final subgroupId = ref.watch(searchSubgroupIdProvider);
 
     if (subgroups.isNullOrEmpty) {
@@ -272,7 +271,7 @@ class _RecommendSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final bangumis = ref.watch(searchProvider.select((async) => async.valueOrNull?.bangumis));
+    final bangumis = ref.watch(searchProvider.select((async) => async.value?.bangumis));
     if (bangumis.isNullOrEmpty) {
       return emptySliverToBoxAdapter;
     }
@@ -291,7 +290,7 @@ class _RecommendList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bangumis = ref.watch(searchProvider.select((async) => async.valueOrNull?.bangumis));
+    final bangumis = ref.watch(searchProvider.select((async) => async.value?.bangumis));
     if (bangumis.isNullOrEmpty) {
       return emptySliverToBoxAdapter;
     }
@@ -409,7 +408,7 @@ class _SearchResultSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final records = ref.watch(searchProvider.select((async) => async.valueOrNull?.records));
+    final records = ref.watch(searchProvider.select((async) => async.value?.records));
     if (records.isNullOrEmpty) {
       return emptySliverToBoxAdapter;
     }
