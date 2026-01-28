@@ -1,5 +1,5 @@
 import '../internal/consts.dart';
-import '../internal/extension.dart';
+import 'shareable.dart';
 import 'subgroup.dart';
 
 class RecordDetail {
@@ -20,57 +20,21 @@ class RecordDetail {
   late String torrent;
   late List<String> tags;
 
-  late final String share = () {
-    final StringBuffer sb = StringBuffer();
-    if (name.isNotBlank) {
-      sb
-        ..write('番组名称：')
-        ..write(name)
-        ..write('\n');
-    }
-    if (id.isNotBlank) {
-      sb
-        ..write('番组地址：')
-        ..write(MikanUrls.bangumi)
-        ..write('/')
-        ..write(id)
-        ..write('\n');
-    }
-    if (title.isNotBlank) {
-      sb
-        ..write('标题：')
-        ..write(title)
-        ..write('\n');
-    }
-    if (more.isSafeNotEmpty) {
-      more.forEach((key, value) {
-        sb
-          ..write(key)
-          ..write('：')
-          ..write(value)
-          ..write('\n');
-      });
-    }
-    if (subgroups.isSafeNotEmpty) {
-      sb
-        ..write('字幕组：')
-        ..write(subgroups.map((e) => e.name).join(' '))
-        ..write('\n');
-    }
-    if (url.isNotBlank) {
-      sb
-        ..write('详情地址：')
-        ..write(url)
-        ..write('\n');
-    }
-    if (tags.isSafeNotEmpty) {
-      sb
-        ..write('标签：')
-        ..write(tags.join('，'))
-        ..write('\n');
-    }
-    return sb.toString();
-  }();
+  late final String share = _buildShareText();
+
+  String _buildShareText() {
+    final builder = ShareTextBuilder();
+
+    builder.writeField('番组名称：', name);
+    builder.writeBangumiUrl(id, MikanUrls.bangumi);
+    builder.writeField('标题：', title);
+    builder.writeKeyValue(more);
+    builder.writeSubgroups(subgroups, ' ');
+    builder.writeField('详情地址：', url);
+    builder.writeTags(tags);
+
+    return builder.build();
+  }
 
   @override
   bool operator ==(Object other) =>

@@ -1,100 +1,25 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:math' as math;
 
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
-extension IterableExt<T> on Iterable<T>? {
-  bool get isNullOrEmpty => this == null || this!.isEmpty;
+import 'launcher.dart';
 
-  bool get isSafeNotEmpty => !isNullOrEmpty;
+extension NullableCollectionExt<T> on T? {
+  bool get isNullOrEmpty {
+    final self = this;
+    if (self == null) return true;
 
-  T? getOrNull(int index) {
-    if (isNullOrEmpty) {
-      return null;
-    }
-    return this!.elementAt(index);
+    if (self is Map) return (self as Map).isEmpty;
+
+    if (self is Iterable) return (self as Iterable).isEmpty;
+
+    return false;
   }
-
-  bool eq(Iterable<T>? other) {
-    if (this == null) {
-      return other == null;
-    }
-    if (other == null || this!.length != other.length) {
-      return false;
-    }
-    for (int index = 0; index < this!.length; index += 1) {
-      if (this!.elementAt(index) != other.elementAt(index)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  bool ne(Iterable<T> other) => !eq(other);
-}
-
-extension BoolExt on bool {
-  bool get inv => !this;
-}
-
-extension ListExt<T> on List<T>? {
-  bool get isNullOrEmpty => this == null || this!.isEmpty;
-
-  T? getOrNull(int index) {
-    if (isNullOrEmpty) {
-      return null;
-    }
-    return this![index];
-  }
-
-  bool eq(List<T>? other) {
-    if (this == null) {
-      return other == null;
-    }
-    if (other == null || this!.length != other.length) {
-      return false;
-    }
-    for (int index = 0; index < this!.length; index += 1) {
-      if (this![index] != other[index]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  bool ne(List<T>? other) => !eq(other);
-}
-
-extension MapExt<K, V> on Map<K, V>? {
-  bool get isNullOrEmpty => this == null || this!.isEmpty;
-
-  bool get isSafeNotEmpty => !isNullOrEmpty;
-
-  bool eq(Map<K, V>? other) {
-    if (this == null) {
-      return other == null;
-    }
-    if (other == null || this!.length != other.length) {
-      return false;
-    }
-    for (final K key in this!.keys) {
-      if (!other.containsKey(key) || other[key] != this![key]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  bool ne(Map<K, V>? other) => !eq(other);
 }
 
 extension NullableStringExt on String? {
@@ -112,34 +37,7 @@ extension NullableStringExt on String? {
     HapticFeedback.mediumImpact();
   }
 
-  Future<void> launchAppAndCopy() async {
-    if (isNullOrBlank) {
-      return '内容为空，取消操作'.toast();
-    }
-    Future doOtherAction() async {
-      if (await canLaunchUrlString(this!)) {
-        await launchUrlString(this!, mode: LaunchMode.externalApplication);
-      } else {
-        '未找到可打开应用'.toast();
-      }
-    }
-
-    await FlutterClipboard.copy(this!);
-    if (Platform.isAndroid) {
-      unawaited(
-        AndroidIntent(
-          action: 'android.intent.action.VIEW',
-          flags: [Flag.FLAG_ACTIVITY_NEW_TASK, Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED],
-          data: this,
-        ).launch().catchError((e, s) async {
-          e.debug(stackTrace: s);
-          await doOtherAction();
-        }),
-      );
-    } else {
-      await doOtherAction();
-    }
-  }
+  Future<void> launchAppAndCopy() => LauncherHelper.copyAndLaunch(this ?? '');
 
   void copy() {
     if (isNullOrBlank) {
@@ -184,30 +82,6 @@ extension StringExt on String {
       rune == 0x205F ||
       rune == 0x3000 ||
       rune == 0xFEFF;
-
-  String fillChar(String value, String char) {
-    final int offset = value.length - length;
-    String newVal = this;
-    if (offset > 0) {
-      for (int i = 0; i < offset; i++) {
-        newVal = char + newVal;
-      }
-    }
-    return newVal;
-  }
-}
-
-/// https://stackoverflow.com/a/50081214/10064463
-extension HexColor on Color {
-  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
-  static Color fromHex(String hexString) {
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) {
-      buffer.write('ff');
-    }
-    buffer.write(hexString.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
-  }
 }
 
 const SystemUiOverlayStyle lightSystemUiOverlayStyle = SystemUiOverlayStyle(
@@ -241,10 +115,6 @@ extension BuildContextExt on BuildContext {
 }
 
 extension BrightnessColor on Color {
-  static Color lightRandom() {
-    return HSLColor.fromAHSL(1, math.Random().nextDouble() * 360, 0.5, 0.75).toColor();
-  }
-
   Color darken([double amount = .1]) {
     assert(amount >= 0 && amount <= 1);
     final hsl = HSLColor.fromColor(this);

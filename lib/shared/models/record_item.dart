@@ -1,8 +1,8 @@
 import 'package:hive_ce/hive.dart';
 
 import '../internal/consts.dart';
-import '../internal/extension.dart';
 import '../internal/hive.dart';
+import 'shareable.dart';
 import 'subgroup.dart';
 
 part 'record_item.g.dart';
@@ -49,58 +49,20 @@ class RecordItem {
   @override
   int get hashCode => url.hashCode;
 
-  late final String share = () {
-    final StringBuffer sb = StringBuffer();
-    if (name.isNotBlank) {
-      sb
-        ..write('番组名称：')
-        ..write(name)
-        ..write('\n');
-    }
-    if (id.isNotBlank) {
-      sb
-        ..write('番组地址：')
-        ..write(MikanUrls.baseUrl)
-        ..write(MikanUrls.bangumi)
-        ..write(id)
-        ..write('\n');
-    }
-    if (title.isNotBlank) {
-      sb
-        ..write('标题：')
-        ..write(title)
-        ..write('\n');
-    }
-    if (url.isNotBlank) {
-      sb
-        ..write('详情地址：')
-        ..write(url)
-        ..write('\n');
-    }
-    if (publishAt.isNotBlank) {
-      sb
-        ..write('发布时间：')
-        ..write(publishAt)
-        ..write('\n');
-    }
-    if (size.isNotBlank) {
-      sb
-        ..write('文件大小：')
-        ..write(size)
-        ..write('\n');
-    }
-    if (groups.isSafeNotEmpty) {
-      sb
-        ..write('字幕组：')
-        ..write(groups.map((e) => e.name).join('，'))
-        ..write('\n');
-    }
-    if (tags.isSafeNotEmpty) {
-      sb
-        ..write('标签：')
-        ..write(tags.join('，'))
-        ..write('\n');
-    }
-    return sb.toString();
-  }();
+  late final String share = _buildShareText();
+
+  String _buildShareText() {
+    final builder = ShareTextBuilder();
+
+    builder.writeField('番组名称：', name);
+    builder.writeBangumiUrl(id, MikanUrls.bangumi);
+    builder.writeField('标题：', title);
+    builder.writeField('详情地址：', url);
+    builder.writeField('发布时间：', publishAt);
+    builder.writeField('文件大小：', size);
+    builder.writeSubgroups(groups, '，');
+    builder.writeTags(tags);
+
+    return builder.build();
+  }
 }

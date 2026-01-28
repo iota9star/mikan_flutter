@@ -1,32 +1,23 @@
 const APP_CHANNEL = String.fromEnvironment('APP_CHANNEL', defaultValue: 'github');
 
-class MikanFunc {
-  const MikanFunc._();
-
-  static const String season = 'SEASON';
-  static const String day = 'DAY';
-  static const String search = 'SEARCH';
-  static const String list = 'LIST';
-  static const String user = 'USER';
-  static const String index = 'INDEX';
-  static const String subgroup = 'SUBGROUP';
-  static const String bangumi = 'BANGUMI';
-  static const String bangumiMore = 'BANGUMI_MORE';
-  static const String details = 'DETAILS';
-  static const String subscribeBangumi = 'SUBSCRIBE_BANGUMI';
-  static const String unsubscribeBangumi = 'UNSUBSCRIBE_BANGUMI';
-  static const String subscribedSeason = 'SUBSCRIBED_SEASON';
-  static const String refreshLoginToken = 'REFRESH_LOGIN_TOKEN';
-  static const String refreshRegisterToken = 'REFRESH_REGISTER_TOKEN';
-  static const String refreshForgotPasswordToken = 'REFRESH_FORGOTPASSWORD_TOKEN';
-}
-
 class MikanUrls {
   const MikanUrls._();
 
   static const List<String> baseUrls = ['https://mikanime.tv', 'https://mikanani.me'];
 
-  static late String baseUrl;
+  static String get defaultBaseUrl => baseUrls.last;
+
+  static String baseUrl = defaultBaseUrl;
+
+  static bool setBaseUrl(String url) {
+    if (baseUrls.contains(url)) {
+      baseUrl = url;
+      return true;
+    }
+    return false;
+  }
+
+  static String get currentBaseUrl => baseUrl;
 
   static String get dayUpdate => '$baseUrl/Home/EpisodeUpdateRows';
 
