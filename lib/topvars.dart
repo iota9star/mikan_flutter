@@ -9,17 +9,8 @@ import 'package:gap/gap.dart';
 import 'shared/internal/kit.dart';
 import 'shared/widgets/md3e_header.dart';
 
-EdgeInsets edge16WithStatusBar(BuildContext context) =>
-    EdgeInsets.only(top: 16.0 + context.statusBarHeight, left: 16.0, right: 16.0, bottom: 16.0);
-
 EdgeInsets edgeH24V36WithStatusBar(BuildContext context) =>
     EdgeInsets.only(top: context.statusBarHeight + 36.0, bottom: 36.0, left: 24.0, right: 24.0);
-
-EdgeInsets edgeH16T96B48WithSafeHeight(BuildContext context) =>
-    EdgeInsets.only(top: 96.0 + context.statusBarHeight, left: 16.0, right: 16.0, bottom: 48.0 + context.navBarHeight);
-
-EdgeInsets edgeHT16B24WithNavbarHeight(BuildContext context) =>
-    EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0, bottom: 24.0 + context.navBarHeight);
 
 EdgeInsets edgeH16B24WithNavbarHeight(BuildContext context) =>
     EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0 + context.navBarHeight);

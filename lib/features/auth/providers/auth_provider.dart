@@ -22,6 +22,7 @@ class RememberMeNotifier extends Notifier<bool> {
     return login['RememberMe'] ?? false;
   }
 
+  // ignore: use_setters_to_change_properties
   void update(bool value) {
     state = value;
   }

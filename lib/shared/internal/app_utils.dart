@@ -38,20 +38,6 @@ class Spacing {
   static const double xxxl = 48.0;
 }
 
-// ============ File ============
-Future<Directory> getExistsDirectory(String path) async {
-  final directory = Directory(path);
-  if (!directory.existsSync()) {
-    await directory.create(recursive: true);
-  }
-  return directory;
-}
-
-Future<String> getExistsDirectoryPath(Directory parent, String childPath) async {
-  final directory = await getExistsDirectory(parent.path + Platform.pathSeparator + childPath);
-  return directory.path;
-}
-
 // ============ UI Methods ============
 Future<T> wrapLoading<T>(FutureOr<T> Function() block, {String msg = '加载中...'}) async {
   try {
