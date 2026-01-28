@@ -8,7 +8,6 @@ import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
-import '../../../../res/assets.gen.dart';
 import '../../../features/bangumi/ui/bangumi.dart';
 import '../../../features/home/providers/index_provider.dart';
 import '../../../features/home/ui/fragments/index.dart' show showSettingsPanel;
@@ -28,57 +27,10 @@ import '../../widgets/scalable_tap.dart';
 import '../../widgets/sliver_pinned_header.dart';
 import '../../widgets/transition_container.dart';
 import '../components/rss_record_item.dart';
-import '../components/simple_record_item.dart';
+import '../components/simple_record_item.dart' show currentRecordProvider;
+import '../widgets/loading_widgets.dart';
 import 'select_tablet_mode.dart';
 import 'sliver_bangumi_list.dart';
-
-class _LoadingWidget extends StatelessWidget {
-  const _LoadingWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 180.0,
-        margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-        child: SizedBox.expand(
-          child: ScalableCard(onTap: () {}, child: centerLoading),
-        ),
-      ),
-    );
-  }
-}
-
-class _EmptyWidget extends StatelessWidget {
-  const _EmptyWidget({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-        child: ScalableCard(
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Center(
-              child: Column(
-                children: [
-                  Assets.mikan.image(width: 64.0),
-                  const Gap(12),
-                  Text(text, style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 @immutable
 class SubscribedFragment extends ConsumerStatefulWidget {
@@ -229,8 +181,8 @@ class _SeasonSlivers extends ConsumerWidget {
           ],
         );
       },
-      loading: () => const _LoadingWidget(),
-      error: (_, __) => const _EmptyWidget(text: '加载失败'),
+      loading: () => const SliverLoadingWidget(),
+      error: (_, __) => const SliverEmptyWidget(text: '加载失败'),
     );
   }
 }
@@ -312,7 +264,7 @@ class _RssList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (rss.isEmpty) {
-      return const _EmptyWidget(text: '您的订阅中最近三天还没有更新内容哦\n快去添加订阅吧');
+      return const SliverEmptyWidget(text: '您的订阅中最近三天还没有更新内容哦\n快去添加订阅吧');
     }
     final entries = rss.entries.toList(growable: false);
     return SliverToBoxAdapter(
@@ -427,7 +379,7 @@ class _SeasonRssSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final hasVal = bangumis.isSafeNotEmpty;
+    final hasVal = bangumis?.isNotEmpty ?? false;
     final updateNum = bangumis?.where((e) => e.num != null && e.num! > 0).length;
     return SliverPinnedHeader(
       child: Transform.translate(
@@ -487,10 +439,10 @@ class _SeasonRssList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (bangumis == null) {
-      return const _LoadingWidget();
+      return const SliverLoadingWidget();
     }
     if (bangumis!.isEmpty) {
-      return const _EmptyWidget(text: '本季度您还没有订阅任何番组哦\n快去添加订阅吧');
+      return const SliverEmptyWidget(text: '本季度您还没有订阅任何番组哦\n快去添加订阅吧');
     }
     return ProviderScope(
       overrides: [bangumisListProvider.overrideWithValue(bangumis!)],
