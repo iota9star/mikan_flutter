@@ -46,9 +46,18 @@ class MikanApi {
         additional: [JsModule(name: 'mikan', source: JsCode.bytes(api.buffer.asUint8List()))],
       );
 
-      final context = await JsAsyncContext.from(rt: runtime);
-      _engine = JsEngine(context);
-      await _engine.init(bridgeCall: _handleBridgeCall);
+      final context = await JsAsyncContext.from(runtime: runtime);
+      _engine = JsEngine(context: context);
+      await _engine.init(
+        bridge: (v) async {
+          try {
+            final res = await _handleBridgeCall(v);
+            return JsResult.ok(res ?? const JsValue.none());
+          } catch (e) {
+            return JsResult.err(JsError.generic(e.toString()));
+          }
+        },
+      );
       _initialized = true;
     } catch (e, stackTrace) {
       Log.e(error: e, stackTrace: stackTrace, msg: 'MikanApi.init failed');
@@ -177,7 +186,7 @@ class MikanApi {
         })()
       ''';
 
-      final result = await _engine.eval(JsCode.code(code));
+      final result = await _engine.eval(source: JsCode.code(code));
       return result.value as T;
     } catch (e, stackTrace) {
       Log.e(error: e, stackTrace: stackTrace, msg: 'MikanApi.$method failed');
