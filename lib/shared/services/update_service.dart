@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -149,7 +150,28 @@ class UpdateService {
                 const SliverToBoxAdapter(child: Gap(16)),
                 SliverList.separated(
                   itemBuilder: (context, index) {
-                    final item = release['assets'][index];
+                    final allAssets = (release['assets'] as List).cast<Map<String, dynamic>>();
+                    final filtered = allAssets.where((item) {
+                      final name = (item['name'] as String).toLowerCase();
+                      if (Platform.isMacOS) {
+                        return name.contains('macos');
+                      }
+                      if (Platform.isWindows) {
+                        return name.contains('mikan-windows');
+                      }
+                      if (Platform.isLinux) {
+                        return name.contains('linux');
+                      }
+                      if (Platform.isAndroid) {
+                        return name.contains('app');
+                      }
+                      if (Platform.isIOS) {
+                        return name.contains('ios');
+                      }
+                      return false;
+                    }).toList();
+                    final assets = filtered.isNotEmpty ? filtered : allAssets;
+                    final item = assets[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                       child: Row(
@@ -199,7 +221,30 @@ class UpdateService {
                       ),
                     );
                   },
-                  itemCount: (release['assets'] as List).length,
+                  itemCount: (() {
+                    final all = (release['assets'] as List).cast<Map<String, dynamic>>();
+                    final filtered = all.where((item) {
+                      final name = (item['name'] as String).toLowerCase();
+                      if (Platform.isMacOS) {
+                        return name.contains('macos');
+                      }
+                      if (Platform.isWindows) {
+                        return name.contains('mikan-windows');
+                      }
+                      if (Platform.isLinux) {
+                        return name.contains('linux');
+                      }
+                      if (Platform.isAndroid) {
+                        return name.contains('app');
+                      }
+                      if (Platform.isIOS) {
+                        return name.contains('ios');
+                      }
+                      return false;
+                    }).toList();
+                    final assets = filtered.isNotEmpty ? filtered : all;
+                    return assets.length;
+                  })(),
                   separatorBuilder: (context, index) {
                     return const Divider(thickness: 0.0, height: 1.0, indent: 24.0, endIndent: 24.0);
                   },
