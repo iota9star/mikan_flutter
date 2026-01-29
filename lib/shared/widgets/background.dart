@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -231,7 +230,11 @@ class BubbleBackgroundState extends State<BubbleBackground> with SingleTickerPro
   }
 
   void _updateParticles() {
-    final size = MediaQuery.of(context).size;
+    final size = _lastSize;
+    if (size == null) {
+      return;
+    }
+
     for (final particle in particles) {
       particle.x += particle.speedX;
       particle.y += particle.speedY;
@@ -255,12 +258,19 @@ class BubbleBackgroundState extends State<BubbleBackground> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return CustomPaint(painter: ParticlePainter(particles, _controller.value), child: child);
-      },
-      child: widget.child,
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return CustomPaint(
+            painter: ParticlePainter(particles, _controller.value),
+            isComplex: true,
+            willChange: true,
+            child: child,
+          );
+        },
+        child: widget.child,
+      ),
     );
   }
 }
@@ -279,14 +289,9 @@ class ParticlePainter extends CustomPainter {
 
       final paint = Paint()
         ..color = particle.color
-        ..imageFilter = ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20);
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
 
-      final bounds = Rect.fromCircle(center: Offset(particle.x, particle.y), radius: currentRadius + 25);
-
-      canvas.saveLayer(bounds, Paint());
-      canvas.clipRect(bounds);
       canvas.drawCircle(Offset(particle.x, particle.y), currentRadius, paint);
-      canvas.restore();
     }
   }
 

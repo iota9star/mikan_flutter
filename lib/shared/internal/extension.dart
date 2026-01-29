@@ -9,17 +9,16 @@ import 'package:share_plus/share_plus.dart';
 
 import 'launcher.dart';
 
-extension NullableCollectionExt<T> on T? {
-  bool get isNullOrEmpty {
-    final self = this;
-    if (self == null) return true;
+/// Extension for checking if a nullable collection (Map or Iterable) is null or empty.
+extension NullableMapExt<K, V> on Map<K, V>? {
+  /// Returns `true` if this map is `null` or empty.
+  bool get isNullOrEmpty => this == null || this!.isEmpty;
+}
 
-    if (self is Map) return (self as Map).isEmpty;
-
-    if (self is Iterable) return (self as Iterable).isEmpty;
-
-    return false;
-  }
+/// Extension for checking if a nullable iterable is null or empty.
+extension NullableIterableExt<T> on Iterable<T>? {
+  /// Returns `true` if this iterable is `null` or empty.
+  bool get isNullOrEmpty => this == null || this!.isEmpty;
 }
 
 extension NullableStringExt on String? {
@@ -143,6 +142,7 @@ extension ThemeDataExt on ThemeData {
 }
 
 extension AnyNotifierExt<S, T> on AnyNotifier<S, T> {
+  /// Sets the state only if the ref is still mounted.
   void setIfMounted(Ref ref, S value) {
     if (ref.mounted) {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
@@ -150,6 +150,7 @@ extension AnyNotifierExt<S, T> on AnyNotifier<S, T> {
     }
   }
 
+  /// Updates the state only if the ref is still mounted.
   void updateIfMounted(Ref ref, S Function(S) updater) {
     if (ref.mounted) {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member

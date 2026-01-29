@@ -4,17 +4,20 @@ import 'package:riverpod/experimental/mutation.dart';
 import '../../mikan_api.dart';
 import '../internal/extension.dart';
 
-/// Mutation for tracking subscription state per bangumi
+/// Mutation for tracking subscription state per bangumi.
+///
 /// Usage:
-/// - Watch state: ref.watch(subscribeMutation(bangumiId))
-/// - Trigger: subscribeMutation(bangumiId).run(ref, () => ...)
+/// - Watch state: `ref.watch(subscribeMutation(bangumiId))`
+/// - Trigger: `subscribeMutation(bangumiId).run(ref, () => ...)`
 final subscribeMutation = Mutation<String>();
 
-/// Helper function to subscribe to a bangumi
+/// Helper function to subscribe or unsubscribe from a bangumi.
+///
+/// If [subscribed] is true, the bangumi will be unsubscribed.
+/// If [subscribed] is false, the bangumi will be subscribed.
 Future<void> subscribeBangumi(WidgetRef ref, String bangumiId, bool subscribed, {String? subgroupId}) async {
   if (bangumiId.isNullOrBlank) {
-    const msg = '番组id为空，忽略当前订阅';
-    msg.toast();
+    '番组id为空，忽略当前订阅'.toast();
     return;
   }
 

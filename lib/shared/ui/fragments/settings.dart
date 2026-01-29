@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -338,8 +340,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
       onTap: () async {
         final cleared = await _showClearCacheModal(context, theme);
         if (cleared ?? false) {
-          // ignore: unawaited_futures
-          _loadCacheSize();
+          unawaited(_loadCacheSize());
         }
       },
       child: Container(
@@ -453,7 +454,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
                 keys: [SettingsHiveKey.colorSeed, SettingsHiveKey.dynamicColor],
               ),
               builder: (context, _, child) {
-                final useDynamic = MyHive.dynamicColorEnabled();
+                final useDynamic = MyHive.isDynamicColorEnabled();
                 if (useDynamic) {
                   return Text('跟随系统', style: theme.textTheme.bodyMedium);
                 }

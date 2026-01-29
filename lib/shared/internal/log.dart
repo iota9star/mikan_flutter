@@ -102,7 +102,7 @@ extension Log on Object? {
     if (Platform.isIOS || Platform.isMacOS) {
       stdout.writeln(buffer.toString());
     } else {
-      print(buffer);
+      debugPrint(buffer.toString());
     }
   }
 

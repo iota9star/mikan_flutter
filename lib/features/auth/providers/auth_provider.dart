@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/experimental/mutation.dart';
 
@@ -22,13 +24,13 @@ class RememberMeNotifier extends Notifier<bool> {
     return login['RememberMe'] ?? false;
   }
 
-  // ignore: use_setters_to_change_properties
+  /// Updates the remember me state.
   void update(bool value) {
     state = value;
   }
 }
 
-/// Saved login credentials
+/// Saved login credentials.
 class SavedLogin {
   const SavedLogin({this.userName = '', this.password = '', this.rememberMe = false});
   final String userName;
@@ -36,7 +38,7 @@ class SavedLogin {
   final bool rememberMe;
 }
 
-/// Get saved login credentials for UI pre-filling
+/// Get saved login credentials for UI pre-filling.
 SavedLogin getSavedCredentials() {
   final login = MyHive.getLogin();
   return SavedLogin(
@@ -48,6 +50,7 @@ SavedLogin getSavedCredentials() {
 
 final loginMutation = Mutation<void>();
 
+/// Performs login with the given credentials.
 Future<void> performLogin({required String userName, required String password, required bool rememberMe}) async {
   await MikanApi.login(userName, password);
 
@@ -55,8 +58,7 @@ Future<void> performLogin({required String userName, required String password, r
   if (rememberMe) {
     MyHive.setLogin({'UserName': userName, 'Password': password, 'RememberMe': rememberMe});
   } else {
-    // ignore: unawaited_futures
-    MyHive.removeLogin();
+    unawaited(MyHive.removeLogin());
   }
 }
 

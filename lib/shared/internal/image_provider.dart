@@ -14,11 +14,13 @@ import 'package:path_provider/path_provider.dart';
 
 final _loadLimiter = FLimit(10, queueStrategy: QueueStrategy.lifo);
 
+/// A custom image provider that caches images locally.
+///
+/// This provider fetches images from the network and caches them locally
+/// for faster subsequent loads.
 @immutable
 class CacheImage extends painting.ImageProvider<painting.NetworkImage> implements painting.NetworkImage {
   /// Creates an object that fetches the image at the given URL.
-  ///
-  /// The arguments [url] and [scale] must not be null.
   const CacheImage(this.url, {this.scale = 1.0, this.headers});
 
   @override

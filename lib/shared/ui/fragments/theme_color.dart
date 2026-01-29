@@ -27,8 +27,8 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
   void _tryGetDynamicColor() {
     getDynamicColorScheme().then((value) {
       _colorSchemePair = value;
-      if (MyHive.dynamicColorEnabled() && value == null) {
-        MyHive.enableDynamicColor(false);
+      if (MyHive.isDynamicColorEnabled() && value == null) {
+        MyHive.setDynamicColorEnabled(false);
       }
       if (mounted) {
         setState(() {});
@@ -61,21 +61,17 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
                       ValueListenableBuilder(
                         valueListenable: MyHive.settings.listenable(keys: [SettingsHiveKey.dynamicColor]),
                         builder: (context, _, child) {
-                          final v = MyHive.dynamicColorEnabled();
+                          final v = MyHive.isDynamicColorEnabled();
                           return Switch(
                             onChanged: (v) {
-                              MyHive.enableDynamicColor(v);
+                              MyHive.setDynamicColorEnabled(v);
                               if (v) {
                                 final effectColor = theme.brightness == Brightness.light
                                     ? _colorSchemePair!.light.primary
                                     : _colorSchemePair!.dark.primary;
                                 Future.delayed(const Duration(milliseconds: 160), () {
-                                  if (mounted) {
-                                    ParticleEffect.show(
-                                      // ignore: use_build_context_synchronously
-                                      context,
-                                      color: effectColor,
-                                    );
+                                  if (mounted && context.mounted) {
+                                    ParticleEffect.show(context, color: effectColor);
                                   }
                                 });
                               }
@@ -90,7 +86,7 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
                 ),
               ),
             ),
-          if (_colorSchemePair == null || !MyHive.dynamicColorEnabled())
+          if (_colorSchemePair == null || !MyHive.isDynamicColorEnabled())
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
@@ -118,12 +114,8 @@ class _ThemeColorPanelState extends LifecycleAppState<ThemeColorPanel> {
                         }
                         MyHive.setColorSeed(v);
                         Future.delayed(const Duration(milliseconds: 160), () {
-                          if (mounted) {
-                            ParticleEffect.show(
-                              // ignore: use_build_context_synchronously
-                              context,
-                              color: v,
-                            );
+                          if (mounted && context.mounted) {
+                            ParticleEffect.show(context, color: v);
                           }
                         });
                       },

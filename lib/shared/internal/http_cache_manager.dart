@@ -21,16 +21,19 @@ class HttpCacheManager {
 
   final String _cacheDir;
 
-  static HttpCacheManager? _httpCacheManager;
+  static HttpCacheManager? _instance;
+
+  /// Returns true if the manager has been initialized.
+  static bool get isInitialized => _instance != null;
 
   static Future<void> init({String? cacheDir}) async {
-    if (_httpCacheManager != null) {
+    if (_instance != null) {
       return;
     }
-    if (cacheDir == null || cacheDir.isEmpty) {
-      cacheDir = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}http_cache';
-    }
-    _httpCacheManager = HttpCacheManager._(cacheDir);
+    final resolvedCacheDir = cacheDir?.isNotEmpty ?? false
+        ? cacheDir!
+        : '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}http_cache';
+    _instance = HttpCacheManager._(resolvedCacheDir);
   }
 
   static final HttpClient _client = HttpClient()
@@ -75,7 +78,7 @@ class HttpCacheManager {
       cancelable.onBeforeCancel(onCancel);
     }
 
-    final instance = _httpCacheManager;
+    final instance = _instance;
     if (instance == null) {
       throw StateError('HttpCacheManager not initialized. Call init() first.');
     }

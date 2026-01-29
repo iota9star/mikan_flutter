@@ -39,29 +39,43 @@ class _MikanAppState extends State<MikanApp> {
   @override
   void initState() {
     super.initState();
-    final connectivity = Connectivity();
-    _subscription = connectivity.onConnectivityChanged.listen((result) {
-      if (_firstEvent) {
-        _firstEvent = false;
-        return;
-      }
+    _initConnectivityListener();
+  }
 
-      if (result.contains(ConnectivityResult.mobile)) {
-        '正在使用 移动网络'.toast();
-      } else if (result.contains(ConnectivityResult.wifi)) {
-        '正在使用 WiFi网络'.toast();
-      } else if (result.contains(ConnectivityResult.ethernet)) {
-        '正在使用 以太网'.toast();
-      } else if (result.contains(ConnectivityResult.vpn)) {
-        '正在使用 VPN'.toast();
-      } else if (result.contains(ConnectivityResult.bluetooth)) {
-        '正在使用 蓝牙网络'.toast();
-      } else if (result.contains(ConnectivityResult.other)) {
-        '正在使用 未知网络'.toast();
-      } else if (result.contains(ConnectivityResult.none)) {
-        '网络已断开'.toast();
-      }
-    });
+  void _initConnectivityListener() {
+    final connectivity = Connectivity();
+    _subscription = connectivity.onConnectivityChanged.listen(_handleConnectivityChange);
+  }
+
+  void _handleConnectivityChange(List<ConnectivityResult> result) {
+    if (_firstEvent) {
+      _firstEvent = false;
+      return;
+    }
+
+    final message = _getConnectivityMessage(result);
+    if (message != null) {
+      message.toast();
+    }
+  }
+
+  String? _getConnectivityMessage(List<ConnectivityResult> result) {
+    if (result.contains(ConnectivityResult.mobile)) {
+      return '正在使用 移动网络';
+    } else if (result.contains(ConnectivityResult.wifi)) {
+      return '正在使用 WiFi网络';
+    } else if (result.contains(ConnectivityResult.ethernet)) {
+      return '正在使用 以太网';
+    } else if (result.contains(ConnectivityResult.vpn)) {
+      return '正在使用 VPN';
+    } else if (result.contains(ConnectivityResult.bluetooth)) {
+      return '正在使用 蓝牙网络';
+    } else if (result.contains(ConnectivityResult.other)) {
+      return '正在使用 未知网络';
+    } else if (result.contains(ConnectivityResult.none)) {
+      return '网络已断开';
+    }
+    return null;
   }
 
   @override

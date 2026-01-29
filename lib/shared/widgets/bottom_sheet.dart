@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../topvars.dart';
 import '../internal/kit.dart';
 
+/// A styled bottom sheet with rounded corners and proper padding.
 class MBottomSheet extends StatelessWidget {
   const MBottomSheet({super.key, required this.child, this.height, this.heightFactor = 0.618});
 
@@ -10,6 +11,7 @@ class MBottomSheet extends StatelessWidget {
   final double? height;
   final double heightFactor;
 
+  /// Shows a modal bottom sheet with the given builder.
   static Future<void> show(
     BuildContext context,
     WidgetBuilder builder, {
@@ -32,7 +34,13 @@ class MBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navContext = navKey.currentContext;
+    if (navContext == null) {
+      return const SizedBox.shrink();
+    }
+
     final clipRRect = ClipRSuperellipse(borderRadius: const BorderRadius.all(Radius.circular(24.0)), child: child);
+
     return Material(
       color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.27),
       shape: const RoundedSuperellipseBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28.0))),
@@ -40,8 +48,8 @@ class MBottomSheet extends StatelessWidget {
         padding: EdgeInsets.only(
           left: 8.0,
           right: 8.0,
-          bottom: 8.0 + navKey.currentContext!.navBarHeight,
-          top: heightFactor == 1.0 ? navKey.currentContext!.statusBarHeight + 8.0 : 8.0,
+          bottom: 8.0 + navContext.navBarHeight,
+          top: heightFactor == 1.0 ? navContext.statusBarHeight + 8.0 : 8.0,
         ),
         child: height != null
             ? SizedBox(height: height, child: clipRRect)

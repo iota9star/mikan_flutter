@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 import 'package:flutter/material.dart';
@@ -122,11 +124,12 @@ class LoginPage extends HookConsumerWidget {
                 // Success - navigate and refresh
                 if (context.mounted) {
                   '登录成功'.toast();
-                  // ignore: unawaited_futures
-                  Future.microtask(() {
-                    ref.read(indexProvider.notifier).refresh();
-                    ref.invalidate(recentRecordsProvider);
-                  });
+                  unawaited(
+                    Future.microtask(() {
+                      ref.read(indexProvider.notifier).refresh();
+                      ref.invalidate(recentRecordsProvider);
+                    }),
+                  );
                   Navigator.popUntil(context, (route) => route.settings.name == Routes.index.name);
                 }
               });

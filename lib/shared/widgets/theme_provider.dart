@@ -27,8 +27,8 @@ base class _ThemeProviderState extends LifecycleAppState<ThemeProvider> {
   void _tryGetDynamicColor() {
     getDynamicColorScheme().then((value) {
       _colorSchemePair.value = value;
-      if (MyHive.dynamicColorEnabled() && value == null) {
-        MyHive.enableDynamicColor(false);
+      if (MyHive.isDynamicColorEnabled() && value == null) {
+        MyHive.setDynamicColorEnabled(false);
       }
     });
   }
@@ -55,7 +55,7 @@ base class _ThemeProviderState extends LifecycleAppState<ThemeProvider> {
           builder: (context, _, child) {
             final fontFamily = MyHive.getFontFamily()?.value;
             final themeMode = MyHive.getThemeMode();
-            final dynamicColorEnabled = MyHive.dynamicColorEnabled();
+            final dynamicColorEnabled = MyHive.isDynamicColorEnabled();
             if (dynamicColorEnabled && pair != null) {
               return widget.builder.call(themeMode, pair.light, pair.dark, fontFamily);
             }
