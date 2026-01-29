@@ -1,0 +1,45 @@
+<!-- Realistic fixture for testing SubgroupBangumi parsing -->
+<!-- Based on actual HTML structure from https://mikanani.me/Home/Bangumi/681 -->
+
+<div id="subgroup-test-container">
+  <!-- Case 1: Real structure - single subgroup link, no dropdown -->
+  <div class="subgroup-text" id="124">
+    <a href="/Home/PublishGroup/117" target="_blank" style="color: #3bc0c3;">夜猫工作室</a>
+    <a href="/RSS/Bangumi?bangumiId=681&subgroupid=124" class="mikan-rss" data-placement="bottom" data-toggle="tooltip" data-original-title="RSS" target="_blank">
+      <i class="fa fa-rss-square"></i>
+    </a>
+    <span class="subscribed" style="display:none;">已订阅</span>
+    <a class="pull-right subgroup-subscribe" data-toggle="popover-x" data-target="#subscription-popover-681-124" data-placement="bottom" data-bangumiid="681" data-subtitlegroupid="124">订阅</a>
+  </div>
+
+  <!-- Case 2: Another subgroup -->
+  <div class="subgroup-text" id="162">
+    <a href="/Home/PublishGroup/147" target="_blank" style="color: #3bc0c3;">幻樱字幕组</a>
+    <a href="/RSS/Bangumi?bangumiId=681&subgroupid=162" class="mikan-rss" data-placement="bottom" data-toggle="tooltip" data-original-title="RSS" target="_blank">
+      <i class="fa fa-rss-square"></i>
+    </a>
+    <span class="subscribed" style="display:none;">已订阅</span>
+    <a class="pull-right subgroup-subscribe" data-toggle="popover-x" data-target="#subscription-popover-681-162" data-placement="bottom" data-bangumiid="681" data-subtitlegroupid="162">订阅</a>
+  </div>
+
+  <!-- Case 3: Subgroup without explicit subgroup link (raw text) -->
+  <div class="subgroup-text" id="999">
+    <span>生肉/不明字幕</span>
+    <span class="subscribed" style="display:none;"></span>
+  </div>
+
+  <!-- Case 4: Theoretical case - dropdown with multiple subgroups (if exists) -->
+  <div class="subgroup-text" id="multi-123">
+    <div class="dropdown">
+      <span>联盟字幕组</span>
+      <button class="dropdown-toggle" data-toggle="dropdown">选择字幕组</button>
+      <ul class="dropdown-menu">
+        <li><a href="/Home/PublishGroup/coalition1">极影字幕组</a></li>
+        <li><a href="/Home/PublishGroup/coalition2">动漫国字幕组</a></li>
+        <li><a href="/Home/PublishGroup/coalition3">悠哈C9工作组</a></li>
+      </ul>
+    </div>
+    <span class="subscribed">简中</span>
+    <a class="mikan-rss" href="/RSS/Bangumi/multi-123">RSS</a>
+  </div>
+</div>
