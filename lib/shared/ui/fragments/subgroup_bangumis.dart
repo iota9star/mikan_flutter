@@ -26,7 +26,6 @@ class SubgroupBangumis extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    // Only rebuild when bangumiDetail changes
     final bangumiDetail = ref.watch(bangumiProvider(bangumiId, bangumiCover).select((state) => state.bangumiDetail));
     final subgroupBangumi = bangumiDetail!.subgroupBangumis[dataId]!;
     return Scaffold(
@@ -45,14 +44,15 @@ class SubgroupBangumis extends ConsumerWidget {
                     },
                     icon: const Icon(Icons.rss_feed_rounded),
                   ),
-                IconButton(
-                  tooltip: '查看字幕组',
-                  onPressed: () {
-                    final subgroups = subgroupBangumi.subgroups;
-                    showSelectSubgroupPanel(context, subgroups);
-                  },
-                  icon: const Icon(Icons.group_rounded),
-                ),
+                if (subgroupBangumi.subgroups.isNotEmpty)
+                  IconButton(
+                    tooltip: '查看字幕组',
+                    onPressed: () {
+                      final subgroups = subgroupBangumi.subgroups;
+                      showSelectSubgroupPanel(context, subgroups);
+                    },
+                    icon: const Icon(Icons.group_rounded),
+                  ),
               ],
             ),
             _buildList(theme, subgroupBangumi),

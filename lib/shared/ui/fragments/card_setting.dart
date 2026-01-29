@@ -78,21 +78,24 @@ class CardSettingFragment extends StatelessWidget {
 
   Widget _buildStyleSelector(BuildContext context) {
     final value = MyHive.getCardStyle();
-    return SegmentedButton<int>(
-      showSelectedIcon: false,
-      segments: List.generate(4, (index) {
-        final v = index + 1;
-        return ButtonSegment(value: v, label: Text('样式$v'));
-      }),
-      onSelectionChanged: (v) {
-        MyHive.setCardStyle(v.first);
-      },
-      style: ButtonStyle(
-        shape: WidgetStateProperty.resolveWith((states) {
-          return const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0)));
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: SegmentedButton<int>(
+        showSelectedIcon: false,
+        segments: List.generate(4, (index) {
+          final v = index + 1;
+          return ButtonSegment(value: v, label: Text('样式$v'));
         }),
+        onSelectionChanged: (v) {
+          MyHive.setCardStyle(v.first);
+        },
+        style: ButtonStyle(
+          shape: WidgetStateProperty.resolveWith((states) {
+            return const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0)));
+          }),
+        ),
+        selected: {value},
       ),
-      selected: {value},
     );
   }
 }
