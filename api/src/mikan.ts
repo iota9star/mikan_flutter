@@ -766,7 +766,7 @@ class MikanApi {
     const rss = rssHref ? this.baseUrl + rssHref : undefined;
 
     const subgroups: Subgroup[] = [];
-    $sub.find('ul > li > a').each((_, ele) => {
+    $sub.find('a[href*="/Home/PublishGroup/"]').each((_, ele) => {
       const $a = cheerio.load(ele);
       subgroups.push({
         id: $a('a').attr('href')?.split('/').pop(),
