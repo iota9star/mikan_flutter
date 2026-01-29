@@ -51,17 +51,12 @@ abstract class _$Fonts extends $Notifier<FontsState> {
   }
 }
 
-/// Derived provider for single font progress - 只监听特定字体的进度
-
 @ProviderFor(fontProgress)
 final fontProgressProvider = FontProgressFamily._();
-
-/// Derived provider for single font progress - 只监听特定字体的进度
 
 final class FontProgressProvider
     extends $FunctionalProvider<ProgressChunkEvent?, ProgressChunkEvent?, ProgressChunkEvent?>
     with $Provider<ProgressChunkEvent?> {
-  /// Derived provider for single font progress - 只监听特定字体的进度
   FontProgressProvider._({required FontProgressFamily super.from, required String super.argument})
     : super(
         retry: null,
@@ -109,8 +104,6 @@ final class FontProgressProvider
 
 String _$fontProgressHash() => r'02ef3df2aade14778cc9948e609783b3ca41fecb';
 
-/// Derived provider for single font progress - 只监听特定字体的进度
-
 final class FontProgressFamily extends $Family with $FunctionalFamilyOverride<ProgressChunkEvent?, String> {
   FontProgressFamily._()
     : super(
@@ -121,23 +114,16 @@ final class FontProgressFamily extends $Family with $FunctionalFamilyOverride<Pr
         isAutoDispose: true,
       );
 
-  /// Derived provider for single font progress - 只监听特定字体的进度
-
   FontProgressProvider call(String fontId) => FontProgressProvider._(argument: fontId, from: this);
 
   @override
   String toString() => r'fontProgressProvider';
 }
 
-/// Derived provider for used font family id - 只监听当前使用的字体
-
 @ProviderFor(usedFontFamilyId)
 final usedFontFamilyIdProvider = UsedFontFamilyIdProvider._();
 
-/// Derived provider for used font family id - 只监听当前使用的字体
-
 final class UsedFontFamilyIdProvider extends $FunctionalProvider<String?, String?, String?> with $Provider<String?> {
-  /// Derived provider for used font family id - 只监听当前使用的字体
   UsedFontFamilyIdProvider._()
     : super(
         from: null,
