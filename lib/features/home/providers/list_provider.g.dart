@@ -12,7 +12,7 @@ part of 'list_provider.dart';
 @ProviderFor(ListNotifier)
 final listProvider = ListNotifierProvider._();
 
-final class ListNotifierProvider extends $NotifierProvider<ListNotifier, AsyncValue<ListData>> {
+final class ListNotifierProvider extends $AsyncNotifierProvider<ListNotifier, ListData> {
   ListNotifierProvider._()
     : super(
         from: null,
@@ -30,25 +30,20 @@ final class ListNotifierProvider extends $NotifierProvider<ListNotifier, AsyncVa
   @$internal
   @override
   ListNotifier create() => ListNotifier();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<ListData> value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<AsyncValue<ListData>>(value));
-  }
 }
 
-String _$listNotifierHash() => r'0d9debe9abb3abfde17dfb29f112d1344340eba1';
+String _$listNotifierHash() => r'58a63b682482963419040dfceff3418a016a073a';
 
-abstract class _$ListNotifier extends $Notifier<AsyncValue<ListData>> {
-  AsyncValue<ListData> build();
+abstract class _$ListNotifier extends $AsyncNotifier<ListData> {
+  FutureOr<ListData> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<ListData>, AsyncValue<ListData>>;
+    final ref = this.ref as $Ref<AsyncValue<ListData>, ListData>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<ListData>, AsyncValue<ListData>>,
+              AnyNotifier<AsyncValue<ListData>, ListData>,
               AsyncValue<ListData>,
               Object?,
               Object?

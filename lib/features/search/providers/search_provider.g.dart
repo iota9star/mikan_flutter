@@ -8,14 +8,11 @@ part of 'search_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 搜索关键字（用户输入状态）
 
 @ProviderFor(SearchKeywords)
 final searchKeywordsProvider = SearchKeywordsProvider._();
 
-/// 搜索关键字（用户输入状态）
 final class SearchKeywordsProvider extends $NotifierProvider<SearchKeywords, String?> {
-  /// 搜索关键字（用户输入状态）
   SearchKeywordsProvider._()
     : super(
         from: null,
@@ -42,8 +39,6 @@ final class SearchKeywordsProvider extends $NotifierProvider<SearchKeywords, Str
 
 String _$searchKeywordsHash() => r'39491f299b40c4c244bdfe4847c392f97b18e3fc';
 
-/// 搜索关键字（用户输入状态）
-
 abstract class _$SearchKeywords extends $Notifier<String?> {
   String? build();
   @$mustCallSuper
@@ -55,14 +50,10 @@ abstract class _$SearchKeywords extends $Notifier<String?> {
   }
 }
 
-/// 选中的字幕组ID（筛选状态）
-
 @ProviderFor(SearchSubgroupId)
 final searchSubgroupIdProvider = SearchSubgroupIdProvider._();
 
-/// 选中的字幕组ID（筛选状态）
 final class SearchSubgroupIdProvider extends $NotifierProvider<SearchSubgroupId, String?> {
-  /// 选中的字幕组ID（筛选状态）
   SearchSubgroupIdProvider._()
     : super(
         from: null,
@@ -89,8 +80,6 @@ final class SearchSubgroupIdProvider extends $NotifierProvider<SearchSubgroupId,
 
 String _$searchSubgroupIdHash() => r'9de54b85dc5f049bd2b55924805102101bdb735f';
 
-/// 选中的字幕组ID（筛选状态）
-
 abstract class _$SearchSubgroupId extends $Notifier<String?> {
   String? build();
   @$mustCallSuper
@@ -102,16 +91,11 @@ abstract class _$SearchSubgroupId extends $Notifier<String?> {
   }
 }
 
-/// 搜索结果（AsyncValue 自动处理 loading/data/error 状态）
-
 @ProviderFor(search)
 final searchProvider = SearchProvider._();
 
-/// 搜索结果（AsyncValue 自动处理 loading/data/error 状态）
-
 final class SearchProvider extends $FunctionalProvider<AsyncValue<SearchResult>, SearchResult, FutureOr<SearchResult>>
     with $FutureModifier<SearchResult>, $FutureProvider<SearchResult> {
-  /// 搜索结果（AsyncValue 自动处理 loading/data/error 状态）
   SearchProvider._()
     : super(
         from: null,

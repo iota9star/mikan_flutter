@@ -8,20 +8,13 @@ part of 'record_detail_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 番剧剧集详情
-/// 根据 record 加载完整的详情数据
 
 @ProviderFor(recordDetail)
 final recordDetailProvider = RecordDetailFamily._();
 
-/// 番剧剧集详情
-/// 根据 record 加载完整的详情数据
-
 final class RecordDetailProvider
     extends $FunctionalProvider<AsyncValue<RecordDetail>, RecordDetail, FutureOr<RecordDetail>>
     with $FutureModifier<RecordDetail>, $FutureProvider<RecordDetail> {
-  /// 番剧剧集详情
-  /// 根据 record 加载完整的详情数据
   RecordDetailProvider._({required RecordDetailFamily super.from, required RecordItem super.argument})
     : super(
         retry: null,
@@ -64,9 +57,6 @@ final class RecordDetailProvider
 
 String _$recordDetailHash() => r'cddf484c0f53bce67471f1f78f327cd5abd324d3';
 
-/// 番剧剧集详情
-/// 根据 record 加载完整的详情数据
-
 final class RecordDetailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<RecordDetail>, RecordItem> {
   RecordDetailFamily._()
     : super(
@@ -76,9 +66,6 @@ final class RecordDetailFamily extends $Family with $FunctionalFamilyOverride<Fu
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
-
-  /// 番剧剧集详情
-  /// 根据 record 加载完整的详情数据
 
   RecordDetailProvider call(RecordItem record) => RecordDetailProvider._(argument: record, from: this);
 

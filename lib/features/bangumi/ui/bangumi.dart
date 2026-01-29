@@ -63,10 +63,19 @@ class Bangumi extends _$Bangumi {
     if (sb?.records.length == records.length) {
       return IndicatorResult.noMore;
     } else {
+      // Null safety check - ensure bangumiDetail exists before modifying
+      final currentDetail = state.bangumiDetail;
+      if (currentDetail == null) {
+        return IndicatorResult.fail;
+      }
+
       // Create a new copy of bangumiDetail with updated records
-      final currentDetail = state.bangumiDetail!;
       final updatedSubgroupBangumis = Map<String, SubgroupBangumi>.from(currentDetail.subgroupBangumis);
-      final oldSubgroup = updatedSubgroupBangumis[dataId]!;
+      final oldSubgroup = updatedSubgroupBangumis[dataId];
+      if (oldSubgroup == null) {
+        return IndicatorResult.fail;
+      }
+
       final updatedSubgroup = SubgroupBangumi()
         ..name = oldSubgroup.name
         ..dataId = oldSubgroup.dataId

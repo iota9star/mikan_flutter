@@ -52,7 +52,7 @@ final class BangumiProvider extends $NotifierProvider<Bangumi, BangumiState> {
   }
 }
 
-String _$bangumiHash() => r'fb66f6aa456868f37083568cfdbee4798cbcb637';
+String _$bangumiHash() => r'5f2b319279705c84792096fc01f12676e56f2a90';
 
 final class BangumiFamily extends $Family
     with $ClassFamilyOverride<Bangumi, BangumiState, BangumiState, BangumiState, (String, String)> {

@@ -8,20 +8,13 @@ part of 'subgroup_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 字幕组作品列表
-/// 返回指定字幕组的所有作品
 
 @ProviderFor(subgroupGalleries)
 final subgroupGalleriesProvider = SubgroupGalleriesFamily._();
 
-/// 字幕组作品列表
-/// 返回指定字幕组的所有作品
-
 final class SubgroupGalleriesProvider
     extends $FunctionalProvider<AsyncValue<List<SeasonGallery>>, List<SeasonGallery>, FutureOr<List<SeasonGallery>>>
     with $FutureModifier<List<SeasonGallery>>, $FutureProvider<List<SeasonGallery>> {
-  /// 字幕组作品列表
-  /// 返回指定字幕组的所有作品
   SubgroupGalleriesProvider._({required SubgroupGalleriesFamily super.from, required Subgroup super.argument})
     : super(
         retry: null,
@@ -65,9 +58,6 @@ final class SubgroupGalleriesProvider
 
 String _$subgroupGalleriesHash() => r'6232b3b1815a1b6d07c2436fde535f832819b644';
 
-/// 字幕组作品列表
-/// 返回指定字幕组的所有作品
-
 final class SubgroupGalleriesFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<List<SeasonGallery>>, Subgroup> {
   SubgroupGalleriesFamily._()
@@ -78,9 +68,6 @@ final class SubgroupGalleriesFamily extends $Family
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
-
-  /// 字幕组作品列表
-  /// 返回指定字幕组的所有作品
 
   SubgroupGalleriesProvider call(Subgroup subgroup) => SubgroupGalleriesProvider._(argument: subgroup, from: this);
 

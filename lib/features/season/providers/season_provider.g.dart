@@ -8,19 +8,12 @@ part of 'season_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 季度番剧数据
-/// 返回指定季度的番剧列表
 
 @ProviderFor(season)
 final seasonProvider = SeasonFamily._();
 
-/// 季度番剧数据
-/// 返回指定季度的番剧列表
-
 final class SeasonProvider extends $FunctionalProvider<AsyncValue<SeasonData>, SeasonData, FutureOr<SeasonData>>
     with $FutureModifier<SeasonData>, $FutureProvider<SeasonData> {
-  /// 季度番剧数据
-  /// 返回指定季度的番剧列表
   SeasonProvider._({required SeasonFamily super.from, required model.Season super.argument})
     : super(
         retry: null,
@@ -63,9 +56,6 @@ final class SeasonProvider extends $FunctionalProvider<AsyncValue<SeasonData>, S
 
 String _$seasonHash() => r'e33694fa6629a712e6e851770c84d9ff80e8d399';
 
-/// 季度番剧数据
-/// 返回指定季度的番剧列表
-
 final class SeasonFamily extends $Family with $FunctionalFamilyOverride<FutureOr<SeasonData>, model.Season> {
   SeasonFamily._()
     : super(
@@ -75,9 +65,6 @@ final class SeasonFamily extends $Family with $FunctionalFamilyOverride<FutureOr
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
-
-  /// 季度番剧数据
-  /// 返回指定季度的番剧列表
 
   SeasonProvider call(model.Season seasonParam) => SeasonProvider._(argument: seasonParam, from: this);
 

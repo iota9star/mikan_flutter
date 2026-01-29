@@ -23,9 +23,9 @@ class RecentSubscribedState {
 @riverpod
 class RecentSubscribed extends _$RecentSubscribed {
   @override
-  AsyncValue<RecentSubscribedState> build(List<RecordItem> records) {
-    // Start with initial data
-    return AsyncValue.data(RecentSubscribedState(records: records));
+  Future<RecentSubscribedState> build(List<RecordItem> records) async {
+    // Return initial data directly - the Future makes state an AsyncValue
+    return RecentSubscribedState(records: records);
   }
 
   /// Refresh subscription data

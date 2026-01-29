@@ -12,7 +12,7 @@ class SearchKeywords extends _$SearchKeywords {
   @override
   String? build() => null;
 
-  // ignore: use_setters_to_change_properties
+  /// Sets the search keywords.
   void set(String? value) => state = value;
 }
 
@@ -21,10 +21,12 @@ class SearchSubgroupId extends _$SearchSubgroupId {
   @override
   String? build() => null;
 
+  /// Toggles the subgroup selection.
   void toggle(String value) {
     state = state == value ? null : value;
   }
 
+  /// Clears the selected subgroup.
   void clear() => state = null;
 }
 

@@ -32,7 +32,7 @@ final class IndexProvider extends $AsyncNotifierProvider<Index, IndexData> {
   Index create() => Index();
 }
 
-String _$indexHash() => r'1d2cc49b4c959cde309e24f8592469cfe3f1c7d6';
+String _$indexHash() => r'1b491b5c583cd2cb41c5bcf3e78e25eef4400f01';
 
 abstract class _$Index extends $AsyncNotifier<IndexData> {
   FutureOr<IndexData> build();
@@ -52,18 +52,10 @@ abstract class _$Index extends $AsyncNotifier<IndexData> {
   }
 }
 
-/// Derived provider: 当前选中的季度
-/// 从 indexProvider 中提取 selectedSeason
-
 @ProviderFor(selectedSeason)
 final selectedSeasonProvider = SelectedSeasonProvider._();
 
-/// Derived provider: 当前选中的季度
-/// 从 indexProvider 中提取 selectedSeason
-
 final class SelectedSeasonProvider extends $FunctionalProvider<Season?, Season?, Season?> with $Provider<Season?> {
-  /// Derived provider: 当前选中的季度
-  /// 从 indexProvider 中提取 selectedSeason
   SelectedSeasonProvider._()
     : super(
         from: null,
@@ -93,21 +85,13 @@ final class SelectedSeasonProvider extends $FunctionalProvider<Season?, Season?,
   }
 }
 
-String _$selectedSeasonHash() => r'e2bbe0bb0d936b226b07188d4403e17919b2b176';
-
-/// Derived provider: 年份季度列表
-/// 从 indexProvider 中提取 years
+String _$selectedSeasonHash() => r'92fc08f3c6f8e24e218be4c80ea1a686164d7f5f';
 
 @ProviderFor(years)
 final yearsProvider = YearsProvider._();
 
-/// Derived provider: 年份季度列表
-/// 从 indexProvider 中提取 years
-
 final class YearsProvider extends $FunctionalProvider<List<YearSeason>, List<YearSeason>, List<YearSeason>>
     with $Provider<List<YearSeason>> {
-  /// Derived provider: 年份季度列表
-  /// 从 indexProvider 中提取 years
   YearsProvider._()
     : super(
         from: null,
@@ -137,4 +121,4 @@ final class YearsProvider extends $FunctionalProvider<List<YearSeason>, List<Yea
   }
 }
 
-String _$yearsHash() => r'ebd10fa399cda98d3962546b2e87ab237711592b';
+String _$yearsHash() => r'f6c5da42f5c5f5d525ed8308f3beb1471ab2759e';
