@@ -28,6 +28,7 @@ export const myBangumiHtml = readHtmlFile('my-bangumi.html');
 export const loginHtml = readHtmlFile('login.html');
 export const registerHtml = readHtmlFile('register.html');
 export const forgotPasswordHtml = readHtmlFile('forgot-password.html');
+export const expandEpisodeTableHtml = readHtmlFile('expand-episode-table.html');
 
 // For backward compatibility with existing tests
 export const seasonListHtml = indexHtml;

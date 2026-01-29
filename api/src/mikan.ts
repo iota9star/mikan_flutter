@@ -815,25 +815,36 @@ class MikanApi {
   }
 
   parseRecordItemFromRowAlt($row: cheerio.Cheerio<any>): RecordItem {
-    const $td0 = $row.children().first();
-    const magnet = $td0.children().eq(1).attr('data-clipboard-text') || '';
+    // 第1列：checkbox 的 data-magnet 属性
+    const $td0 = $row.children().eq(0);
+    const magnet = $td0.find('input').attr('data-magnet') || '';
 
-    const $link = $td0.children().first();
+    // 第2列：番组名，包含链接和磁力复制
+    const $td1 = $row.children().eq(1);
+    const $link = $td1.find('a.magnet-link-wrap').first();
     const titleText = trim($link.text() || '');
     const result = parseTagsAndTitle(titleText);
 
-    const $td1 = $row.children().eq(1);
+    // 第3列：大小
     const $td2 = $row.children().eq(2);
+    const size = trim($td2.text() || '');
+
+    // 第4列：时间
     const $td3 = $row.children().eq(3);
+    const publishAt = formatPublishAt(trim($td3.text() || ''));
+
+    // 第5列：下载链接
+    const $td4 = $row.children().eq(4);
+    const torrent = this.baseUrl + ($td4.find('a').attr('href') || '');
 
     return {
       magnet,
       title: result.title,
       tags: result.tags,
       url: this.baseUrl + ($link.attr('href') || ''),
-      size: trim($td1.text() || ''),
-      publishAt: formatPublishAt(trim($td2.text() || '')),
-      torrent: this.baseUrl + ($td3.children().first().attr('href') || '')
+      size,
+      publishAt,
+      torrent
     };
   }
 
