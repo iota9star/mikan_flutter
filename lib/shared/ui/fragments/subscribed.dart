@@ -54,6 +54,11 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Early return if widget is no longer mounted
+    if (!mounted) {
+      return;
+    }
+
     switch (state) {
       case AppLifecycleState.resumed:
         _newTimer();

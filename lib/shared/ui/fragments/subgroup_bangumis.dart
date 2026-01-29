@@ -27,7 +27,26 @@ class SubgroupBangumis extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final bangumiDetail = ref.watch(bangumiProvider(bangumiId, bangumiCover).select((state) => state.bangumiDetail));
-    final subgroupBangumi = bangumiDetail!.subgroupBangumis[dataId]!;
+
+    // Handle null cases safely
+    if (bangumiDetail == null) {
+      return const Scaffold(body: Center(child: Text('加载中...')));
+    }
+
+    final subgroupBangumi = bangumiDetail.subgroupBangumis[dataId];
+    if (subgroupBangumi == null) {
+      return Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            const SliverPinnedAppBar(title: '字幕组'),
+            SliverFillRemaining(
+              child: Center(child: Text('未找到字幕组数据', style: theme.textTheme.bodyMedium)),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       body: EasyRefresh(
         footer: defaultFooter(context),

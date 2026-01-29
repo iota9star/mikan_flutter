@@ -20,6 +20,7 @@ class RssRecordItem extends ConsumerWidget {
     final theme = Theme.of(context);
     final record = ref.watch(currentRecordProvider);
     final tags = record.tags;
+    final bangumiId = record.id;
     final cover = Container(
       decoration: BoxDecoration(
         image: DecorationImage(image: CacheImage(record.cover), fit: BoxFit.cover),
@@ -40,46 +41,7 @@ class RssRecordItem extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  TransitionContainer(
-                    routeSettings: const RouteSettings(name: '/bangumi'),
-                    builder: (context, open) {
-                      return RippleTap(
-                        borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                        onTap: open,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Tooltip(
-                                      message: record.name,
-                                      child: Text(
-                                        record.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: theme.textTheme.titleMedium,
-                                      ),
-                                    ),
-                                    Text(
-                                      record.publishAt,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.bodySmall,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              TMSMenuButton(torrent: record.torrent, magnet: record.magnet, share: record.share),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                    next: BangumiPage(bangumiId: record.id!, cover: record.cover, name: record.name),
-                  ),
+                  _buildBangumiInfo(context, theme, record, bangumiId),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(record.title, style: theme.textTheme.bodySmall),
@@ -119,6 +81,48 @@ class RssRecordItem extends ConsumerWidget {
         );
       },
       next: RecordPage(record: record),
+    );
+  }
+
+  /// Builds the bangumi info section with safe null handling for bangumiId.
+  Widget _buildBangumiInfo(BuildContext context, ThemeData theme, record, String? bangumiId) {
+    final infoContent = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Tooltip(
+                  message: record.name,
+                  child: Text(
+                    record.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+                Text(record.publishAt, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodySmall),
+              ],
+            ),
+          ),
+          TMSMenuButton(torrent: record.torrent, magnet: record.magnet, share: record.share),
+        ],
+      ),
+    );
+
+    // If bangumiId is null, don't wrap with navigation
+    if (bangumiId == null) {
+      return infoContent;
+    }
+
+    return TransitionContainer(
+      routeSettings: const RouteSettings(name: '/bangumi'),
+      builder: (context, open) {
+        return RippleTap(borderRadius: const BorderRadius.all(Radius.circular(6.0)), onTap: open, child: infoContent);
+      },
+      next: BangumiPage(bangumiId: bangumiId, cover: record.cover, name: record.name),
     );
   }
 }
