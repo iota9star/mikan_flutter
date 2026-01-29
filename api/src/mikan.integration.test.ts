@@ -236,8 +236,8 @@ describe('MikanApi - Real HTML Integration Tests', () => {
         // 验证标题（parseTagsAndTitle 不移除标签，仅替换书名号）
         expect(first.title).toBe('[清蓝字幕组]新哆啦A梦 2016生日特别篇 - 天才大雄的飞船游乐园 New Doraemon Birthday Special 2016 [455][GB][720P][MP4]');
 
-        // 验证标签（GB → 简，按降序排序）
-        expect(first.tags).toEqual(['SP', 'MP4', '特别篇', '简', '720P']);
+        // 验证标签（GB → 简，按 localeCompare 降序排序 - 中文字符在 ASCII 之前）
+        expect(first.tags).toEqual(['简', '特别篇', 'SP', 'MP4', '720P']);
 
         // 验证 URL
         expect(first.url).toBe('https://mikanani.me/Home/Episode/test123456');
