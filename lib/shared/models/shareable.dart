@@ -14,11 +14,7 @@ class ShareTextBuilder {
     }
   }
 
-  void writeFieldIf(
-    String label,
-    String? value,
-    bool Function(String) condition,
-  ) {
+  void writeFieldIf(String label, String? value, bool Function(String) condition) {
     if (value != null && value.isNotBlank && condition(value)) {
       writeField(label, value);
     }
@@ -47,10 +43,7 @@ class ShareTextBuilder {
     }
   }
 
-  void writeSubgroups(
-    List<dynamic> subgroups,
-    String separator,
-  ) {
+  void writeSubgroups(List<dynamic> subgroups, String separator) {
     if (subgroups.isNotEmpty) {
       _buffer
         ..write('字幕组：')

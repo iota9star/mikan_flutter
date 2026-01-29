@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../res/assets.gen.dart';
-import '../../widgets/scalable_tap.dart';
 import '../../../topvars.dart';
+import '../../widgets/scalable_tap.dart';
 
 class SliverLoadingWidget extends StatelessWidget {
   const SliverLoadingWidget({super.key});

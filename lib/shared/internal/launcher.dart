@@ -11,10 +11,7 @@ import 'extension.dart';
 class LauncherHelper {
   LauncherHelper._();
 
-  static Future<void> copyAndLaunch(
-    String url, {
-    LaunchMode fallbackMode = LaunchMode.externalApplication,
-  }) async {
+  static Future<void> copyAndLaunch(String url, {LaunchMode fallbackMode = LaunchMode.externalApplication}) async {
     if (url.isBlank) {
       return '内容为空，取消操作'.toast();
     }
@@ -25,10 +22,7 @@ class LauncherHelper {
       unawaited(
         AndroidIntent(
           action: 'android.intent.action.VIEW',
-          flags: [
-            Flag.FLAG_ACTIVITY_NEW_TASK,
-            Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED,
-          ],
+          flags: [Flag.FLAG_ACTIVITY_NEW_TASK, Flag.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED],
           data: url,
         ).launch().catchError((Object e, StackTrace stackTrace) {
           return _launchUrlFallback(url, fallbackMode);
@@ -39,10 +33,7 @@ class LauncherHelper {
     }
   }
 
-  static Future<void> _launchUrlFallback(
-    String url,
-    LaunchMode mode,
-  ) async {
+  static Future<void> _launchUrlFallback(String url, LaunchMode mode) async {
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url, mode: mode);
     } else {
