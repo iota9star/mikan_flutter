@@ -14,7 +14,6 @@ import '../../../../../shared/models/year_season.dart';
 
 part 'index_provider.g.dart';
 
-/// Immutable data class for index state
 class IndexData {
   const IndexData({
     this.years = const [],
@@ -61,14 +60,14 @@ class IndexData {
 
 @riverpod
 class Index extends _$Index {
+  int _requestToken = 0;
+
   @override
   Future<IndexData> build() async {
-    // Load initial data on first build
     final results = await Future.wait([_loadIndex(), _loadOVA()]);
     return results[0];
   }
 
-  /// Select a bangumi row
   void selectBangumiRow(BangumiRow? value) {
     final currentData = state.value;
     if (currentData != null) {
@@ -76,7 +75,6 @@ class Index extends _$Index {
     }
   }
 
-  /// Refresh all index data
   Future<void> refresh() async {
     final newState = await AsyncValue.guard(() async {
       final results = await Future.wait([_loadIndex(), _loadOVA()]);
@@ -85,20 +83,30 @@ class Index extends _$Index {
     setIfMounted(ref, newState);
   }
 
-  /// Select a season and load its bangumi rows
   Future<void> selectSeason(Season season) async {
-    final previousState = state.value;
-    if (previousState == null) {
+    final currentState = state.value;
+    if (currentState == null) {
       return;
     }
 
-    state = AsyncValue.data(previousState.copyWith(selectedSeason: season));
+    final currentToken = ++_requestToken;
+
+    state = const AsyncValue.loading();
 
     final newState = await AsyncValue.guard(() async {
       final bangumiRows = await MikanApi.season(season.year, season.season);
-      return previousState.copyWith(selectedSeason: season, bangumiRows: bangumiRows);
+
+      if (currentToken != _requestToken) {
+        throw Exception('Request cancelled by newer request');
+      }
+
+      final latestState = state.value ?? currentState;
+      return latestState.copyWith(selectedSeason: season, bangumiRows: bangumiRows);
     });
-    setIfMounted(ref, newState);
+
+    if (currentToken == _requestToken) {
+      setIfMounted(ref, newState);
+    }
   }
 
   Future<IndexData> _loadIndex() async {
@@ -143,15 +151,11 @@ class Index extends _$Index {
   }
 }
 
-/// Derived provider: 当前选中的季度
-/// 从 indexProvider 中提取 selectedSeason
 @riverpod
 Season? selectedSeason(Ref ref) {
   return ref.watch(indexProvider).value?.selectedSeason;
 }
 
-/// Derived provider: 年份季度列表
-/// 从 indexProvider 中提取 years
 @riverpod
 List<YearSeason> years(Ref ref) {
   return ref.watch(indexProvider).value?.years ?? [];
