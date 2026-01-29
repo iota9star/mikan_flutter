@@ -31,7 +31,7 @@ Future<void> initWindow() async {
 
 Future<void> initFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kDebugMode);
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(!kDebugMode);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 }
 
