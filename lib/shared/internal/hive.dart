@@ -7,6 +7,8 @@ import 'package:hive_ce/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../hive_registrar.g.dart';
+import '../models/index.dart';
+import '../models/record_item.dart';
 import 'consts.dart';
 
 class MyHive {
@@ -183,7 +185,11 @@ class MyHive {
   }
 
   static Future<void> clearCache() async {
-    await Future.wait(<Future<void>>[for (final FileSystemEntity f in cacheDir.listSync()) f.delete(recursive: true)]);
+    if (!cacheDir.existsSync()) {
+      return;
+    }
+    final entities = cacheDir.listSync();
+    await Future.wait([for (final entity in entities) entity.delete(recursive: true)]);
   }
 
   static Future<int> getCacheSize() async {
@@ -237,11 +243,11 @@ class MyHive {
     return settings.put(SettingsHiveKey.cardStyle, style);
   }
 
-  static bool dynamicColorEnabled() {
+  static bool isDynamicColorEnabled() {
     return settings.get(SettingsHiveKey.dynamicColor, defaultValue: false);
   }
 
-  static Future<void> enableDynamicColor(bool enable) {
+  static Future<void> setDynamicColorEnabled(bool enable) {
     return settings.put(SettingsHiveKey.dynamicColor, enable);
   }
 
@@ -291,6 +297,38 @@ class MyHive {
   static Future<void> setCardWidth(Decimal width) {
     return settings.put(SettingsHiveKey.cardWidth, width.toString());
   }
+
+  // ============ Cache Methods ============
+
+  /// Saves Index data to cache.
+  static Future<void> saveIndexCache(Index index) {
+    return db.put(HiveDBKey.mikanIndex, index);
+  }
+
+  /// Gets cached Index data.
+  static Index? getIndexCache() {
+    return db.get(HiveDBKey.mikanIndex);
+  }
+
+  /// Saves OVA records to cache.
+  static Future<void> saveOvaCache(List<RecordItem> records) {
+    return db.put(HiveDBKey.mikanOva, records);
+  }
+
+  /// Gets cached OVA records.
+  static List<RecordItem>? getOvaCache() {
+    return db.get(HiveDBKey.mikanOva)?.cast<RecordItem>();
+  }
+
+  /// Saves list records to cache.
+  static Future<void> saveListCache(List<RecordItem> records) {
+    return db.put(HiveDBKey.mikanList, records);
+  }
+
+  /// Gets cached list records.
+  static List<RecordItem>? getListCache() {
+    return db.get(HiveDBKey.mikanList)?.cast<RecordItem>();
+  }
 }
 
 class HiveDBKey {
@@ -300,6 +338,7 @@ class HiveDBKey {
   static const String mikanIndex = 'MIKAN_INDEX';
   static const String mikanOva = 'MIKAN_OVA';
   static const String mikanSearch = 'MIKAN_SEARCH';
+  static const String mikanList = 'MIKAN_LIST';
   static const String ignoreUpdateVersion = 'IGNORE_UPDATE_VERSION';
 }
 

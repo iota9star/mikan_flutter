@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../mikan_api.dart';
 import '../../../../../shared/internal/extension.dart';
+import '../../../../../shared/internal/hive.dart';
 import '../../../../../shared/models/announcement.dart';
 import '../../../../../shared/models/bangumi_row.dart';
 import '../../../../../shared/models/carousel.dart';
@@ -24,6 +27,7 @@ class IndexData {
     this.user,
     this.announcements,
     this.selectedBangumiRow,
+    this.isFromCache = false,
   });
 
   final List<YearSeason> years;
@@ -35,6 +39,9 @@ class IndexData {
   final List<Announcement>? announcements;
   final BangumiRow? selectedBangumiRow;
 
+  /// Indicates if this data is from cache (not fresh from network).
+  final bool isFromCache;
+
   IndexData copyWith({
     List<YearSeason>? years,
     List<BangumiRow>? bangumiRows,
@@ -44,6 +51,7 @@ class IndexData {
     User? user,
     List<Announcement>? announcements,
     BangumiRow? selectedBangumiRow,
+    bool? isFromCache,
   }) {
     return IndexData(
       years: years ?? this.years,
@@ -54,6 +62,7 @@ class IndexData {
       user: user ?? this.user,
       announcements: announcements ?? this.announcements,
       selectedBangumiRow: selectedBangumiRow ?? this.selectedBangumiRow,
+      isFromCache: isFromCache ?? this.isFromCache,
     );
   }
 }
@@ -64,10 +73,36 @@ class Index extends _$Index {
 
   @override
   Future<IndexData> build() async {
+    // First, try to load from cache for instant UI
+    final cachedIndex = MyHive.getIndexCache();
+    final cachedOvas = MyHive.getOvaCache();
+
+    if (cachedIndex != null) {
+      final cachedData = _buildIndexData(cachedIndex, cachedOvas ?? [], isFromCache: true);
+      // Set cached data immediately
+      state = AsyncValue.data(cachedData);
+
+      // Then fetch fresh data in background
+      unawaited(_loadFreshDataInBackground());
+      return cachedData;
+    }
+
+    // No cache, load from network
     final results = await Future.wait([_loadIndex(), _loadOVA()]);
     return results[0];
   }
 
+  /// Loads fresh data in background and updates state.
+  Future<void> _loadFreshDataInBackground() async {
+    try {
+      final results = await Future.wait([_loadIndex(saveToCache: true), _loadOVA(saveToCache: true)]);
+      setIfMounted(ref, AsyncValue.data(results[0].copyWith(isFromCache: false)));
+    } catch (e) {
+      // Silently ignore background refresh errors - we already have cached data
+    }
+  }
+
+  /// Selects a bangumi row for display.
   void selectBangumiRow(BangumiRow? value) {
     final currentData = state.value;
     if (currentData != null) {
@@ -75,14 +110,16 @@ class Index extends _$Index {
     }
   }
 
+  /// Refreshes all index data.
   Future<void> refresh() async {
     final newState = await AsyncValue.guard(() async {
-      final results = await Future.wait([_loadIndex(), _loadOVA()]);
-      return results[0];
+      final results = await Future.wait([_loadIndex(saveToCache: true), _loadOVA(saveToCache: true)]);
+      return results[0].copyWith(isFromCache: false);
     });
     setIfMounted(ref, newState);
   }
 
+  /// Selects a specific season and loads its data.
   Future<void> selectSeason(Season season) async {
     final currentState = state.value;
     if (currentState == null) {
@@ -97,7 +134,7 @@ class Index extends _$Index {
       final bangumiRows = await MikanApi.season(season.year, season.season);
 
       if (currentToken != _requestToken) {
-        throw Exception('Request cancelled by newer request');
+        throw StateError('Request cancelled by newer request');
       }
 
       final latestState = state.value ?? currentState;
@@ -109,21 +146,33 @@ class Index extends _$Index {
     }
   }
 
-  Future<IndexData> _loadIndex() async {
+  Future<IndexData> _loadIndex({bool saveToCache = false}) async {
     final index = await MikanApi.index();
     final currentData = state.value ?? const IndexData();
+
+    // Save to cache if requested
+    if (saveToCache) {
+      unawaited(MyHive.saveIndexCache(index));
+    }
+
     return _buildIndexData(index, currentData.ovas);
   }
 
-  Future<IndexData> _loadOVA() async {
+  Future<IndexData> _loadOVA({bool saveToCache = false}) async {
     final data = await MikanApi.day(-1, -1);
     final currentData = state.value ?? const IndexData();
+
+    // Save to cache if requested
+    if (saveToCache) {
+      unawaited(MyHive.saveOvaCache(data));
+    }
+
     return currentData.copyWith(ovas: data);
   }
 
-  IndexData _buildIndexData(model.Index? index, List<RecordItem> ovas) {
+  IndexData _buildIndexData(model.Index? index, List<RecordItem> ovas, {bool isFromCache = false}) {
     if (index == null) {
-      return IndexData(ovas: ovas);
+      return IndexData(ovas: ovas, isFromCache: isFromCache);
     }
 
     Season? selectedSeason;
@@ -147,6 +196,7 @@ class Index extends _$Index {
       announcements: index.announcements,
       selectedSeason: selectedSeason,
       ovas: ovas,
+      isFromCache: isFromCache,
     );
   }
 }
