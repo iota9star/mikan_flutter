@@ -67,19 +67,18 @@ class MikanApi {
 
   /// Convert Map<dynamic, dynamic> to Map<String, dynamic> recursively
   static Map<String, dynamic> _convertMap(Map<dynamic, dynamic> map) {
-    final result = <String, dynamic>{};
-    for (final entry in map.entries) {
-      final key = entry.key.toString();
-      final value = entry.value;
+    return map.map((key, value) {
+      final stringKey = key.toString();
+      final dynamic convertedValue;
       if (value is Map) {
-        result[key] = _convertMap(value);
+        convertedValue = _convertMap(value);
       } else if (value is List) {
-        result[key] = _convertList(value);
+        convertedValue = _convertList(value);
       } else {
-        result[key] = value;
+        convertedValue = value;
       }
-    }
-    return result;
+      return MapEntry(stringKey, convertedValue);
+    });
   }
 
   /// Convert List<dynamic> with nested maps
