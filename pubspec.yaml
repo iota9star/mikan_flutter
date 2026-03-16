@@ -1,7 +1,7 @@
 name: mikan
 description: mikanani.me
 
-version: 2.2.0+90
+version: 2.2.1+91
 
 publish_to: none
 
@@ -20,7 +20,7 @@ dependencies:
   path_provider: ^2.1.5
   hive_ce: ^2.16.0
   hive_ce_flutter: ^2.0.0
-  clipboard: ^3.0.8
+  clipboard: ^3.0.14
   url_launcher: ^6.3.1
   share_plus: ^12.0.1
   flutter_widget_from_html_core: ^0.17.0
@@ -91,4 +91,3 @@ flutter_gen:
     flutter_svg: true
     rive: true
     lottie: true
-
