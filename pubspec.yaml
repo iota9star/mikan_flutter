@@ -54,7 +54,7 @@ dependencies:
   flutter_hooks: ^0.21.3+1
   riverpod_annotation: ^4.0.0
   hooks_riverpod: ^3.1.0
-  fjs: ^2.0.1
+  fjs: ^2.1.0
   riverpod: ^3.1.0
   f_limit: ^1.1.0
 
@@ -91,4 +91,3 @@ flutter_gen:
     flutter_svg: true
     rive: true
     lottie: true
-

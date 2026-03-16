@@ -18,6 +18,7 @@ import {
 } from './types.js';
 import {
   trim,
+  isBlank,
   formatPublishAt,
   parseTagsAndTitle,
   getWeekSectionName,
@@ -26,6 +27,10 @@ import {
 class MikanApi {
   private static readonly MIRROR_URL_KEY = 'MIRROR_URL';
   private static readonly BASE_URLS = ['https://mikanime.tv', 'https://mikanani.me'];
+  private static readonly REQUEST_TIMEOUT_MS = 15000;
+  private static readonly USER_AGENT =
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
+    '(KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 MikanProject/1.0.0';
 
   private baseUrl: string = MikanApi.BASE_URLS[MikanApi.BASE_URLS.length - 1];
 
@@ -150,86 +155,179 @@ class MikanApi {
     await this.bridgeCall('clearCookies', { domain });
   }
 
-  async login(email: string, password: string, returnUrl = ''): Promise<string> {
-    const loginUrl = `${this.baseUrl}/Account/Login`;
-    const html = await this.fetchHtml(loginUrl);
-    const $ = cheerio.load(html);
-    const token = this.parseRefreshLoginToken($);
+  async logout(): Promise<void> {
+    const html = await this.fetchHtml(this.baseUrl);
+    const $ = this.ensureAuthPageAvailable(html, '退出登录');
+    const token = trim(
+      $('#logoutForm input[name=__RequestVerificationToken], #mobileLogoutForm input[name=__RequestVerificationToken], #login input[name=__RequestVerificationToken]')
+        .first()
+        .attr('value') || ''
+    );
+    if (!token) {
+      return;
+    }
 
-    const params = new URLSearchParams({
-      UserName: email,
-      Password: password,
-      RememberMe: 'true',
-      __RequestVerificationToken: token || ''
-    });
-    if (returnUrl) params.append('ReturnUrl', returnUrl);
-
-    const cookies = await this.loadCookiesForUrl(this.baseUrl);
+    const logoutUrl = `${this.baseUrl}/Account/Logout`;
+    const cookies = await this.loadCookiesForUrl(logoutUrl);
     const headers: Record<string, string> = {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': MikanApi.USER_AGENT,
+      'Referer': this.baseUrl,
+      'Origin': this.baseUrl
     };
     if (cookies) {
       headers['Cookie'] = cookies;
     }
 
-    const response = await fetch(`${this.baseUrl}/Account/Login`, {
+    const response = await this.fetchWithTimeout(logoutUrl, {
+      method: 'POST',
+      headers,
+      body: new URLSearchParams({
+        __RequestVerificationToken: token
+      }).toString(),
+      redirect: 'manual'
+    });
+
+    await this.saveCookiesFromResponse(response, logoutUrl);
+    await this.readResponseHtml(response);
+  }
+
+  async login(userName: string, password: string, returnUrl = ''): Promise<string> {
+    const loginUrl = `${this.baseUrl}/Account/Login`;
+    const html = await this.fetchHtml(loginUrl);
+    const $ = this.ensureAuthPageAvailable(html, '登录');
+    const loginForm = this.resolveLoginForm($);
+    const token = trim(loginForm.find('input[name=__RequestVerificationToken]').first().attr('value') || '') || this.parseRefreshLoginToken($);
+    const action = trim(loginForm.attr('action') || '');
+    const postUrl = this.resolveRedirectUrl(action || '/Account/Login');
+
+    const params = new URLSearchParams();
+    params.append('UserName', userName);
+    params.append('Password', password);
+    params.append('RememberMe', 'true');
+    params.append('RememberMe', 'false');
+    params.append('__RequestVerificationToken', token || '');
+    if (returnUrl) params.append('ReturnUrl', returnUrl);
+
+    const cookies = await this.loadCookiesForUrl(postUrl);
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': MikanApi.USER_AGENT,
+      'Referer': loginUrl,
+      'Origin': this.baseUrl
+    };
+    if (cookies) {
+      headers['Cookie'] = cookies;
+    }
+
+    const response = await this.fetchWithTimeout(postUrl, {
       method: 'POST',
       headers,
       body: params.toString(),
       redirect: 'manual'
     });
 
-    await this.saveCookiesFromResponse(response, this.baseUrl);
+    await this.saveCookiesFromResponse(response, postUrl);
 
     if (response.status === 302 || response.status === 301) {
       const location = response.headers.get('location');
       if (location) {
         const redirectUrl = location.startsWith('http') ? location : `${this.baseUrl}${location}`;
-        await this.fetchHtml(redirectUrl);
+        return await this.fetchHtml(redirectUrl);
       }
     }
 
-    return await response.text();
+    const responseHtml = await response.text();
+    this.validateLoginResponse(responseHtml);
+    return responseHtml;
   }
 
-  async register(email: string, password: string, confirmPassword: string): Promise<string> {
+  async register(
+    userName: string,
+    email: string,
+    password: string,
+    confirmPassword: string,
+    qq = ''
+  ): Promise<string> {
     const registerUrl = `${this.baseUrl}/Account/Register`;
     const html = await this.fetchHtml(registerUrl);
-    const $ = cheerio.load(html);
+    const $ = this.ensureAuthPageAvailable(html, '注册');
     const token = this.parseRefreshRegisterToken($);
+    if (!token) {
+      throw new Error('注册页面令牌获取失败，请稍后重试');
+    }
 
     const params = new URLSearchParams({
+      UserName: userName,
       Email: email,
       Password: password,
       ConfirmPassword: confirmPassword,
       __RequestVerificationToken: token || ''
     });
+    if (!isBlank(qq)) {
+      params.append('QQ', qq);
+    }
 
-    const response = await fetch(registerUrl, {
+    const cookies = await this.loadCookiesForUrl(registerUrl);
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': MikanApi.USER_AGENT,
+      'Referer': registerUrl,
+      'Origin': this.baseUrl
+    };
+    if (cookies) {
+      headers['Cookie'] = cookies;
+    }
+
+    const response = await this.fetchWithTimeout(registerUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
+      headers,
+      body: params.toString(),
+      redirect: 'manual'
     });
-    return await response.text();
+    await this.saveCookiesFromResponse(response, registerUrl);
+
+    const responseHtml = await this.readResponseHtml(response);
+    this.validateRegisterResponse(responseHtml);
+    return responseHtml;
   }
 
   async forgotPassword(email: string): Promise<string> {
     const forgotUrl = `${this.baseUrl}/Account/ForgotPassword`;
     const html = await this.fetchHtml(forgotUrl);
-    const $ = cheerio.load(html);
+    const $ = this.ensureAuthPageAvailable(html, '找回密码');
     const token = this.parseRefreshForgotPasswordToken($);
+    if (!token) {
+      throw new Error('找回密码页面令牌获取失败，请稍后重试');
+    }
 
     const params = new URLSearchParams({
       Email: email,
       __RequestVerificationToken: token || ''
     });
 
-    const response = await fetch(forgotUrl, {
+    const cookies = await this.loadCookiesForUrl(forgotUrl);
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': MikanApi.USER_AGENT,
+      'Referer': forgotUrl,
+      'Origin': this.baseUrl
+    };
+    if (cookies) {
+      headers['Cookie'] = cookies;
+    }
+
+    const response = await this.fetchWithTimeout(forgotUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
+      headers,
+      body: params.toString(),
+      redirect: 'manual'
     });
-    return await response.text();
+    await this.saveCookiesFromResponse(response, forgotUrl);
+
+    const responseHtml = await this.readResponseHtml(response);
+    this.validateForgotPasswordResponse(responseHtml);
+    return responseHtml;
   }
 
   async subscribeBangumi(bangumiId: string, subtitleGroupId?: string): Promise<string> {
@@ -248,7 +346,7 @@ class MikanApi {
       headers['Cookie'] = cookies;
     }
 
-    const response = await fetch(`${this.baseUrl}/Home/SubscribeBangumi`, {
+    const response = await this.fetchWithTimeout(`${this.baseUrl}/Home/SubscribeBangumi`, {
       method: 'POST',
       headers,
       body: JSON.stringify(data)
@@ -273,7 +371,7 @@ class MikanApi {
       headers['Cookie'] = cookies;
     }
 
-    const response = await fetch(`${this.baseUrl}/Home/UnsubscribeBangumi`, {
+    const response = await this.fetchWithTimeout(`${this.baseUrl}/Home/UnsubscribeBangumi`, {
       method: 'POST',
       headers,
       body: JSON.stringify(data)
@@ -447,7 +545,11 @@ class MikanApi {
   }
 
   parseRefreshLoginToken($: cheerio.CheerioAPI): string | null {
-    return trim($('#login input[name=__RequestVerificationToken]').attr('value') || '') || null;
+    return trim(
+      $('#loginForm input[name=__RequestVerificationToken], #mobileLoginForm input[name=__RequestVerificationToken], #login input[name=__RequestVerificationToken], form[action*="/Account/Login"] input[name=__RequestVerificationToken]')
+        .first()
+        .attr('value') || ''
+    ) || null;
   }
 
   parseRefreshRegisterToken($: cheerio.CheerioAPI): string | null {
@@ -986,6 +1088,126 @@ class MikanApi {
 
   // ==================== Helper Methods ====================
 
+  private normalizeText(text: string): string {
+    return trim(text.replace(/\s+/g, ' '));
+  }
+
+  private isChallengePage($: cheerio.CheerioAPI): boolean {
+    const title = this.normalizeText($('title').first().text() || '');
+    const bodyText = this.normalizeText($('body').text() || '');
+    return title.includes('Just a moment') || bodyText.includes('Enable JavaScript and cookies to continue');
+  }
+
+  private ensureAuthPageAvailable(html: string, actionLabel: string): cheerio.CheerioAPI {
+    const $ = cheerio.load(html);
+    if (this.isChallengePage($)) {
+      throw new Error(`${actionLabel}请求被站点验证拦截，请稍后重试`);
+    }
+    return $;
+  }
+
+  private collectAuthMessages($: cheerio.CheerioAPI): string[] {
+    const selectors = [
+      '.validation-summary-errors li',
+      '.validation-summary-errors',
+      '.field-validation-error',
+      '.text-danger',
+      '.js-login-error',
+      '.m-login-error'
+    ];
+    const messages: string[] = [];
+
+    for (const selector of selectors) {
+      $(selector).each((_, ele) => {
+        const text = this.normalizeText($(ele).text() || '');
+        if (text) {
+          messages.push(text);
+        }
+      });
+    }
+
+    return Array.from(new Set(messages));
+  }
+
+  private buildAuthErrorMessage($: cheerio.CheerioAPI, fallback: string): string {
+    const messages = this.collectAuthMessages($);
+    return messages[0] || fallback;
+  }
+
+  private resolveLoginForm($: cheerio.CheerioAPI): cheerio.Cheerio<any> {
+    const forms = [
+      $('form[action*="/Account/Login?ReturnUrl="]').first(),
+      $('#loginForm').first(),
+      $('#login').first(),
+      $('#mobileLoginForm').first(),
+      $('form[action*="/Account/Login"]').first()
+    ];
+
+    for (const form of forms) {
+      if (form.length > 0) {
+        return form;
+      }
+    }
+
+    return $('form[action*="/Account/Login"]').first();
+  }
+
+  private isLoginPage($: cheerio.CheerioAPI): boolean {
+    return ($('#login').length > 0
+      || $('#loginForm').length > 0
+      || $('#mobileLoginForm').length > 0
+      || $('form[action*="/Account/Login"]').length > 0)
+      && $('input[name="UserName"]').length > 0
+      && $('input[name="Password"]').length > 0;
+  }
+
+  private isRegisterPage($: cheerio.CheerioAPI): boolean {
+    return ($('#registerForm').length > 0 || $('form[action*="/Account/Register"]').length > 0)
+      && $('input[name="UserName"]').length > 0
+      && $('input[name="Email"]').length > 0
+      && $('input[name="ConfirmPassword"]').length > 0;
+  }
+
+  private isForgotPasswordPage($: cheerio.CheerioAPI): boolean {
+    return $('form[action*="/Account/ForgotPassword"]').length > 0
+      && $('input[name="Email"]').length > 0;
+  }
+
+  private validateLoginResponse(html: string): void {
+    const $ = this.ensureAuthPageAvailable(html, '登录');
+    if (this.isLoginPage($)) {
+      throw new Error(this.buildAuthErrorMessage($, '登录失败，请检查账号或密码'));
+    }
+  }
+
+  private validateRegisterResponse(html: string): void {
+    const $ = this.ensureAuthPageAvailable(html, '注册');
+    if (this.isRegisterPage($)) {
+      throw new Error(this.buildAuthErrorMessage($, '注册失败，请检查输入信息'));
+    }
+  }
+
+  private validateForgotPasswordResponse(html: string): void {
+    const $ = this.ensureAuthPageAvailable(html, '找回密码');
+    if (this.isForgotPasswordPage($)) {
+      throw new Error(this.buildAuthErrorMessage($, '提交失败，请确认邮箱是否正确'));
+    }
+  }
+
+  private resolveRedirectUrl(location: string | null): string {
+    if (!location) {
+      return this.baseUrl;
+    }
+    return location.startsWith('http') ? location : `${this.baseUrl}${location}`;
+  }
+
+  private async readResponseHtml(response: Response): Promise<string> {
+    if (response.status >= 300 && response.status < 400) {
+      return this.fetchHtml(this.resolveRedirectUrl(response.headers.get('location')));
+    }
+    return await response.text();
+  }
+
   private async bridgeCall(action: string, data?: any): Promise<any> {
     try {
       // @ts-ignore - fjs is available at runtime
@@ -1042,7 +1264,7 @@ class MikanApi {
 
   async release(): Promise<any> {
     const url = 'https://api.github.com/repos/iota9star/mikan_flutter/releases/latest';
-    const response = await fetch(url, {
+    const response = await this.fetchWithTimeout(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 MikanProject/1.0.0',
         'Accept': 'application/vnd.github.v3+json'
@@ -1053,7 +1275,7 @@ class MikanApi {
 
   async fonts(): Promise<any> {
     const url = 'https://fonts.bytex.space/fonts-manifest.json';
-    const response = await fetch(url, {
+    const response = await this.fetchWithTimeout(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 MikanProject/1.0.0',
         'Accept': 'application/json'
@@ -1073,12 +1295,35 @@ class MikanApi {
       headers['Cookie'] = cookies;
     }
 
-    const response = await fetch(url, { headers });
+    const response = await this.fetchWithTimeout(url, { headers });
 
     // Save cookies from response
     await this.saveCookiesFromResponse(response, url);
 
     return await response.text();
+  }
+
+  private async fetchWithTimeout(
+    input: string,
+    init: RequestInit = {},
+    timeoutMs = MikanApi.REQUEST_TIMEOUT_MS
+  ): Promise<Response> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      return await fetch(input, {
+        ...init,
+        signal: controller.signal
+      });
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error(`请求超时，请稍后重试`);
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
 }
 

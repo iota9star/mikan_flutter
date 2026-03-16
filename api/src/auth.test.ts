@@ -79,6 +79,48 @@ describe('MikanApi - Authentication Methods', () => {
       expect(token).toMatch(/^[A-Za-z0-9_-]+$/);
     });
   });
+
+  describe('resolveLoginForm', () => {
+    it('should prefer the form action that preserves ReturnUrl', () => {
+      const $ = cheerio.load(loginHtml);
+      const form = (MikanApi as any)['resolveLoginForm']($);
+
+      expect(form.attr('action')).toContain('/Account/Login?ReturnUrl=');
+    });
+  });
+
+  describe('validateLoginResponse', () => {
+    it('should surface js-login-error messages from failed login pages', () => {
+      const html = `
+        <html>
+          <body>
+            <form id="loginForm" action="/Account/Login" method="post">
+              <input name="UserName" />
+              <input name="Password" />
+              <input name="__RequestVerificationToken" value="token" />
+            </form>
+            <p class="js-login-error">登录失败，请重试.</p>
+          </body>
+        </html>
+      `;
+
+      expect(() => (MikanApi as any)['validateLoginResponse'](html)).toThrow(/登录失败，请重试/);
+    });
+
+    it('should not throw for non-login pages', () => {
+      const html = `
+        <html>
+          <body>
+            <div id="user-name">
+              <div class="text-right">test-user</div>
+            </div>
+          </body>
+        </html>
+      `;
+
+      expect(() => (MikanApi as any)['validateLoginResponse'](html)).not.toThrow();
+    });
+  });
 });
 
 describe('MikanApi - Authentication Integration', () => {
@@ -100,17 +142,17 @@ describe('MikanApi - Authentication Integration', () => {
       expect(typeof MikanApi.register).toBe('function');
     });
 
-    it('should accept email, password, and confirmPassword', () => {
+    it('should accept userName, email, password, and confirmPassword', () => {
       const api = MikanApi;
       expect(async () => {
-        await api.register('test@example.com', 'password123', 'password123');
+        await api.register('testUser', 'test@example.com', 'password123', 'password123');
       }).toBeDefined();
     });
 
     it('should require matching passwords', () => {
       const api = MikanApi;
       expect(async () => {
-        await api.register('test@example.com', 'password123', 'password456');
+        await api.register('testUser', 'test@example.com', 'password123', 'password456');
       }).toBeDefined();
     });
   });

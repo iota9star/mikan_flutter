@@ -11,8 +11,8 @@ analyzer:
   exclude:
     - lib/**.g.dart
     - lib/**.freezed.dart
-    - lib/mikan_route.dart
-    - lib/mikan_routes.dart
+    - lib/app/routing/mikan_route.dart
+    - lib/app/routing/mikan_routes.dart
 
 formatter:
   page_width: 120
@@ -88,6 +88,9 @@ linter:
 
     # conflicts with `prefer_relative_imports`
     always_use_package_imports: false
+    prefer_relative_imports: false
+    directives_ordering: false
+    use_setters_to_change_properties: false
 
     # Disabled for now until we have NNBD as it otherwise conflicts with `missing_return`
     no_default_cases: false

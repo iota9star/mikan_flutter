@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatf
 ///
 /// Example:
 /// ```dart
-/// import 'firebase_options.dart';
+/// import 'package:mikan/firebase_options.dart';
 /// // ...
 /// await Firebase.initializeApp(
 ///   options: DefaultFirebaseOptions.currentPlatform,
