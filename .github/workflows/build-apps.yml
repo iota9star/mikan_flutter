@@ -169,7 +169,7 @@ jobs:
         env:
           MACOS_APP_RELEASE_PATH: build/macos/Build/Products/Release
         run: |
-          flutter config --enable-macos-desktop
+          flutter config --enable-macos-desktop --no-enable-swift-package-manager
           flutter pub get
           flutter build macos --release --tree-shake-icons
           brew install create-dmg
@@ -198,6 +198,7 @@ jobs:
       - name: Build iOS
         run: |
           cp -f pubspec.yaml assets/
+          flutter config --no-enable-swift-package-manager
           flutter pub get
           flutter build ios --release --tree-shake-icons --no-codesign
           mkdir -p Payload
