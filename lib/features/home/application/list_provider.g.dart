@@ -12,7 +12,8 @@ part of 'list_provider.dart';
 @ProviderFor(ListNotifier)
 final listProvider = ListNotifierProvider._();
 
-final class ListNotifierProvider extends $AsyncNotifierProvider<ListNotifier, ListData> {
+final class ListNotifierProvider
+    extends $AsyncNotifierProvider<ListNotifier, ListData> {
   ListNotifierProvider._()
     : super(
         from: null,
@@ -32,13 +33,13 @@ final class ListNotifierProvider extends $AsyncNotifierProvider<ListNotifier, Li
   ListNotifier create() => ListNotifier();
 }
 
-String _$listNotifierHash() => r'58a63b682482963419040dfceff3418a016a073a';
+String _$listNotifierHash() => r'84bd2370c860d2e3a5b56cbf8d4e94b999d689de';
 
 abstract class _$ListNotifier extends $AsyncNotifier<ListData> {
   FutureOr<ListData> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<ListData>, ListData>;
     final element =
         ref.element
@@ -48,6 +49,6 @@ abstract class _$ListNotifier extends $AsyncNotifier<ListData> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

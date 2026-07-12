@@ -2,7 +2,7 @@
 // Do not modify
 // Check in to version control
 
-import 'package:hive_ce/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 import 'package:mikan/core/models/announcement.dart';
 import 'package:mikan/core/models/bangumi.dart';
 import 'package:mikan/core/models/bangumi_row.dart';

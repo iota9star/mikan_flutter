@@ -14,9 +14,33 @@ on:
   push:
     tags:
       - v*
+
 jobs:
+  check-api-stale:
+    name: Check API JS Freshness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify api.js is up to date
+        run: |
+          cd api
+          pnpm install --frozen-lockfile
+          pnpm build
+          if ! git diff --quiet -- ../assets/js/api.js; then
+            echo "::error::api.js is stale. Run 'cd api && pnpm build' and commit the result."
+            git diff -- ../assets/js/api.js
+            exit 1
+          fi
+
   build-apks-and-linux-app:
     name: Release Apks/LinuxApp
+    needs: check-api-stale
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +49,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build API JS
+        run: cd api && pnpm install --frozen-lockfile && pnpm build
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
@@ -78,9 +110,18 @@ jobs:
 
   build-windows-app:
     name: Release Windows
+    needs: check-api-stale
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build API JS
+        run: cd api && pnpm install --frozen-lockfile && pnpm build
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
@@ -92,6 +133,8 @@ jobs:
           flutter pub get
           flutter config --enable-windows-desktop
           flutter build windows --release --tree-shake-icons
+      - name: Package windows artifacts
+        run: |
           Compress-Archive -Path build/windows/x64/runner/Release/* mikan-windows-x64.zip -Force
           & "${env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" windows_inno_setup.iss
       - name: Release build
@@ -103,10 +146,19 @@ jobs:
           tag: ${{ github.event.inputs.TAG }}
 
   build-macos-app:
-    name: Release MacOS
+    name: Release MacOS/iOS
+    needs: check-api-stale
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build API JS
+        run: cd api && pnpm install --frozen-lockfile && pnpm build
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:

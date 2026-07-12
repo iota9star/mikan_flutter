@@ -12,7 +12,8 @@ part of 'search_provider.dart';
 @ProviderFor(SearchKeywords)
 final searchKeywordsProvider = SearchKeywordsProvider._();
 
-final class SearchKeywordsProvider extends $NotifierProvider<SearchKeywords, String?> {
+final class SearchKeywordsProvider
+    extends $NotifierProvider<SearchKeywords, String?> {
   SearchKeywordsProvider._()
     : super(
         from: null,
@@ -33,7 +34,10 @@ final class SearchKeywordsProvider extends $NotifierProvider<SearchKeywords, Str
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String?>(value),
+    );
   }
 }
 
@@ -43,17 +47,25 @@ abstract class _$SearchKeywords extends $Notifier<String?> {
   String? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String?, String?>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<String?, String?>, String?, Object?, Object?>;
-    element.handleCreate(ref, build);
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String?, String?>,
+              String?,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(SearchSubgroupId)
 final searchSubgroupIdProvider = SearchSubgroupIdProvider._();
 
-final class SearchSubgroupIdProvider extends $NotifierProvider<SearchSubgroupId, String?> {
+final class SearchSubgroupIdProvider
+    extends $NotifierProvider<SearchSubgroupId, String?> {
   SearchSubgroupIdProvider._()
     : super(
         from: null,
@@ -74,7 +86,10 @@ final class SearchSubgroupIdProvider extends $NotifierProvider<SearchSubgroupId,
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String?>(value),
+    );
   }
 }
 
@@ -84,17 +99,30 @@ abstract class _$SearchSubgroupId extends $Notifier<String?> {
   String? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String?, String?>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<String?, String?>, String?, Object?, Object?>;
-    element.handleCreate(ref, build);
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String?, String?>,
+              String?,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(search)
 final searchProvider = SearchProvider._();
 
-final class SearchProvider extends $FunctionalProvider<AsyncValue<SearchResult>, SearchResult, FutureOr<SearchResult>>
+final class SearchProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SearchResult>,
+          SearchResult,
+          FutureOr<SearchResult>
+        >
     with $FutureModifier<SearchResult>, $FutureProvider<SearchResult> {
   SearchProvider._()
     : super(
@@ -112,7 +140,9 @@ final class SearchProvider extends $FunctionalProvider<AsyncValue<SearchResult>,
 
   @$internal
   @override
-  $FutureProviderElement<SearchResult> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+  $FutureProviderElement<SearchResult> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SearchResult> create(Ref ref) {
@@ -120,4 +150,4 @@ final class SearchProvider extends $FunctionalProvider<AsyncValue<SearchResult>,
   }
 }
 
-String _$searchHash() => r'5ae1c1900479e41d8c3e6583ec6132cf18ae2bf7';
+String _$searchHash() => r'bdb5c8f0c84d009b4f00caa25cc93189be53bcf6';

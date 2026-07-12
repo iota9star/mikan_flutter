@@ -273,7 +273,7 @@ class _SubgroupList extends ConsumerWidget {
                     subgroup.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelLarge!.copyWith(
+                    style: theme.textTheme.labelLarge?.copyWith(
                       color: selected ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.onSurfaceVariant,
                     ),
                   ),

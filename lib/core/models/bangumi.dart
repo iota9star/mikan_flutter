@@ -7,7 +7,7 @@ part 'bangumi.g.dart';
 @HiveType(typeId: MyHive.mikanBangumi)
 class Bangumi extends HiveObject {
   @HiveField(0)
-  late String id;
+  late String id = '';
 
   @HiveField(1)
   late String updateAt = '';
@@ -16,16 +16,18 @@ class Bangumi extends HiveObject {
   int? num;
 
   @HiveField(3)
-  late String name;
+  late String name = '';
 
   @HiveField(4)
-  late String cover;
+  late String cover = '';
 
   @HiveField(5)
   late bool subscribed = false;
 
   @HiveField(6)
   late bool grey = false;
+
+  // field 7 removed
 
   @HiveField(8)
   late String week = '';

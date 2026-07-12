@@ -13,6 +13,7 @@ import 'package:mikan/core/common/kit.dart';
 import 'package:mikan/core/common/lifecycle.dart';
 import 'package:mikan/features/settings/application/update_service.dart';
 import 'package:mikan/core/widgets/md3_navigation_bar.dart';
+import 'package:mikan/core/widgets/lazy_indexed_stack.dart';
 import 'package:mikan/core/widgets/transition_container.dart';
 import 'package:mikan/features/search/presentation/pages/search.dart';
 import 'package:mikan/features/home/presentation/widgets/index.dart';
@@ -32,8 +33,8 @@ class HomePage extends HookConsumerWidget {
       return null;
     }, []);
 
-    final body = IndexedStack(
-      index: selectedIndex.value,
+    final body = LazyIndexedStack(
+      selectedIndex: selectedIndex.value,
       children: const [ListFragment(), IndexFragment(), SubscribedFragment()],
     );
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'fonts.dart';
+part of 'fonts_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -33,21 +33,30 @@ final class FontsProvider extends $NotifierProvider<Fonts, FontsState> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(FontsState value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<FontsState>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<FontsState>(value),
+    );
   }
 }
 
-String _$fontsHash() => r'008b7297d8001e1d11905dfccde6e2044322f636';
+String _$fontsHash() => r'a9b0ea3d5e076b0082424b60624845601203968f';
 
 abstract class _$Fonts extends $Notifier<FontsState> {
   FontsState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<FontsState, FontsState>;
     final element =
-        ref.element as $ClassProviderElement<AnyNotifier<FontsState, FontsState>, FontsState, Object?, Object?>;
-    element.handleCreate(ref, build);
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<FontsState, FontsState>,
+              FontsState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -55,16 +64,23 @@ abstract class _$Fonts extends $Notifier<FontsState> {
 final fontProgressProvider = FontProgressFamily._();
 
 final class FontProgressProvider
-    extends $FunctionalProvider<ProgressChunkEvent?, ProgressChunkEvent?, ProgressChunkEvent?>
+    extends
+        $FunctionalProvider<
+          ProgressChunkEvent?,
+          ProgressChunkEvent?,
+          ProgressChunkEvent?
+        >
     with $Provider<ProgressChunkEvent?> {
-  FontProgressProvider._({required FontProgressFamily super.from, required String super.argument})
-    : super(
-        retry: null,
-        name: r'fontProgressProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  FontProgressProvider._({
+    required FontProgressFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'fontProgressProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$fontProgressHash();
@@ -78,7 +94,9 @@ final class FontProgressProvider
 
   @$internal
   @override
-  $ProviderElement<ProgressChunkEvent?> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+  $ProviderElement<ProgressChunkEvent?> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   ProgressChunkEvent? create(Ref ref) {
@@ -88,7 +106,10 @@ final class FontProgressProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ProgressChunkEvent? value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<ProgressChunkEvent?>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ProgressChunkEvent?>(value),
+    );
   }
 
   @override
@@ -104,7 +125,8 @@ final class FontProgressProvider
 
 String _$fontProgressHash() => r'02ef3df2aade14778cc9948e609783b3ca41fecb';
 
-final class FontProgressFamily extends $Family with $FunctionalFamilyOverride<ProgressChunkEvent?, String> {
+final class FontProgressFamily extends $Family
+    with $FunctionalFamilyOverride<ProgressChunkEvent?, String> {
   FontProgressFamily._()
     : super(
         retry: null,
@@ -114,7 +136,8 @@ final class FontProgressFamily extends $Family with $FunctionalFamilyOverride<Pr
         isAutoDispose: true,
       );
 
-  FontProgressProvider call(String fontId) => FontProgressProvider._(argument: fontId, from: this);
+  FontProgressProvider call(String fontId) =>
+      FontProgressProvider._(argument: fontId, from: this);
 
   @override
   String toString() => r'fontProgressProvider';
@@ -123,7 +146,9 @@ final class FontProgressFamily extends $Family with $FunctionalFamilyOverride<Pr
 @ProviderFor(usedFontFamilyId)
 final usedFontFamilyIdProvider = UsedFontFamilyIdProvider._();
 
-final class UsedFontFamilyIdProvider extends $FunctionalProvider<String?, String?, String?> with $Provider<String?> {
+final class UsedFontFamilyIdProvider
+    extends $FunctionalProvider<String?, String?, String?>
+    with $Provider<String?> {
   UsedFontFamilyIdProvider._()
     : super(
         from: null,
@@ -140,7 +165,8 @@ final class UsedFontFamilyIdProvider extends $FunctionalProvider<String?, String
 
   @$internal
   @override
-  $ProviderElement<String?> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+  $ProviderElement<String?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
   String? create(Ref ref) {
@@ -149,7 +175,10 @@ final class UsedFontFamilyIdProvider extends $FunctionalProvider<String?, String
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String?>(value),
+    );
   }
 }
 

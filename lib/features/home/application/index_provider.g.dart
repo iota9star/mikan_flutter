@@ -32,13 +32,13 @@ final class IndexProvider extends $AsyncNotifierProvider<Index, IndexData> {
   Index create() => Index();
 }
 
-String _$indexHash() => r'1b491b5c583cd2cb41c5bcf3e78e25eef4400f01';
+String _$indexHash() => r'47b80010df5bf6b3deeab85aee5594413b658681';
 
 abstract class _$Index extends $AsyncNotifier<IndexData> {
   FutureOr<IndexData> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<IndexData>, IndexData>;
     final element =
         ref.element
@@ -48,14 +48,16 @@ abstract class _$Index extends $AsyncNotifier<IndexData> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(selectedSeason)
 final selectedSeasonProvider = SelectedSeasonProvider._();
 
-final class SelectedSeasonProvider extends $FunctionalProvider<Season?, Season?, Season?> with $Provider<Season?> {
+final class SelectedSeasonProvider
+    extends $FunctionalProvider<Season?, Season?, Season?>
+    with $Provider<Season?> {
   SelectedSeasonProvider._()
     : super(
         from: null,
@@ -72,7 +74,8 @@ final class SelectedSeasonProvider extends $FunctionalProvider<Season?, Season?,
 
   @$internal
   @override
-  $ProviderElement<Season?> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+  $ProviderElement<Season?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
   Season? create(Ref ref) {
@@ -81,7 +84,10 @@ final class SelectedSeasonProvider extends $FunctionalProvider<Season?, Season?,
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Season? value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Season?>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Season?>(value),
+    );
   }
 }
 
@@ -90,7 +96,13 @@ String _$selectedSeasonHash() => r'92fc08f3c6f8e24e218be4c80ea1a686164d7f5f';
 @ProviderFor(years)
 final yearsProvider = YearsProvider._();
 
-final class YearsProvider extends $FunctionalProvider<List<YearSeason>, List<YearSeason>, List<YearSeason>>
+final class YearsProvider
+    extends
+        $FunctionalProvider<
+          List<YearSeason>,
+          List<YearSeason>,
+          List<YearSeason>
+        >
     with $Provider<List<YearSeason>> {
   YearsProvider._()
     : super(
@@ -108,7 +120,8 @@ final class YearsProvider extends $FunctionalProvider<List<YearSeason>, List<Yea
 
   @$internal
   @override
-  $ProviderElement<List<YearSeason>> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+  $ProviderElement<List<YearSeason>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
   List<YearSeason> create(Ref ref) {
@@ -117,7 +130,10 @@ final class YearsProvider extends $FunctionalProvider<List<YearSeason>, List<Yea
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<YearSeason> value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<List<YearSeason>>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<YearSeason>>(value),
+    );
   }
 }
 

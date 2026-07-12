@@ -31,8 +31,11 @@ class MikanApi {
   static bool _initialized = false;
   static bool _bindingsInitialized = false;
   static const _callTimeout = Duration(seconds: 15);
+  static const _maxRetries = 2;
   static Future<void>? _bindingsInitFuture;
   static Future<void>? _engineInitFuture;
+  static int _activeOperations = 0;
+  static Future<void> _resetLock = Future<void>.value();
 
   static bool get isInitialized => _initialized;
 
@@ -75,17 +78,16 @@ class MikanApi {
   }
 
   static Future<void> _initEngine() async {
+    JsEngine? engine;
     try {
       await _ensureBindingsInitialized();
       final api = await rootBundle.load('assets/js/api.js');
 
-      final runtime = await JsAsyncRuntime.withOptions(
-        builtin: const JsBuiltinOptions(abort: true, console: true, fetch: true, timers: true, url: true),
-        additional: [JsModule(name: 'mikan', source: JsCode.bytes(api.buffer.asUint8List()))],
+      engine = await JsEngine.create(
+        builtins: const JsBuiltinOptions(abort: true, console: true, fetch: true, timers: true, url: true),
+        modules: [JsModule(name: 'mikan', source: JsCode.bytes(api.buffer.asUint8List()))],
       );
-
-      final context = await JsAsyncContext.from(runtime: runtime);
-      _engine = JsEngine(context: context);
+      _engine = engine;
       await _engine.init(
         bridge: (v) async {
           try {
@@ -98,6 +100,13 @@ class MikanApi {
       );
       _initialized = true;
     } catch (e, stackTrace) {
+      // If the engine was created but init failed, close it to avoid leaking
+      // a native QuickJS runtime across retries.
+      if (engine != null) {
+        try {
+          await engine.close();
+        } catch (_) {}
+      }
       Log.e(error: e, stackTrace: stackTrace, msg: 'MikanApi.initEngine failed');
       rethrow;
     } finally {
@@ -149,8 +158,8 @@ class MikanApi {
         case 'saveCookie':
           final domain = data['domain']?.toString();
           final cookie = data['cookie'];
-          if (cookie is Map<String, dynamic>) {
-            await _saveCookie(domain!, cookie);
+          if (domain != null && cookie is Map<String, dynamic>) {
+            await _saveCookie(domain, cookie);
           }
           return null;
         case 'saveCookieHeader':
@@ -198,9 +207,11 @@ class MikanApi {
   }
 
   static Future<void> _saveCookie(String domain, Map<String, dynamic> cookie) async {
-    final cookies = Map<String, dynamic>.from(MyHive.getCookies(domain));
-    cookies[cookie['name'] as String] = cookie;
-    await MyHive.saveCookies(domain, cookies);
+    final name = cookie['name']?.toString();
+    if (name == null || name.isEmpty) {
+      return;
+    }
+    await MyHive.saveCookie(domain, name, cookie);
   }
 
   static List<Map<String, dynamic>> _getCookies(String domain) {
@@ -210,6 +221,15 @@ class MikanApi {
   }
 
   static Future<T> _call<T>(String method, [List<Object?>? args]) async {
+    _activeOperations++;
+    try {
+      return await _callWithRetry<T>(method, args);
+    } finally {
+      _activeOperations--;
+    }
+  }
+
+  static Future<T> _callWithRetry<T>(String method, List<Object?>? args, {int attempt = 0}) async {
     try {
       await init();
 
@@ -228,12 +248,38 @@ class MikanApi {
       final result = await _engine.eval(source: JsCode.code(code)).timeout(_callTimeout);
       return result.value as T;
     } on TimeoutException catch (e, stackTrace) {
-      await _resetEngine();
-      Log.e(error: e, stackTrace: stackTrace, msg: 'MikanApi.$method timed out');
+      if (attempt < _maxRetries) {
+        Log.w('MikanApi.$method timed out, retrying (${attempt + 1}/$_maxRetries)');
+        await Future.delayed(Duration(seconds: attempt + 1));
+        return _callWithRetry<T>(method, args, attempt: attempt + 1);
+      }
+      // Final timeout — only reset engine if no other operations in-flight.
+      // Serialized via _resetLock to prevent concurrent resets racing on a
+      // shared late _engine reference.
+      if (_activeOperations <= 1) {
+        await _safelyResetEngine();
+      }
+      Log.e(error: e, stackTrace: stackTrace, msg: 'MikanApi.$method timed out after retries');
       rethrow;
     } catch (e, stackTrace) {
       Log.e(error: e, stackTrace: stackTrace, msg: 'MikanApi.$method failed');
       rethrow;
+    }
+  }
+
+  /// Serializes engine resets so that two concurrent timeouts cannot both
+  /// close the engine or leave a window where eval targets a closing engine.
+  static Future<void> _safelyResetEngine() async {
+    final previous = _resetLock;
+    final completer = Completer<void>();
+    _resetLock = completer.future;
+    await previous;
+    try {
+      if (_initialized) {
+        await _resetEngine();
+      }
+    } finally {
+      completer.complete();
     }
   }
 
@@ -243,7 +289,7 @@ class MikanApi {
     }
 
     try {
-      await _engine.dispose();
+      await _engine.close();
     } catch (e, stackTrace) {
       Log.e(error: e, stackTrace: stackTrace, msg: 'MikanApi.resetEngine failed');
     } finally {
@@ -253,14 +299,23 @@ class MikanApi {
 
   // ==================== Converters ====================
 
+  /// Safely converts a JSON map to `Map<String, String>`, coercing values to
+  /// strings and skipping nulls. Avoids `TypeError` on unexpected value types.
+  static Map<String, String> _parseStringMap(Object? raw) {
+    if (raw is! Map) {
+      return {};
+    }
+    return raw.map((k, v) => MapEntry(k.toString(), v?.toString() ?? ''));
+  }
+
   static Index _parseIndex(Map<String, dynamic> json) {
     return Index(
-      years: (json['years'] as List).map((e) => _parseYearSeason(e as Map<String, dynamic>)).toList(),
-      bangumiRows: (json['bangumiRows'] as List).map((e) => _parseBangumiRow(e as Map<String, dynamic>)).toList(),
-      rss: Map.from(json['rss'] as Map).map(
-        (k, v) => MapEntry(k as String, (v as List).map((e) => _parseRecordItem(e as Map<String, dynamic>)).toList()),
+      years: (json['years'] as List? ?? []).map((e) => _parseYearSeason(e as Map<String, dynamic>)).toList(),
+      bangumiRows: (json['bangumiRows'] as List? ?? []).map((e) => _parseBangumiRow(e as Map<String, dynamic>)).toList(),
+      rss: (json['rss'] as Map? ?? {}).map(
+        (k, v) => MapEntry(k.toString(), (v as List).map((e) => _parseRecordItem(e as Map<String, dynamic>)).toList()),
       ),
-      carousels: (json['carousels'] as List).map((e) => _parseCarousel(e as Map<String, dynamic>)).toList(),
+      carousels: (json['carousels'] as List? ?? []).map((e) => _parseCarousel(e as Map<String, dynamic>)).toList(),
       user: json['user'] != null ? _parseUser(json['user'] as Map<String, dynamic>) : null,
       announcements: json['announcements'] != null
           ? (json['announcements'] as List).map((e) => _parseAnnouncement(e as Map<String, dynamic>)).toList()
@@ -341,8 +396,8 @@ class MikanApi {
 
   static BangumiDetail _parseBangumiDetail(Map<String, dynamic> json) {
     final subgroupBangumis = <String, SubgroupBangumi>{};
-    (json['subgroupBangumis'] as Map<String, dynamic>).forEach((key, value) {
-      subgroupBangumis[key] = _parseSubgroupBangumi(value as Map<String, dynamic>);
+    (json['subgroupBangumis'] as Map?)?.forEach((key, value) {
+      subgroupBangumis[key.toString()] = _parseSubgroupBangumi(value as Map<String, dynamic>);
     });
     return BangumiDetail()
       ..id = json['id'] as String
@@ -350,7 +405,7 @@ class MikanApi {
       ..name = json['name'] as String
       ..intro = json['intro'] as String
       ..subscribed = json['subscribed'] as bool
-      ..more = Map<String, String>.from(json['more'] as Map)
+      ..more = _parseStringMap(json['more'])
       ..subgroupBangumis = subgroupBangumis;
   }
 
@@ -410,7 +465,7 @@ class MikanApi {
       ..title = json['title'] as String? ?? ''
       ..tags = (json['tags'] as List?)?.map((e) => e as String).toList() ?? []
       ..subscribed = json['subscribed'] as bool? ?? false
-      ..more = Map<String, String>.from(json['more'] as Map? ?? {})
+      ..more = _parseStringMap(json['more'] ?? {})
       ..intro = json['intro'] as String? ?? ''
       ..torrent = json['torrent'] as String? ?? ''
       ..magnet = json['magnet'] as String? ?? '';
@@ -521,7 +576,8 @@ class MikanApi {
   }
 
   static Future<List<RecordItem>> ova() async {
-    return _call('ova');
+    final result = await _call<List>('ova');
+    return result.map((e) => _parseRecordItem(e as Map<String, dynamic>)).toList();
   }
 
   // NEVER CALL THIS METHOD OUTSIDE!!!

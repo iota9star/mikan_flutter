@@ -14,16 +14,19 @@ part of 'recent_subscribed_provider.dart';
 final recentSubscribedProvider = RecentSubscribedFamily._();
 
 /// Recent subscribed provider - manages subscription data with AsyncValue
-final class RecentSubscribedProvider extends $AsyncNotifierProvider<RecentSubscribed, RecentSubscribedState> {
+final class RecentSubscribedProvider
+    extends $AsyncNotifierProvider<RecentSubscribed, RecentSubscribedState> {
   /// Recent subscribed provider - manages subscription data with AsyncValue
-  RecentSubscribedProvider._({required RecentSubscribedFamily super.from, required List<RecordItem> super.argument})
-    : super(
-        retry: null,
-        name: r'recentSubscribedProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  RecentSubscribedProvider._({
+    required RecentSubscribedFamily super.from,
+    required List<RecordItem> super.argument,
+  }) : super(
+         retry: null,
+         name: r'recentSubscribedProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$recentSubscribedHash();
@@ -50,7 +53,7 @@ final class RecentSubscribedProvider extends $AsyncNotifierProvider<RecentSubscr
   }
 }
 
-String _$recentSubscribedHash() => r'3a68f72b66236e99834b6c937645c7f21306f119';
+String _$recentSubscribedHash() => r'd9c18140ef3524dda102e90f0970d2861a60c6b8';
 
 /// Recent subscribed provider - manages subscription data with AsyncValue
 
@@ -74,7 +77,8 @@ final class RecentSubscribedFamily extends $Family
 
   /// Recent subscribed provider - manages subscription data with AsyncValue
 
-  RecentSubscribedProvider call(List<RecordItem> records) => RecentSubscribedProvider._(argument: records, from: this);
+  RecentSubscribedProvider call(List<RecordItem> records) =>
+      RecentSubscribedProvider._(argument: records, from: this);
 
   @override
   String toString() => r'recentSubscribedProvider';
@@ -82,23 +86,29 @@ final class RecentSubscribedFamily extends $Family
 
 /// Recent subscribed provider - manages subscription data with AsyncValue
 
-abstract class _$RecentSubscribed extends $AsyncNotifier<RecentSubscribedState> {
+abstract class _$RecentSubscribed
+    extends $AsyncNotifier<RecentSubscribedState> {
   late final _$args = ref.$arg as List<RecordItem>;
   List<RecordItem> get records => _$args;
 
   FutureOr<RecentSubscribedState> build(List<RecordItem> records);
   @$mustCallSuper
   @override
-  void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<RecentSubscribedState>, RecentSubscribedState>;
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<RecentSubscribedState>, RecentSubscribedState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<RecentSubscribedState>, RecentSubscribedState>,
+              AnyNotifier<
+                AsyncValue<RecentSubscribedState>,
+                RecentSubscribedState
+              >,
               AsyncValue<RecentSubscribedState>,
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

@@ -1,4 +1,4 @@
-MACOSX_DEPLOYMENT_TARGET = '13.5'
+MACOSX_DEPLOYMENT_TARGET = '15.0'
 platform :osx, MACOSX_DEPLOYMENT_TARGET
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.

@@ -8,9 +8,9 @@ part 'year_season.g.dart';
 @HiveType(typeId: MyHive.mikanYearSeason)
 class YearSeason extends HiveObject {
   @HiveField(0)
-  late String year;
+  late String year = '';
   @HiveField(1)
-  late List<Season> seasons;
+  late List<Season> seasons = [];
 
   @override
   bool operator ==(Object other) =>

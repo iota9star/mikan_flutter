@@ -9,9 +9,9 @@ class Announcement extends HiveObject {
   Announcement({required this.date, required this.nodes});
 
   @HiveField(0)
-  late String date;
+  late String date = '';
   @HiveField(1)
-  late List<AnnouncementNode> nodes;
+  late List<AnnouncementNode> nodes = [];
 
   late final text = () {
     final sb = StringBuffer()

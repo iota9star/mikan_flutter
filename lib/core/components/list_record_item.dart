@@ -78,7 +78,7 @@ class ListRecordItem extends ConsumerWidget {
                                       alignment: AlignmentDirectional.center,
                                       padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                       child: AutoSizeText(
-                                        subgroups.map((e) => e.name[0].toUpperCase()).join(),
+                                        subgroups.map((e) => e.name.isNotEmpty ? e.name[0].toUpperCase() : '?').join(),
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           color: theme.colorScheme.onPrimaryContainer,
@@ -111,7 +111,7 @@ class ListRecordItem extends ConsumerWidget {
                               ),
                             );
                           },
-                          next: SubgroupPage(subgroup: subgroups.first),
+                          next: subgroups.isEmpty ? const SizedBox.shrink() : SubgroupPage(subgroup: subgroups.first),
                         ),
                       ),
                     ),
@@ -139,7 +139,7 @@ class ListRecordItem extends ConsumerWidget {
                         ),
                         child: Text(
                           record.size,
-                          style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSecondaryContainer),
+                          style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSecondaryContainer),
                         ),
                       ),
                     if (!record.tags.isNullOrEmpty)
@@ -152,7 +152,7 @@ class ListRecordItem extends ConsumerWidget {
                           ),
                           child: Text(
                             record.tags[index],
-                            style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onTertiaryContainer),
+                            style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onTertiaryContainer),
                           ),
                         );
                       }),

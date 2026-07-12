@@ -8,25 +8,25 @@ part 'bangumi_row.g.dart';
 @HiveType(typeId: MyHive.mikanBangumiRow)
 class BangumiRow extends HiveObject {
   @HiveField(0)
-  late String name;
+  late String name = '';
 
   @HiveField(1)
-  late String sname;
+  late String sname = '';
 
   @HiveField(2)
-  late int num;
+  late int num = 0;
 
   @HiveField(3)
-  late int updatedNum;
+  late int updatedNum = 0;
 
   @HiveField(4)
-  late int subscribedNum;
+  late int subscribedNum = 0;
 
   @HiveField(5)
-  late int subscribedUpdatedNum;
+  late int subscribedUpdatedNum = 0;
 
   @HiveField(6)
-  late List<Bangumi> bangumis;
+  late List<Bangumi> bangumis = [];
 
   @override
   bool operator ==(Object other) =>

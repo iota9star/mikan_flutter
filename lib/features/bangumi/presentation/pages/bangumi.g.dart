@@ -13,14 +13,16 @@ part of 'bangumi.dart';
 final bangumiProvider = BangumiFamily._();
 
 final class BangumiProvider extends $NotifierProvider<Bangumi, BangumiState> {
-  BangumiProvider._({required BangumiFamily super.from, required (String, String) super.argument})
-    : super(
-        retry: null,
-        name: r'bangumiProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  BangumiProvider._({
+    required BangumiFamily super.from,
+    required (String, String) super.argument,
+  }) : super(
+         retry: null,
+         name: r'bangumiProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$bangumiHash();
@@ -38,7 +40,10 @@ final class BangumiProvider extends $NotifierProvider<Bangumi, BangumiState> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(BangumiState value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<BangumiState>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<BangumiState>(value),
+    );
   }
 
   @override
@@ -52,10 +57,17 @@ final class BangumiProvider extends $NotifierProvider<Bangumi, BangumiState> {
   }
 }
 
-String _$bangumiHash() => r'5f2b319279705c84792096fc01f12676e56f2a90';
+String _$bangumiHash() => r'a22f4fc0559e10fd0ba0eade4acdcd985518aac5';
 
 final class BangumiFamily extends $Family
-    with $ClassFamilyOverride<Bangumi, BangumiState, BangumiState, BangumiState, (String, String)> {
+    with
+        $ClassFamilyOverride<
+          Bangumi,
+          BangumiState,
+          BangumiState,
+          BangumiState,
+          (String, String)
+        > {
   BangumiFamily._()
     : super(
         retry: null,
@@ -65,7 +77,8 @@ final class BangumiFamily extends $Family
         isAutoDispose: true,
       );
 
-  BangumiProvider call(String id, String cover) => BangumiProvider._(argument: (id, cover), from: this);
+  BangumiProvider call(String id, String cover) =>
+      BangumiProvider._(argument: (id, cover), from: this);
 
   @override
   String toString() => r'bangumiProvider';
@@ -79,10 +92,16 @@ abstract class _$Bangumi extends $Notifier<BangumiState> {
   BangumiState build(String id, String cover);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<BangumiState, BangumiState>;
     final element =
-        ref.element as $ClassProviderElement<AnyNotifier<BangumiState, BangumiState>, BangumiState, Object?, Object?>;
-    element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<BangumiState, BangumiState>,
+              BangumiState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
   }
 }

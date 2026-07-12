@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -26,6 +24,7 @@ import 'package:mikan/core/models/season_gallery.dart';
 import 'package:mikan/core/models/year_season.dart';
 import 'package:mikan/core/components/simple_record_item.dart' show currentRecordProvider;
 import 'package:mikan/core/widgets/scalable_tap.dart';
+import 'package:mikan/core/widgets/carousel_timer.dart';
 import 'package:mikan/core/widgets/sliver_pinned_header.dart';
 import 'package:mikan/core/widgets/transition_container.dart';
 import 'package:mikan/core/components/rss_record_item.dart';
@@ -43,14 +42,17 @@ class SubscribedFragment extends ConsumerStatefulWidget {
 
 class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with WidgetsBindingObserver {
   final _infiniteScrollController = InfiniteScrollController();
-
-  Timer? _timer;
+  late final CarouselTimerHelper _carouselTimer;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _newTimer();
+    _carouselTimer = CarouselTimerHelper(
+      controller: _infiniteScrollController,
+      itemExtent: 280.0,
+    );
+    _carouselTimer.start();
   }
 
   @override
@@ -62,7 +64,7 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
 
     switch (state) {
       case AppLifecycleState.resumed:
-        _newTimer();
+        _carouselTimer.start();
         ref.invalidate(recentRecordsProvider);
         ref.invalidate(subscribedBangumisProvider);
         ref.invalidate(subscribedSeasonProvider);
@@ -70,29 +72,16 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
-        _timer?.cancel();
+        _carouselTimer.stop();
     }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _carouselTimer.dispose();
     _infiniteScrollController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  void _newTimer() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(milliseconds: 3600), (_) {
-      if (_infiniteScrollController.hasClients) {
-        _infiniteScrollController.animateToItem(
-          (_infiniteScrollController.offset / 280.0).round() + 1,
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
   }
 
   @override
@@ -112,7 +101,10 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
             physics: physics,
             slivers: [
               const _PinedHeader(),
-              _RssSlivers(controller: _infiniteScrollController),
+              NotificationListener<UserScrollNotification>(
+                onNotification: _carouselTimer.handleScrollNotification,
+                child: _RssSlivers(controller: _infiniteScrollController),
+              ),
               const _SeasonSlivers(),
               const _RecordsSlivers(),
               const _SeeMoreButton(),

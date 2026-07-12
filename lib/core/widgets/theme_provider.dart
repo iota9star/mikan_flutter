@@ -26,6 +26,9 @@ base class _ThemeProviderState extends LifecycleAppState<ThemeProvider> {
 
   void _tryGetDynamicColor() {
     getDynamicColorScheme().then((value) {
+      if (!mounted) {
+        return;
+      }
       _colorSchemePair.value = value;
       if (MyHive.isDynamicColorEnabled() && value == null) {
         MyHive.setDynamicColorEnabled(false);

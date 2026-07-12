@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -53,6 +54,22 @@ class MyHive {
 
   static late final String cookiesDir;
 
+  /// Per-domain serialization locks for cookie read-modify-write cycles.
+  /// Prevents concurrent writes from dropping each other's cookies.
+  static final Map<String, Future<void>> _cookieLocks = {};
+
+  static Future<T> _withCookieLock<T>(String domain, Future<T> Function() action) {
+    final previous = _cookieLocks[domain] ?? Future<void>.value();
+    final completer = Completer<void>();
+    _cookieLocks[domain] = completer.future;
+    return previous.then((_) => action()).whenComplete(() {
+      if (_cookieLocks[domain] == completer.future) {
+        _cookieLocks.remove(domain);
+      }
+      completer.complete();
+    });
+  }
+
   static const int KB = 1024;
   static const int MB = 1024 * KB;
   static const int GB = 1024 * MB;
@@ -73,26 +90,31 @@ class MyHive {
     await db.put('${HiveBoxKey.cookies}_$domain', cookies);
   }
 
+  /// Atomically merges a single cookie into the store under a per-domain lock,
+  /// preventing concurrent writes from dropping each other's cookies.
+  static Future<void> saveCookie(String domain, String name, Map<String, dynamic> cookie) async {
+    await _withCookieLock(domain, () async {
+      final cookies = getCookies(domain);
+      cookies[name] = cookie;
+      await saveCookies(domain, cookies);
+    });
+  }
+
   static Map<String, dynamic> getCookies(String domain) {
     final cookies = db.get('${HiveBoxKey.cookies}_$domain', defaultValue: <String, dynamic>{});
 
-    // Clean up any corrupted cookie entries (not Maps)
+    // Clean up any corrupted cookie entries (not Maps) in-memory. Persisting
+    // the cleanup is handled by the next write through the serialization lock,
+    // avoiding a fire-and-forget write that races with concurrent saves.
     final cleaned = <String, dynamic>{};
-    bool needsCleanup = false;
 
     cookies.forEach((key, value) {
       // Accept both Map<String, dynamic> and Map<dynamic, dynamic>
       if (value is Map) {
         // Convert to Map<String, dynamic>
         cleaned[key as String] = Map<String, dynamic>.from(value);
-      } else {
-        needsCleanup = true;
       }
     });
-
-    if (needsCleanup) {
-      saveCookies(domain, cleaned);
-    }
 
     return cleaned;
   }
@@ -132,38 +154,40 @@ class MyHive {
   }
 
   static Future<void> saveCookieFromSetCookieHeader(String domain, String setCookieHeader) async {
-    final cookie = Cookie.fromSetCookieValue(setCookieHeader);
-    final cookies = getCookies(domain);
+    await _withCookieLock(domain, () async {
+      final cookie = Cookie.fromSetCookieValue(setCookieHeader);
+      final cookies = getCookies(domain);
 
-    // Convert Cookie to Map for storage
-    final cookieMap = <String, dynamic>{'name': cookie.name, 'value': cookie.value};
-    if (cookie.expires != null) {
-      cookieMap['expires'] = cookie.expires!.toIso8601String();
-    }
-    if (cookie.maxAge != null) {
-      cookieMap['maxAge'] = cookie.maxAge;
-    }
-    if (cookie.domain != null) {
-      cookieMap['domain'] = cookie.domain;
-    }
-    if (cookie.path != null) {
-      cookieMap['path'] = cookie.path;
-    }
-    if (cookie.secure) {
-      cookieMap['secure'] = true;
-    }
-    if (cookie.httpOnly) {
-      cookieMap['httpOnly'] = true;
-    }
+      // Convert Cookie to Map for storage
+      final cookieMap = <String, dynamic>{'name': cookie.name, 'value': cookie.value};
+      if (cookie.expires != null) {
+        cookieMap['expires'] = cookie.expires!.toIso8601String();
+      }
+      if (cookie.maxAge != null) {
+        cookieMap['maxAge'] = cookie.maxAge;
+      }
+      if (cookie.domain != null) {
+        cookieMap['domain'] = cookie.domain;
+      }
+      if (cookie.path != null) {
+        cookieMap['path'] = cookie.path;
+      }
+      if (cookie.secure) {
+        cookieMap['secure'] = true;
+      }
+      if (cookie.httpOnly) {
+        cookieMap['httpOnly'] = true;
+      }
 
-    // Parse SameSite attribute manually (not supported by Dart's Cookie class)
-    final sameSiteMatch = RegExp(r'samesite\s*=\s*([a-zA-Z]+)', caseSensitive: false).firstMatch(setCookieHeader);
-    if (sameSiteMatch != null) {
-      cookieMap['sameSite'] = sameSiteMatch.group(1);
-    }
+      // Parse SameSite attribute manually (not supported by Dart's Cookie class)
+      final sameSiteMatch = RegExp(r'samesite\s*=\s*([a-zA-Z]+)', caseSensitive: false).firstMatch(setCookieHeader);
+      if (sameSiteMatch != null) {
+        cookieMap['sameSite'] = sameSiteMatch.group(1);
+      }
 
-    cookies[cookie.name] = cookieMap;
-    await saveCookies(domain, cookies);
+      cookies[cookie.name] = cookieMap;
+      await saveCookies(domain, cookies);
+    });
   }
 
   static Future<void> removeCookies() async {
@@ -221,10 +245,15 @@ class MyHive {
 
   static MapEntry<String, String>? getFontFamily() {
     final map = settings.get(SettingsHiveKey.fontFamily);
-    if (map == null) {
+    if (map is! Map) {
       return null;
     }
-    return MapEntry(map['name'], map['fontFamily']);
+    final name = map['name'];
+    final fontFamily = map['fontFamily'];
+    if (name is! String || fontFamily is! String) {
+      return null;
+    }
+    return MapEntry(name, fontFamily);
   }
 
   static int getColorSeed() {

@@ -320,7 +320,7 @@ class _BangumiPageState extends ConsumerState<BangumiPage> {
                   e.value.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelLarge!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                 ),
               ),
             ),

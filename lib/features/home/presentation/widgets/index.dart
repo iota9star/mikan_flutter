@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:easy_refresh/easy_refresh.dart';
@@ -23,6 +22,7 @@ import 'package:mikan/core/widgets/bottom_sheet.dart';
 import 'package:mikan/core/widgets/ripple_tap.dart';
 import 'package:mikan/core/widgets/sliver_pinned_header.dart';
 import 'package:mikan/core/widgets/transition_container.dart';
+import 'package:mikan/core/widgets/carousel_timer.dart';
 import 'package:mikan/core/common/app_layout.dart';
 import 'package:mikan/features/bangumi/presentation/pages/bangumi.dart';
 import 'package:mikan/features/search/presentation/pages/search.dart';
@@ -37,49 +37,41 @@ class IndexFragment extends ConsumerStatefulWidget {
 
 class _IndexFragmentState extends ConsumerState<IndexFragment> with WidgetsBindingObserver {
   final _infiniteScrollController = InfiniteScrollController();
-
-  Timer? _timer;
+  late final CarouselTimerHelper _carouselTimer;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _newTimer();
+    _carouselTimer = CarouselTimerHelper(
+      controller: _infiniteScrollController,
+      itemExtent: 300.0,
+    );
+    _carouselTimer.start();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) {
+      return;
+    }
     switch (state) {
       case AppLifecycleState.resumed:
-        _newTimer();
+        _carouselTimer.start();
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
-        _timer?.cancel();
+        _carouselTimer.stop();
     }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _carouselTimer.dispose();
     _infiniteScrollController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  void _newTimer() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(milliseconds: 3600), (timer) {
-      if (!_infiniteScrollController.hasClients) {
-        return;
-      }
-      _infiniteScrollController.animateToItem(
-        (_infiniteScrollController.offset / 300.0).round() + 1,
-        duration: const Duration(milliseconds: 800),
-        curve: Curves.easeInOut,
-      );
-    });
   }
 
   @override
@@ -103,7 +95,10 @@ class _IndexFragmentState extends ConsumerState<IndexFragment> with WidgetsBindi
                 physics: physics,
                 slivers: [
                   const _PinedHeader(),
-                  _CarouselSection(indexData: indexData, controller: _infiniteScrollController),
+                  NotificationListener<UserScrollNotification>(
+                    onNotification: _carouselTimer.handleScrollNotification,
+                    child: _CarouselSection(indexData: indexData, controller: _infiniteScrollController),
+                  ),
                   ..._buildBangumiRowsSlivers(indexData.bangumiRows),
                   _OVASection(indexData: indexData),
                   sliverGapH120WithNavBarHeight(context),

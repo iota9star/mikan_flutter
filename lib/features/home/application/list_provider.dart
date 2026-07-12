@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:mikan/core/api/mikan_api.dart';
@@ -76,23 +77,39 @@ class ListNotifier extends _$ListNotifier {
   }
 
   /// Load more records (pagination)
-  Future<void> loadMore() async {
+  Future<IndicatorResult> loadMore() async {
     final currentPage = state.value?.page ?? 0;
     final hasReachedEnd = state.value?.hasReachedEnd ?? false;
 
     if (hasReachedEnd) {
-      return;
+      return IndicatorResult.noMore;
     }
 
-    final newState = await AsyncValue.guard(() async {
-      final newRecords = await MikanApi.list(currentPage + 1);
-      final currentRecords = state.value?.records ?? [];
-      final updatedRecords = [...currentRecords, ...newRecords];
+    // Guard against concurrent loadMore triggers (fast scroll).
+    if (_isLoadingMore) {
+      return IndicatorResult.none;
+    }
+    _isLoadingMore = true;
 
-      return ListData(page: currentPage + 1, records: updatedRecords, hasReachedEnd: newRecords.isEmpty);
-    });
-    setIfMounted(ref, newState);
+    try {
+      final newState = await AsyncValue.guard(() async {
+        final newRecords = await MikanApi.list(currentPage + 1);
+        final currentRecords = state.value?.records ?? [];
+        final updatedRecords = [...currentRecords, ...newRecords];
+
+        return ListData(page: currentPage + 1, records: updatedRecords, hasReachedEnd: newRecords.isEmpty);
+      });
+      setIfMounted(ref, newState);
+
+      return newState.hasError
+          ? IndicatorResult.fail
+          : (newState.requireValue.hasReachedEnd ? IndicatorResult.noMore : IndicatorResult.success);
+    } finally {
+      _isLoadingMore = false;
+    }
   }
+
+  bool _isLoadingMore = false;
 
   /// Refresh and reset to first page
   Future<RefreshResult> refresh() async {
@@ -130,6 +147,11 @@ class ListNotifier extends _$ListNotifier {
   }
 
   List<RecordItem> _mergeRecords(List<RecordItem> freshRecords, List<RecordItem> existingRecords) {
-    return {...freshRecords, ...existingRecords}.toList();
+    // Fresh data takes priority on duplicate URLs. Set-spread keeps the *existing*
+    // object for equal elements, which would discard fresh metadata updates, so we
+    // prefer fresh records explicitly and only keep existing records whose URL is
+    // absent from the fresh set.
+    final freshUrls = {for (final r in freshRecords) r.url};
+    return [...freshRecords, ...existingRecords.where((r) => !freshUrls.contains(r.url))];
   }
 }

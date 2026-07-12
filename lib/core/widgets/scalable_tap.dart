@@ -174,7 +174,7 @@ class ScalableTap extends StatefulWidget {
 }
 
 class _ScalableTapState extends State<ScalableTap> {
-  late DateTime _clickTime;
+  DateTime? _clickTime;
 
   final _originalTransform = Matrix4.identity();
 
@@ -212,7 +212,11 @@ class _ScalableTapState extends State<ScalableTap> {
   }
 
   Future<void> _scaleEnd() async {
-    final diff = DateTime.now().difference(_clickTime);
+    final clickTime = _clickTime;
+    if (clickTime == null) {
+      return;
+    }
+    final diff = DateTime.now().difference(clickTime);
     if (diff < widget.animationDuration) {
       await Future.delayed(widget.animationDuration - diff);
     }

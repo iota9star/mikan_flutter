@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
-import 'package:clipboard/clipboard.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:mikan/core/common/extension.dart';
@@ -16,7 +16,7 @@ class LauncherHelper {
       return '内容为空，取消操作'.toast();
     }
 
-    await FlutterClipboard.copy(url);
+    await Clipboard.setData(ClipboardData(text: url));
 
     if (Platform.isAndroid) {
       unawaited(

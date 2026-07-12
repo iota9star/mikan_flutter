@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:jiffy/jiffy.dart';
+import 'package:hora/hora.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:mikan/core/api/mikan_api.dart';
@@ -95,7 +95,7 @@ class UpdateService {
       }
       final hasNewVersion = _compareVersions(lastVersion, version) > 0;
       if (hasNewVersion) {
-        await Jiffy.setLocale('zh_cn');
+        Hora.globalLocale = const HoraLocaleZhCn();
         if (context.mounted) {
           unawaited(MBottomSheet.show(context, (ctx) => MBottomSheet(child: _buildUpgradeWidget(ctx, releaseData))));
         }
@@ -163,7 +163,7 @@ class UpdateService {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item['name']),
+                Text(item['name'].toString()),
                 const Gap(8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
@@ -173,7 +173,7 @@ class UpdateService {
                   ),
                   child: Text(
                     _parseArchLabel(item['name']),
-                    style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onPrimaryContainer),
+                    style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onPrimaryContainer),
                   ),
                 ),
               ],
@@ -195,7 +195,10 @@ class UpdateService {
   }
 
   static Widget _buildVersionHeader(BuildContext context, Map<String, dynamic> release, ThemeData theme) {
-    final jiffy = Jiffy.parse(release['published_at'])..add(hours: 8);
+    final publishedAt = release['published_at']?.toString();
+    final hora = publishedAt == null
+        ? null
+        : Hora.tryParse(publishedAt)?.plus(hours: 8);
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -210,11 +213,11 @@ class UpdateService {
               ),
               child: Text(
                 'New ${release["tag_name"]}',
-                style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onError),
+                style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onError),
               ),
             ),
             const Gap(4),
-            Text('发布于 ${jiffy.yMMMMEEEEdjm}', style: theme.textTheme.bodySmall),
+            Text('发布于 ${hora?.format('YYYY年M月D日 dddd Ah:mm') ?? '未知时间'}', style: theme.textTheme.bodySmall),
           ],
         ),
       ),

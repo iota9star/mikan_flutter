@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -8,6 +7,10 @@ import 'package:riverpod/riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:mikan/core/common/launcher.dart';
+
+Future<void> _copyToClipboard(String text) {
+  return Clipboard.setData(ClipboardData(text: text));
+}
 
 /// Extension for checking if a nullable collection (Map or Iterable) is null or empty.
 extension NullableMapExt<K, V> on Map<K, V>? {
@@ -42,7 +45,7 @@ extension NullableStringExt on String? {
     if (isNullOrBlank) {
       return '内容为空，取消操作'.toast();
     }
-    FlutterClipboard.copy(this!).then((_) => '已复制到剪切板'.toast());
+    _copyToClipboard(this!).then((_) => '已复制到剪切板'.toast());
   }
 
   void share() {
@@ -50,7 +53,7 @@ extension NullableStringExt on String? {
       return '内容为空，取消操作'.toast();
     }
     SharePlus.instance.share(ShareParams(text: this));
-    FlutterClipboard.copy(this!).then((_) => '尝试分享，并复制到剪切板'.toast());
+    _copyToClipboard(this!).then((_) => '尝试分享，并复制到剪切板'.toast());
   }
 }
 

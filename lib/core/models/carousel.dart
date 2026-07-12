@@ -7,10 +7,10 @@ part 'carousel.g.dart';
 @HiveType(typeId: MyHive.mikanCarousel)
 class Carousel extends HiveObject {
   @HiveField(0)
-  late String id;
+  late String id = '';
 
   @HiveField(1)
-  late String cover;
+  late String cover = '';
 
   @override
   bool operator ==(Object other) =>

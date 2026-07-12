@@ -28,7 +28,7 @@ class Md3eHeader extends Header {
     super.maxOverOffset,
     this.noMoreIcon,
   }) : super(
-         readySpringBuilder: readySpringBuilder ?? kMaterialSpringBuilder,
+         readySpringBuilder: readySpringBuilder ?? kMaterialReadySpringBuilder,
          frictionFactor: frictionFactor ?? kMaterialFrictionFactor,
          horizontalFrictionFactor: frictionFactor ?? kMaterialHorizontalFrictionFactor,
        );

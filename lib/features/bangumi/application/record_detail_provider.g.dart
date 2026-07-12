@@ -13,16 +13,23 @@ part of 'record_detail_provider.dart';
 final recordDetailProvider = RecordDetailFamily._();
 
 final class RecordDetailProvider
-    extends $FunctionalProvider<AsyncValue<RecordDetail>, RecordDetail, FutureOr<RecordDetail>>
+    extends
+        $FunctionalProvider<
+          AsyncValue<RecordDetail>,
+          RecordDetail,
+          FutureOr<RecordDetail>
+        >
     with $FutureModifier<RecordDetail>, $FutureProvider<RecordDetail> {
-  RecordDetailProvider._({required RecordDetailFamily super.from, required RecordItem super.argument})
-    : super(
-        retry: null,
-        name: r'recordDetailProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  RecordDetailProvider._({
+    required RecordDetailFamily super.from,
+    required RecordItem super.argument,
+  }) : super(
+         retry: null,
+         name: r'recordDetailProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$recordDetailHash();
@@ -36,7 +43,9 @@ final class RecordDetailProvider
 
   @$internal
   @override
-  $FutureProviderElement<RecordDetail> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+  $FutureProviderElement<RecordDetail> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<RecordDetail> create(Ref ref) {
@@ -57,7 +66,8 @@ final class RecordDetailProvider
 
 String _$recordDetailHash() => r'cddf484c0f53bce67471f1f78f327cd5abd324d3';
 
-final class RecordDetailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<RecordDetail>, RecordItem> {
+final class RecordDetailFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<RecordDetail>, RecordItem> {
   RecordDetailFamily._()
     : super(
         retry: null,
@@ -67,7 +77,8 @@ final class RecordDetailFamily extends $Family with $FunctionalFamilyOverride<Fu
         isAutoDispose: true,
       );
 
-  RecordDetailProvider call(RecordItem record) => RecordDetailProvider._(argument: record, from: this);
+  RecordDetailProvider call(RecordItem record) =>
+      RecordDetailProvider._(argument: record, from: this);
 
   @override
   String toString() => r'recordDetailProvider';

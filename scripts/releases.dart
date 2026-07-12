@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:jiffy/jiffy.dart';
+import 'package:hora/hora.dart';
 
 Future<void> main() async {
   final metaFile = File('releases/meta.json');
@@ -30,12 +30,12 @@ Future<void> main() async {
         };
       }),
     ];
-    await Jiffy.setLocale('zh_cn');
-    final jiffy = Jiffy.parse(result['published_at'])..add(hours: 8);
+    Hora.globalLocale = const HoraLocaleZhCn();
+    final hora = Hora.tryParse(result['published_at']?.toString() ?? '')?.plus(hours: 8);
     final meta = {
       'tag': result['tag_name'],
       'url': result['html_url'],
-      'publishedAt': jiffy.yMMMMEEEEdjm,
+      'publishedAt': hora?.format('YYYY年M月D日 dddd Ah:mm') ?? '',
       'zip': result['zipball_url'],
       'files': files,
     };

@@ -15,9 +15,11 @@ import 'package:mikan/core/widgets/sliver_pinned_header.dart';
 @FFRoute(name: '/license')
 @immutable
 class LicenseList extends StatelessWidget {
-  LicenseList({super.key});
+  const LicenseList({super.key});
 
-  final Future<_LicenseData> _licenses = LicenseRegistry.licenses
+  /// Parsed once per isolate and shared across all instances, so ancestor
+  /// rebuilds (theme change, keyboard open) don't re-trigger the fold.
+  static final Future<_LicenseData> _licenses = LicenseRegistry.licenses
       .fold<_LicenseData>(_LicenseData(), (_LicenseData prev, LicenseEntry license) => prev..addLicense(license))
       .then((_LicenseData licenseData) => licenseData..sortPackages());
 

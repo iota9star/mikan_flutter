@@ -3,7 +3,7 @@ import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 @FFAutoImport()
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import 'package:mikan/core/common/app_layout.dart';

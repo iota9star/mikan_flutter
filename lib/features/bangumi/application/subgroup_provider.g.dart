@@ -13,16 +13,25 @@ part of 'subgroup_provider.dart';
 final subgroupGalleriesProvider = SubgroupGalleriesFamily._();
 
 final class SubgroupGalleriesProvider
-    extends $FunctionalProvider<AsyncValue<List<SeasonGallery>>, List<SeasonGallery>, FutureOr<List<SeasonGallery>>>
-    with $FutureModifier<List<SeasonGallery>>, $FutureProvider<List<SeasonGallery>> {
-  SubgroupGalleriesProvider._({required SubgroupGalleriesFamily super.from, required Subgroup super.argument})
-    : super(
-        retry: null,
-        name: r'subgroupGalleriesProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<SeasonGallery>>,
+          List<SeasonGallery>,
+          FutureOr<List<SeasonGallery>>
+        >
+    with
+        $FutureModifier<List<SeasonGallery>>,
+        $FutureProvider<List<SeasonGallery>> {
+  SubgroupGalleriesProvider._({
+    required SubgroupGalleriesFamily super.from,
+    required Subgroup super.argument,
+  }) : super(
+         retry: null,
+         name: r'subgroupGalleriesProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$subgroupGalleriesHash();
@@ -36,8 +45,9 @@ final class SubgroupGalleriesProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<SeasonGallery>> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $FutureProviderElement<List<SeasonGallery>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<SeasonGallery>> create(Ref ref) {
@@ -69,7 +79,8 @@ final class SubgroupGalleriesFamily extends $Family
         isAutoDispose: true,
       );
 
-  SubgroupGalleriesProvider call(Subgroup subgroup) => SubgroupGalleriesProvider._(argument: subgroup, from: this);
+  SubgroupGalleriesProvider call(Subgroup subgroup) =>
+      SubgroupGalleriesProvider._(argument: subgroup, from: this);
 
   @override
   String toString() => r'subgroupGalleriesProvider';

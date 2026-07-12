@@ -23,8 +23,8 @@ class SimpleRecordItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final record = ref.watch(currentRecordProvider);
     final theme = Theme.of(context);
-    final tagStyle = theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onTertiaryContainer);
-    final sizeStyle = theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSecondaryContainer);
+    final tagStyle = theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onTertiaryContainer);
+    final sizeStyle = theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSecondaryContainer);
     final closedColor = ElevationOverlay.applySurfaceTint(theme.cardColor, theme.colorScheme.surfaceTint, 1.0);
 
     return TransitionContainer(

@@ -202,7 +202,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                               AutoSizeText(
                                 recordDetail.name,
                                 maxLines: 3,
-                                style: theme.textTheme.titleLarge!.copyWith(color: theme.colorScheme.secondary),
+                                style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
                               ),
                               const Gap(8),
                               ...recordDetail.more.entries.map(
@@ -239,7 +239,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                         ),
                         child: Text(
                           widget.record.size,
-                          style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSecondaryContainer),
+                          style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSecondaryContainer),
                         ),
                       ),
                     ...List.generate(recordDetail.tags.length, (index) {
@@ -251,7 +251,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                         ),
                         child: Text(
                           recordDetail.tags[index],
-                          style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.onTertiaryContainer),
+                          style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onTertiaryContainer),
                         ),
                       );
                     }),

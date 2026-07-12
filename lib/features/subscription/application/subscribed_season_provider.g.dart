@@ -12,7 +12,8 @@ part of 'subscribed_season_provider.dart';
 @ProviderFor(SubscribedSeason)
 final subscribedSeasonProvider = SubscribedSeasonFamily._();
 
-final class SubscribedSeasonProvider extends $NotifierProvider<SubscribedSeason, SubscribedSeasonState> {
+final class SubscribedSeasonProvider
+    extends $NotifierProvider<SubscribedSeason, SubscribedSeasonState> {
   SubscribedSeasonProvider._({
     required SubscribedSeasonFamily super.from,
     required (List<YearSeason>, List<SeasonGallery>) super.argument,
@@ -40,7 +41,10 @@ final class SubscribedSeasonProvider extends $NotifierProvider<SubscribedSeason,
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(SubscribedSeasonState value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<SubscribedSeasonState>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SubscribedSeasonState>(value),
+    );
   }
 
   @override
@@ -54,7 +58,7 @@ final class SubscribedSeasonProvider extends $NotifierProvider<SubscribedSeason,
   }
 }
 
-String _$subscribedSeasonHash() => r'c7e508779a62d530292d3878ec4cf87a1380acf2';
+String _$subscribedSeasonHash() => r'9e92b62ca52b294ee08f46dddbe7caa19028f626';
 
 final class SubscribedSeasonFamily extends $Family
     with
@@ -74,8 +78,10 @@ final class SubscribedSeasonFamily extends $Family
         isAutoDispose: true,
       );
 
-  SubscribedSeasonProvider call(List<YearSeason> years, List<SeasonGallery> galleries) =>
-      SubscribedSeasonProvider._(argument: (years, galleries), from: this);
+  SubscribedSeasonProvider call(
+    List<YearSeason> years,
+    List<SeasonGallery> galleries,
+  ) => SubscribedSeasonProvider._(argument: (years, galleries), from: this);
 
   @override
   String toString() => r'subscribedSeasonProvider';
@@ -86,10 +92,13 @@ abstract class _$SubscribedSeason extends $Notifier<SubscribedSeasonState> {
   List<YearSeason> get years => _$args.$1;
   List<SeasonGallery> get galleries => _$args.$2;
 
-  SubscribedSeasonState build(List<YearSeason> years, List<SeasonGallery> galleries);
+  SubscribedSeasonState build(
+    List<YearSeason> years,
+    List<SeasonGallery> galleries,
+  );
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<SubscribedSeasonState, SubscribedSeasonState>;
     final element =
         ref.element
@@ -99,6 +108,6 @@ abstract class _$SubscribedSeason extends $Notifier<SubscribedSeasonState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
+    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
   }
 }

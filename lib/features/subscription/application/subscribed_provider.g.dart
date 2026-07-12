@@ -13,16 +13,23 @@ part of 'subscribed_provider.dart';
 final subscribedBangumisProvider = SubscribedBangumisFamily._();
 
 final class SubscribedBangumisProvider
-    extends $FunctionalProvider<AsyncValue<List<Bangumi>>, List<Bangumi>, FutureOr<List<Bangumi>>>
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Bangumi>>,
+          List<Bangumi>,
+          FutureOr<List<Bangumi>>
+        >
     with $FutureModifier<List<Bangumi>>, $FutureProvider<List<Bangumi>> {
-  SubscribedBangumisProvider._({required SubscribedBangumisFamily super.from, required Season? super.argument})
-    : super(
-        retry: null,
-        name: r'subscribedBangumisProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  SubscribedBangumisProvider._({
+    required SubscribedBangumisFamily super.from,
+    required Season? super.argument,
+  }) : super(
+         retry: null,
+         name: r'subscribedBangumisProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$subscribedBangumisHash();
@@ -36,7 +43,9 @@ final class SubscribedBangumisProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<Bangumi>> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+  $FutureProviderElement<List<Bangumi>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<Bangumi>> create(Ref ref) {
@@ -55,9 +64,11 @@ final class SubscribedBangumisProvider
   }
 }
 
-String _$subscribedBangumisHash() => r'834477419ee0b723b0e471c222add25f26efc7d8';
+String _$subscribedBangumisHash() =>
+    r'834477419ee0b723b0e471c222add25f26efc7d8';
 
-final class SubscribedBangumisFamily extends $Family with $FunctionalFamilyOverride<FutureOr<List<Bangumi>>, Season?> {
+final class SubscribedBangumisFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<List<Bangumi>>, Season?> {
   SubscribedBangumisFamily._()
     : super(
         retry: null,
@@ -67,7 +78,8 @@ final class SubscribedBangumisFamily extends $Family with $FunctionalFamilyOverr
         isAutoDispose: true,
       );
 
-  SubscribedBangumisProvider call(Season? season) => SubscribedBangumisProvider._(argument: season, from: this);
+  SubscribedBangumisProvider call(Season? season) =>
+      SubscribedBangumisProvider._(argument: season, from: this);
 
   @override
   String toString() => r'subscribedBangumisProvider';
@@ -77,7 +89,12 @@ final class SubscribedBangumisFamily extends $Family with $FunctionalFamilyOverr
 final recentRecordsProvider = RecentRecordsProvider._();
 
 final class RecentRecordsProvider
-    extends $FunctionalProvider<AsyncValue<List<RecordItem>>, List<RecordItem>, FutureOr<List<RecordItem>>>
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<RecordItem>>,
+          List<RecordItem>,
+          FutureOr<List<RecordItem>>
+        >
     with $FutureModifier<List<RecordItem>>, $FutureProvider<List<RecordItem>> {
   RecentRecordsProvider._()
     : super(
@@ -95,7 +112,9 @@ final class RecentRecordsProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<RecordItem>> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+  $FutureProviderElement<List<RecordItem>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<RecordItem>> create(Ref ref) {
@@ -110,7 +129,11 @@ final rssRecordsProvider = RssRecordsProvider._();
 
 final class RssRecordsProvider
     extends
-        $FunctionalProvider<Map<String, List<RecordItem>>, Map<String, List<RecordItem>>, Map<String, List<RecordItem>>>
+        $FunctionalProvider<
+          Map<String, List<RecordItem>>,
+          Map<String, List<RecordItem>>,
+          Map<String, List<RecordItem>>
+        >
     with $Provider<Map<String, List<RecordItem>>> {
   RssRecordsProvider._()
     : super(
@@ -128,7 +151,9 @@ final class RssRecordsProvider
 
   @$internal
   @override
-  $ProviderElement<Map<String, List<RecordItem>>> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+  $ProviderElement<Map<String, List<RecordItem>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   Map<String, List<RecordItem>> create(Ref ref) {
@@ -137,8 +162,13 @@ final class RssRecordsProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Map<String, List<RecordItem>> value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Map<String, List<RecordItem>>>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Map<String, List<RecordItem>>>(
+        value,
+      ),
+    );
   }
 }
 
-String _$rssRecordsHash() => r'516d3a4d8461dbc859b3ad032310515a6c446a96';
+String _$rssRecordsHash() => r'9552f3cfdb07513fde6ea1546eec3de485c7288e';

@@ -27,8 +27,8 @@ class RssRecordItem extends ConsumerWidget {
       ),
       foregroundDecoration: BoxDecoration(color: theme.colorScheme.surface.withValues(alpha: 0.87)),
     );
-    final tagStyle = theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onTertiaryContainer);
-    final sizeStyle = theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSecondaryContainer);
+    final tagStyle = theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onTertiaryContainer);
+    final sizeStyle = theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSecondaryContainer);
     return TransitionContainer(
       routeSettings: const RouteSettings(name: '/record'),
       builder: (context, open) {

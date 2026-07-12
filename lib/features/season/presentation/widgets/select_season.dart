@@ -83,7 +83,7 @@ class SelectSeasonFragment extends ConsumerWidget {
                     child: Text(
                       season.season,
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.labelLarge!.copyWith(
+                      style: theme.textTheme.labelLarge?.copyWith(
                         color: selected ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
