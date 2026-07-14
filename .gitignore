@@ -42,3 +42,6 @@ pubspec.lock
 
 /api/coverage/
 /api/node_modules/
+
+# ZCode workspace
+.zcode/

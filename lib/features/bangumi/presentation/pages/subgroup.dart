@@ -31,7 +31,7 @@ class SubgroupPage extends ConsumerWidget {
         data: (galleries) {
           return EasyRefresh(
             header: defaultHeader,
-            onRefresh: () => ref.refresh(subgroupGalleriesProvider(subgroup).future),
+            onRefresh: () => refreshSubgroupGalleries(ref, subgroup),
             child: CustomScrollView(
               slivers: [
                 SliverPinnedAppBar(title: subgroup.name),

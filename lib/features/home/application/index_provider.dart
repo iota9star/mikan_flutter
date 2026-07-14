@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:kache_riverpod/kache_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:mikan/core/api/mikan_api.dart';
+import 'package:mikan/core/cache/kache_init.dart';
+import 'package:mikan/core/cache/kache_providers.dart';
 import 'package:mikan/core/common/extension.dart';
-import 'package:mikan/core/common/hive.dart';
 import 'package:mikan/core/common/log.dart';
 import 'package:mikan/core/models/announcement.dart';
 import 'package:mikan/core/models/bangumi_row.dart';
@@ -18,6 +20,28 @@ import 'package:mikan/core/models/user.dart';
 import 'package:mikan/core/models/year_season.dart';
 
 part 'index_provider.g.dart';
+
+/// SWR cache query for the main [model.Index] data.
+final _indexKacheProvider = kacheProvider.autoDispose<model.Index>(
+  client: (ref) => ref.watch(kacheClientProvider),
+  query: (_) => KacheQuery<model.Index>.persisted(
+    key: KacheKey('mikan', ['index']),
+    binding: KacheInit.indexBinding,
+    fetch: (_) => MikanApi.index(),
+    policy: KachePolicy.staleWhileRevalidate(retainDataOnError: true),
+  ),
+);
+
+/// SWR cache query for the OVA / day(-1, -1) record list.
+final _ovaKacheProvider = kacheProvider.autoDispose<List<RecordItem>>(
+  client: (ref) => ref.watch(kacheClientProvider),
+  query: (_) => KacheQuery<List<RecordItem>>.persisted(
+    key: KacheKey('mikan', ['ova']),
+    binding: KacheInit.recordListBinding,
+    fetch: (_) => MikanApi.day(-1, -1),
+    policy: KachePolicy.staleWhileRevalidate(retainDataOnError: true),
+  ),
+);
 
 class IndexData {
   const IndexData({
@@ -67,85 +91,77 @@ class IndexData {
 
 @riverpod
 class Index extends _$Index {
-  static const _refreshTimeout = Duration(seconds: 15);
-
   int _requestToken = 0;
 
   @override
   Future<IndexData> build() async {
-    // First, try to load from cache for instant UI
-    final cachedIndex = MyHive.getIndexCache();
-    final cachedOvas = MyHive.getOvaCache();
+    // Watch both kache snapshots reactively.
+    final indexSnapshot = ref.watch(_indexKacheProvider);
+    final ovaSnapshot = ref.watch(_ovaKacheProvider);
 
-    if (cachedIndex != null) {
-      final cachedData = _buildIndexData(cachedIndex, cachedOvas ?? [], isFromCache: true);
-      // Set cached data immediately
-      state = AsyncValue.data(cachedData);
+    final indexModel = indexSnapshot.dataOrNull;
+    final ovaData = ovaSnapshot.dataOrNull;
 
-      // Then fetch fresh data in background
-      unawaited(_loadFreshDataInBackground());
-      return cachedData;
+    // If we have cached index data, show it immediately (SWR).
+    if (indexModel != null) {
+      final isFromCache = indexSnapshot.source == KacheDataSource.persistence;
+      return _buildIndexData(indexModel, ovaData ?? [], isFromCache: isFromCache);
     }
 
-    // No cache, load from network
-    return _loadMergedData(saveToCache: true);
-  }
-
-  /// Loads fresh data in background and updates state.
-  Future<void> _loadFreshDataInBackground() async {
-    final currentToken = ++_requestToken;
-    final currentData = state.value;
-    final preferredSeason = currentData?.selectedSeason;
-
-    try {
-      final data = await _loadMergedData(saveToCache: true);
-      final result = _preservePreferredSeason(
-        data,
-        preferredSeason: preferredSeason,
-        fallbackBangumiRows: currentData?.bangumiRows,
-      );
-      if (currentToken == _requestToken) {
-        setIfMounted(ref, AsyncValue.data(result.data));
-        _refreshPreferredSeasonRowsInBackground(result.seasonToRefresh, requestToken: currentToken);
-      }
-    } catch (e, stackTrace) {
-      Log.e(error: e, stackTrace: stackTrace, msg: 'index background refresh failed', tag: 'IndexFlow');
-      // Silently ignore background refresh errors - we already have cached data
+    // No cached data — wait for the first load to complete.
+    if (indexSnapshot.isLoading) {
+      return const IndexData();
     }
+
+    // Load failed with no cached data.
+    if (indexSnapshot.isFailed) {
+      throw indexSnapshot.failure?.cause ?? StateError('Index load failed');
+    }
+
+    return const IndexData();
   }
 
-  /// Refreshes all index data.
+  /// Refreshes all index data from network.
   Future<IndicatorResult> refresh() async {
     final currentToken = ++_requestToken;
     final currentData = state.value;
     final preferredSeason = currentData?.selectedSeason;
 
-    final newState = await AsyncValue.guard(() async {
-      final data = await _loadMergedData(saveToCache: true).timeout(_refreshTimeout);
-      return _preservePreferredSeason(
+    try {
+      // Force refresh both kache resources in parallel.
+      final indexSnapshot = await ref.read(_indexKacheProvider.notifier).refresh().timeout(
+        const Duration(seconds: 15),
+      );
+      final ovaSnapshot = await ref.read(_ovaKacheProvider.notifier).refresh().timeout(
+        const Duration(seconds: 15),
+      );
+
+      final indexModel = indexSnapshot.dataOrNull;
+      final ovas = ovaSnapshot.dataOrNull ?? const <RecordItem>[];
+
+      if (indexModel == null) {
+        return IndicatorResult.fail;
+      }
+
+      final data = _buildIndexData(indexModel, ovas, isFromCache: false);
+      final result = _preservePreferredSeason(
         data,
         preferredSeason: preferredSeason,
         fallbackBangumiRows: currentData?.bangumiRows,
       );
-    });
 
-    if (currentToken == _requestToken) {
-      if (newState.hasValue) {
-        final result = newState.requireValue;
+      if (currentToken == _requestToken) {
         setIfMounted(ref, AsyncValue.data(result.data));
         _refreshPreferredSeasonRowsInBackground(result.seasonToRefresh, requestToken: currentToken);
-        return IndicatorResult.success;
       }
-
+      return IndicatorResult.success;
+    } catch (e, stackTrace) {
+      Log.e(error: e, stackTrace: stackTrace, msg: 'index refresh failed', tag: 'IndexFlow');
       if (currentData == null) {
-        setIfMounted(ref, AsyncValue.error(newState.error!, newState.stackTrace!));
+        setIfMounted(ref, AsyncValue.error(e, stackTrace));
       }
-      Log.e(error: newState.error, stackTrace: newState.stackTrace, msg: 'index refresh failed', tag: 'IndexFlow');
-
       return IndicatorResult.fail;
     }
-
-    return IndicatorResult.fail;
   }
 
   /// Selects a specific season and loads its data.
@@ -172,40 +188,6 @@ class Index extends _$Index {
     if (currentToken == _requestToken) {
       setIfMounted(ref, newState);
     }
-  }
-
-  Future<IndexData> _loadIndex({bool saveToCache = false}) async {
-    final index = await MikanApi.index();
-    final currentData = state.value ?? const IndexData();
-
-    // Save to cache if requested
-    if (saveToCache) {
-      unawaited(MyHive.saveIndexCache(index));
-    }
-
-    return _buildIndexData(index, currentData.ovas);
-  }
-
-  Future<IndexData> _loadOVA({bool saveToCache = false}) async {
-    final data = await MikanApi.day(-1, -1);
-    final currentData = state.value ?? const IndexData();
-
-    // Save to cache if requested
-    if (saveToCache) {
-      unawaited(MyHive.saveOvaCache(data));
-    }
-
-    return currentData.copyWith(ovas: data);
-  }
-
-  Future<IndexData> _loadMergedData({required bool saveToCache}) async {
-    final indexData = await _loadIndex(saveToCache: saveToCache);
-    final ovaData = await _loadOVA(saveToCache: saveToCache);
-    return _mergeIndexData(indexData, ovaData, isFromCache: false);
-  }
-
-  IndexData _mergeIndexData(IndexData indexData, IndexData ovaData, {bool? isFromCache}) {
-    return indexData.copyWith(ovas: ovaData.ovas, isFromCache: isFromCache ?? indexData.isFromCache);
   }
 
   _PreservedSeasonResult _preservePreferredSeason(

@@ -1,7 +1,7 @@
 name: mikan
 description: mikanani.me
 
-version: 2.3.0+92
+version: 2.3.1+93
 
 publish_to: none
 
@@ -27,7 +27,7 @@ dependencies:
   waterfall_flow: ^3.0.2
   hora: ^2.0.0
   android_intent_plus: ^6.0.0
-  connectivity_plus: ^7.2.0
+  connectivity_plus: ^6.1.5
   ff_annotation_route_core: ^2.1.1
   ff_annotation_route_library: ^3.2.3
   sliver_tools: ^0.2.12
@@ -56,6 +56,11 @@ dependencies:
   fjs: ^3.2.0
   riverpod: ^3.3.0
   f_limit: ^2.0.0
+  kache_riverpod: ^1.0.0
+  kache_hive_ce: ^1.0.0
+  kache_connectivity_plus: ^1.0.0
+  flutter_riverpod: ^3.3.2
+  kache: ^1.0.1
 
 dev_dependencies:
   args: ^2.4.1

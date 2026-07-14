@@ -32,7 +32,7 @@ final class IndexProvider extends $AsyncNotifierProvider<Index, IndexData> {
   Index create() => Index();
 }
 
-String _$indexHash() => r'47b80010df5bf6b3deeab85aee5594413b658681';
+String _$indexHash() => r'bc1abfcb256d2b5176d6fc689be20e338bb3e5f2';
 
 abstract class _$Index extends $AsyncNotifier<IndexData> {
   FutureOr<IndexData> build();

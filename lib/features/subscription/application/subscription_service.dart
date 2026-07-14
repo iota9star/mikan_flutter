@@ -36,7 +36,7 @@ Future<void> subscribeBangumi(WidgetRef ref, String bangumiId, bool subscribed, 
   });
 
   ref.invalidate(indexProvider);
-  ref.invalidate(seasonProvider);
+  invalidateAllSeasons(ref);
   ref.invalidate(seasonListProvider);
   ref.invalidate(subscribedBangumisProvider);
   ref.invalidate(subscribedSeasonProvider);

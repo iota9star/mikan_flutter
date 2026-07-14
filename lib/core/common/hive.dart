@@ -9,8 +9,6 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:mikan/hive_registrar.g.dart';
 import 'package:mikan/core/common/consts.dart';
-import 'package:mikan/core/models/index.dart';
-import 'package:mikan/core/models/record_item.dart';
 
 class MyHive {
   const MyHive._();
@@ -325,38 +323,6 @@ class MyHive {
 
   static Future<void> setCardWidth(Decimal width) {
     return settings.put(SettingsHiveKey.cardWidth, width.toString());
-  }
-
-  // ============ Cache Methods ============
-
-  /// Saves Index data to cache.
-  static Future<void> saveIndexCache(Index index) {
-    return db.put(HiveDBKey.mikanIndex, index);
-  }
-
-  /// Gets cached Index data.
-  static Index? getIndexCache() {
-    return db.get(HiveDBKey.mikanIndex);
-  }
-
-  /// Saves OVA records to cache.
-  static Future<void> saveOvaCache(List<RecordItem> records) {
-    return db.put(HiveDBKey.mikanOva, records);
-  }
-
-  /// Gets cached OVA records.
-  static List<RecordItem>? getOvaCache() {
-    return db.get(HiveDBKey.mikanOva)?.cast<RecordItem>();
-  }
-
-  /// Saves list records to cache.
-  static Future<void> saveListCache(List<RecordItem> records) {
-    return db.put(HiveDBKey.mikanList, records);
-  }
-
-  /// Gets cached list records.
-  static List<RecordItem>? getListCache() {
-    return db.get(HiveDBKey.mikanList)?.cast<RecordItem>();
   }
 }
 

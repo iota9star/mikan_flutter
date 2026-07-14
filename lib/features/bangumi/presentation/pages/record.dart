@@ -143,7 +143,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               Text('加载失败: $error'),
               const Gap(16),
               ElevatedButton(
-                onPressed: () => ref.refresh(recordDetailProvider(widget.record).future),
+                onPressed: () => refreshRecordDetail(ref, widget.record),
                 child: const Text('重试'),
               ),
             ],
@@ -281,7 +281,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
             ),
           ];
           return EasyRefresh(
-            onRefresh: () => ref.refresh(recordDetailProvider(widget.record).future),
+            onRefresh: () => refreshRecordDetail(ref, widget.record),
             header: defaultHeader,
             child: ListView.builder(
               itemBuilder: (context, index) {
@@ -339,7 +339,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       bangumiId: recordDetail.id!,
       subscribed: recordDetail.subscribed,
       onSubscriptionChanged: () {
-        ref.invalidate(recordDetailProvider(widget.record));
+        invalidateRecordDetail(ref, widget.record);
       },
     );
   }

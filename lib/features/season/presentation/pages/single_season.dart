@@ -30,7 +30,7 @@ class SingleSeasonPage extends ConsumerWidget {
         data: (seasonData) {
           return EasyRefresh(
             header: defaultHeader,
-            onRefresh: () => ref.refresh(seasonProvider(season).future),
+            onRefresh: () => refreshSeason(ref, season),
             child: CustomScrollView(
               slivers: [
                 SliverPinnedAppBar(title: season.title),
