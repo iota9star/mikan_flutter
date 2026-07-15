@@ -1,3 +1,8 @@
+import 'package:hive_ce/hive.dart';
+
+part 'fonts.g.dart';
+
+@HiveType(typeId: 106)
 class Font {
   Font({
     required this.id,
@@ -26,14 +31,26 @@ class Font {
     'license': license.toJson(),
   };
 
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
+
+  @HiveField(2)
   List<String> files;
+
+  @HiveField(3)
   String desc;
+
+  @HiveField(4)
   String official;
+
+  @HiveField(5)
   License license;
 }
 
+@HiveType(typeId: 107)
 class License {
   License({required this.name, required this.url});
 
@@ -42,6 +59,9 @@ class License {
 
   Map<String, dynamic> toJson() => {'name': name, 'url': url};
 
+  @HiveField(0)
   String url;
+
+  @HiveField(1)
   String name;
 }

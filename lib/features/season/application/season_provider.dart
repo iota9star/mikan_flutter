@@ -4,7 +4,6 @@ import 'package:kache_riverpod/kache_riverpod.dart';
 import 'package:mikan/core/api/mikan_api.dart';
 import 'package:mikan/core/cache/kache_init.dart';
 import 'package:mikan/core/cache/kache_providers.dart';
-export 'package:mikan/core/cache/kache_providers.dart' show KacheSnapshotWhenExtension;
 import 'package:mikan/core/models/season.dart' as model;
 import 'package:mikan/core/models/season_data.dart';
 

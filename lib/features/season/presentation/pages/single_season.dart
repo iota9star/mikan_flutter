@@ -26,8 +26,8 @@ class SingleSeasonPage extends ConsumerWidget {
     final seasonAsync = ref.watch(seasonProvider(season));
 
     return Scaffold(
-      body: seasonAsync.when(
-        data: (seasonData) {
+      body: seasonAsync.maybeWhen(
+        ready: (seasonData) {
           return EasyRefresh(
             header: defaultHeader,
             onRefresh: () => refreshSeason(ref, season),
@@ -52,8 +52,7 @@ class SingleSeasonPage extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(child: ExpressiveLoadingIndicator()),
-        error: (error, stack) => Center(child: Text('加载失败: $error')),
+        orElse: () => const Center(child: ExpressiveLoadingIndicator()),
       ),
     );
   }

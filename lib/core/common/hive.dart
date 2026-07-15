@@ -45,6 +45,31 @@ class MyHive {
     db = await Hive.openBox(HiveBoxKey.db);
     settings = await Hive.openBox(HiveBoxKey.settings);
     MikanUrls.baseUrl = MyHive.getMirrorUrl();
+
+    // Migrate: remove legacy cache entries that were stored directly in the db
+    // box before the kache migration. These are now managed by Kache in a
+    // separate box, and leaving stale entries could cause deserialization
+    // issues if model fields change.
+    await _cleanupLegacyCacheKeys();
+  }
+
+  /// Removes obsolete cache keys from the db box.
+  ///
+  /// Before the kache migration, Index/OVA/List caches were stored directly
+  /// in the db box via [db.put]. The kache layer now manages these in a
+  /// separate persistence box, so the legacy entries are removed on first
+  /// launch of the new version.
+  static Future<void> _cleanupLegacyCacheKeys() async {
+    const legacyKeys = <String>[
+      HiveDBKey.mikanIndex,
+      HiveDBKey.mikanOva,
+      HiveDBKey.mikanList,
+    ];
+    final existing = legacyKeys.where((key) => db.containsKey(key)).toList();
+    if (existing.isEmpty) {
+      return;
+    }
+    await db.deleteAll(existing);
   }
 
   static late final Directory cacheDir;

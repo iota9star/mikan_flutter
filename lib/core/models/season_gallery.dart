@@ -1,5 +1,10 @@
+import 'package:hive_ce/hive.dart';
+
 import 'package:mikan/core/models/bangumi.dart';
 
+part 'season_gallery.g.dart';
+
+@HiveType(typeId: 101)
 class SeasonGallery {
   SeasonGallery({
     required this.year,
@@ -11,10 +16,19 @@ class SeasonGallery {
 
   SeasonGallery.empty();
 
+  @HiveField(0)
   late String year = '';
+
+  @HiveField(1)
   late String season = '';
+
+  @HiveField(2)
   late String title = '';
+
+  @HiveField(3)
   late bool active = false;
+
+  @HiveField(4)
   late List<Bangumi> bangumis;
 
   @override

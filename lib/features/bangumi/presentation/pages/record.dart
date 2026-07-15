@@ -53,8 +53,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     // Watch the AsyncValue and handle states
     final recordDetailAsync = ref.watch(recordDetailProvider(widget.record));
 
-    return recordDetailAsync.when(
-      data: (recordDetail) {
+    return recordDetailAsync.maybeWhen(
+      ready: (recordDetail) {
         return Scaffold(
           body: NotificationListener<ScrollUpdateNotification>(
             onNotification: (ScrollUpdateNotification notification) {
@@ -134,13 +134,12 @@ class _RecordPageState extends ConsumerState<RecordPage> {
           ),
         );
       },
-      loading: () => const Scaffold(body: Center(child: defaultLoadingWidget)),
-      error: (error, stack) => Scaffold(
+      failed: (failure) => Scaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('加载失败: $error'),
+              Text('加载失败: ${failure.cause}'),
               const Gap(16),
               ElevatedButton(
                 onPressed: () => refreshRecordDetail(ref, widget.record),
@@ -150,6 +149,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
           ),
         ),
       ),
+      orElse: () => const Scaffold(body: Center(child: defaultLoadingWidget)),
     );
   }
 

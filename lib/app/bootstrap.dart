@@ -6,12 +6,10 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:hive_ce/hive.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:mikan/app/mikan_app.dart';
 import 'package:mikan/core/api/mikan_api.dart';
-import 'package:mikan/core/cache/kache_bindings.dart';
 import 'package:mikan/core/cache/kache_init.dart';
 import 'package:mikan/core/common/app_utils.dart';
 import 'package:mikan/core/common/hive.dart';
@@ -53,9 +51,8 @@ Future<void> initMisc() async {
     MikanApi.init(),
     if (isSupportFirebase) initFirebase(),
   ]);
-  // Register hand-written adapters for non-@HiveType models, then initialize
-  // the Kache persistence + network layer.
-  registerKacheAdapters(Hive);
+  // Initialize the Kache persistence + network layer.
+  // Hive adapters are already registered by MyHive.init() (generated registrar).
   await KacheInit.init();
   if (isMobile) {
     unawaited(

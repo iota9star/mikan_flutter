@@ -40,7 +40,7 @@ final class FontsProvider extends $NotifierProvider<Fonts, FontsState> {
   }
 }
 
-String _$fontsHash() => r'5c5b1a32b253b5ca2e77cea38ea1277fa6adb79d';
+String _$fontsHash() => r'31ef35925c4d1bea9bdae069d94241e3418175a9';
 
 abstract class _$Fonts extends $Notifier<FontsState> {
   FontsState build();

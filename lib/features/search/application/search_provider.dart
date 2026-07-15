@@ -6,7 +6,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:mikan/core/api/mikan_api.dart';
 import 'package:mikan/core/cache/kache_init.dart';
 import 'package:mikan/core/cache/kache_providers.dart';
-export 'package:mikan/core/cache/kache_providers.dart' show KacheSnapshotWhenExtension;
 import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/hive.dart';
 import 'package:mikan/core/models/search.dart';
@@ -33,26 +32,27 @@ class SearchSubgroupId extends _$SearchSubgroupId {
   void clear() => state = null;
 }
 
-/// Persisted SWR cache for search results, keyed by `keywords|subgroupId`.
-final _searchKacheProvider = kacheProvider.autoDispose.family<SearchResult, String>(
+/// Named-record argument for the search family provider.
+typedef SearchArgs = ({String keywords, String subgroupId});
+
+/// Persisted SWR cache for search results, keyed by (keywords, subgroupId).
+final _searchKacheProvider =
+    kacheProvider.autoDispose.family<SearchResult, SearchArgs>(
   client: (ref) => ref.watch(kacheClientProvider),
-  query: (ref, cacheKey) {
-    final sep = cacheKey.indexOf('|');
-    final keywords = sep >= 0 ? cacheKey.substring(0, sep) : cacheKey;
-    final subgroupId = sep >= 0 ? cacheKey.substring(sep + 1) : '';
-    return KacheQuery<SearchResult>.persisted(
-      key: KacheKey('mikan', ['search', cacheKey]),
-      binding: KacheInit.searchResultBinding,
-      fetch: (_) async {
-        final result = await MikanApi.search(keywords, subgroupid: subgroupId);
-        if (result.records.isNotEmpty || result.bangumis.isNotEmpty || result.subgroups.isNotEmpty) {
-          _saveNewKeywords(keywords);
-        }
-        return result;
-      },
-      policy: KachePolicy.staleWhileRevalidate(),
-    );
-  },
+  query: (ref, args) => KacheQuery<SearchResult>.persisted(
+    key: KacheKey('mikan', ['search', args.keywords, args.subgroupId]),
+    binding: KacheInit.searchResultBinding,
+    fetch: (_) async {
+      final result = await MikanApi.search(args.keywords, subgroupid: args.subgroupId);
+      if (result.records.isNotEmpty ||
+          result.bangumis.isNotEmpty ||
+          result.subgroups.isNotEmpty) {
+        _saveNewKeywords(args.keywords);
+      }
+      return result;
+    },
+    policy: KachePolicy.staleWhileRevalidate(),
+  ),
 );
 
 /// An idle snapshot returned when there are no search keywords.
@@ -60,8 +60,7 @@ final _emptySearchSnapshot = KacheSnapshot<SearchResult>.idle();
 
 /// Public provider that exposes [KacheSnapshot<SearchResult>] to the UI.
 ///
-/// Returns an idle snapshot when keywords are empty. Otherwise watches the
-/// underlying kache family provider.
+/// Returns an idle snapshot when keywords are empty.
 final searchProvider =
     Provider.autoDispose<KacheSnapshot<SearchResult>>((ref) {
   final keywords = ref.watch(searchKeywordsProvider);
@@ -71,12 +70,13 @@ final searchProvider =
     return _emptySearchSnapshot;
   }
 
-  final cacheKey = '$keywords|${subgroupId ?? ''}';
-  return ref.watch(_searchKacheProvider(cacheKey));
+  final args = (keywords: keywords!, subgroupId: subgroupId ?? '');
+  return ref.watch(_searchKacheProvider(args));
 });
 
 void _saveNewKeywords(String keywords) {
-  final List<String> history = MyHive.db.get(HiveDBKey.mikanSearch, defaultValue: <String>[]);
+  final List<String> history =
+      MyHive.db.get(HiveDBKey.mikanSearch, defaultValue: <String>[]);
   if (history.contains(keywords)) {
     return;
   }

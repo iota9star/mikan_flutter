@@ -27,8 +27,8 @@ class SubgroupPage extends ConsumerWidget {
     final galleriesAsync = ref.watch(subgroupGalleriesProvider(subgroup));
 
     return Scaffold(
-      body: galleriesAsync.when(
-        data: (galleries) {
+      body: galleriesAsync.maybeWhen(
+        ready: (galleries) {
           return EasyRefresh(
             header: defaultHeader,
             onRefresh: () => refreshSubgroupGalleries(ref, subgroup),
@@ -43,8 +43,7 @@ class SubgroupPage extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(child: ExpressiveLoadingIndicator()),
-        error: (error, stack) => Center(child: Text('加载失败: $error')),
+        orElse: () => const Center(child: ExpressiveLoadingIndicator()),
       ),
     );
   }

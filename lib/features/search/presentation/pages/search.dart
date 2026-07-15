@@ -452,8 +452,8 @@ class _SearchResultList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final searchAsync = ref.watch(searchProvider);
 
-    return searchAsync.when(
-      data: (searchResult) {
+    return searchAsync.maybeWhen(
+      ready: (searchResult) {
         final records = searchResult.records;
         if (records.isEmpty) {
           return emptySliverToBoxAdapter;
@@ -476,15 +476,15 @@ class _SearchResultList extends ConsumerWidget {
           ),
         );
       },
-      loading: () => emptySliverToBoxAdapter,
-      error: (error, stack) => SliverToBoxAdapter(
+      failed: (failure) => SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Center(
-            child: Text('搜索失败: $error', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red)),
+            child: Text('搜索失败: ${failure.cause}', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red)),
           ),
         ),
       ),
+      orElse: () => emptySliverToBoxAdapter,
     );
   }
 }

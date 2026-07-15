@@ -8,18 +8,19 @@ import 'package:mikan/core/api/mikan_api.dart';
 import 'package:mikan/core/cache/kache_init.dart';
 import 'package:mikan/core/cache/kache_providers.dart';
 import 'package:mikan/core/common/extension.dart';
+import 'package:mikan/core/models/cached_list.dart';
 import 'package:mikan/core/models/record_item.dart';
 
 part 'list_provider.g.dart';
 
 /// SWR cache query for the main list (page 1) record list.
-final _listKacheProvider = kacheProvider.autoDispose<List<RecordItem>>(
+final _listKacheProvider = kacheProvider.autoDispose<CachedRecordList>(
   client: (ref) => ref.watch(kacheClientProvider),
-  query: (_) => KacheQuery<List<RecordItem>>.persisted(
+  query: (_) => KacheQuery<CachedRecordList>.persisted(
     key: KacheKey('mikan', ['list']),
     binding: KacheInit.recordListBinding,
-    fetch: (_) => MikanApi.list(),
-    policy: KachePolicy.staleWhileRevalidate(retainDataOnError: true),
+    fetch: (_) async => CachedRecordList(await MikanApi.list()),
+    policy: KachePolicy.staleWhileRevalidate(),
   ),
 );
 
@@ -61,21 +62,22 @@ class ListNotifier extends _$ListNotifier {
     // Watch the kache snapshot reactively — SWR gives us cached data first,
     // then background-refreshes from network.
     final snapshot = ref.watch(_listKacheProvider);
-    final cachedRecords = snapshot.dataOrNull;
+    final cachedRecords = snapshot.dataOrNull?.items ?? const <RecordItem>[];
 
-    if (cachedRecords != null && cachedRecords.isNotEmpty) {
+    if (cachedRecords.isNotEmpty) {
       final isFromCache = snapshot.source == KacheDataSource.persistence;
       return ListData(page: 1, records: cachedRecords, isFromCache: isFromCache);
     }
 
-    // No cached data yet — if loading, return empty for now.
-    if (snapshot.isLoading) {
-      return const ListData();
+    // No cached data yet — keep pending so UI shows loading spinner.
+    // The kache snapshot will update and re-trigger this build.
+    if (snapshot.isLoading || snapshot.phase == KachePhase.idle) {
+      await Completer<ListData>().future;
     }
 
     // Load failed with no cached data.
     if (snapshot.isFailed) {
-      throw snapshot.failure?.cause ?? StateError('List load failed');
+      throw snapshot.failure?.cause ?? Exception('List load failed');
     }
 
     return const ListData();
@@ -121,7 +123,7 @@ class ListNotifier extends _$ListNotifier {
 
     try {
       final snapshot = await ref.read(_listKacheProvider.notifier).refresh();
-      final newRecords = snapshot.dataOrNull ?? [];
+      final newRecords = snapshot.dataOrNull?.items ?? const <RecordItem>[];
 
       // Merge with previous records to preserve scroll context.
       if (previousData.records.isNotEmpty) {

@@ -1,25 +1,50 @@
+import 'package:hive_ce/hive.dart';
+
 import 'package:mikan/core/common/consts.dart';
 import 'package:mikan/core/models/shareable.dart';
 import 'package:mikan/core/models/subgroup.dart';
 
+part 'record_details.g.dart';
+
+@HiveType(typeId: 100)
 class RecordDetail {
+  @HiveField(0)
   String? id;
+
+  @HiveField(1)
   String cover = '';
+
+  @HiveField(2)
   late String name;
+
+  @HiveField(3)
   bool subscribed = false;
+
+  @HiveField(4)
   Map<String, String> more = {};
+
+  @HiveField(5)
   String intro = '';
+
+  @HiveField(6)
   List<Subgroup> subgroups = [];
 
+  @HiveField(7)
   late String url = '';
 
+  @HiveField(8)
   late String title;
 
+  @HiveField(9)
   late String magnet;
 
+  @HiveField(10)
   late String torrent;
+
+  @HiveField(11)
   late List<String> tags;
 
+  /// Computed field — excluded from Hive serialization.
   late final String share = _buildShareText();
 
   String _buildShareText() {

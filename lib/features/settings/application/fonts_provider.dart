@@ -14,22 +14,21 @@ import 'package:mikan/core/common/hive.dart';
 import 'package:mikan/core/common/http_cache_manager.dart';
 import 'package:mikan/core/common/log.dart';
 import 'package:mikan/core/common/network_font_loader.dart';
+import 'package:mikan/core/models/cached_list.dart';
 import 'package:mikan/core/models/fonts.dart';
-
-export 'package:mikan/core/cache/kache_providers.dart' show KacheSnapshotWhenExtension;
 
 part 'fonts_provider.g.dart';
 
 /// Persisted SWR cache for the font list. Fonts change rarely so this is a
 /// strong cache candidate.
-final fontsListKacheProvider = kacheProvider.autoDispose<List<Font>>(
+final fontsListKacheProvider = kacheProvider.autoDispose<CachedFontList>(
   client: (ref) => ref.watch(kacheClientProvider),
-  query: (_) => KacheQuery<List<Font>>.persisted(
+  query: (_) => KacheQuery<CachedFontList>.persisted(
     key: KacheKey('mikan', ['fonts']),
     binding: KacheInit.fontListBinding,
     fetch: (_) async {
       final fontsData = await MikanApi.fonts();
-      return fontsData
+      final fonts = fontsData
           .map((it) {
             final Font font = Font.fromJson(it);
             font.files = font.files.map((e) => '${ExtraUrl.fontsBaseUrl}/$e').toList();
@@ -37,6 +36,7 @@ final fontsListKacheProvider = kacheProvider.autoDispose<List<Font>>(
           })
           .toList()
           .cast<Font>();
+      return CachedFontList(fonts);
     },
     policy: KachePolicy.staleWhileRevalidate(),
   ),
@@ -99,7 +99,7 @@ class Fonts extends _$Fonts {
       // Read from kache SWR cache — instant load from persistence, then
       // background refresh from network.
       final snapshot = await ref.read(fontsListKacheProvider.notifier).refresh();
-      final fonts = snapshot.dataOrNull ?? const <Font>[];
+      final fonts = snapshot.dataOrNull?.items ?? const <Font>[];
 
       final usedFontFamilyId = MyHive.getFontFamily()?.value;
       state = state.copyWith(fonts: fonts, loading: false, usedFontFamilyId: usedFontFamilyId);

@@ -4,11 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_cockpit/flutter_cockpit_flutter.dart';
 import 'package:flutter_cockpit_protocol/flutter_cockpit_protocol.dart';
-import 'package:hive_ce/hive.dart';
 
 import 'package:mikan/app/mikan_app.dart';
 import 'package:mikan/core/api/mikan_api.dart';
-import 'package:mikan/core/cache/kache_bindings.dart';
 import 'package:mikan/core/cache/kache_init.dart';
 import 'package:mikan/core/common/app_utils.dart';
 import 'package:mikan/core/common/hive.dart';
@@ -28,7 +26,6 @@ Future<void> main() async {
     MikanApi.init(),
     if (isSupportFirebase) _initFirebase(),
   ]);
-  registerKacheAdapters(Hive);
   await KacheInit.init();
 
   final remoteSession = CockpitRemoteSessionConfiguration.resolveFromEnvironment();

@@ -91,9 +91,9 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
         onRefresh: () async {
           final selectedSeason = ref.read(selectedSeasonProvider);
           await Future.wait([
-            ref.read(recentRecordsProvider.notifier).refresh(),
+            refreshRecentRecords(ref),
             if (selectedSeason != null)
-              ref.read(subscribedBangumisProvider(selectedSeason).notifier).refresh(),
+              refreshSubscribedBangumis(ref, selectedSeason),
           ]);
         },
         header: defaultHeader,
@@ -182,8 +182,8 @@ class _SeasonSlivers extends ConsumerWidget {
       return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
     final bangumisAsync = ref.watch(subscribedBangumisProvider(season));
-    return bangumisAsync.when(
-      data: (bangumis) {
+    return bangumisAsync.maybeWhen(
+      ready: (bangumis) {
         return MultiSliver(
           pushPinnedChildren: true,
           children: [
@@ -192,8 +192,8 @@ class _SeasonSlivers extends ConsumerWidget {
           ],
         );
       },
-      loading: () => const SliverLoadingWidget(),
-      error: (_, __) => const SliverEmptyWidget(text: '加载失败'),
+      failed: (_) => const SliverEmptyWidget(text: '加载失败'),
+      orElse: () => const SliverLoadingWidget(),
     );
   }
 }
@@ -204,8 +204,8 @@ class _RecordsSlivers extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recordsAsync = ref.watch(recentRecordsProvider);
-    return recordsAsync.when(
-      data: (records) {
+    return recordsAsync.maybeWhen(
+      ready: (records) {
         return MultiSliver(
           pushPinnedChildren: true,
           children: [
@@ -214,8 +214,7 @@ class _RecordsSlivers extends ConsumerWidget {
           ],
         );
       },
-      loading: () => emptySliverToBoxAdapter,
-      error: (_, __) => emptySliverToBoxAdapter,
+      orElse: () => emptySliverToBoxAdapter,
     );
   }
 }
@@ -543,8 +542,8 @@ class _SeeMoreButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recordsAsync = ref.watch(recentRecordsProvider);
-    return recordsAsync.when(
-      data: (records) {
+    return recordsAsync.maybeWhen(
+      ready: (records) {
         final length = records.length;
         if (length == 0) {
           return emptySliverToBoxAdapter;
@@ -568,8 +567,7 @@ class _SeeMoreButton extends ConsumerWidget {
           ),
         );
       },
-      loading: () => emptySliverToBoxAdapter,
-      error: (_, __) => emptySliverToBoxAdapter,
+      orElse: () => emptySliverToBoxAdapter,
     );
   }
 }

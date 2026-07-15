@@ -12,6 +12,7 @@ import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/log.dart';
 import 'package:mikan/core/models/announcement.dart';
 import 'package:mikan/core/models/bangumi_row.dart';
+import 'package:mikan/core/models/cached_list.dart';
 import 'package:mikan/core/models/carousel.dart';
 import 'package:mikan/core/models/index.dart' as model;
 import 'package:mikan/core/models/record_item.dart';
@@ -33,12 +34,12 @@ final _indexKacheProvider = kacheProvider.autoDispose<model.Index>(
 );
 
 /// SWR cache query for the OVA / day(-1, -1) record list.
-final _ovaKacheProvider = kacheProvider.autoDispose<List<RecordItem>>(
+final _ovaKacheProvider = kacheProvider.autoDispose<CachedRecordList>(
   client: (ref) => ref.watch(kacheClientProvider),
-  query: (_) => KacheQuery<List<RecordItem>>.persisted(
+  query: (_) => KacheQuery<CachedRecordList>.persisted(
     key: KacheKey('mikan', ['ova']),
     binding: KacheInit.recordListBinding,
-    fetch: (_) => MikanApi.day(-1, -1),
+    fetch: (_) async => CachedRecordList(await MikanApi.day(-1, -1)),
     policy: KachePolicy.staleWhileRevalidate(),
   ),
 );
@@ -95,27 +96,31 @@ class Index extends _$Index {
 
   @override
   Future<IndexData> build() async {
-    // Watch both kache snapshots reactively.
+    // Watch both kache snapshots reactively — Riverpod re-triggers build()
+    // whenever either snapshot changes.
     final indexSnapshot = ref.watch(_indexKacheProvider);
     final ovaSnapshot = ref.watch(_ovaKacheProvider);
 
     final indexModel = indexSnapshot.dataOrNull;
-    final ovaData = ovaSnapshot.dataOrNull;
+    final ovaData = ovaSnapshot.dataOrNull?.items ?? const <RecordItem>[];
 
     // If we have cached index data, show it immediately (SWR).
     if (indexModel != null) {
       final isFromCache = indexSnapshot.source == KacheDataSource.persistence;
-      return _buildIndexData(indexModel, ovaData ?? [], isFromCache: isFromCache);
+      return _buildIndexData(indexModel, ovaData, isFromCache: isFromCache);
     }
 
-    // No cached data — wait for the first load to complete.
-    if (indexSnapshot.isLoading) {
-      return const IndexData();
+    // No cached data. If loading or idle, keep the Future pending so the UI
+    // shows a loading spinner. The kache snapshot will update and re-trigger
+    // this build via the ref.watch above.
+    if (indexSnapshot.isLoading || indexSnapshot.phase == KachePhase.idle) {
+      // Never completes — stays in AsyncLoading until kache produces data.
+      await Completer<IndexData>().future;
     }
 
     // Load failed with no cached data.
     if (indexSnapshot.isFailed) {
-      throw indexSnapshot.failure?.cause ?? StateError('Index load failed');
+      throw indexSnapshot.failure?.cause ?? Exception('Index load failed');
     }
 
     return const IndexData();
@@ -137,7 +142,7 @@ class Index extends _$Index {
       );
 
       final indexModel = indexSnapshot.dataOrNull;
-      final ovas = ovaSnapshot.dataOrNull ?? const <RecordItem>[];
+      final ovas = ovaSnapshot.dataOrNull?.items ?? const <RecordItem>[];
 
       if (indexModel == null) {
         return IndicatorResult.fail;
