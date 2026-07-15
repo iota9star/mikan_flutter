@@ -8,15 +8,27 @@ part of 'recent_subscribed_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Recent subscribed provider - manages subscription data with AsyncValue
+/// Recent subscribed provider — paginated view over recent subscription data.
+///
+/// The initial load and [refresh] use `MikanApi.day(2)`, which is also cached
+/// by [recentRecordsProvider] in the kache layer. Pagination ([loadMore])
+/// fetches further days and is network-only by nature.
 
 @ProviderFor(RecentSubscribed)
 final recentSubscribedProvider = RecentSubscribedFamily._();
 
-/// Recent subscribed provider - manages subscription data with AsyncValue
+/// Recent subscribed provider — paginated view over recent subscription data.
+///
+/// The initial load and [refresh] use `MikanApi.day(2)`, which is also cached
+/// by [recentRecordsProvider] in the kache layer. Pagination ([loadMore])
+/// fetches further days and is network-only by nature.
 final class RecentSubscribedProvider
     extends $AsyncNotifierProvider<RecentSubscribed, RecentSubscribedState> {
-  /// Recent subscribed provider - manages subscription data with AsyncValue
+  /// Recent subscribed provider — paginated view over recent subscription data.
+  ///
+  /// The initial load and [refresh] use `MikanApi.day(2)`, which is also cached
+  /// by [recentRecordsProvider] in the kache layer. Pagination ([loadMore])
+  /// fetches further days and is network-only by nature.
   RecentSubscribedProvider._({
     required RecentSubscribedFamily super.from,
     required List<RecordItem> super.argument,
@@ -55,7 +67,11 @@ final class RecentSubscribedProvider
 
 String _$recentSubscribedHash() => r'd9c18140ef3524dda102e90f0970d2861a60c6b8';
 
-/// Recent subscribed provider - manages subscription data with AsyncValue
+/// Recent subscribed provider — paginated view over recent subscription data.
+///
+/// The initial load and [refresh] use `MikanApi.day(2)`, which is also cached
+/// by [recentRecordsProvider] in the kache layer. Pagination ([loadMore])
+/// fetches further days and is network-only by nature.
 
 final class RecentSubscribedFamily extends $Family
     with
@@ -75,7 +91,11 @@ final class RecentSubscribedFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Recent subscribed provider - manages subscription data with AsyncValue
+  /// Recent subscribed provider — paginated view over recent subscription data.
+  ///
+  /// The initial load and [refresh] use `MikanApi.day(2)`, which is also cached
+  /// by [recentRecordsProvider] in the kache layer. Pagination ([loadMore])
+  /// fetches further days and is network-only by nature.
 
   RecentSubscribedProvider call(List<RecordItem> records) =>
       RecentSubscribedProvider._(argument: records, from: this);
@@ -84,7 +104,11 @@ final class RecentSubscribedFamily extends $Family
   String toString() => r'recentSubscribedProvider';
 }
 
-/// Recent subscribed provider - manages subscription data with AsyncValue
+/// Recent subscribed provider — paginated view over recent subscription data.
+///
+/// The initial load and [refresh] use `MikanApi.day(2)`, which is also cached
+/// by [recentRecordsProvider] in the kache layer. Pagination ([loadMore])
+/// fetches further days and is network-only by nature.
 
 abstract class _$RecentSubscribed
     extends $AsyncNotifier<RecentSubscribedState> {

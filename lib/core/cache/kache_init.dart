@@ -1,9 +1,13 @@
 import 'package:kache_connectivity_plus/kache_connectivity_plus.dart';
 
 import 'package:mikan/core/cache/kache_bindings.dart';
+import 'package:mikan/core/models/bangumi.dart';
+import 'package:mikan/core/models/bangumi_details.dart';
+import 'package:mikan/core/models/fonts.dart';
 import 'package:mikan/core/models/index.dart';
 import 'package:mikan/core/models/record_item.dart';
 import 'package:mikan/core/models/record_details.dart';
+import 'package:mikan/core/models/search.dart';
 import 'package:mikan/core/models/season_data.dart';
 import 'package:mikan/core/models/season_gallery.dart';
 
@@ -36,6 +40,10 @@ class KacheInit {
   static late final KachePersistenceBinding<RecordDetail> recordDetailBinding;
   static late final KachePersistenceBinding<List<SeasonGallery>> seasonGalleryListBinding;
   static late final KachePersistenceBinding<SeasonData> seasonDataBinding;
+  static late final KachePersistenceBinding<BangumiDetail> bangumiDetailBinding;
+  static late final KachePersistenceBinding<List<Bangumi>> bangumiListBinding;
+  static late final KachePersistenceBinding<SearchResult> searchResultBinding;
+  static late final KachePersistenceBinding<List<Font>> fontListBinding;
 
   static bool _initialized = false;
 
@@ -55,6 +63,10 @@ class KacheInit {
     recordDetailBinding = _Binding(store, 'mikan-record-detail:v1');
     seasonGalleryListBinding = _Binding(store, 'mikan-season-gallery-list:v1');
     seasonDataBinding = _Binding(store, 'mikan-season-data:v1');
+    bangumiDetailBinding = _Binding(store, 'mikan-bangumi-detail:v1');
+    bangumiListBinding = _Binding(store, 'mikan-bangumi-list:v1');
+    searchResultBinding = _Binding(store, 'mikan-search-result:v1');
+    fontListBinding = _Binding(store, 'mikan-font-list:v1');
 
     final network = ConnectivityPlusNetwork();
 

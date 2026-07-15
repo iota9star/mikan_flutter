@@ -28,7 +28,7 @@ final _indexKacheProvider = kacheProvider.autoDispose<model.Index>(
     key: KacheKey('mikan', ['index']),
     binding: KacheInit.indexBinding,
     fetch: (_) => MikanApi.index(),
-    policy: KachePolicy.staleWhileRevalidate(retainDataOnError: true),
+    policy: KachePolicy.staleWhileRevalidate(),
   ),
 );
 
@@ -39,7 +39,7 @@ final _ovaKacheProvider = kacheProvider.autoDispose<List<RecordItem>>(
     key: KacheKey('mikan', ['ova']),
     binding: KacheInit.recordListBinding,
     fetch: (_) => MikanApi.day(-1, -1),
-    policy: KachePolicy.staleWhileRevalidate(retainDataOnError: true),
+    policy: KachePolicy.staleWhileRevalidate(),
   ),
 );
 

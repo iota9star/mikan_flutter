@@ -7,11 +7,14 @@ import 'package:expressive_loading_indicator/expressive_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kache_riverpod/kache_riverpod.dart';
 import 'package:riverpod/experimental/mutation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:mikan/core/api/mikan_api.dart';
 import 'package:mikan/res/assets.gen.dart';
+import 'package:mikan/core/cache/kache_init.dart';
+import 'package:mikan/core/cache/kache_providers.dart';
 import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/image_provider.dart';
 import 'package:mikan/core/common/kit.dart';
@@ -29,6 +32,18 @@ import 'package:mikan/core/widgets/scalable_tap.dart';
 import 'package:mikan/core/common/app_layout.dart';
 
 part 'bangumi.g.dart';
+
+/// Persisted SWR cache for bangumi detail, keyed by bangumi id.
+final _bangumiDetailKacheProvider =
+    kacheProvider.autoDispose.family<BangumiDetail, String>(
+  client: (ref) => ref.watch(kacheClientProvider),
+  query: (ref, id) => KacheQuery<BangumiDetail>.persisted(
+    key: KacheKey('mikan', ['bangumi-detail', id]),
+    binding: KacheInit.bangumiDetailBinding,
+    fetch: (_) => MikanApi.bangumi(id),
+    policy: KachePolicy.staleWhileRevalidate(),
+  ),
+);
 
 class BangumiState {
   BangumiState({this.refreshFlag = 0, this.bangumiDetail, this.coverSize});
@@ -49,7 +64,11 @@ class BangumiState {
 class Bangumi extends _$Bangumi {
   @override
   BangumiState build(String id, String cover) {
-    return BangumiState();
+    // Watch the kache snapshot for this bangumi — SWR gives instant cache
+    // load then background refresh.
+    final snapshot = ref.watch(_bangumiDetailKacheProvider(id));
+    final detail = snapshot.dataOrNull;
+    return BangumiState(bangumiDetail: detail);
   }
 
   Future<IndicatorResult> loadSubgroupList(String dataId) async {
@@ -97,22 +116,26 @@ class Bangumi extends _$Bangumi {
         ..more = currentDetail.more
         ..subgroupBangumis = updatedSubgroupBangumis;
 
+      // Persist the updated detail through kache.
+      await ref.read(_bangumiDetailKacheProvider(id).notifier).setData(updatedDetail);
       updateIfMounted(
         ref,
-        (current) => current.copyWith(bangumiDetail: updatedDetail, refreshFlag: current.refreshFlag + 1),
+        (current) => current.copyWith(refreshFlag: current.refreshFlag + 1),
       );
       return IndicatorResult.success;
     }
   }
 
   Future<IndicatorResult> load() async {
-    final bangumiDetail = await MikanApi.bangumi(id);
-    if (!ref.mounted) {
+    // Force a network refresh through kache.
+    final snapshot = await ref.read(_bangumiDetailKacheProvider(id).notifier).refresh();
+    final detail = snapshot.dataOrNull;
+    if (!ref.mounted || detail == null) {
       return IndicatorResult.fail;
     }
     updateIfMounted(
       ref,
-      (current) => current.copyWith(bangumiDetail: bangumiDetail, refreshFlag: current.refreshFlag + 1),
+      (current) => current.copyWith(refreshFlag: current.refreshFlag + 1),
     );
     return IndicatorResult.success;
   }

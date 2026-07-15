@@ -91,8 +91,9 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
         onRefresh: () async {
           final selectedSeason = ref.read(selectedSeasonProvider);
           await Future.wait([
-            ref.refresh(recentRecordsProvider.future),
-            if (selectedSeason != null) ref.refresh(subscribedBangumisProvider(selectedSeason).future),
+            ref.read(recentRecordsProvider.notifier).refresh(),
+            if (selectedSeason != null)
+              ref.read(subscribedBangumisProvider(selectedSeason).notifier).refresh(),
           ]);
         },
         header: defaultHeader,
@@ -177,6 +178,9 @@ class _SeasonSlivers extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final years = ref.watch(yearsProvider);
     final season = ref.watch(selectedSeasonProvider);
+    if (season == null) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
     final bangumisAsync = ref.watch(subscribedBangumisProvider(season));
     return bangumisAsync.when(
       data: (bangumis) {
@@ -245,7 +249,7 @@ class _RssSection extends ConsumerWidget {
               if (!isEmpty)
                 IconButton(
                   onPressed: () {
-                    final records = ref.read(recentRecordsProvider).value ?? [];
+                    final records = ref.read(recentRecordsProvider).dataOrNull ?? [];
                     Navigator.pushNamed(
                       context,
                       Routes.subscribedRecent.name,
@@ -484,7 +488,7 @@ class _RssRecordsSection extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.east_rounded),
                 onPressed: () {
-                  final records = ref.read(recentRecordsProvider).value ?? [];
+                  final records = ref.read(recentRecordsProvider).dataOrNull ?? [];
                   Navigator.pushNamed(
                     context,
                     Routes.subscribedRecent.name,
@@ -551,7 +555,7 @@ class _SeeMoreButton extends ConsumerWidget {
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-                  final records = ref.read(recentRecordsProvider).value ?? [];
+                  final records = ref.read(recentRecordsProvider).dataOrNull ?? [];
                   Navigator.pushNamed(
                     context,
                     Routes.subscribedRecent.name,

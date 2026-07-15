@@ -24,12 +24,15 @@ class RecentSubscribedState {
   }
 }
 
-/// Recent subscribed provider - manages subscription data with AsyncValue
+/// Recent subscribed provider — paginated view over recent subscription data.
+///
+/// The initial load and [refresh] use `MikanApi.day(2)`, which is also cached
+/// by [recentRecordsProvider] in the kache layer. Pagination ([loadMore])
+/// fetches further days and is network-only by nature.
 @riverpod
 class RecentSubscribed extends _$RecentSubscribed {
   @override
   Future<RecentSubscribedState> build(List<RecordItem> records) async {
-    // Return initial data directly - the Future makes state an AsyncValue
     return RecentSubscribedState(records: records);
   }
 
@@ -41,13 +44,11 @@ class RecentSubscribed extends _$RecentSubscribed {
     });
     setIfMounted(ref, newState);
 
-    // Return success if data loaded, otherwise fail
     return state.hasValue ? IndicatorResult.success : IndicatorResult.fail;
   }
 
   /// Load more subscription data
   Future<IndicatorResult> loadMore() async {
-    // Get current dayOffset before loading
     final currentData = state.value;
     if (currentData == null) {
       return IndicatorResult.fail;
@@ -70,7 +71,6 @@ class RecentSubscribed extends _$RecentSubscribed {
     });
     setIfMounted(ref, newState);
 
-    // Return appropriate result
     if (!state.hasValue) {
       return IndicatorResult.fail;
     }

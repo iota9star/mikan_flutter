@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kache_riverpod/kache_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:mikan/core/api/mikan_api.dart';
+import 'package:mikan/core/cache/kache_init.dart';
+import 'package:mikan/core/cache/kache_providers.dart';
 import 'package:mikan/core/common/consts.dart';
 import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/hive.dart';
@@ -13,7 +16,31 @@ import 'package:mikan/core/common/log.dart';
 import 'package:mikan/core/common/network_font_loader.dart';
 import 'package:mikan/core/models/fonts.dart';
 
+export 'package:mikan/core/cache/kache_providers.dart' show KacheSnapshotWhenExtension;
+
 part 'fonts_provider.g.dart';
+
+/// Persisted SWR cache for the font list. Fonts change rarely so this is a
+/// strong cache candidate.
+final fontsListKacheProvider = kacheProvider.autoDispose<List<Font>>(
+  client: (ref) => ref.watch(kacheClientProvider),
+  query: (_) => KacheQuery<List<Font>>.persisted(
+    key: KacheKey('mikan', ['fonts']),
+    binding: KacheInit.fontListBinding,
+    fetch: (_) async {
+      final fontsData = await MikanApi.fonts();
+      return fontsData
+          .map((it) {
+            final Font font = Font.fromJson(it);
+            font.files = font.files.map((e) => '${ExtraUrl.fontsBaseUrl}/$e').toList();
+            return font;
+          })
+          .toList()
+          .cast<Font>();
+    },
+    policy: KachePolicy.staleWhileRevalidate(),
+  ),
+);
 
 class FontsState {
   FontsState({
@@ -69,15 +96,10 @@ class Fonts extends _$Fonts {
 
   Future<void> load() async {
     try {
-      final fontsData = await MikanApi.fonts();
-      final fonts = fontsData
-          .map((it) {
-            final Font font = Font.fromJson(it);
-            font.files = font.files.map((e) => '${ExtraUrl.fontsBaseUrl}/$e').toList();
-            return font;
-          })
-          .toList()
-          .cast<Font>();
+      // Read from kache SWR cache — instant load from persistence, then
+      // background refresh from network.
+      final snapshot = await ref.read(fontsListKacheProvider.notifier).refresh();
+      final fonts = snapshot.dataOrNull ?? const <Font>[];
 
       final usedFontFamilyId = MyHive.getFontFamily()?.value;
       state = state.copyWith(fonts: fonts, loading: false, usedFontFamilyId: usedFontFamilyId);

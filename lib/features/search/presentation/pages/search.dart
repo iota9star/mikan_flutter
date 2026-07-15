@@ -52,7 +52,7 @@ class _SearchAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchAsync = ref.watch(searchProvider);
-    final isLoading = searchAsync is AsyncLoading;
+    final isLoading = searchAsync.isLoading;
 
     return SliverPinnedAppBar(
       title: '搜索',
@@ -219,7 +219,7 @@ class _SubgroupSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final subgroups = ref.watch(searchProvider.select((async) => async.value?.subgroups));
+    final subgroups = ref.watch(searchProvider.select((async) => async.dataOrNull?.subgroups));
     if (subgroups.isNullOrEmpty) {
       return emptySliverToBoxAdapter;
     }
@@ -239,7 +239,7 @@ class _SubgroupList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final subgroups = ref.watch(searchProvider.select((async) => async.value?.subgroups));
+    final subgroups = ref.watch(searchProvider.select((async) => async.dataOrNull?.subgroups));
     final subgroupId = ref.watch(searchSubgroupIdProvider);
 
     if (subgroups.isNullOrEmpty) {
@@ -294,7 +294,7 @@ class _RecommendSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final bangumis = ref.watch(searchProvider.select((async) => async.value?.bangumis));
+    final bangumis = ref.watch(searchProvider.select((async) => async.dataOrNull?.bangumis));
     if (bangumis.isNullOrEmpty) {
       return emptySliverToBoxAdapter;
     }
@@ -313,7 +313,7 @@ class _RecommendList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bangumis = ref.watch(searchProvider.select((async) => async.value?.bangumis));
+    final bangumis = ref.watch(searchProvider.select((async) => async.dataOrNull?.bangumis));
     if (bangumis.isNullOrEmpty) {
       return emptySliverToBoxAdapter;
     }
@@ -431,7 +431,7 @@ class _SearchResultSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final records = ref.watch(searchProvider.select((async) => async.value?.records));
+    final records = ref.watch(searchProvider.select((async) => async.dataOrNull?.records));
     if (records.isNullOrEmpty) {
       return emptySliverToBoxAdapter;
     }
