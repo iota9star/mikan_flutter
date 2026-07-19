@@ -45,6 +45,21 @@ class HttpCacheManager {
 
   static final Map<String, _TaskInfo> _tasks = <String, _TaskInfo>{};
 
+  /// Builds the deduplication key for an in-flight request. Requests are only
+  /// considered identical when they share the same url, cacheKey, and headers,
+  /// so a second caller with different headers/cacheKey is never silently
+  /// folded into (and corrupted by) an in-flight download.
+  static String _dedupKey(String url, {String? cacheKey, Map<String, dynamic>? headers}) {
+    const sep = '\u0000';
+    if (headers == null || headers.isEmpty) {
+      return cacheKey == null ? url : '$url$sep$cacheKey';
+    }
+    // Stable, sorted serialization of headers.
+    final sortedKeys = headers.keys.toList()..sort();
+    final headerSig = sortedKeys.map((k) => '$k=${headers[k]}').join('\u{001F}');
+    return '$url$sep${cacheKey ?? ''}$sep$headerSig';
+  }
+
   static Future<File?> get(
     String url, {
     String? cacheKey,
@@ -57,17 +72,18 @@ class HttpCacheManager {
       throw StateError('HttpCacheManager not initialized. Call init() first.');
     }
 
-    final _TaskInfo? existingTask = _tasks[url];
+    final dedupKey = _dedupKey(url, cacheKey: cacheKey, headers: headers);
+    final _TaskInfo? existingTask = _tasks[dedupKey];
     if (existingTask != null) {
       return existingTask.completer.future;
     }
 
     final Completer<File?> completer = Completer<File?>();
     final taskInfo = _TaskInfo(completer: completer);
-    _tasks[url] = taskInfo;
+    _tasks[dedupKey] = taskInfo;
 
     void cleanup() {
-      _tasks.remove(url);
+      _tasks.remove(dedupKey);
     }
 
     // Register cancel handler
@@ -186,6 +202,61 @@ class HttpCacheManager {
     } catch (_) {
       return false;
     }
+  }
+
+  /// Validates that a 206 response's `Content-Range` starts exactly at
+  /// [received], so appending to the existing temp file produces a correct,
+  /// non-duplicated byte stream. Returns false when the header is missing or
+  /// the start byte does not match, in which case the caller must restart the
+  /// download from scratch instead of resuming.
+  ///
+  /// The header format is `bytes <start>-<end>/<total>` (RFC 7233). Some
+  /// origins also return `bytes */<total>` for unsatisfiable ranges.
+  static bool _contentRangeStartsAt(HttpClientResponse response, int received) {
+    final raw = response.headers.value(HttpHeaders.contentRangeHeader);
+    if (raw == null || raw.isEmpty) {
+      return false;
+    }
+    // Strip the unit prefix ("bytes "). Values are case-insensitive per spec.
+    final spaceIdx = raw.indexOf(' ');
+    final rangePart = spaceIdx >= 0 ? raw.substring(spaceIdx + 1) : raw;
+    final dashIdx = rangePart.indexOf('-');
+    if (dashIdx <= 0) {
+      return false;
+    }
+    final startStr = rangePart.substring(0, dashIdx);
+    final start = int.tryParse(startStr);
+    return start != null && start == received;
+  }
+
+  /// Compares the validator headers (ETag / Last-Modified) between the HEAD
+  /// probe and the actual GET response to detect a resource that changed
+  /// between the two requests.
+  ///
+  /// This guards resume downloads against silent corruption: if the upstream
+  /// resource was mutated between the HEAD (which sized the file to decide
+  /// whether to resume) and the GET, appending the new tail to the old
+  /// partial temp file would produce a byte stream that belongs to two
+  /// different versions. When this returns false, the caller must discard the
+  /// temp file and restart the download from scratch.
+  ///
+  /// - If the HEAD response carried an `ETag`, the GET must match it.
+  /// - Otherwise, if it carried a `Last-Modified`, the GET must match that.
+  /// - If neither was present on HEAD there is nothing to compare, so the
+  ///   response is treated as consistent (best-effort).
+  static bool _isConsistentWithHead(HttpClientResponse getResponse, HttpClientResponse? headResponse) {
+    if (headResponse == null) {
+      return true;
+    }
+    final headEtag = headResponse.headers.value(HttpHeaders.etagHeader);
+    if (headEtag != null) {
+      return headEtag == getResponse.headers.value(HttpHeaders.etagHeader);
+    }
+    final headLastModified = headResponse.headers.value(HttpHeaders.lastModifiedHeader);
+    if (headLastModified != null) {
+      return headLastModified == getResponse.headers.value(HttpHeaders.lastModifiedHeader);
+    }
+    return true;
   }
 
   /// Perform HEAD request to check cache status
@@ -337,13 +408,24 @@ class HttpCacheManager {
       final isValidResume = await _isValidTempFile(tempFile, expectedSize);
       if (isValidResume) {
         received = await tempFile.length();
+        // The HEAD response has already been inspected for size/validators;
+        // drain it now to release its connection regardless of the resume
+        // outcome below. (In the non-resume path it is drained further down.)
+        try {
+          await headResponse?.drain<void>();
+        } catch (_) {}
         final request = await _client.getUrl(uri);
         headers?.forEach((String k, dynamic v) => request.headers.add(k, v));
         request.headers.add(HttpHeaders.rangeHeader, 'bytes=$received-');
         response = await request.close();
 
-        if (response.statusCode == HttpStatus.partialContent) {
-          // Resume successful
+        if (response.statusCode == HttpStatus.partialContent &&
+            _contentRangeStartsAt(response, received) &&
+            _isConsistentWithHead(response, headResponse)) {
+          // Resume successful — the server honored our Range request, the
+          // Content-Range start matches the bytes we already have, and the
+          // resource is the same version the HEAD saw (same ETag /
+          // Last-Modified), so appending is safe.
           fileMode = FileMode.append;
         } else {
           // Server doesn't support resume for this request, start fresh
@@ -361,6 +443,9 @@ class HttpCacheManager {
         try {
           await tempFile.delete();
         } catch (_) {}
+        try {
+          await headResponse?.drain<void>();
+        } catch (_) {}
         response = await _createRequest(uri, headers);
       }
     } else {
@@ -374,6 +459,12 @@ class HttpCacheManager {
       try {
         await response.drain<void>();
       } catch (_) {}
+      // Clean up any partial temp file so it can't accumulate as disk leak.
+      if (tempFile.existsSync()) {
+        try {
+          await tempFile.delete();
+        } catch (_) {}
+      }
       return null;
     }
 
@@ -383,22 +474,20 @@ class HttpCacheManager {
 
     final completer = Completer<File>();
     final sink = tempFile.openWrite(mode: fileMode);
+    // Owns the subscription + sink so that cancel, error, and done paths never
+    // double-close the sink or double-cancel the subscription.
+    final session = _DownloadSession();
     late StreamSubscription<List<int>> subscription;
 
     subscription = response.listen(
       (bytes) {
-        if (cancelable?.isCancelled ?? false) {
-          subscription.cancel();
-          sink.close();
-          return;
-        }
         sink.add(bytes);
         received += bytes.length;
         _emitProgress(uri, chunkEvents, received, total);
       },
       onDone: () async {
         try {
-          await sink.close();
+          await session.finish(sink);
           File finalFile = tempFile;
 
           if (compressed) {
@@ -446,9 +535,7 @@ class HttpCacheManager {
         }
       },
       onError: (err, stackTrace) async {
-        try {
-          await sink.close();
-        } catch (_) {}
+        await session.dispose(subscription, sink);
         if (!completer.isCompleted) {
           completer.completeError(err, stackTrace);
         }
@@ -456,9 +543,15 @@ class HttpCacheManager {
       cancelOnError: true,
     );
 
+    // Register the cancel handler BEFORE returning, so a cancel that races
+    // with the stream is handled in exactly one place. The previous code
+    // registered this after listen() returned and also re-checked isCancelled
+    // inside onData, which could double-close the sink.
     cancelable?.onBeforeCancel(() async {
-      await subscription.cancel();
-      await sink.close();
+      await session.dispose(subscription, sink);
+      if (!completer.isCompleted) {
+        completer.completeError(StateError('Request canceled'));
+      }
     });
 
     return completer.future;
@@ -477,6 +570,44 @@ class _TaskInfo {
   _TaskInfo({required this.completer});
 
   final Completer<File?> completer;
+}
+
+/// Serializes teardown of an in-flight download so that the done, error, and
+/// cancel paths never concurrently close the [IOSink] or cancel the
+/// subscription. [dispose] is idempotent; concurrent callers await the same
+/// teardown future.
+class _DownloadSession {
+  Future<void>? _disposeFuture;
+  bool _finishing = false;
+
+  /// Marks the sink closed on the natural-completion (done) path. Distinct
+  /// from [dispose] because the done handler must not cancel the (already
+  /// finished) subscription, only close the sink exactly once.
+  Future<void> finish(IOSink sink) {
+    if (_finishing) {
+      return _disposeFuture ?? Future<void>.value();
+    }
+    _finishing = true;
+    _disposeFuture = sink.close();
+    return _disposeFuture!;
+  }
+
+  /// Cancels the subscription and closes the sink exactly once. Safe to call
+  /// from the cancel callback and the error callback concurrently.
+  Future<void> dispose(StreamSubscription<List<int>> subscription, IOSink sink) {
+    if (_disposeFuture != null) {
+      return _disposeFuture!;
+    }
+    _disposeFuture = () async {
+      try {
+        await subscription.cancel();
+      } catch (_) {}
+      try {
+        await sink.close();
+      } catch (_) {}
+    }();
+    return _disposeFuture!;
+  }
 }
 
 /// Cancelable request token
@@ -522,10 +653,15 @@ class ProgressChunkEvent {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is ProgressChunkEvent && runtimeType == other.runtimeType && key == other.key;
+      identical(this, other) ||
+      other is ProgressChunkEvent &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          progress == other.progress &&
+          total == other.total;
 
   @override
-  int get hashCode => key.hashCode;
+  int get hashCode => Object.hash(key, progress, total);
 }
 
 typedef FutureOrVoidCallback = FutureOr<void> Function();

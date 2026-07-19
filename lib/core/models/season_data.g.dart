@@ -13,13 +13,8 @@ class SeasonDataAdapter extends TypeAdapter<SeasonData> {
   @override
   SeasonData read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return SeasonData(
-      season: fields[0] as model.Season,
-      bangumiRows: (fields[1] as List).cast<BangumiRow>(),
-    );
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
+    return SeasonData(season: fields[0] as model.Season, bangumiRows: (fields[1] as List).cast<BangumiRow>());
   }
 
   @override
@@ -38,7 +33,5 @@ class SeasonDataAdapter extends TypeAdapter<SeasonData> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SeasonDataAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is SeasonDataAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

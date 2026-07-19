@@ -13,9 +13,7 @@ class BangumiDetailAdapter extends TypeAdapter<BangumiDetail> {
   @override
   BangumiDetail read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return BangumiDetail()
       ..id = fields[0] as String
       ..cover = fields[1] as String
@@ -52,7 +50,5 @@ class BangumiDetailAdapter extends TypeAdapter<BangumiDetail> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BangumiDetailAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is BangumiDetailAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

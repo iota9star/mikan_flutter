@@ -30,6 +30,15 @@ class LoginPage extends HookConsumerWidget {
     final passwordController = useTextEditingController(text: savedCredentials.password);
     final formKey = useMemoized(GlobalKey<FormState>.new);
 
+    // Reset the (process-global) mutation state on mount so a stale error or
+    // loading indicator from a previous visit — or a second instance of this
+    // page — never bleeds into a fresh entry. Without this, the red error
+    // button and error text persist until a successful run.
+    useEffect(() {
+      loginMutation.reset(ref);
+      return null;
+    }, const []);
+
     // Watch the login mutation state
     final loginState = ref.watch(loginMutation);
     final errorMessage = loginState is MutationError<void> ? formatAuthError(loginState.error) : null;
@@ -113,7 +122,7 @@ class LoginPage extends HookConsumerWidget {
     final hasError = loginState is MutationError;
 
     return ElevatedButton(
-      style: ButtonStyle(backgroundColor: hasError ? const WidgetStatePropertyAll(Colors.red) : null),
+      style: ButtonStyle(backgroundColor: hasError ? WidgetStatePropertyAll(theme.colorScheme.error) : null),
       onPressed: isLoading
           ? null
           : () {

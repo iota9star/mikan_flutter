@@ -13,9 +13,7 @@ class FontAdapter extends TypeAdapter<Font> {
   @override
   Font read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return Font(
       id: fields[0] as String,
       name: fields[1] as String,
@@ -49,10 +47,7 @@ class FontAdapter extends TypeAdapter<Font> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is FontAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is FontAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class LicenseAdapter extends TypeAdapter<License> {
@@ -62,9 +57,7 @@ class LicenseAdapter extends TypeAdapter<License> {
   @override
   License read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return License(name: fields[1] as String, url: fields[0] as String);
   }
 
@@ -83,8 +76,5 @@ class LicenseAdapter extends TypeAdapter<License> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is LicenseAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is LicenseAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

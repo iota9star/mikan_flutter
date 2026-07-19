@@ -14,11 +14,7 @@ final rssRecordsProvider = RssRecordsProvider._();
 
 final class RssRecordsProvider
     extends
-        $FunctionalProvider<
-          Map<String, List<RecordItem>>,
-          Map<String, List<RecordItem>>,
-          Map<String, List<RecordItem>>
-        >
+        $FunctionalProvider<Map<String, List<RecordItem>>, Map<String, List<RecordItem>>, Map<String, List<RecordItem>>>
     with $Provider<Map<String, List<RecordItem>>> {
   RssRecordsProvider._()
     : super(
@@ -36,9 +32,7 @@ final class RssRecordsProvider
 
   @$internal
   @override
-  $ProviderElement<Map<String, List<RecordItem>>> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  $ProviderElement<Map<String, List<RecordItem>>> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   Map<String, List<RecordItem>> create(Ref ref) {
@@ -47,12 +41,7 @@ final class RssRecordsProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Map<String, List<RecordItem>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Map<String, List<RecordItem>>>(
-        value,
-      ),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Map<String, List<RecordItem>>>(value));
   }
 }
 

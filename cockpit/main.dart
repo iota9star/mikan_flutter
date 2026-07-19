@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_cockpit/flutter_cockpit_flutter.dart';
-import 'package:flutter_cockpit_protocol/flutter_cockpit_protocol.dart';
 
 import 'package:mikan/app/mikan_app.dart';
 import 'package:mikan/core/api/mikan_api.dart';
@@ -31,7 +30,7 @@ Future<void> main() async {
   final remoteSession = CockpitRemoteSessionConfiguration.resolveFromEnvironment();
   final config = FlutterCockpitConfig.production(remoteSession: remoteSession);
 
-  FlutterCockpit.runApp(Restart(child: const MikanApp()), config: config);
+  FlutterCockpit.runApp(const Restart(child: MikanApp()), config: config);
 }
 
 Future<void> _initFirebase() async {

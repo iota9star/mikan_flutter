@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Restart extends StatefulWidget {
-  Restart({super.key, required this.child});
+  const Restart({super.key, required this.child});
 
   final Widget child;
 
   static void restartApp(BuildContext context) {
-    context.findAncestorStateOfType<RestartState>()!.restartApp();
+    context.findAncestorStateOfType<RestartState>()?.restartApp();
   }
 
   @override

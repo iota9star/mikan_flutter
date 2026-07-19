@@ -47,7 +47,13 @@ class RecentSubscribed extends _$RecentSubscribed {
     return state.hasValue ? IndicatorResult.success : IndicatorResult.fail;
   }
 
-  /// Load more subscription data
+  /// Load more subscription data.
+  ///
+  /// `MikanApi.day(next)` returns the cumulative window of records from day 1
+  /// to day [next]. Pagination terminates when expanding the window yields no
+  /// additional records (the previous length equals the new length), or when
+  /// the hard cap of 14 days is reached. This avoids an infinite "success"
+  /// loop when a day contributes no new records before the 14-day cap.
   Future<IndicatorResult> loadMore() async {
     final currentData = state.value;
     if (currentData == null) {
@@ -62,23 +68,18 @@ class RecentSubscribed extends _$RecentSubscribed {
     final newState = await AsyncValue.guard(() async {
       final data = await MikanApi.day(next);
 
-      // recent 14 days max
-      if (next > 14 && data.length == currentData.records.length) {
+      final reachedCap = next > 14;
+      final noGrowth = data.length <= currentData.records.length;
+      if (reachedCap || noGrowth) {
         return currentData.copyWith(dayOffset: next, hasReachedEnd: true);
-      } else {
-        return RecentSubscribedState(records: data, dayOffset: next);
       }
+      return RecentSubscribedState(records: data, dayOffset: next);
     });
     setIfMounted(ref, newState);
 
     if (!state.hasValue) {
       return IndicatorResult.fail;
     }
-
-    final newData = state.value!;
-    if (newData.dayOffset > 14 && newData.records.length == currentData.records.length) {
-      return IndicatorResult.noMore;
-    }
-    return IndicatorResult.success;
+    return state.value!.hasReachedEnd ? IndicatorResult.noMore : IndicatorResult.success;
   }
 }

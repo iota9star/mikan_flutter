@@ -6,11 +6,7 @@ import 'package:flutter/widgets.dart';
 /// Unlike [IndexedStack], children that have never been shown are not built,
 /// reducing initial memory usage.
 class LazyIndexedStack extends StatefulWidget {
-  const LazyIndexedStack({
-    super.key,
-    required this.selectedIndex,
-    required this.children,
-  });
+  const LazyIndexedStack({super.key, required this.selectedIndex, required this.children});
 
   /// The index of the currently visible child.
   final int selectedIndex;
@@ -54,11 +50,7 @@ class _LazyIndexedStackState extends State<LazyIndexedStack> {
         if (!isVisible && !isVisited) {
           return const SizedBox.shrink();
         }
-        return _PositionedChild(
-          key: ValueKey(index),
-          visible: isVisible,
-          child: widget.children[index],
-        );
+        return _PositionedChild(key: ValueKey(index), visible: isVisible, child: widget.children[index]);
       }),
     );
   }

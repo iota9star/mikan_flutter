@@ -13,9 +13,7 @@ class CachedRecordListAdapter extends TypeAdapter<CachedRecordList> {
   @override
   CachedRecordList read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return CachedRecordList((fields[0] as List).cast<RecordItem>());
   }
 
@@ -33,22 +31,17 @@ class CachedRecordListAdapter extends TypeAdapter<CachedRecordList> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CachedRecordListAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is CachedRecordListAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
-class CachedSeasonGalleryListAdapter
-    extends TypeAdapter<CachedSeasonGalleryList> {
+class CachedSeasonGalleryListAdapter extends TypeAdapter<CachedSeasonGalleryList> {
   @override
   final typeId = 109;
 
   @override
   CachedSeasonGalleryList read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return CachedSeasonGalleryList((fields[0] as List).cast<SeasonGallery>());
   }
 
@@ -66,9 +59,7 @@ class CachedSeasonGalleryListAdapter
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CachedSeasonGalleryListAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is CachedSeasonGalleryListAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class CachedBangumiListAdapter extends TypeAdapter<CachedBangumiList> {
@@ -78,9 +69,7 @@ class CachedBangumiListAdapter extends TypeAdapter<CachedBangumiList> {
   @override
   CachedBangumiList read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return CachedBangumiList((fields[0] as List).cast<Bangumi>());
   }
 
@@ -98,9 +87,7 @@ class CachedBangumiListAdapter extends TypeAdapter<CachedBangumiList> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CachedBangumiListAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is CachedBangumiListAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class CachedFontListAdapter extends TypeAdapter<CachedFontList> {
@@ -110,9 +97,7 @@ class CachedFontListAdapter extends TypeAdapter<CachedFontList> {
   @override
   CachedFontList read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return CachedFontList((fields[0] as List).cast<Font>());
   }
 
@@ -130,7 +115,5 @@ class CachedFontListAdapter extends TypeAdapter<CachedFontList> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CachedFontListAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is CachedFontListAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

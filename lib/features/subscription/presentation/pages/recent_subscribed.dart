@@ -12,8 +12,8 @@ import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/kit.dart';
 @FFAutoImport()
 import 'package:mikan/core/models/record_item.dart';
+import 'package:mikan/core/components/record_sliver_delegate.dart';
 import 'package:mikan/core/components/rss_record_item.dart';
-import 'package:mikan/core/components/simple_record_item.dart';
 import 'package:mikan/core/widgets/sliver_pinned_header.dart';
 import 'package:mikan/features/home/application/index_provider.dart';
 import 'package:mikan/features/subscription/application/recent_subscribed_provider.dart';
@@ -90,13 +90,7 @@ class RecentSubscribedPage extends ConsumerWidget {
               crossAxisSpacing: margins,
               mainAxisSpacing: margins,
             ),
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final record = records[index];
-              return ProviderScope(
-                overrides: [currentRecordProvider.overrideWithValue(record)],
-                child: const RssRecordItem(),
-              );
-            }, childCount: records.length),
+            delegate: recordItemDelegate(records, const RssRecordItem()),
           );
         },
       ),

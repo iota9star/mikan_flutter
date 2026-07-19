@@ -4,8 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mikan/features/bangumi/presentation/pages/bangumi.dart';
 import 'package:mikan/features/bangumi/presentation/pages/record.dart';
 import 'package:mikan/core/common/extension.dart';
-import 'package:mikan/core/common/image_provider.dart';
 import 'package:mikan/core/widgets/icon_button.dart';
+import 'package:mikan/core/widgets/pixa_image.dart';
 import 'package:mikan/core/widgets/ripple_tap.dart';
 import 'package:mikan/core/widgets/transition_container.dart';
 import 'package:mikan/core/components/simple_record_item.dart';
@@ -23,7 +23,7 @@ class RssRecordItem extends ConsumerWidget {
     final bangumiId = record.id;
     final cover = Container(
       decoration: BoxDecoration(
-        image: DecorationImage(image: CacheImage(record.cover), fit: BoxFit.cover),
+        image: DecorationImage(image: pixaNetworkProvider(record.cover, targetWidth: 500), fit: BoxFit.cover),
       ),
       foregroundDecoration: BoxDecoration(color: theme.colorScheme.surface.withValues(alpha: 0.87)),
     );

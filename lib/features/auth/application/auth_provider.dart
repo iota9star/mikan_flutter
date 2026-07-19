@@ -26,9 +26,14 @@ class RememberMeNotifier extends Notifier<bool> {
     return login['RememberMe'] ?? false;
   }
 
-  /// Updates the remember me state.
+  /// Updates the remember me state and persists the preference immediately,
+  // so the checkbox selection survives even if the user leaves before
+  // successfully logging in.
   void update(bool value) {
     state = value;
+    final login = MyHive.getLogin();
+    login['RememberMe'] = value;
+    MyHive.setLogin(login);
   }
 }
 

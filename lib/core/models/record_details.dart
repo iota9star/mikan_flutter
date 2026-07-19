@@ -8,6 +8,29 @@ part 'record_details.g.dart';
 
 @HiveType(typeId: 100)
 class RecordDetail {
+  /// Hive requires a no-arg default constructor for deserialization; app code
+  /// should prefer [RecordDetail.create], whose required parameters make a
+  /// missing field a compile-time error instead of a runtime
+  /// [LateInitializationError].
+  RecordDetail();
+
+  RecordDetail.create({
+    this.id,
+    this.cover = '',
+    required this.name,
+    this.subscribed = false,
+    Map<String, String>? more,
+    this.intro = '',
+    List<Subgroup>? subgroups,
+    this.url = '',
+    required this.title,
+    required this.magnet,
+    required this.torrent,
+    List<String>? tags,
+  }) : more = more ?? {},
+       subgroups = subgroups ?? [],
+       tags = tags ?? [];
+
   @HiveField(0)
   String? id;
 
@@ -43,6 +66,37 @@ class RecordDetail {
 
   @HiveField(11)
   late List<String> tags;
+
+  /// Returns a copy with the given fields replaced.
+  RecordDetail copyWith({
+    String? id,
+    String? cover,
+    String? name,
+    bool? subscribed,
+    Map<String, String>? more,
+    String? intro,
+    List<Subgroup>? subgroups,
+    String? url,
+    String? title,
+    String? magnet,
+    String? torrent,
+    List<String>? tags,
+  }) {
+    return RecordDetail.create(
+      id: id ?? this.id,
+      cover: cover ?? this.cover,
+      name: name ?? this.name,
+      subscribed: subscribed ?? this.subscribed,
+      more: more ?? this.more,
+      intro: intro ?? this.intro,
+      subgroups: subgroups ?? this.subgroups,
+      url: url ?? this.url,
+      title: title ?? this.title,
+      magnet: magnet ?? this.magnet,
+      torrent: torrent ?? this.torrent,
+      tags: tags ?? this.tags,
+    );
+  }
 
   /// Computed field — excluded from Hive serialization.
   late final String share = _buildShareText();

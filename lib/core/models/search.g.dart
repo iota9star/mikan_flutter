@@ -13,9 +13,7 @@ class SearchResultAdapter extends TypeAdapter<SearchResult> {
   @override
   SearchResult read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return SearchResult(
       bangumis: (fields[0] as List).cast<Bangumi>(),
       subgroups: (fields[1] as List).cast<Subgroup>(),
@@ -41,7 +39,5 @@ class SearchResultAdapter extends TypeAdapter<SearchResult> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SearchResultAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is SearchResultAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

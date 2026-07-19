@@ -60,11 +60,7 @@ class MyHive {
   /// separate persistence box, so the legacy entries are removed on first
   /// launch of the new version.
   static Future<void> _cleanupLegacyCacheKeys() async {
-    const legacyKeys = <String>[
-      HiveDBKey.mikanIndex,
-      HiveDBKey.mikanOva,
-      HiveDBKey.mikanList,
-    ];
+    const legacyKeys = <String>[HiveDBKey.mikanIndex, HiveDBKey.mikanOva, HiveDBKey.mikanList];
     final existing = legacyKeys.where((key) => db.containsKey(key)).toList();
     if (existing.isEmpty) {
       return;
@@ -325,7 +321,7 @@ class MyHive {
 
   static TabletMode getTabletMode() {
     final mode = settings.get(SettingsHiveKey.tabletMode, defaultValue: TabletMode.auto.name);
-    return TabletMode.values.firstWhere((e) => e.name == mode);
+    return TabletMode.values.firstWhereOrNull((e) => e.name == mode) ?? TabletMode.auto;
   }
 
   static Future<void> setTabletMode(TabletMode mode) {
@@ -334,7 +330,7 @@ class MyHive {
 
   static Decimal getCardRatio() {
     final value = settings.get(SettingsHiveKey.cardRatio, defaultValue: '0.9');
-    return Decimal.parse(value);
+    return _parseDecimalOrDefault(value, Decimal.parse('0.9'));
   }
 
   static Future<void> setCardRatio(Decimal ratio) {
@@ -343,11 +339,24 @@ class MyHive {
 
   static Decimal getCardWidth() {
     final value = settings.get(SettingsHiveKey.cardWidth, defaultValue: '200.0');
-    return Decimal.parse(value);
+    return _parseDecimalOrDefault(value, Decimal.parse('200.0'));
   }
 
   static Future<void> setCardWidth(Decimal width) {
     return settings.put(SettingsHiveKey.cardWidth, width.toString());
+  }
+
+  /// Parses [value] into a [Decimal], returning [defaultValue] on a malformed
+  /// persisted value so a corrupt Hive entry can never crash the UI layer.
+  static Decimal _parseDecimalOrDefault(Object? value, Decimal defaultValue) {
+    if (value is! String) {
+      return defaultValue;
+    }
+    try {
+      return Decimal.parse(value);
+    } on FormatException {
+      return defaultValue;
+    }
   }
 }
 

@@ -87,7 +87,7 @@ class SliverWaterfallFlowDelegateWithMinCrossAxisExtent extends SliverWaterfallF
       return true;
     }
 
-    return oldDelegate is SliverWaterfallFlowDelegateWithMaxCrossAxisExtent &&
-        (oldDelegate.maxCrossAxisExtent != minCrossAxisExtent || super.shouldRelayout(oldDelegate));
+    return oldDelegate is SliverWaterfallFlowDelegateWithMinCrossAxisExtent &&
+        (oldDelegate.minCrossAxisExtent != minCrossAxisExtent || super.shouldRelayout(oldDelegate));
   }
 }

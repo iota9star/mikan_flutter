@@ -233,14 +233,17 @@ class MikanApi {
     try {
       await init();
 
-      // Set baseUrl before each API call
-      final mirrorUrl = MyHive.getMirrorUrl();
+      // Set baseUrl before each API call.
+      // jsonEncode produces a valid JS string literal and prevents a malformed
+      // or hostile persisted mirrorUrl from breaking out of the string and
+      // executing arbitrary JS in the QuickJS engine.
+      final mirrorUrl = jsonEncode(MyHive.getMirrorUrl());
       final a = jsonEncode(args ?? []);
       final code =
           '''
         await (async () => {
           const {default: mikan} = await import("mikan");
-          mikan.setBaseUrl('$mirrorUrl');
+          mikan.setBaseUrl($mirrorUrl);
           return mikan["$method"].apply(mikan, $a);
         })()
       ''';
@@ -311,7 +314,9 @@ class MikanApi {
   static Index _parseIndex(Map<String, dynamic> json) {
     return Index(
       years: (json['years'] as List? ?? []).map((e) => _parseYearSeason(e as Map<String, dynamic>)).toList(),
-      bangumiRows: (json['bangumiRows'] as List? ?? []).map((e) => _parseBangumiRow(e as Map<String, dynamic>)).toList(),
+      bangumiRows: (json['bangumiRows'] as List? ?? [])
+          .map((e) => _parseBangumiRow(e as Map<String, dynamic>))
+          .toList(),
       rss: (json['rss'] as Map? ?? {}).map(
         (k, v) => MapEntry(k.toString(), (v as List).map((e) => _parseRecordItem(e as Map<String, dynamic>)).toList()),
       ),
@@ -399,26 +404,28 @@ class MikanApi {
     (json['subgroupBangumis'] as Map?)?.forEach((key, value) {
       subgroupBangumis[key.toString()] = _parseSubgroupBangumi(value as Map<String, dynamic>);
     });
-    return BangumiDetail()
-      ..id = json['id'] as String
-      ..cover = json['cover'] as String
-      ..name = json['name'] as String
-      ..intro = json['intro'] as String
-      ..subscribed = json['subscribed'] as bool
-      ..more = _parseStringMap(json['more'])
-      ..subgroupBangumis = subgroupBangumis;
+    return BangumiDetail.create(
+      id: json['id'] as String,
+      cover: json['cover'] as String,
+      name: json['name'] as String,
+      intro: json['intro'] as String,
+      subscribed: json['subscribed'] as bool,
+      more: _parseStringMap(json['more']),
+      subgroupBangumis: subgroupBangumis,
+    );
   }
 
   static SubgroupBangumi _parseSubgroupBangumi(Map<String, dynamic> json) {
-    return SubgroupBangumi()
-      ..dataId = json['dataId'] as String
-      ..name = json['name'] as String
-      ..subscribed = json['subscribed'] as bool
-      ..sublang = json['sublang'] as String?
-      ..rss = json['rss'] as String?
-      ..state = json['state'] as int
-      ..subgroups = (json['subgroups'] as List).map((e) => _parseSubgroup(e as Map<String, dynamic>)).toList()
-      ..records = (json['records'] as List).map((e) => _parseRecordItem(e as Map<String, dynamic>)).toList();
+    return SubgroupBangumi.create(
+      dataId: json['dataId'] as String,
+      name: json['name'] as String,
+      subscribed: json['subscribed'] as bool,
+      sublang: json['sublang'] as String?,
+      rss: json['rss'] as String?,
+      state: json['state'] as int,
+      subgroups: (json['subgroups'] as List).map((e) => _parseSubgroup(e as Map<String, dynamic>)).toList(),
+      records: (json['records'] as List).map((e) => _parseRecordItem(e as Map<String, dynamic>)).toList(),
+    );
   }
 
   static Carousel _parseCarousel(Map<String, dynamic> json) {
@@ -458,17 +465,18 @@ class MikanApi {
   }
 
   static RecordDetail _parseRecordDetail(Map<String, dynamic> json) {
-    return RecordDetail()
-      ..id = json['id'] as String? ?? ''
-      ..cover = json['cover'] as String? ?? ''
-      ..name = json['name'] as String? ?? ''
-      ..title = json['title'] as String? ?? ''
-      ..tags = (json['tags'] as List?)?.map((e) => e as String).toList() ?? []
-      ..subscribed = json['subscribed'] as bool? ?? false
-      ..more = _parseStringMap(json['more'] ?? {})
-      ..intro = json['intro'] as String? ?? ''
-      ..torrent = json['torrent'] as String? ?? ''
-      ..magnet = json['magnet'] as String? ?? '';
+    return RecordDetail.create(
+      id: json['id'] as String? ?? '',
+      cover: json['cover'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      tags: (json['tags'] as List?)?.map((e) => e as String).toList() ?? [],
+      subscribed: json['subscribed'] as bool? ?? false,
+      more: _parseStringMap(json['more'] ?? {}),
+      intro: json['intro'] as String? ?? '',
+      torrent: json['torrent'] as String? ?? '',
+      magnet: json['magnet'] as String? ?? '',
+    );
   }
 
   // ==================== API Methods ====================

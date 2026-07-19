@@ -120,7 +120,13 @@ class Index extends _$Index {
 
     // Load failed with no cached data.
     if (indexSnapshot.isFailed) {
-      throw indexSnapshot.failure?.cause ?? Exception('Index load failed');
+      final cause = indexSnapshot.failure?.cause;
+      if (cause is Error) {
+        throw cause;
+      } else if (cause is Exception) {
+        throw cause;
+      }
+      throw Exception(cause ?? 'Index load failed');
     }
 
     return const IndexData();
@@ -134,12 +140,8 @@ class Index extends _$Index {
 
     try {
       // Force refresh both kache resources in parallel.
-      final indexSnapshot = await ref.read(_indexKacheProvider.notifier).refresh().timeout(
-        const Duration(seconds: 15),
-      );
-      final ovaSnapshot = await ref.read(_ovaKacheProvider.notifier).refresh().timeout(
-        const Duration(seconds: 15),
-      );
+      final indexSnapshot = await ref.read(_indexKacheProvider.notifier).refresh().timeout(const Duration(seconds: 15));
+      final ovaSnapshot = await ref.read(_ovaKacheProvider.notifier).refresh().timeout(const Duration(seconds: 15));
 
       final indexModel = indexSnapshot.dataOrNull;
       final ovas = ovaSnapshot.dataOrNull?.items ?? const <RecordItem>[];
@@ -148,7 +150,7 @@ class Index extends _$Index {
         return IndicatorResult.fail;
       }
 
-      final data = _buildIndexData(indexModel, ovas, isFromCache: false);
+      final data = _buildIndexData(indexModel, ovas);
       final result = _preservePreferredSeason(
         data,
         preferredSeason: preferredSeason,

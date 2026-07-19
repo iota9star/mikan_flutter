@@ -16,7 +16,6 @@ import 'package:mikan/res/assets.gen.dart';
 import 'package:mikan/core/cache/kache_init.dart';
 import 'package:mikan/core/cache/kache_providers.dart';
 import 'package:mikan/core/common/extension.dart';
-import 'package:mikan/core/common/image_provider.dart';
 import 'package:mikan/core/common/kit.dart';
 import 'package:mikan/core/models/bangumi_details.dart';
 import 'package:mikan/core/models/subgroup_bangumi.dart';
@@ -27,6 +26,7 @@ import 'package:mikan/features/bangumi/presentation/widgets/subgroup_bangumis.da
 import 'package:mikan/features/bangumi/presentation/widgets/subgroup_subscribe.dart';
 import 'package:mikan/core/widgets/bottom_sheet.dart';
 import 'package:mikan/core/widgets/icon_button.dart';
+import 'package:mikan/core/widgets/pixa_image.dart';
 import 'package:mikan/core/widgets/ripple_tap.dart';
 import 'package:mikan/core/widgets/scalable_tap.dart';
 import 'package:mikan/core/common/app_layout.dart';
@@ -34,8 +34,7 @@ import 'package:mikan/core/common/app_layout.dart';
 part 'bangumi.g.dart';
 
 /// Persisted SWR cache for bangumi detail, keyed by bangumi id.
-final _bangumiDetailKacheProvider =
-    kacheProvider.autoDispose.family<BangumiDetail, String>(
+final _bangumiDetailKacheProvider = kacheProvider.autoDispose.family<BangumiDetail, String>(
   client: (ref) => ref.watch(kacheClientProvider),
   query: (ref, id) => KacheQuery<BangumiDetail>.persisted(
     key: KacheKey('mikan', ['bangumi-detail', id]),
@@ -96,32 +95,14 @@ class Bangumi extends _$Bangumi {
         return IndicatorResult.fail;
       }
 
-      final updatedSubgroup = SubgroupBangumi()
-        ..name = oldSubgroup.name
-        ..dataId = oldSubgroup.dataId
-        ..rss = oldSubgroup.rss
-        ..subscribed = oldSubgroup.subscribed
-        ..sublang = oldSubgroup.sublang
-        ..subgroups = oldSubgroup.subgroups
-        ..state = oldSubgroup.state
-        ..records = records;
+      final updatedSubgroup = oldSubgroup.copyWith(records: records);
       updatedSubgroupBangumis[dataId] = updatedSubgroup;
 
-      final updatedDetail = BangumiDetail()
-        ..id = currentDetail.id
-        ..name = currentDetail.name
-        ..cover = currentDetail.cover
-        ..subscribed = currentDetail.subscribed
-        ..intro = currentDetail.intro
-        ..more = currentDetail.more
-        ..subgroupBangumis = updatedSubgroupBangumis;
+      final updatedDetail = currentDetail.copyWith(subgroupBangumis: updatedSubgroupBangumis);
 
       // Persist the updated detail through kache.
       await ref.read(_bangumiDetailKacheProvider(id).notifier).setData(updatedDetail);
-      updateIfMounted(
-        ref,
-        (current) => current.copyWith(refreshFlag: current.refreshFlag + 1),
-      );
+      updateIfMounted(ref, (current) => current.copyWith(refreshFlag: current.refreshFlag + 1));
       return IndicatorResult.success;
     }
   }
@@ -133,10 +114,7 @@ class Bangumi extends _$Bangumi {
     if (!ref.mounted || detail == null) {
       return IndicatorResult.fail;
     }
-    updateIfMounted(
-      ref,
-      (current) => current.copyWith(refreshFlag: current.refreshFlag + 1),
-    );
+    updateIfMounted(ref, (current) => current.copyWith(refreshFlag: current.refreshFlag + 1));
     return IndicatorResult.success;
   }
 }
@@ -324,6 +302,7 @@ class _BangumiPageState extends ConsumerState<BangumiPage> {
           const Gap(12),
           for (int index = 0; index < maxItemLen; index++)
             ProviderScope(
+              key: ValueKey(e.value.records[index].url),
               overrides: [currentRecordProvider.overrideWithValue(e.value.records[index])],
               child: const Padding(padding: EdgeInsets.only(bottom: 8.0), child: SimpleRecordItem()),
             ),
@@ -363,7 +342,7 @@ class _BangumiPageState extends ConsumerState<BangumiPage> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.fitWidth,
-                    image: CacheImage(widget.cover),
+                    image: pixaNetworkProvider(widget.cover, targetWidth: 1080),
                     alignment: Alignment.topCenter,
                     isAntiAlias: true,
                   ),
@@ -502,20 +481,9 @@ class _BangumiPageState extends ConsumerState<BangumiPage> {
   Widget _buildCover(String cover) {
     return ScalableCard(
       onTap: () {},
-      child: Image(
-        image: CacheImage(cover),
+      child: AppNetworkImage(
+        cover,
         width: 148.0,
-        loadingBuilder: (_, child, event) {
-          return event == null
-              ? child
-              : AspectRatio(
-                  aspectRatio: 3 / 4,
-                  child: Container(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Center(child: Assets.mikan.image()),
-                  ),
-                );
-        },
         errorBuilder: (_, __, ___) {
           return AspectRatio(
             aspectRatio: 3 / 4,

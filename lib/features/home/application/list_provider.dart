@@ -77,7 +77,13 @@ class ListNotifier extends _$ListNotifier {
 
     // Load failed with no cached data.
     if (snapshot.isFailed) {
-      throw snapshot.failure?.cause ?? Exception('List load failed');
+      final cause = snapshot.failure?.cause;
+      if (cause is Error) {
+        throw cause;
+      } else if (cause is Exception) {
+        throw cause;
+      }
+      throw Exception(cause ?? 'List load failed');
     }
 
     return const ListData();

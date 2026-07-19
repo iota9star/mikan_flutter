@@ -13,9 +13,7 @@ class SubgroupBangumiAdapter extends TypeAdapter<SubgroupBangumi> {
   @override
   SubgroupBangumi read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return SubgroupBangumi()
       ..name = fields[0] as String
       ..dataId = fields[1] as String
@@ -55,7 +53,5 @@ class SubgroupBangumiAdapter extends TypeAdapter<SubgroupBangumi> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SubgroupBangumiAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is SubgroupBangumiAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

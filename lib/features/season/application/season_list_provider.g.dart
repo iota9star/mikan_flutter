@@ -12,18 +12,15 @@ part of 'season_list_provider.dart';
 @ProviderFor(SeasonList)
 final seasonListProvider = SeasonListFamily._();
 
-final class SeasonListProvider
-    extends $NotifierProvider<SeasonList, AsyncValue<SeasonListState>> {
-  SeasonListProvider._({
-    required SeasonListFamily super.from,
-    required List<YearSeason> super.argument,
-  }) : super(
-         retry: null,
-         name: r'seasonListProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+final class SeasonListProvider extends $NotifierProvider<SeasonList, AsyncValue<SeasonListState>> {
+  SeasonListProvider._({required SeasonListFamily super.from, required List<YearSeason> super.argument})
+    : super(
+        retry: null,
+        name: r'seasonListProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$seasonListHash();
@@ -41,10 +38,7 @@ final class SeasonListProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<SeasonListState> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<SeasonListState>>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<AsyncValue<SeasonListState>>(value));
   }
 
   @override
@@ -78,8 +72,7 @@ final class SeasonListFamily extends $Family
         isAutoDispose: true,
       );
 
-  SeasonListProvider call(List<YearSeason> years) =>
-      SeasonListProvider._(argument: years, from: this);
+  SeasonListProvider call(List<YearSeason> years) => SeasonListProvider._(argument: years, from: this);
 
   @override
   String toString() => r'seasonListProvider';
@@ -93,16 +86,11 @@ abstract class _$SeasonList extends $Notifier<AsyncValue<SeasonListState>> {
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref =
-        this.ref
-            as $Ref<AsyncValue<SeasonListState>, AsyncValue<SeasonListState>>;
+    final ref = this.ref as $Ref<AsyncValue<SeasonListState>, AsyncValue<SeasonListState>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<SeasonListState>,
-                AsyncValue<SeasonListState>
-              >,
+              AnyNotifier<AsyncValue<SeasonListState>, AsyncValue<SeasonListState>>,
               AsyncValue<SeasonListState>,
               Object?,
               Object?

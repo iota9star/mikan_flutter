@@ -10,6 +10,8 @@ part 'season_list_provider.g.dart';
 
 @riverpod
 class SeasonList extends _$SeasonList {
+  bool _isLoadingMore = false;
+
   @override
   AsyncValue<SeasonListState> build(List<YearSeason> years) {
     final seasons = years.map((e) => e.seasons).expand((element) => element).toList();
@@ -26,13 +28,24 @@ class SeasonList extends _$SeasonList {
   }
 
   Future<void> loadMore() async {
+    // Guard against overlapping pagination: without this, fast scrolling could
+    // trigger concurrent _loadBangumis calls that both read the same loadIndex,
+    // producing duplicate seasons or skipping an index.
+    if (_isLoadingMore) {
+      return;
+    }
     final currentState = state.value;
     if (currentState == null) {
       return;
     }
 
-    final newState = await AsyncValue.guard(() => _loadBangumis(currentState));
-    setIfMounted(ref, newState);
+    _isLoadingMore = true;
+    try {
+      final newState = await AsyncValue.guard(() => _loadBangumis(currentState));
+      setIfMounted(ref, newState);
+    } finally {
+      _isLoadingMore = false;
+    }
   }
 
   Future<SeasonListState> _loadBangumis(SeasonListState currentState) async {

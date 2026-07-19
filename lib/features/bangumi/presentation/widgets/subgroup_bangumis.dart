@@ -12,6 +12,7 @@ import 'package:mikan/core/models/subgroup.dart';
 import 'package:mikan/core/models/subgroup_bangumi.dart';
 import 'package:mikan/core/widgets/bottom_sheet.dart';
 import 'package:mikan/core/widgets/sliver_pinned_header.dart';
+import 'package:mikan/core/components/record_sliver_delegate.dart';
 import 'package:mikan/core/components/simple_record_item.dart';
 import 'package:mikan/features/bangumi/presentation/widgets/select_subgroup.dart';
 
@@ -88,13 +89,7 @@ class SubgroupBangumis extends ConsumerWidget {
         return SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
           sliver: SliverWaterfallFlow(
-            delegate: SliverChildBuilderDelegate((context, ind) {
-              final record = records[ind];
-              return ProviderScope(
-                overrides: [currentRecordProvider.overrideWithValue(record)],
-                child: const SimpleRecordItem(),
-              );
-            }, childCount: records.length),
+            delegate: recordItemDelegate(records, const SimpleRecordItem()),
             gridDelegate: const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
               mainAxisSpacing: 8.0,

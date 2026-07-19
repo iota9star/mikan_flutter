@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'package:mikan/core/common/app_utils.dart';
 
 const _esc = '\x1B[';
 const _reset = '${_esc}0m';
@@ -55,11 +58,31 @@ extension Log on Object? {
   }
 
   static void e({Object? msg, String? tag, Object? error, StackTrace? stackTrace, int level = 1}) {
-    if (!kDebugMode) {
-      return;
+    if (kDebugMode) {
+      final track = tag ?? _trackStackTraceId(StackTrace.current, level);
+      _log(msg: msg, track: track, error: error, stackTrace: stackTrace, level: ' E ', levelColor: _red);
     }
-    final track = tag ?? _trackStackTraceId(StackTrace.current, level);
-    _log(msg: msg, track: track, error: error, stackTrace: stackTrace, level: ' E ', levelColor: _red);
+    // In release, forward errors to Crashlytics so they are not silently lost.
+    // Best-effort: never let reporting itself throw.
+    if (isSupportFirebase) {
+      _reportToCrashlytics(msg, error, stackTrace);
+    }
+  }
+
+  static void _reportToCrashlytics(Object? msg, Object? error, StackTrace? stackTrace) {
+    try {
+      final cause = error ?? msg;
+      if (cause == null) {
+        return;
+      }
+      final effectiveStack = stackTrace ?? StackTrace.current;
+      if (msg != null && msg != cause) {
+        FirebaseCrashlytics.instance.log('$msg');
+      }
+      FirebaseCrashlytics.instance.recordError(cause, effectiveStack);
+    } on Object {
+      // Swallow: logging must never crash the app.
+    }
   }
 
   static void _log({
@@ -107,9 +130,11 @@ extension Log on Object? {
   }
 
   static String _trackStackTraceId(StackTrace stackTrace, int level) {
-    return stackTrace
-        .toString()
-        .split('\n')[level]
+    final lines = stackTrace.toString().split('\n');
+    if (level < 0 || level >= lines.length) {
+      return '<unknown>';
+    }
+    return lines[level]
         .replaceAll(RegExp(r'(#\d+\s+)'), '')
         .replaceAll(RegExp('(<anonymous closure>)'), '()')
         // .replaceAll(RegExp(r'\s\((.+?):\d+:\d+\)'), '')

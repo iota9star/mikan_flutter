@@ -6,6 +6,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:pixa/pixa.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:mikan/app/mikan_app.dart';
@@ -36,9 +37,11 @@ Future<void> initFirebase() async {
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(!kDebugMode);
   // Record all framework errors (including non-fatal), not just fatal ones.
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-  // Catch async errors that escape FlutterError (zone-uncaught).
+  // Catch async errors that escape FlutterError (zone-uncaught). These are
+  // generally non-fatal (most are unhandled async exceptions), so report them
+  // as non-fatal to keep crash-free metrics accurate.
   PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    FirebaseCrashlytics.instance.recordError(error, stack);
     return true;
   };
 }
@@ -49,6 +52,9 @@ Future<void> initMisc() async {
     NetworkFontLoader.init(),
     HttpCacheManager.init(),
     MikanApi.init(),
+    // Pixa image pipeline (Rust-backed Native Assets runtime). Independent of
+    // the other subsystems and safe to initialize in parallel.
+    Pixa.configure(),
     if (isSupportFirebase) initFirebase(),
   ]);
   // Initialize the Kache persistence + network layer.
@@ -67,5 +73,5 @@ Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initMisc();
   await initWindow();
-  runApp(Restart(child: const MikanApp()));
+  runApp(const Restart(child: MikanApp()));
 }

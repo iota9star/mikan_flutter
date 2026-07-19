@@ -7,6 +7,22 @@ part 'bangumi_details.g.dart';
 
 @HiveType(typeId: 103)
 class BangumiDetail {
+  /// Hive requires a no-arg default constructor for deserialization; app code
+  /// should prefer [BangumiDetail.create], whose required parameters make a
+  /// missing field a compile-time error instead of a runtime
+  /// [LateInitializationError].
+  BangumiDetail();
+
+  BangumiDetail.create({
+    required this.id,
+    required this.cover,
+    required this.name,
+    required this.subscribed,
+    required this.more,
+    required this.intro,
+    required this.subgroupBangumis,
+  });
+
   @HiveField(0)
   late String id;
 
@@ -30,6 +46,28 @@ class BangumiDetail {
 
   /// Computed field — excluded from Hive serialization.
   late final String share = '$name\n${MikanUrls.bangumi}/$id';
+
+  /// Returns a copy of this detail with the given fields replaced. Centralizes
+  /// the cascade-copy pattern so callers can't silently drop a field.
+  BangumiDetail copyWith({
+    String? id,
+    String? cover,
+    String? name,
+    bool? subscribed,
+    Map<String, String>? more,
+    String? intro,
+    Map<String, SubgroupBangumi>? subgroupBangumis,
+  }) {
+    return BangumiDetail.create(
+      id: id ?? this.id,
+      cover: cover ?? this.cover,
+      name: name ?? this.name,
+      subscribed: subscribed ?? this.subscribed,
+      more: more ?? this.more,
+      intro: intro ?? this.intro,
+      subgroupBangumis: subgroupBangumis ?? this.subgroupBangumis,
+    );
+  }
 
   @override
   bool operator ==(Object other) =>

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 
 import 'package:mikan/core/common/hive.dart';
@@ -44,12 +45,38 @@ class Index extends HiveObject {
       identical(this, other) ||
       other is Index &&
           runtimeType == other.runtimeType &&
-          years == other.years &&
-          bangumiRows == other.bangumiRows &&
-          rss == other.rss &&
-          carousels == other.carousels &&
-          user == other.user;
+          user == other.user &&
+          // Structural comparisons so objects rebuilt from identical data
+          // compare equal even when List/Map identities differ.
+          listEquals(years, other.years) &&
+          listEquals(bangumiRows, other.bangumiRows) &&
+          listEquals(carousels, other.carousels) &&
+          listEquals(announcements, other.announcements) &&
+          _rssEquals(rss, other.rss);
 
   @override
-  int get hashCode => years.hashCode ^ bangumiRows.hashCode ^ rss.hashCode ^ carousels.hashCode ^ user.hashCode;
+  int get hashCode => Object.hash(
+    user,
+    Object.hashAll(years),
+    Object.hashAll(bangumiRows),
+    Object.hashAll(carousels),
+    announcements == null ? null : Object.hashAll(announcements!),
+    // Deep-hash the rss map values.
+    Object.hashAll(rss.entries.expand((e) => [e.key, Object.hashAll(e.value)])),
+  );
+
+  /// Deep equality for the rss map whose values are lists of [RecordItem].
+  static bool _rssEquals(Map<String, List<RecordItem>> a, Map<String, List<RecordItem>> b) {
+    if (a.length != b.length) {
+      return false;
+    }
+    for (final key in a.keys) {
+      final av = a[key];
+      final bv = b[key];
+      if (bv == null || !listEquals(av, bv)) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

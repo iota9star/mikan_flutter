@@ -11,12 +11,12 @@ import 'package:mikan/res/assets.gen.dart';
 import 'package:mikan/features/bangumi/presentation/pages/bangumi.dart';
 import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/hive.dart';
-import 'package:mikan/core/common/image_provider.dart';
 import 'package:mikan/core/common/kit.dart';
 import 'package:mikan/core/models/bangumi.dart' as model;
 import 'package:mikan/features/subscription/application/subscription_service.dart'
     show subscribeBangumi, subscribeMutation;
 import 'package:mikan/core/widgets/scalable_tap.dart';
+import 'package:mikan/core/widgets/pixa_image.dart';
 import 'package:mikan/core/widgets/transition_container.dart';
 
 /// Provider for current bangumi - will be overridden
@@ -257,31 +257,10 @@ class _BangumiItemCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final margins = context.margins;
-    final size = calcGridItemSizeWithMaxCrossAxisExtent(
-      crossAxisExtent: context.screenWidth - 48.0,
-      maxCrossAxisExtent: MyHive.getCardWidth().toDouble(),
-      crossAxisSpacing: margins,
-      childAspectRatio: MyHive.getCardRatio().toDouble(),
-    );
-    final imageWidth = (size.width * context.devicePixelRatio).ceil();
-
-    final image = Image(
-      image: ResizeImage(CacheImage(bangumi.cover), width: imageWidth),
-      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-        if (wasSynchronouslyLoaded) {
-          return child;
-        }
-        return AnimatedOpacity(
-          opacity: frame == null ? 0 : 1,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          child: child,
-        );
-      },
-      errorBuilder: (_, __, ___) => const _BangumiItemErrorPlaceholder(),
-      fit: BoxFit.cover,
+    final image = AppNetworkImage(
+      bangumi.cover,
       gaplessPlayback: true,
+      errorBuilder: (_, __, ___) => const _BangumiItemErrorPlaceholder(),
     );
 
     return bangumi.grey
@@ -405,7 +384,6 @@ class _BangumiItemErrorPlaceholder extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           image: Assets.mikan.provider(),
-          fit: BoxFit.cover,
           colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.color),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pixa/pixa.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import 'package:mikan/res/assets.gen.dart';
@@ -13,11 +14,12 @@ import 'package:mikan/core/common/consts.dart';
 import 'package:mikan/core/common/delegate.dart';
 import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/hive.dart';
-import 'package:mikan/core/common/image_provider.dart';
 import 'package:mikan/core/models/bangumi.dart' as model;
+import 'package:mikan/core/components/record_sliver_delegate.dart';
 import 'package:mikan/core/components/simple_record_item.dart';
 import 'package:mikan/core/widgets/ripple_tap.dart';
 import 'package:mikan/core/widgets/scalable_tap.dart';
+import 'package:mikan/core/widgets/pixa_image.dart';
 import 'package:mikan/core/widgets/sliver_pinned_header.dart';
 import 'package:mikan/core/widgets/transition_container.dart';
 import 'package:mikan/features/bangumi/presentation/pages/bangumi.dart';
@@ -355,7 +357,6 @@ class _RecommendListItem extends StatelessWidget {
   }
 
   Widget _buildBangumiListItem(BuildContext context, ThemeData theme, String currFlag, model.Bangumi bangumi) {
-    final provider = CacheImage(bangumi.cover);
     return AspectRatio(
       aspectRatio: 1.0,
       child: Column(
@@ -367,43 +368,27 @@ class _RecommendListItem extends StatelessWidget {
               builder: (context, open) {
                 return ScalableCard(
                   onTap: open,
-                  child: Image(
-                    image: provider,
-                    loadingBuilder: (_, child, event) {
-                      return event == null
-                          ? child
-                          : Hero(
-                              tag: currFlag,
-                              child: Container(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Center(child: Assets.mikan.image()),
-                              ),
-                            );
-                    },
-                    errorBuilder: (_, __, ___) {
-                      return Hero(
-                        tag: currFlag,
-                        child: Container(
+                  child: Hero(
+                    tag: currFlag,
+                    child: AppNetworkImage(
+                      bangumi.cover,
+                      placeholder: PixaPlaceholder.widget(
+                        Container(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Center(child: Assets.mikan.image()),
+                        ),
+                      ),
+                      errorBuilder: (_, __, ___) {
+                        return Container(
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: Assets.mikan.provider(),
-                              fit: BoxFit.cover,
                               colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.color),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    frameBuilder: (_, __, ___, ____) {
-                      return Hero(
-                        tag: currFlag,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(image: provider, fit: BoxFit.cover),
-                          ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 );
               },
@@ -461,13 +446,7 @@ class _SearchResultList extends ConsumerWidget {
         return SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           sliver: SliverWaterfallFlow(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final record = records[index];
-              return ProviderScope(
-                overrides: [currentRecordProvider.overrideWithValue(record)],
-                child: const SimpleRecordItem(),
-              );
-            }, childCount: records.length),
+            delegate: recordItemDelegate(records, const SimpleRecordItem()),
             gridDelegate: const SliverWaterfallFlowDelegateWithMinCrossAxisExtent(
               minCrossAxisExtent: 400.0,
               mainAxisSpacing: 16.0,
@@ -480,7 +459,10 @@ class _SearchResultList extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Center(
-            child: Text('搜索失败: ${failure.cause}', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red)),
+            child: Text(
+              '搜索失败: ${failure.cause}',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+            ),
           ),
         ),
       ),

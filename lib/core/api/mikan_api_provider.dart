@@ -74,13 +74,7 @@ class MikanApiService {
 
   Future<void> clearCookies() => MikanApi.clearCookies();
 
-  Future<String> register(
-    String userName,
-    String email,
-    String password,
-    String confirmPassword, {
-    String? qq,
-  }) =>
+  Future<String> register(String userName, String email, String password, String confirmPassword, {String? qq}) =>
       MikanApi.register(userName, email, password, confirmPassword, qq: qq);
 
   Future<String> forgotPassword(String email) => MikanApi.forgotPassword(email);

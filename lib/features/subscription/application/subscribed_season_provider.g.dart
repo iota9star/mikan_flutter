@@ -12,8 +12,7 @@ part of 'subscribed_season_provider.dart';
 @ProviderFor(SubscribedSeason)
 final subscribedSeasonProvider = SubscribedSeasonFamily._();
 
-final class SubscribedSeasonProvider
-    extends $NotifierProvider<SubscribedSeason, SubscribedSeasonState> {
+final class SubscribedSeasonProvider extends $NotifierProvider<SubscribedSeason, SubscribedSeasonState> {
   SubscribedSeasonProvider._({
     required SubscribedSeasonFamily super.from,
     required (List<YearSeason>, List<SeasonGallery>) super.argument,
@@ -41,10 +40,7 @@ final class SubscribedSeasonProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(SubscribedSeasonState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<SubscribedSeasonState>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<SubscribedSeasonState>(value));
   }
 
   @override
@@ -78,10 +74,8 @@ final class SubscribedSeasonFamily extends $Family
         isAutoDispose: true,
       );
 
-  SubscribedSeasonProvider call(
-    List<YearSeason> years,
-    List<SeasonGallery> galleries,
-  ) => SubscribedSeasonProvider._(argument: (years, galleries), from: this);
+  SubscribedSeasonProvider call(List<YearSeason> years, List<SeasonGallery> galleries) =>
+      SubscribedSeasonProvider._(argument: (years, galleries), from: this);
 
   @override
   String toString() => r'subscribedSeasonProvider';
@@ -92,10 +86,7 @@ abstract class _$SubscribedSeason extends $Notifier<SubscribedSeasonState> {
   List<YearSeason> get years => _$args.$1;
   List<SeasonGallery> get galleries => _$args.$2;
 
-  SubscribedSeasonState build(
-    List<YearSeason> years,
-    List<SeasonGallery> galleries,
-  );
+  SubscribedSeasonState build(List<YearSeason> years, List<SeasonGallery> galleries);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {

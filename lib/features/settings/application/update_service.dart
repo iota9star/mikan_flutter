@@ -196,9 +196,7 @@ class UpdateService {
 
   static Widget _buildVersionHeader(BuildContext context, Map<String, dynamic> release, ThemeData theme) {
     final publishedAt = release['published_at']?.toString();
-    final hora = publishedAt == null
-        ? null
-        : Hora.tryParse(publishedAt)?.plus(hours: 8);
+    final hora = publishedAt == null ? null : Hora.tryParse(publishedAt)?.plus(hours: 8);
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),

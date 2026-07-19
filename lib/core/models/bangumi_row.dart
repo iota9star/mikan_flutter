@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 
 import 'package:mikan/core/common/hive.dart';
@@ -39,7 +40,9 @@ class BangumiRow extends HiveObject {
           updatedNum == other.updatedNum &&
           subscribedNum == other.subscribedNum &&
           subscribedUpdatedNum == other.subscribedUpdatedNum &&
-          bangumis == other.bangumis;
+          // Structural comparison so two rows carrying the same bangumis
+          // compare equal even when the List identity differs.
+          listEquals(bangumis, other.bangumis);
 
   @override
   int get hashCode =>
@@ -49,5 +52,6 @@ class BangumiRow extends HiveObject {
       updatedNum.hashCode ^
       subscribedNum.hashCode ^
       subscribedUpdatedNum.hashCode ^
-      bangumis.hashCode;
+      // Object.hash on the list contents so equal lists hash equally.
+      Object.hashAll(bangumis);
 }

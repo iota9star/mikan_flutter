@@ -13,16 +13,11 @@ class IndexAdapter extends TypeAdapter<Index> {
   @override
   Index read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return Index(
       years: (fields[0] as List).cast<YearSeason>(),
       bangumiRows: (fields[1] as List).cast<BangumiRow>(),
-      rss: (fields[2] as Map).map(
-        (dynamic k, dynamic v) =>
-            MapEntry(k as String, (v as List).cast<RecordItem>()),
-      ),
+      rss: (fields[2] as Map).map((dynamic k, dynamic v) => MapEntry(k as String, (v as List).cast<RecordItem>())),
       carousels: (fields[3] as List).cast<Carousel>(),
       user: fields[4] as User?,
       announcements: (fields[5] as List?)?.cast<Announcement>(),
@@ -52,8 +47,5 @@ class IndexAdapter extends TypeAdapter<Index> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is IndexAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is IndexAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

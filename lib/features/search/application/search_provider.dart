@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kache/kache.dart';
 import 'package:kache_riverpod/kache_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -36,17 +35,14 @@ class SearchSubgroupId extends _$SearchSubgroupId {
 typedef SearchArgs = ({String keywords, String subgroupId});
 
 /// Persisted SWR cache for search results, keyed by (keywords, subgroupId).
-final _searchKacheProvider =
-    kacheProvider.autoDispose.family<SearchResult, SearchArgs>(
+final _searchKacheProvider = kacheProvider.autoDispose.family<SearchResult, SearchArgs>(
   client: (ref) => ref.watch(kacheClientProvider),
   query: (ref, args) => KacheQuery<SearchResult>.persisted(
     key: KacheKey('mikan', ['search', args.keywords, args.subgroupId]),
     binding: KacheInit.searchResultBinding,
     fetch: (_) async {
       final result = await MikanApi.search(args.keywords, subgroupid: args.subgroupId);
-      if (result.records.isNotEmpty ||
-          result.bangumis.isNotEmpty ||
-          result.subgroups.isNotEmpty) {
+      if (result.records.isNotEmpty || result.bangumis.isNotEmpty || result.subgroups.isNotEmpty) {
         _saveNewKeywords(args.keywords);
       }
       return result;
@@ -61,8 +57,7 @@ final _emptySearchSnapshot = KacheSnapshot<SearchResult>.idle();
 /// Public provider that exposes [KacheSnapshot<SearchResult>] to the UI.
 ///
 /// Returns an idle snapshot when keywords are empty.
-final searchProvider =
-    Provider.autoDispose<KacheSnapshot<SearchResult>>((ref) {
+final searchProvider = Provider.autoDispose<KacheSnapshot<SearchResult>>((ref) {
   final keywords = ref.watch(searchKeywordsProvider);
   final subgroupId = ref.watch(searchSubgroupIdProvider);
 
@@ -75,8 +70,7 @@ final searchProvider =
 });
 
 void _saveNewKeywords(String keywords) {
-  final List<String> history =
-      MyHive.db.get(HiveDBKey.mikanSearch, defaultValue: <String>[]);
+  final List<String> history = MyHive.db.get(HiveDBKey.mikanSearch, defaultValue: <String>[]);
   if (history.contains(keywords)) {
     return;
   }

@@ -25,6 +25,13 @@ class ForgotPasswordPage extends HookConsumerWidget {
     final emailController = useTextEditingController();
     final formKey = useMemoized(GlobalKey<FormState>.new);
 
+    // Reset the (process-global) mutation state on mount so a stale error or
+    // loading indicator from a previous visit never bleeds into a fresh entry.
+    useEffect(() {
+      forgotPasswordMutation.reset(ref);
+      return null;
+    }, const []);
+
     // Watch the forgot password mutation state
     final forgotPasswordState = ref.watch(forgotPasswordMutation);
     final errorMessage = forgotPasswordState is MutationError<void> ? formatAuthError(forgotPasswordState.error) : null;
@@ -90,7 +97,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
     final hasError = forgotPasswordState is MutationError;
 
     return ElevatedButton(
-      style: ButtonStyle(backgroundColor: hasError ? const WidgetStatePropertyAll(Colors.red) : null),
+      style: ButtonStyle(backgroundColor: hasError ? WidgetStatePropertyAll(theme.colorScheme.error) : null),
       onPressed: isLoading
           ? null
           : () {

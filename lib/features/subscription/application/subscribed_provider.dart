@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kache/kache.dart';
 import 'package:kache_riverpod/kache_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,21 +14,18 @@ import 'package:mikan/core/models/season.dart';
 part 'subscribed_provider.g.dart';
 
 /// Persisted SWR cache for subscribed bangumi list of a specific season.
-final _subscribedBangumisKacheProvider =
-    kacheProvider.autoDispose.family<CachedBangumiList, Season>(
+final _subscribedBangumisKacheProvider = kacheProvider.autoDispose.family<CachedBangumiList, Season>(
   client: (ref) => ref.watch(kacheClientProvider),
   query: (ref, season) => KacheQuery<CachedBangumiList>.persisted(
     key: KacheKey('mikan', ['subscribed-bangumis', season.year, season.season]),
     binding: KacheInit.bangumiListBinding,
-    fetch: (_) async =>
-        CachedBangumiList(await MikanApi.mySubscribedSeasonBangumi(season.year, season.season)),
+    fetch: (_) async => CachedBangumiList(await MikanApi.mySubscribedSeasonBangumi(season.year, season.season)),
     policy: KachePolicy.staleWhileRevalidate(),
   ),
 );
 
 /// Public provider mapped to List<Bangumi>.
-final subscribedBangumisProvider =
-    Provider.autoDispose.family<KacheSnapshot<List<Bangumi>>, Season>((ref, season) {
+final subscribedBangumisProvider = Provider.autoDispose.family<KacheSnapshot<List<Bangumi>>, Season>((ref, season) {
   final snapshot = ref.watch(_subscribedBangumisKacheProvider(season));
   return snapshot.mapData((cached) => cached.items);
 });
@@ -46,8 +42,7 @@ final _recentRecordsKacheProvider = kacheProvider.autoDispose<CachedRecordList>(
 );
 
 /// Public provider mapped to List<RecordItem>.
-final recentRecordsProvider =
-    Provider.autoDispose<KacheSnapshot<List<RecordItem>>>((ref) {
+final recentRecordsProvider = Provider.autoDispose<KacheSnapshot<List<RecordItem>>>((ref) {
   final snapshot = ref.watch(_recentRecordsKacheProvider);
   return snapshot.mapData((cached) => cached.items);
 });
@@ -57,10 +52,7 @@ Map<String, List<RecordItem>> rssRecords(Ref ref) {
   final snapshot = ref.watch(recentRecordsProvider);
   final records = snapshot.dataOrNull ?? const <RecordItem>[];
 
-  return groupBy(
-    records.where((it) => it.id?.isNotEmpty ?? false),
-    (it) => it.id!,
-  );
+  return groupBy(records.where((it) => it.id?.isNotEmpty ?? false), (it) => it.id!);
 }
 
 /// Forces a network refresh of recent records.

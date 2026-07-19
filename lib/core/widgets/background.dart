@@ -62,9 +62,25 @@ class BubbleBackgroundState extends State<BubbleBackground> with SingleTickerPro
     }
   }
 
+  @override
+  void didUpdateWidget(covariant BubbleBackground oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Rebuild particles when the color palette changes (e.g. theme switch),
+    // otherwise stale colors persist until the next size change.
+    if (widget.colors != oldWidget.colors && _lastSize != null) {
+      createParticles(_lastSize!);
+    }
+  }
+
   void createParticles(Size size) {
     final random = Random();
     particles.clear();
+
+    // Guard against an empty color list: random.nextInt(0) throws RangeError.
+    final colors = widget.colors;
+    if (colors.isEmpty) {
+      return;
+    }
 
     final area = size.width * size.height;
     final particleCount = (area / 120000).clamp(5, 20).round();
@@ -88,8 +104,8 @@ class BubbleBackgroundState extends State<BubbleBackground> with SingleTickerPro
       final count = layerCounts[layer]!;
       for (int i = 0; i < count && pointIndex < points.length; i++, pointIndex++) {
         final point = points[pointIndex];
-        final colorIndex = random.nextInt(widget.colors.length);
-        final color = widget.colors[colorIndex];
+        final colorIndex = random.nextInt(colors.length);
+        final color = colors[colorIndex];
 
         final layerSettings = _getLayerSettings(layer);
         final radius = layerSettings.radiusRange(random);

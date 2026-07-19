@@ -8,7 +8,7 @@ import 'package:mikan/core/common/delegate.dart';
 import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/kit.dart';
 import 'package:mikan/core/components/list_record_item.dart';
-import 'package:mikan/core/components/simple_record_item.dart';
+import 'package:mikan/core/components/record_sliver_delegate.dart';
 import 'package:mikan/features/settings/presentation/widgets/select_tablet_mode.dart';
 import 'package:mikan/core/widgets/sliver_pinned_header.dart';
 import 'package:mikan/core/widgets/transition_container.dart';
@@ -100,13 +100,7 @@ class _ListSliver extends ConsumerWidget {
               mainAxisSpacing: margins,
               minCrossAxisExtent: 300.0,
             ),
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final record = records[index];
-              return ProviderScope(
-                overrides: [currentRecordProvider.overrideWithValue(record)],
-                child: const ListRecordItem(),
-              );
-            }, childCount: records.length),
+            delegate: recordItemDelegate(records, const ListRecordItem()),
           );
         },
         loading: () => const SliverToBoxAdapter(child: Center(child: ExpressiveLoadingIndicator())),

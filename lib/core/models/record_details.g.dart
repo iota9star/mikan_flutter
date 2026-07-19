@@ -13,9 +13,7 @@ class RecordDetailAdapter extends TypeAdapter<RecordDetail> {
   @override
   RecordDetail read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return RecordDetail()
       ..id = fields[0] as String?
       ..cover = fields[1] as String
@@ -67,7 +65,5 @@ class RecordDetailAdapter extends TypeAdapter<RecordDetail> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RecordDetailAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is RecordDetailAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

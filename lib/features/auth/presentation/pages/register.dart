@@ -31,6 +31,13 @@ class RegisterPage extends HookConsumerWidget {
     final qqController = useTextEditingController();
     final formKey = useMemoized(GlobalKey<FormState>.new);
 
+    // Reset the (process-global) mutation state on mount so a stale error or
+    // loading indicator from a previous visit never bleeds into a fresh entry.
+    useEffect(() {
+      registerMutation.reset(ref);
+      return null;
+    }, const []);
+
     // Watch the registration mutation state
     final registerState = ref.watch(registerMutation);
     final errorMessage = registerState is MutationError<void> ? formatAuthError(registerState.error) : null;
@@ -119,7 +126,7 @@ class RegisterPage extends HookConsumerWidget {
     final hasError = registerState is MutationError;
 
     return ElevatedButton(
-      style: ButtonStyle(backgroundColor: hasError ? const WidgetStatePropertyAll(Colors.red) : null),
+      style: ButtonStyle(backgroundColor: hasError ? WidgetStatePropertyAll(theme.colorScheme.error) : null),
       onPressed: isLoading
           ? null
           : () {

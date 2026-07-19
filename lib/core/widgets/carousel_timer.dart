@@ -16,12 +16,12 @@ class CarouselTimerHelper {
     Duration scrollDuration = const Duration(milliseconds: 800),
     Curve scrollCurve = Curves.easeInOut,
     Duration resumeDelay = const Duration(seconds: 3),
-  })  : _controller = controller,
-        _itemExtent = itemExtent,
-        _interval = interval,
-        _scrollDuration = scrollDuration,
-        _scrollCurve = scrollCurve,
-        _resumeDelay = resumeDelay;
+  }) : _controller = controller,
+       _itemExtent = itemExtent,
+       _interval = interval,
+       _scrollDuration = scrollDuration,
+       _scrollCurve = scrollCurve,
+       _resumeDelay = resumeDelay;
 
   final InfiniteScrollController _controller;
   final double _itemExtent;

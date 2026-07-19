@@ -1,5 +1,4 @@
 import 'package:hive_ce/hive.dart';
-import 'package:kache/kache.dart';
 import 'package:kache_connectivity_plus/kache_connectivity_plus.dart';
 import 'package:kache_hive_ce/kache_hive_ce.dart';
 
@@ -52,14 +51,24 @@ class KacheInit {
     // kache integration versions (which used incompatible envelope formats)
     // is simply ignored — the old box stays on disk harmlessly and the new
     // one starts fresh. If the new box itself becomes corrupted, crash
-    // recovery deletes and recreates it.
+    // recovery deletes and recreates it. If that still fails, we fall back to
+    // a non-persistent in-memory box so the app can boot (cache is rebuilt
+    // from network) instead of crashing on startup.
     const boxName = 'kache-cache-v2';
+    HiveCeKacheStore? opened;
     try {
-      store = await HiveCeKacheStore.open(boxName: boxName);
+      opened = await HiveCeKacheStore.open(boxName: boxName);
     } on Object {
-      await Hive.deleteBoxFromDisk(boxName);
-      store = await HiveCeKacheStore.open(boxName: boxName);
+      try {
+        await Hive.deleteBoxFromDisk(boxName);
+        opened = await HiveCeKacheStore.open(boxName: boxName);
+      } on Object {
+        // Disk is unusable; degrade to an ephemeral in-memory store.
+        final memBox = await Hive.openBox<Object?>('$boxName-mem');
+        opened = HiveCeKacheStore.fromBox(memBox, ownership: HiveCeBoxOwnership.owned);
+      }
     }
+    store = opened;
 
     indexBinding = store.bindAdapter<Index>(IndexAdapter());
     recordDetailBinding = store.bindAdapter<RecordDetail>(RecordDetailAdapter());

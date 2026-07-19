@@ -15,7 +15,7 @@ import 'package:mikan/core/common/app_layout.dart';
 import 'package:mikan/core/common/app_utils.dart';
 import 'package:mikan/core/common/extension.dart';
 import 'package:mikan/core/common/hive.dart';
-import 'package:mikan/core/common/image_provider.dart';
+import 'package:mikan/core/widgets/pixa_image.dart';
 import 'package:mikan/features/auth/application/auth_provider.dart';
 import 'package:mikan/features/settings/application/update_service.dart';
 import 'package:mikan/core/widgets/bottom_sheet.dart';
@@ -545,21 +545,17 @@ class UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final avatarValue = avatar;
-    return ClipRRect(
+    if (avatarValue == null) {
+      return ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+        child: Assets.mikan.image(width: 36.0),
+      );
+    }
+    return AppNetworkImage(
+      avatarValue,
+      width: 36.0,
+      height: 36.0,
       borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-      child: avatarValue != null
-          ? Image(
-              image: CacheImage(avatarValue),
-              width: 36.0,
-              height: 36.0,
-              loadingBuilder: (_, child, event) {
-                return event == null ? child : Assets.mikan.image(width: 36.0);
-              },
-              errorBuilder: (_, __, ___) {
-                return Assets.mikan.image(width: 36.0);
-              },
-            )
-          : Assets.mikan.image(width: 36.0),
     );
   }
 }

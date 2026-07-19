@@ -12,8 +12,7 @@ part of 'list_provider.dart';
 @ProviderFor(ListNotifier)
 final listProvider = ListNotifierProvider._();
 
-final class ListNotifierProvider
-    extends $AsyncNotifierProvider<ListNotifier, ListData> {
+final class ListNotifierProvider extends $AsyncNotifierProvider<ListNotifier, ListData> {
   ListNotifierProvider._()
     : super(
         from: null,

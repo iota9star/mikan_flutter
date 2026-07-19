@@ -26,16 +26,17 @@ final recordDetailProvider = kacheProvider.autoDispose.family<RecordDetail, Reco
       binding: KacheInit.recordDetailBinding,
       fetch: (_) async {
         if (record.url.isEmpty) {
-          return RecordDetail()
-            ..name = record.name
-            ..url = record.url
-            ..title = record.title
-            ..subgroups = record.groups
-            ..id = record.id
-            ..cover = record.cover
-            ..tags = record.tags
-            ..torrent = record.torrent
-            ..magnet = record.magnet;
+          return RecordDetail.create(
+            name: record.name,
+            url: record.url,
+            title: record.title,
+            subgroups: record.groups,
+            id: record.id,
+            cover: record.cover,
+            tags: record.tags,
+            torrent: record.torrent,
+            magnet: record.magnet,
+          );
         }
         final episodeId = record.url.split('/').last;
         return MikanApi.details(episodeId);

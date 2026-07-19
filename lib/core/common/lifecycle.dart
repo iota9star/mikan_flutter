@@ -219,5 +219,11 @@ mixin ConsumerLifecycleState<T extends ConsumerStatefulWidget> on ConsumerState<
 
 Future<void> exitApp() async {
   await SystemNavigator.pop(animated: true);
-  exit(0);
+  // On Android, SystemNavigator.pop on the root task is a no-op, so a hard
+  // exit is required to actually leave the app. On iOS, calling exit(0) is
+  // forbidden by App Review and reliably crashes/sigs the process in a way
+  // that looks like a bug to users — rely on SystemNavigator.pop there.
+  if (Platform.isAndroid) {
+    exit(0);
+  }
 }

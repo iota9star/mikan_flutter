@@ -7,17 +7,18 @@ import 'package:ff_annotation_route_core/ff_annotation_route_core.dart';
 @FFAutoImport()
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:pixa/pixa.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/experimental/mutation.dart';
 
 import 'package:mikan/res/assets.gen.dart';
 import 'package:mikan/core/common/extension.dart';
-import 'package:mikan/core/common/image_provider.dart';
 import 'package:mikan/core/common/kit.dart';
 import 'package:mikan/core/models/record_details.dart';
 import 'package:mikan/core/models/record_item.dart';
 import 'package:mikan/core/widgets/icon_button.dart';
+import 'package:mikan/core/widgets/pixa_image.dart';
 import 'package:mikan/core/common/app_layout.dart';
 import 'package:mikan/features/bangumi/application/record_detail_provider.dart';
 import 'package:mikan/features/subscription/application/subscription_service.dart'
@@ -141,10 +142,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
             children: [
               Text('加载失败: ${failure.cause}'),
               const Gap(16),
-              ElevatedButton(
-                onPressed: () => refreshRecordDetail(ref, widget.record),
-                child: const Text('重试'),
-              ),
+              ElevatedButton(onPressed: () => refreshRecordDetail(ref, widget.record), child: const Text('重试')),
             ],
           ),
         ),
@@ -170,7 +168,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fitWidth,
-                            image: CacheImage(recordDetail.cover),
+                            image: pixaNetworkProvider(recordDetail.cover, targetWidth: 1080),
                             alignment: Alignment.topCenter,
                             isAntiAlias: true,
                           ),
@@ -297,40 +295,24 @@ class _RecordPageState extends ConsumerState<RecordPage> {
   }
 
   Widget _buildBangumiCover(BuildContext context, RecordDetail record) {
-    return ClipRRect(
+    return AppNetworkImage(
+      record.cover,
+      width: 136.0,
       borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-      child: Image(
-        image: CacheImage(record.cover),
-        width: 136.0,
-        loadingBuilder: (_, child, event) {
-          return event == null
-              ? child
-              : AspectRatio(
-                  aspectRatio: 3 / 4,
-                  child: Container(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Center(child: Assets.mikan.image()),
-                  ),
-                );
-        },
-        errorBuilder: (_, __, ___) {
-          return AspectRatio(
-            aspectRatio: 3 / 4,
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: Assets.mikan.provider(),
-                  fit: BoxFit.cover,
-                  colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.color),
-                ),
+      errorBuilder: (_, __, ___) {
+        return AspectRatio(
+          aspectRatio: 3 / 4,
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: Assets.mikan.provider(),
+                fit: BoxFit.cover,
+                colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.color),
               ),
             ),
-          );
-        },
-        frameBuilder: (_, child, ___, ____) {
-          return child;
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -353,17 +335,11 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         child: Center(child: Image.asset(Assets.mikan.path, width: 56.0)),
       ),
     );
-    return ClipRRect(
+    return AppNetworkImage(
+      url,
       borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-      child: Image(
-        image: CacheImage(url),
-        loadingBuilder: (_, child, event) {
-          return event == null ? child : placeholder;
-        },
-        errorBuilder: (_, __, ___) {
-          return placeholder;
-        },
-      ),
+      placeholder: PixaPlaceholder.widget(placeholder),
+      errorBuilder: (_, __, ___) => placeholder,
     );
   }
 }

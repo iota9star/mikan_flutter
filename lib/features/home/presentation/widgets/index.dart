@@ -9,9 +9,10 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import 'package:mikan/core/common/extension.dart';
-import 'package:mikan/core/common/image_provider.dart';
+import 'package:mikan/core/widgets/pixa_image.dart';
 import 'package:mikan/core/common/kit.dart';
-import 'package:mikan/core/components/simple_record_item.dart' show SimpleRecordItem, currentRecordProvider;
+import 'package:mikan/core/components/record_sliver_delegate.dart';
+import 'package:mikan/core/components/simple_record_item.dart' show SimpleRecordItem;
 import 'package:mikan/core/models/bangumi_row.dart';
 import 'package:mikan/core/models/carousel.dart';
 import 'package:mikan/features/season/presentation/widgets/select_season.dart';
@@ -43,10 +44,7 @@ class _IndexFragmentState extends ConsumerState<IndexFragment> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _carouselTimer = CarouselTimerHelper(
-      controller: _infiniteScrollController,
-      itemExtent: 300.0,
-    );
+    _carouselTimer = CarouselTimerHelper(controller: _infiniteScrollController, itemExtent: 300.0);
     _carouselTimer.start();
   }
 
@@ -273,10 +271,7 @@ class _CarouselItem extends StatelessWidget {
           child: TransitionContainer(
             routeSettings: const RouteSettings(name: '/bangumi'),
             builder: (context, open) {
-              return RippleTap(
-                onTap: open,
-                child: Image(fit: BoxFit.cover, image: CacheImage(carousel.cover)),
-              );
+              return RippleTap(onTap: open, child: AppNetworkImage(carousel.cover));
             },
             next: BangumiPage(bangumiId: carousel.id, cover: carousel.cover),
           ),
@@ -339,13 +334,7 @@ class _OVASection extends StatelessWidget {
                   mainAxisSpacing: margins,
                   maxCrossAxisExtent: 400.0,
                 ),
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final record = records[index];
-                  return ProviderScope(
-                    overrides: [currentRecordProvider.overrideWithValue(record)],
-                    child: const SimpleRecordItem(),
-                  );
-                }, childCount: records.length),
+                delegate: recordItemDelegate(records, const SimpleRecordItem()),
               ),
             );
           },

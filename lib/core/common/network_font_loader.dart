@@ -73,7 +73,10 @@ class NetworkFontLoader {
       throw StateError('Invalid font file header for $url');
     }
 
-    return ByteData.view(bytes.buffer);
+    // sublistView is offset-safe: if [bytes] is a view into a larger buffer
+    // (offsetInBytes != 0), it reads from the correct position, unlike
+    // ByteData.view(bytes.buffer) which would start at the buffer origin.
+    return ByteData.sublistView(bytes);
   }
 
   Future<void> _load(

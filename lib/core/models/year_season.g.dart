@@ -13,9 +13,7 @@ class YearSeasonAdapter extends TypeAdapter<YearSeason> {
   @override
   YearSeason read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read()};
     return YearSeason()
       ..year = fields[0] as String
       ..seasons = (fields[1] as List).cast<Season>();
@@ -37,7 +35,5 @@ class YearSeasonAdapter extends TypeAdapter<YearSeason> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is YearSeasonAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is YearSeasonAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

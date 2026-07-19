@@ -14,15 +14,15 @@ import 'package:mikan/features/subscription/application/subscribed_season_provid
 import 'package:mikan/app/routing/mikan_routes.dart';
 import 'package:mikan/core/common/delegate.dart';
 import 'package:mikan/core/common/extension.dart';
-import 'package:mikan/core/common/image_provider.dart';
 import 'package:mikan/core/common/kit.dart';
 import 'package:mikan/core/common/app_layout.dart';
+import 'package:mikan/core/widgets/pixa_image.dart';
 import 'package:mikan/core/models/bangumi.dart' as model;
 import 'package:mikan/core/models/record_item.dart';
 import 'package:mikan/core/models/season.dart';
 import 'package:mikan/core/models/season_gallery.dart';
 import 'package:mikan/core/models/year_season.dart';
-import 'package:mikan/core/components/simple_record_item.dart' show currentRecordProvider;
+import 'package:mikan/core/components/record_sliver_delegate.dart';
 import 'package:mikan/core/widgets/scalable_tap.dart';
 import 'package:mikan/core/widgets/carousel_timer.dart';
 import 'package:mikan/core/widgets/sliver_pinned_header.dart';
@@ -48,10 +48,7 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _carouselTimer = CarouselTimerHelper(
-      controller: _infiniteScrollController,
-      itemExtent: 280.0,
-    );
+    _carouselTimer = CarouselTimerHelper(controller: _infiniteScrollController, itemExtent: 280.0);
     _carouselTimer.start();
   }
 
@@ -92,8 +89,7 @@ class _SubscribedFragmentState extends ConsumerState<SubscribedFragment> with Wi
           final selectedSeason = ref.read(selectedSeasonProvider);
           await Future.wait([
             refreshRecentRecords(ref),
-            if (selectedSeason != null)
-              refreshSubscribedBangumis(ref, selectedSeason),
+            if (selectedSeason != null) refreshSubscribedBangumis(ref, selectedSeason),
           ]);
         },
         header: defaultHeader,
@@ -328,27 +324,7 @@ class _RssListItem extends StatelessWidget {
                       onTap: open,
                       child: Tooltip(
                         message: records.first.name,
-                        child: SizedBox.expand(
-                          child: Image(
-                            image: ResizeImage(
-                              CacheImage(bangumiCover),
-                              width: (280.0 * context.devicePixelRatio).ceil(),
-                            ),
-                            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                              if (wasSynchronouslyLoaded) {
-                                return child;
-                              }
-                              return AnimatedOpacity(
-                                opacity: frame == null ? 0 : 1,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                                child: child,
-                              );
-                            },
-                            fit: BoxFit.cover,
-                            gaplessPlayback: true,
-                          ),
-                        ),
+                        child: SizedBox.expand(child: AppNetworkImage(bangumiCover, gaplessPlayback: true)),
                       ),
                     ),
                     PositionedDirectional(
@@ -511,7 +487,8 @@ class _RssRecordsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (records.isNullOrEmpty) {
+    final list = records;
+    if (list == null || list.isEmpty) {
       return emptySliverToBoxAdapter;
     }
     final margins = context.margins;
@@ -523,13 +500,7 @@ class _RssRecordsList extends StatelessWidget {
           crossAxisSpacing: margins,
           mainAxisSpacing: margins,
         ),
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final record = records![index];
-          return ProviderScope(
-            overrides: [currentRecordProvider.overrideWithValue(record)],
-            child: const RssRecordItem(),
-          );
-        }, childCount: records!.length),
+        delegate: recordItemDelegate(list, const RssRecordItem()),
       ),
     );
   }

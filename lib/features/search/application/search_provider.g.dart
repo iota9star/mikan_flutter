@@ -12,8 +12,7 @@ part of 'search_provider.dart';
 @ProviderFor(SearchKeywords)
 final searchKeywordsProvider = SearchKeywordsProvider._();
 
-final class SearchKeywordsProvider
-    extends $NotifierProvider<SearchKeywords, String?> {
+final class SearchKeywordsProvider extends $NotifierProvider<SearchKeywords, String?> {
   SearchKeywordsProvider._()
     : super(
         from: null,
@@ -34,10 +33,7 @@ final class SearchKeywordsProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
   }
 }
 
@@ -49,14 +45,7 @@ abstract class _$SearchKeywords extends $Notifier<String?> {
   @override
   WhenComplete runBuild() {
     final ref = this.ref as $Ref<String?, String?>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<String?, String?>,
-              String?,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<String?, String?>, String?, Object?, Object?>;
     return element.handleCreate(ref, build);
   }
 }
@@ -64,8 +53,7 @@ abstract class _$SearchKeywords extends $Notifier<String?> {
 @ProviderFor(SearchSubgroupId)
 final searchSubgroupIdProvider = SearchSubgroupIdProvider._();
 
-final class SearchSubgroupIdProvider
-    extends $NotifierProvider<SearchSubgroupId, String?> {
+final class SearchSubgroupIdProvider extends $NotifierProvider<SearchSubgroupId, String?> {
   SearchSubgroupIdProvider._()
     : super(
         from: null,
@@ -86,10 +74,7 @@ final class SearchSubgroupIdProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
   }
 }
 
@@ -101,14 +86,7 @@ abstract class _$SearchSubgroupId extends $Notifier<String?> {
   @override
   WhenComplete runBuild() {
     final ref = this.ref as $Ref<String?, String?>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<String?, String?>,
-              String?,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<String?, String?>, String?, Object?, Object?>;
     return element.handleCreate(ref, build);
   }
 }
