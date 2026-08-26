@@ -29,6 +29,8 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: stable
+      - name: Setup Rust Android targets
+        run: rustup target add aarch64-linux-android x86_64-linux-android
       - name: Build split apk
         run: |
           flutter pub get
