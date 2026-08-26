@@ -7,7 +7,7 @@ allprojects {
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven { url 'https://plugins.gradle.org/m2/' }
-        maven { url 'https://download.flutter.io' }
+        maven { url 'https://storage.googleapis.com/download.flutter.io' }
         maven { url 'https://jitpack.io' }
         mavenCentral()
     }

@@ -32,7 +32,9 @@ FirebaseAnalyticsObserver? _getAnalyticsObserver() {
 }
 
 class MikanApp extends StatefulWidget {
-  const MikanApp({super.key});
+  const MikanApp({super.key, this.navigatorObservers = const []});
+
+  final List<NavigatorObserver> navigatorObservers;
 
   @override
   State<MikanApp> createState() => _MikanAppState();
@@ -92,18 +94,24 @@ class _MikanAppState extends State<MikanApp> {
 
   @override
   Widget build(BuildContext context) {
-    return const ProviderScope(observers: kDebugMode ? [RiverpodLogger()] : [], child: _MaterialAppWrapper());
+    return ProviderScope(
+      observers: kDebugMode ? const [RiverpodLogger()] : const [],
+      child: _MaterialAppWrapper(navigatorObservers: widget.navigatorObservers),
+    );
   }
 }
 
 class _MaterialAppWrapper extends StatelessWidget {
-  const _MaterialAppWrapper();
+  const _MaterialAppWrapper({required this.navigatorObservers});
+
+  final List<NavigatorObserver> navigatorObservers;
 
   @override
   Widget build(BuildContext context) {
     return ThemeProvider(
       builder: (mode, lightColorScheme, darkColorScheme, fontFamily) {
         final navigatorObservers = [
+          ...this.navigatorObservers,
           Lifecycle.lifecycleRouteObserver,
           FlutterSmartDialog.observer,
           if (_getAnalyticsObserver() case final observer?) observer,

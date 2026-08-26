@@ -12,7 +12,6 @@ import firebase_core
 import firebase_crashlytics
 import flutter_cockpit
 import package_info_plus
-import path_provider_foundation
 import pixa
 import screen_retriever_macos
 import share_plus
@@ -27,7 +26,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FLTFirebaseCrashlyticsPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseCrashlyticsPlugin"))
   FlutterCockpitPlugin.register(with: registry.registrar(forPlugin: "FlutterCockpitPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))
-  PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
   PixaPlugin.register(with: registry.registrar(forPlugin: "PixaPlugin"))
   ScreenRetrieverMacosPlugin.register(with: registry.registrar(forPlugin: "ScreenRetrieverMacosPlugin"))
   SharePlusMacosPlugin.register(with: registry.registrar(forPlugin: "SharePlusMacosPlugin"))

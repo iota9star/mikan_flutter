@@ -1,7 +1,7 @@
 name: mikan
 description: mikanani.me
 
-version: 2.3.4+97
+version: 2.3.5+98
 
 publish_to: none
 
@@ -14,9 +14,9 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  firebase_core: ^4.11.0
-  firebase_analytics: ^12.4.0
-  firebase_crashlytics: ^5.2.0
+  firebase_core: 4.13.0
+  firebase_analytics: ^12.4.6
+  firebase_crashlytics: ^5.2.7
   path_provider: ^2.1.6
   hive_ce: ^2.19.0
   hive_ce_flutter: ^2.3.4
@@ -27,7 +27,7 @@ dependencies:
   waterfall_flow: ^3.0.2
   hora: ^2.0.0
   android_intent_plus: ^6.0.0
-  connectivity_plus: ^6.1.5
+  connectivity_plus: ^7.3.1
   ff_annotation_route_core: ^2.1.1
   ff_annotation_route_library: ^3.2.3
   sliver_tools: ^0.2.12
@@ -40,12 +40,12 @@ dependencies:
   auto_size_text: ^3.0.0
   easy_refresh: ^3.5.0
   window_manager: ^0.5.2
-  dynamic_color: ^1.7.0
+  dynamic_color: ^1.9.0
   decimal: ^3.2.0
   flutter_smart_dialog: ^5.1.0
   infinite_carousel: ^1.0.3
   package_info_plus: ^10.0.0
-  animations: ^2.2.0
+  animations: ^3.0.0
   vclibs: ^0.1.3
   in_app_update: ^5.0.0
   gap: ^3.0.1
@@ -55,14 +55,18 @@ dependencies:
   hooks_riverpod: ^3.3.0
   fjs: ^3.3.0
   riverpod: ^3.3.0
-  kache_riverpod: ^1.0.0
-  kache_hive_ce: ^1.0.0
-  kache_connectivity_plus: ^1.0.0
+  kache_riverpod: ^3.0.0
+  kache_hive_ce: ^3.0.0
+  kache_connectivity_plus: ^3.0.0
   flutter_riverpod: ^3.3.2
-  kache: ^1.0.1
-  pixa: ^1.0.0
+  kache: ^3.0.0
+  pixa: ^1.0.4
 
 dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
   args: ^2.4.1
   yaml: ^3.1.2
   glob: ^2.1.1
@@ -76,7 +80,12 @@ dev_dependencies:
   riverpod_generator: ^4.0.0
   riverpod_lint: ^3.1.0
   hive_ce_generator: ^1.11.0
-  flutter_cockpit: ^1.1.3
+  flutter_cockpit: ^4.0.38
+
+dependency_overrides:
+  # fjs 3.3.0 declares ^2.12.0 but its codegen is 2.12.0-only; 2.13.0 runtime
+  # aborts startup with a version sanity check. Pin until fjs regenerates.
+  flutter_rust_bridge: 2.12.0
 
 flutter:
   uses-material-design: true
@@ -91,3 +100,4 @@ flutter_gen:
     flutter_svg: true
     rive: true
     lottie: true
+

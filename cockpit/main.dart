@@ -30,7 +30,14 @@ Future<void> main() async {
   final remoteSession = CockpitRemoteSessionConfiguration.resolveFromEnvironment();
   final config = FlutterCockpitConfig.production(remoteSession: remoteSession);
 
-  FlutterCockpit.runApp(const Restart(child: MikanApp()), config: config);
+  runApp(
+    FlutterCockpitApp(
+      config: config,
+      child: Restart(
+        child: MikanApp(navigatorObservers: <NavigatorObserver>[FlutterCockpit.createNavigatorObserver()]),
+      ),
+    ),
+  );
 }
 
 Future<void> _initFirebase() async {

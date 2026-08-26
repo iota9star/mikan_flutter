@@ -45,3 +45,6 @@ pubspec.lock
 
 # ZCode workspace
 .zcode/
+
+# FVM Version Cache
+.fvm/
