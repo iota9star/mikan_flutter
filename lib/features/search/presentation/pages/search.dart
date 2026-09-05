@@ -188,6 +188,7 @@ class _SearchHistory extends ConsumerWidget {
                             ref.read(searchSubgroupIdProvider.notifier).clear();
                             ref.read(searchKeywordsProvider.notifier).set(it);
                           },
+                          onLongPress: () => _showDeleteKeywordDialog(context, it, box),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
                             child: Text(
@@ -200,9 +201,8 @@ class _SearchHistory extends ConsumerWidget {
                         );
                       }).toList(),
                       IconButton(
-                        onPressed: () {
-                          MyHive.db.delete(HiveDBKey.mikanSearch);
-                        },
+                        tooltip: '清空历史',
+                        onPressed: () => _showDeleteAllDialog(context),
                         icon: const Icon(Icons.clear_all_rounded),
                       ),
                     ],
@@ -210,6 +210,56 @@ class _SearchHistory extends ConsumerWidget {
           },
         ),
       ),
+    );
+  }
+
+  void _showDeleteKeywordDialog(BuildContext context, String keyword, Box box) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('删除记录'),
+          content: Text('确认删除搜索记录“$keyword”吗？'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
+            FilledButton(
+              onPressed: () {
+                final history = List<String>.from(box.get(HiveDBKey.mikanSearch, defaultValue: <String>[]));
+                history.remove(keyword);
+                box.put(HiveDBKey.mikanSearch, history);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('删除'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteAllDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('清空搜索历史'),
+          content: const Text('确认要清空所有搜索历史记录吗？'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
+            FilledButton(
+              onPressed: () {
+                MyHive.db.delete(HiveDBKey.mikanSearch);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('清空'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
