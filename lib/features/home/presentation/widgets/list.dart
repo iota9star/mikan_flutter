@@ -38,7 +38,9 @@ class _ListScrollView extends ConsumerWidget {
       footer: defaultFooter(context),
       onRefresh: () async {
         final result = await ref.read(listProvider.notifier).refresh();
-        if (result.hasUpdate) {
+        if (result.failed) {
+          '刷新失败，请检查网络后重试'.toast();
+        } else if (result.hasUpdate) {
           '更新数据${result.updateCount}条'.toast();
         } else {
           '无内容更新'.toast();

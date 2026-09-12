@@ -8,6 +8,7 @@ import 'package:mikan/core/api/mikan_api.dart';
 import 'package:mikan/core/cache/kache_init.dart';
 import 'package:mikan/core/cache/kache_providers.dart';
 import 'package:mikan/core/common/extension.dart';
+import 'package:mikan/core/common/log.dart';
 import 'package:mikan/core/models/cached_list.dart';
 import 'package:mikan/core/models/record_item.dart';
 
@@ -26,10 +27,15 @@ final _listKacheProvider = kacheProvider.autoDispose<CachedRecordList>(
 
 /// Result of refresh operation
 class RefreshResult {
-  const RefreshResult({this.updateCount = 0, this.hasUpdate = false});
+  const RefreshResult({this.updateCount = 0, this.hasUpdate = false, this.failed = false});
 
   final int updateCount;
   final bool hasUpdate;
+
+  /// True when the refresh request itself failed (network/parse error).
+  /// Distinct from [hasUpdate] == false, which means the request succeeded
+  /// but returned no new records.
+  final bool failed;
 }
 
 /// Immutable data class for list state
@@ -144,8 +150,9 @@ class ListNotifier extends _$ListNotifier {
       final oldSet = oldRecords.toSet();
       final updateCount = newRecords.where((record) => !oldSet.contains(record)).length;
       return RefreshResult(updateCount: updateCount, hasUpdate: updateCount > 0);
-    } catch (e) {
-      return const RefreshResult();
+    } catch (e, stackTrace) {
+      Log.e(msg: 'ListNotifier.refresh failed', error: e, stackTrace: stackTrace);
+      return const RefreshResult(failed: true);
     }
   }
 

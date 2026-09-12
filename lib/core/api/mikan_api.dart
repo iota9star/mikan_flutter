@@ -30,7 +30,10 @@ class MikanApi {
 
   static bool _initialized = false;
   static bool _bindingsInitialized = false;
-  static const _callTimeout = Duration(seconds: 15);
+  // The mikan site serves ~470KB HTML pages that can take well over 15s on
+  // slow routes; keep the timeout generous so slow-but-alive requests finish
+  // instead of timing out into the retry loop.
+  static const _callTimeout = Duration(seconds: 30);
   static const _maxRetries = 2;
   static Future<void>? _bindingsInitFuture;
   static Future<void>? _engineInitFuture;
