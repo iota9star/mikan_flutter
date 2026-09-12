@@ -71,9 +71,7 @@ final searchProvider = Provider.autoDispose<KacheSnapshot<SearchResult>>((ref) {
 
 void _saveNewKeywords(String keywords) {
   final List<String> history = MyHive.db.get(HiveDBKey.mikanSearch, defaultValue: <String>[]);
-  if (history.contains(keywords)) {
-    return;
-  }
+  history.remove(keywords);
   history.insert(0, keywords);
   if (history.length > 8) {
     history.remove(history.last);
