@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_cockpit/flutter_cockpit_flutter.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:pixa/pixa.dart';
 
 import 'package:mikan/app/mikan_app.dart';
 import 'package:mikan/core/api/mikan_api.dart';
@@ -23,9 +25,15 @@ Future<void> main() async {
     NetworkFontLoader.init(),
     HttpCacheManager.init(),
     MikanApi.init(),
+    // Pixa image pipeline — must be configured before any image loads, same
+    // as the production entrypoint, or PixaImage throws a StateError.
+    Pixa.configure(),
     if (isSupportFirebase) _initFirebase(),
   ]);
   await KacheInit.init();
+  if (isMobile) {
+    await FlutterDisplayMode.setHighRefreshRate();
+  }
 
   final remoteSession = CockpitRemoteSessionConfiguration.resolveFromEnvironment();
   final config = FlutterCockpitConfig.production(remoteSession: remoteSession);
