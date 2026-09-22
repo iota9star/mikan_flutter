@@ -38,6 +38,8 @@ class SubscribedSeasonState {
 
 @riverpod
 class SubscribedSeason extends _$SubscribedSeason {
+  bool _isLoadingMore = false;
+
   @override
   SubscribedSeasonState build(List<YearSeason> years, List<SeasonGallery> galleries) {
     final seasons = years.map((e) => e.seasons).expand((element) => element).toList();
@@ -118,8 +120,17 @@ class SubscribedSeason extends _$SubscribedSeason {
     }
   }
 
-  Future<IndicatorResult> loadMore() {
-    return _loadBangumis();
+  Future<IndicatorResult> loadMore() async {
+    if (_isLoadingMore) {
+      return IndicatorResult.none;
+    }
+    _isLoadingMore = true;
+
+    try {
+      return await _loadBangumis();
+    } finally {
+      _isLoadingMore = false;
+    }
   }
 
   int _resolveNextLoadIndex(List<Season> seasons, List<SeasonGallery> galleries) {
