@@ -45,7 +45,7 @@ extension NullableStringExt on String? {
     if (isNullOrBlank) {
       return '内容为空，取消操作'.toast();
     }
-    _copyToClipboard(this!).then((_) => '已复制到剪切板'.toast());
+    _copyToClipboard(this!).then((_) => '已复制到剪切板'.toast(), onError: (_, __) => '复制失败，请重试'.toast());
   }
 
   void share() {
@@ -53,7 +53,7 @@ extension NullableStringExt on String? {
       return '内容为空，取消操作'.toast();
     }
     SharePlus.instance.share(ShareParams(text: this));
-    _copyToClipboard(this!).then((_) => '尝试分享，并复制到剪切板'.toast());
+    _copyToClipboard(this!).then((_) => '尝试分享，并复制到剪切板'.toast(), onError: (_, __) => '复制失败，请重试'.toast());
   }
 }
 
