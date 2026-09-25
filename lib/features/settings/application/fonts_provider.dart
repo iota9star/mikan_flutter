@@ -122,6 +122,16 @@ class Fonts extends _$Fonts {
     if (_loadingTask.containsKey(font.id)) {
       return;
     }
+    // 已在当前进程中加载，无需重新加载
+    if (NetworkFontLoader.isLoaded(font.id)) {
+      if (_lastEnableFont == font.id) {
+        await MyHive.setFontFamily(MapEntry(font.name, font.id));
+        if (ref.mounted) {
+          state = state.copyWith(selectedFont: font, usedFontFamilyId: font.id);
+        }
+      }
+      return;
+    }
     final chunkEvents = StreamController<Iterable<ProgressChunkEvent>>();
     _lastUpdate = DateTime.now().subtract(const Duration(seconds: 1));
     _loadingTask[font.id] = Cancelable();

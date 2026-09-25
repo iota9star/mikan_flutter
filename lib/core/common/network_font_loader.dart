@@ -17,6 +17,11 @@ class NetworkFontLoader {
 
   static final Map<String, Completer<void>> _loadingFonts = <String, Completer<void>>{};
 
+  static final Set<String> _loadedFonts = <String>{};
+
+  /// 判断 [fontFamily] 是否已在当前进程中注册到引擎
+  static bool isLoaded(String fontFamily) => _loadedFonts.contains(fontFamily);
+
   static Future<void> init() async {
     _fontManager = NetworkFontLoader._();
   }
@@ -141,6 +146,7 @@ class NetworkFontLoader {
 
       if (results.any((ByteData? data) => data != null)) {
         await fontLoader.load();
+        _loadedFonts.add(fontFamily);
       } else {
         throw StateError('No valid fonts were loaded for $fontFamily. Failed URLs: ${failedUrls.join(', ')}');
       }
